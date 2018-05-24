@@ -8,6 +8,7 @@ class LandingActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
+
     }
 
     override fun initListener() {
