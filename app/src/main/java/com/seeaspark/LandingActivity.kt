@@ -12,6 +12,7 @@ class LandingActivity : BaseActivity() {
     }
 
     override fun initListener() {
+
     }
 
     override fun getContentView() = R.layout.activity_landing
