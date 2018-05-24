@@ -1,0 +1,15 @@
+Index: app/src/main/java/com/seeaspark/LandingActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/seeaspark/LandingActivity.kt	(revision a24d10def0b63280232f45e67a0b958d8070b564)
++++ app/src/main/java/com/seeaspark/LandingActivity.kt	(revision ba4e07bec24f3ae778cccfef132586338ca99a49)
+@@ -12,6 +12,7 @@
+     }
+ 
+     override fun initListener() {
++
+     }
+ 
+     override fun getContentView() = R.layout.activity_landing
