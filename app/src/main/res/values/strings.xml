@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">See A Spark</string>
+    <string name="app_id">1436825226428892</string>
+
+    //codes
+    <string name="cannot_connect_server">Cannot connect to server</string>
+    <string name="error_api">Something went wrong!</string>
+    <string name="internet">Internet connection not available!</string>
+    <string name="success">200</string>
+    <string name="invalid_access_token_code">420</string>
+    <string name="treminate_account_code">405</string>
+
+    <string name="enter_email">Please enter email</string>
+    <string name="enter_valid_email">Please enter a valid email</string>
+    <string name="enter_password">Please enter password</string>
+    <string name="error_password">Password must have minimum 8 characters</string>
+
+</resources>
