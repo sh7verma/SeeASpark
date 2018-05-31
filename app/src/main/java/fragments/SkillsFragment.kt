@@ -24,27 +24,27 @@ class SkillsFragment : Fragment(), View.OnClickListener {
 
     private var mCreateProfileInstance: CreateProfileActivity? = null
     private var itemView: View? = null
-    private var mSkillsArray = ArrayList<SkillsModel>()
+
     private var mSkillsSelectedArray = ArrayList<String>()
     private val ADD_SKILLS: Int = 1
     private var mContext: Context? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_skills, container, false)
+        mCreateProfileInstance = activity as CreateProfileActivity
+        mContext = activity
+
         return itemView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        mCreateProfileInstance = activity as CreateProfileActivity
-        mContext = activity
         onCreateStuff()
         initListener()
         super.onActivityCreated(savedInstanceState)
     }
 
     private fun onCreateStuff() {
-        mSkillsArray.add(SkillsModel("+", false, true))
-        for (skillValue: SkillsModel in mSkillsArray) {
+        for (skillValue: SkillsModel in mCreateProfileInstance!!.mSkillsArray) {
             flSkills.addView(inflateView(skillValue))
         }
     }
@@ -64,7 +64,6 @@ class SkillsFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
 
     private fun inflateView(skillValue: SkillsModel): View {
         val interestChip = LayoutInflater.from(activity).inflate(R.layout.layout_skills, null, false)
@@ -92,7 +91,7 @@ class SkillsFragment : Fragment(), View.OnClickListener {
 
         interestChip.imgSkillAdd.setOnClickListener {
             val intent = Intent(activity, AddSkills::class.java)
-            intent.putParcelableArrayListExtra("skillsArray", mSkillsArray);
+            intent.putParcelableArrayListExtra("skillsArray", mCreateProfileInstance!!.mSkillsArray);
             startActivityForResult(intent, ADD_SKILLS)
             activity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
         }
@@ -107,7 +106,6 @@ class SkillsFragment : Fragment(), View.OnClickListener {
                 interestChip.txtSkillChip.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
                 mSkillsSelectedArray.add(skillValue.skill)
             }
-
             Log.e("Add/Remove = ", skillValue.skill)
         }
 
@@ -119,10 +117,10 @@ class SkillsFragment : Fragment(), View.OnClickListener {
             when (requestCode) {
                 ADD_SKILLS -> {
                     flSkills.removeAllViews()
-                    mSkillsArray.clear()
-                    mSkillsArray.add(SkillsModel("+", false, true))
-                    mSkillsArray.addAll(data!!.getParcelableArrayListExtra<Parcelable>("skillsArray") as ArrayList<out SkillsModel>)
-                    for (skillValue: SkillsModel in mSkillsArray) {
+                    mCreateProfileInstance!!.mSkillsArray.clear()
+                    mCreateProfileInstance!!.mSkillsArray.add(SkillsModel("+", false, true))
+                    mCreateProfileInstance!!.mSkillsArray.addAll(data!!.getParcelableArrayListExtra<Parcelable>("skillsArray") as ArrayList<out SkillsModel>)
+                    for (skillValue: SkillsModel in mCreateProfileInstance!!.mSkillsArray) {
                         flSkills.addView(inflateView(skillValue))
                     }
                 }

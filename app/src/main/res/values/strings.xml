@@ -53,6 +53,17 @@
     <string name="transition">transition</string>
     <string name="add_skills">Add Skills</string>
     <string name="enter_skill">Enter Skill</string>
+    <string name="write_your_short_bio">Write your\nShort Bio</string>
+    <string name="_320_characters">320 Characters Left</string>
+    <string name="_1024_characters">1024 Characters Left</string>
+    <string name="describe_your_profession">Describe your\nProfession</string>
+    <string name="verify_your_id">Verify your Id</string>
+    <string name="flash_auto">Flash auto</string>
+    <string name="flash_off">Flash off</string>
+    <string name="flash_on">Flash on</string>
+    <string name="picture_taken">Picture taken</string>
+    <string name="camera_permission_confirmation">This app demonstrates the usage of CameraView. In order to do that, it needs permission to access camera.</string>
+    <string name="camera_permission_not_granted">Camera app cannot do anything without camera permission.</string>
 
 
 </resources>

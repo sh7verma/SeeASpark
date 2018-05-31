@@ -23,7 +23,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
     /// support libs
@@ -40,6 +40,9 @@ dependencies {
 
     compile project(':linkedin-sdk')
     compile project(':rangeseekbar')
+    compile project(':library')
+    compile project(':aFileChooser')
+    compile project(':cropLib')
 
     //multidex
     compile 'com.android.support:multidex:1.0.3'

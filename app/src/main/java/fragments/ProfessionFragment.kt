@@ -42,7 +42,7 @@ class ProfessionFragment : Fragment(), View.OnClickListener {
             }
 
             txtNextProfession -> {
-                mCreateProfileInstance!!.moveToNext()
+
             }
         }
     }
