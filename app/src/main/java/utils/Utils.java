@@ -3,6 +3,9 @@ package utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 public class Utils {
 	Context mActivity;
 	SharedPreferences preferences;
@@ -47,4 +50,9 @@ public class Utils {
 	public void clear_shf() {
 		preferences.edit().clear().commit();
 	}
+
+    @NotNull
+    public Object Connection_Detector(@Nullable Context mContext) {
+        return null;
+    }
 }

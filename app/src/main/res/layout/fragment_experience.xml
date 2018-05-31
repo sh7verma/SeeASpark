@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_320sdp"
+        android:layout_marginBottom="@dimen/_16sdp"
+        android:layout_marginLeft="@dimen/_8sdp"
+        android:layout_marginRight="@dimen/_8sdp"
+        android:background="@drawable/signup_gradient"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imgBackExperience"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
+            android:padding="@dimen/_12sdp"
+            android:src="@mipmap/ic_back_black" />
+
+        <customviews.BoldTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:layout_marginRight="@dimen/_16sdp"
+            android:paddingBottom="@dimen/_16sdp"
+            android:text="@string/select_your_experience"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_24ssp" />
+
+        <customviews.MediumTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:text="@string/years"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp" />
+
+        <org.florescu.android.rangeseekbar.RangeSeekBar
+            android:id="@+id/rsbYears"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            app:absoluteMaxValue="30"
+            app:absoluteMinValue="0"
+            app:defaultColor="@color/colorLine"
+            app:activateOnDefaultValues="true"
+            app:activeColor="@color/colorMentee"
+            app:barHeight="@dimen/_2sdp"
+            app:showLabels="false"
+            app:singleThumb="true"
+            app:textAboveThumbsColor="@color/black_color"
+            app:thumbDisabled="@mipmap/ic_slider_dot"
+            app:thumbNormal="@mipmap/ic_slider_dot"
+            app:thumbPressed="@mipmap/ic_slider_dot"
+            app:thumbShadowColor="@color/colorLine" />
+
+        <customviews.MediumTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:text="@string/months"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp" />
+
+        <org.florescu.android.rangeseekbar.RangeSeekBar
+            android:id="@+id/rsbMonths"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            app:absoluteMaxValue="12"
+            app:absoluteMinValue="0"
+            app:defaultColor="@color/colorLine"
+            app:activateOnDefaultValues="true"
+            app:activeColor="@color/colorMentee"
+            app:barHeight="@dimen/_2sdp"
+            app:showLabels="false"
+            app:singleThumb="true"
+            app:textAboveThumbsColor="@color/black_color"
+            app:thumbDisabled="@mipmap/ic_slider_dot"
+            app:thumbNormal="@mipmap/ic_slider_dot"
+            app:thumbPressed="@mipmap/ic_slider_dot"
+            app:thumbShadowColor="@color/colorLine" />
+
+
+    </LinearLayout>
+
+    <customviews.MediumTextView
+        android:id="@+id/txtNextExperience"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/_36sdp"
+        android:layout_marginTop="@dimen/_300sdp"
+        android:background="@drawable/mentee_ripple"
+        android:elevation="@dimen/_3"
+        android:paddingBottom="@dimen/_8sdp"
+        android:paddingLeft="@dimen/_24sdp"
+        android:paddingRight="@dimen/_24sdp"
+        android:paddingTop="@dimen/_8sdp"
+        android:text="@string/next"
+        android:textAllCaps="true"
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_14ssp" />
+
+</RelativeLayout>

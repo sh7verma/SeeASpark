@@ -5,10 +5,9 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-/**
- * Created by app on 8/29/2016.
- */
-public class BoldTextView extends TextView {
+
+
+public class BoldTextView extends android.support.v7.widget.AppCompatTextView {
 
     public BoldTextView(Context context) {
         super(context);
@@ -28,7 +27,7 @@ public class BoldTextView extends TextView {
     private void init() {
         if (!isInEditMode()) {
             Typeface typeface = Typeface.createFromAsset(getContext()
-                    .getAssets(), "fonts/bold.ttf");
+                    .getAssets(), "fonts/bold.otf");
             setTypeface(typeface);
         }
     }

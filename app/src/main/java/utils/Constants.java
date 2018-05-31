@@ -27,9 +27,13 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import database.Db;
+import kotlin.collections.AbstractList;
+import kotlin.jvm.JvmStatic;
 
 
 public class Constants {
+
+    public static String EMPTY = "";
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

@@ -2,6 +2,10 @@
     <string name="app_name">See A Spark</string>
     <string name="app_id">1436825226428892</string>
 
+    <string name="facebook_app_id">342648816260897</string>
+    <string name="fb_login_protocol_scheme">fb342648816260897</string>
+
+
     //codes
     <string name="cannot_connect_server">Cannot connect to server</string>
     <string name="error_api">Something went wrong!</string>
@@ -14,5 +18,41 @@
     <string name="enter_valid_email">Please enter a valid email</string>
     <string name="enter_password">Please enter password</string>
     <string name="error_password">Password must have minimum 8 characters</string>
+
+    <string name="ok_ngot_it">OK\nGot it</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</string>
+    <string name="welcome_to">Welcome to</string>
+    <string name="mentee">Mentee</string>
+    <string name="mentor">Mentor</string>
+    <string name="done">Done</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="reset">Reset</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="enter_your_email_below_to_receive_your_reset_password_instruction">Enter your email below to receive your reset password instruction</string>
+    <string name="select_your_n_avatar">Select your\nAvatar</string>
+    <string name="enter">Enter</string>
+    <string name="name">Name</string>
+    <string name="next">Next</string>
+    <string name="what_is_your_name">What is your\nName?</string>
+    <string name="what_is_your_age">What is your\nAge?</string>
+    <string name="what_is_your_profession">What is your\nProfession?</string>
+
+    <string name="select">Select</string>
+    <string name="select_your_gender">Select your\nGender</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
+    <string name="years">Years</string>
+    <string name="months">Months</string>
+    <string name="select_your_experience">Select your\nExperience</string>
+    <string name="select_your_nskills">Select your\nSkills</string>
+    <string name="transition">transition</string>
+    <string name="add_skills">Add Skills</string>
+    <string name="enter_skill">Enter Skill</string>
+
 
 </resources>

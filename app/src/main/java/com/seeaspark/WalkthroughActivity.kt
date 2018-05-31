@@ -1,21 +1,24 @@
 package com.seeaspark
 
 import android.content.Context
+import android.view.View
 
 class WalkthroughActivity : BaseActivity() {
     override fun initUI() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onCreateStuff() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun initListener() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClick(p0: View?) {
     }
 
     override fun getContentView() = R.layout.activity_walkthrough
 
     override fun getContext() = this
+
+
 }

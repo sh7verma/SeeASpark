@@ -1,21 +1,42 @@
 package com.seeaspark
 
-import kotlinx.android.synthetic.main.activity_main.*
+import android.content.Intent
+import android.view.View
+import kotlinx.android.synthetic.main.activity_afterwalkthrough.*
+
 
 class AfterWalkThroughActivity : BaseActivity() {
 
     override fun initUI() {
-        txtHello.setText("Rajat Arora")
+
     }
 
     override fun onCreateStuff() {
+
+
     }
 
     override fun initListener() {
+        txtMentee.setOnClickListener(this)
+        txtMentor.setOnClickListener(this)
     }
 
-    override fun getContentView() = R.layout.activity_main
+    override fun getContentView() = R.layout.activity_afterwalkthrough
 
     override fun getContext() = this
+
+    override fun onClick(view: View) {
+
+        when (view) {
+            txtMentee -> {
+                startActivity(Intent(this, LoginSignupActivity::class.java))
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+            }
+            txtMentor -> {
+                startActivity(Intent(this, LoginSignupActivity::class.java))
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+            }
+        }
+    }
 
 }
