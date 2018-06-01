@@ -121,6 +121,7 @@ class SkillsFragment : Fragment(), View.OnClickListener {
                     mCreateProfileInstance!!.mSkillsArray.add(SkillsModel("+", false, true))
                     mCreateProfileInstance!!.mSkillsArray.addAll(data!!.getParcelableArrayListExtra<Parcelable>("skillsArray") as ArrayList<out SkillsModel>)
                     for (skillValue: SkillsModel in mCreateProfileInstance!!.mSkillsArray) {
+                        mSkillsSelectedArray.add(skillValue.skill)
                         flSkills.addView(inflateView(skillValue))
                     }
                 }

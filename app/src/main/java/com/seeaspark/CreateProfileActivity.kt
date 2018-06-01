@@ -1,6 +1,7 @@
 package com.seeaspark
 
 import adapters.CreateProfileAdapter
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import android.view.View
@@ -8,12 +9,26 @@ import fragments.*
 import kotlinx.android.synthetic.main.activity_create_profile.*
 import models.SkillsModel
 import utils.Constants
+import java.util.*
 
 class CreateProfileActivity : BaseActivity() {
 
     var mFragmentArray = ArrayList<Fragment>()
     var mCurrentPosition = 0;
     var mSkillsArray = ArrayList<SkillsModel>()
+
+    var mName = Constants.EMPTY
+    var mAge = Constants.EMPTY
+    var mDob = Constants.EMPTY
+    var mGender = Constants.EMPTY
+    var mProfession = Constants.EMPTY
+    var mProfessionId = Constants.EMPTY
+    var mExpeirenceYears = Constants.EMPTY
+    var mExpeirenceMonth = Constants.EMPTY
+    var mSkillsServerArray = ArrayList<String>()
+    var mBio = Constants.EMPTY
+    var mDescription = Constants.EMPTY
+    var calDOB: Calendar? = null
 
     private var mProfileAdapter: CreateProfileAdapter? = null
 
@@ -23,6 +38,8 @@ class CreateProfileActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
+        calDOB = Calendar.getInstance(TimeZone.getDefault())
+        calDOB!!.add(Calendar.YEAR, -14)
         mSkillsArray.add(SkillsModel("+", false, true))
         addFragments()
         mProfileAdapter = CreateProfileAdapter(supportFragmentManager, mFragmentArray)
@@ -83,6 +100,10 @@ class CreateProfileActivity : BaseActivity() {
 
     override fun onBackPressed() {
         moveToPrevious()
+    }
+
+    fun showAlertActivity(view: View, message: String) {
+        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
     }
 
 }

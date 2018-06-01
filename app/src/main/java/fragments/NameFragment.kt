@@ -1,7 +1,9 @@
 package fragments
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,11 +41,17 @@ class NameFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view) {
             txtNextName -> {
-                mCreateProfileInstance!!.moveToNext()
+                if (edNameProfile.getText().toString().length < 2)
+                    mCreateProfileInstance!!.showAlertActivity(txtNextName, getString(R.string.error_name))
+                else {
+                    mCreateProfileInstance!!.mName = edNameProfile.text.toString()
+                    mCreateProfileInstance!!.moveToNext()
+                }
             }
             imgBackName -> {
                 mCreateProfileInstance!!.moveToPrevious()
             }
         }
     }
+
 }

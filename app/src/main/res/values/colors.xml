@@ -10,6 +10,8 @@
     <color name="colorMenteeEffect">#FFE2FDC2</color>
     <color name="colorTransperentEffect">#a1f9f7f7</color>
     <color name="colorLine">#d97261</color>
+    <color name="greyLine">#cfd0d2</color>
+    <color name="textGrey">#9a9a9c</color>
 
     <color name="navigationBarColor">#202851</color>
     <color name="textColorPrimary">#f77a52</color>

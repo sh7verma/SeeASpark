@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<customviews.MediumTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/txtAnswerQuestion"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/_18sdp"
+    android:background="@drawable/answer_background"
+    android:gravity="center"
+    android:paddingBottom="@dimen/_12sdp"
+    android:paddingTop="@dimen/_12sdp"
+    android:text="Evaluation"
+    android:textAllCaps="true"
+    android:textColor="@color/hint_color_light" />

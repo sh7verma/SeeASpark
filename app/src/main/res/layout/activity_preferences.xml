@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <customviews.BoldTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="@dimen/_16sdp"
+            android:text="Preferences"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_16ssp" />
+
+        <ImageView
+            android:id="@+id/imgForwardPrefer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_ripple"
+            android:padding="@dimen/_12sdp"
+            android:src="@mipmap/ic_forward" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/greyLine" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp">
+
+                <customviews.BoldTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/distance"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <customviews.MediumTextView
+                    android:id="@+id/txtDistanceCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="20 Miles"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_12ssp" />
+
+            </LinearLayout>
+
+            <org.florescu.android.rangeseekbar.RangeSeekBar
+                android:id="@+id/rsbDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                app:absoluteMaxValue="100"
+                app:absoluteMinValue="0"
+                app:activateOnDefaultValues="true"
+                app:activeColor="@color/colorMentee"
+                app:barHeight="@dimen/_2sdp"
+                app:defaultColor="@color/greyLine"
+                app:showLabels="false"
+                app:singleThumb="true"
+                app:textAboveThumbsColor="@color/black_color"
+                app:thumbDisabled="@mipmap/ic_slider_dot"
+                app:thumbNormal="@mipmap/ic_slider_dot"
+                app:thumbPressed="@mipmap/ic_slider_dot"
+                app:thumbShadowColor="@color/colorLine"
+                app:valuesAboveThumbs="false" />
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_24sdp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp">
+
+                <customviews.BoldTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/experience"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <customviews.MediumTextView
+                    android:id="@+id/txtExperienceCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8 Years"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_12ssp" />
+
+            </LinearLayout>
+
+            <org.florescu.android.rangeseekbar.RangeSeekBar
+                android:id="@+id/rsbExperience"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                app:absoluteMaxValue="100"
+                app:absoluteMinValue="0"
+                app:activateOnDefaultValues="true"
+                app:activeColor="@color/colorMentee"
+                app:barHeight="@dimen/_2sdp"
+                app:defaultColor="@color/greyLine"
+                app:showLabels="false"
+                app:singleThumb="true"
+                app:textAboveThumbsColor="@color/black_color"
+                app:thumbDisabled="@mipmap/ic_slider_dot"
+                app:thumbNormal="@mipmap/ic_slider_dot"
+                app:thumbPressed="@mipmap/ic_slider_dot"
+                app:thumbShadowColor="@color/colorLine"
+                app:valuesAboveThumbs="false" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/_16sdp"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp"
+                android:paddingTop="@dimen/_16sdp">
+
+                <customviews.BoldTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/gender"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <customviews.MediumTextView
+                    android:id="@+id/txtGenderPrefer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_ripple"
+                    android:drawableRight="@mipmap/ic_arrow_r"
+                    android:padding="@dimen/_5sdp"
+                    android:text="@string/male"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_12ssp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:background="@color/greyLine" />
+
+            <LinearLayout
+                android:id="@+id/llSkillSelection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/white_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/_16sdp"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp"
+                android:paddingTop="@dimen/_16sdp">
+
+                <customviews.BoldTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/skills"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_arrow_r" />
+
+            </LinearLayout>
+
+            <customviews.FlowLayout
+                android:id="@+id/flSkillsPrefer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_16sdp"
+                android:gravity="left" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            ></LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

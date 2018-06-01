@@ -3,6 +3,7 @@ package fragments
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,7 @@ class AgeFragment : Fragment(), View.OnClickListener {
 
     var mCreateProfileInstance: CreateProfileActivity? = null
     var itemView: View? = null
-    var calDOB: Calendar? = null
+
     var mShowStartDate = SimpleDateFormat("dd MMM, yyyy", Locale.US)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,8 +37,8 @@ class AgeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
-        calDOB = Calendar.getInstance(TimeZone.getDefault())
-        calDOB!!.add(Calendar.YEAR, -14)
+        txtSelectAge.setText(mCreateProfileInstance!!.mAge)
+
     }
 
     private fun initListener() {
@@ -49,7 +50,12 @@ class AgeFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view) {
             txtNextAge -> {
-                mCreateProfileInstance!!.moveToNext()
+                if (TextUtils.isEmpty(txtSelectAge.text.toString()))
+                    mCreateProfileInstance!!.showAlertActivity(txtNextAge, getString(R.string.error_age))
+                else {
+                    mCreateProfileInstance!!.mAge = txtSelectAge.text.toString()
+                    mCreateProfileInstance!!.moveToNext()
+                }
             }
             imgBackAge -> {
                 mCreateProfileInstance!!.moveToPrevious()
@@ -67,9 +73,9 @@ class AgeFragment : Fragment(), View.OnClickListener {
         val datePickerDOB = DatePickerDialog(activity,
                 R.style.DatePickerTheme,
                 dobPickerListener,
-                calDOB!!.get(Calendar.YEAR),
-                calDOB!!.get(Calendar.MONTH),
-                calDOB!!.get(Calendar.DAY_OF_MONTH))
+                mCreateProfileInstance!!.calDOB!!.get(Calendar.YEAR),
+                mCreateProfileInstance!!.calDOB!!.get(Calendar.MONTH),
+                mCreateProfileInstance!!.calDOB!!.get(Calendar.DAY_OF_MONTH))
 
         datePickerDOB.setCancelable(false)
         datePickerDOB.datePicker.maxDate = calendar.timeInMillis
@@ -80,11 +86,11 @@ class AgeFragment : Fragment(), View.OnClickListener {
     private val dobPickerListener = object : DatePickerDialog.OnDateSetListener {
 
         override fun onDateSet(view: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int) {
-            calDOB!!.set(Calendar.YEAR, selectedYear)
-            calDOB!!.set(Calendar.MONTH, selectedMonth)
-            calDOB!!.set(Calendar.DATE, selectedDay)
+            mCreateProfileInstance!!.calDOB!!.set(Calendar.YEAR, selectedYear)
+            mCreateProfileInstance!!.calDOB!!.set(Calendar.MONTH, selectedMonth)
+            mCreateProfileInstance!!.calDOB!!.set(Calendar.DATE, selectedDay)
             try {
-                calculate_age(mShowStartDate.format(calDOB!!.time))
+                calculate_age(mShowStartDate.format(mCreateProfileInstance!!.calDOB!!.time))
             } catch (e: ParseException) {
                 e.printStackTrace()
             }

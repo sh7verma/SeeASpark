@@ -2,6 +2,7 @@ package fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +30,7 @@ class GenderFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
-
+        txtSelectGender.setText(mCreateProfileInstance!!.mGender)
     }
 
     private fun initListener() {
@@ -47,7 +48,12 @@ class GenderFragment : Fragment(), View.OnClickListener {
                 optionGender()
             }
             txtNextGender -> {
-                mCreateProfileInstance!!.moveToNext()
+                if (TextUtils.isEmpty(txtSelectGender.text.toString()))
+                    mCreateProfileInstance!!.showAlertActivity(txtNextGender, getString(R.string.error_gender))
+                else {
+                    mCreateProfileInstance!!.moveToNext()
+                    mCreateProfileInstance!!.mGender=txtSelectGender.text.toString()
+                }
             }
         }
     }

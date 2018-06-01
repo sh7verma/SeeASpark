@@ -30,7 +30,7 @@
             android:textSize="@dimen/_24ssp" />
 
         <customviews.LightTextView
-            android:id="@+id/txtCountCharacter"
+            android:id="@+id/txtCountCharacterDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"

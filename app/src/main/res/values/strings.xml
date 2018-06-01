@@ -58,12 +58,22 @@
     <string name="_1024_characters">1024 Characters Left</string>
     <string name="describe_your_profession">Describe your\nProfession</string>
     <string name="verify_your_id">Verify your Id</string>
+    <string name="questionnaires">Questionnaires</string>
     <string name="flash_auto">Flash auto</string>
     <string name="flash_off">Flash off</string>
     <string name="flash_on">Flash on</string>
     <string name="picture_taken">Picture taken</string>
+    <string name="error_name">Please enter Name with minimum 2 characters.</string>
     <string name="camera_permission_confirmation">This app demonstrates the usage of CameraView. In order to do that, it needs permission to access camera.</string>
     <string name="camera_permission_not_granted">Camera app cannot do anything without camera permission.</string>
+    <string name="error_age">Please specify Age</string>
+    <string name="error_gender">Please specify Gender</string>
+    <string name="error_bio">Please enter Bio</string>
+    <string name="distance">Distance</string>
+    <string name="gender">Gender</string>
+    <string name="experience">Experience</string>
+    <string name="skills">Skills</string>
+    <string name="select_preferred_skills">Select Preferred\nSkills</string>
 
 
 </resources>
