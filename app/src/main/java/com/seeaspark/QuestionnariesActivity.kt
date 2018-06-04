@@ -1,6 +1,7 @@
 package com.seeaspark
 
 import adapters.QuestionAdapter
+import android.content.Intent
 import android.graphics.Color
 import android.view.View
 import kotlinx.android.synthetic.main.activity_questionaires.*
@@ -38,7 +39,10 @@ class QuestionnariesActivity : BaseActivity() {
 
             }
             txtDoneQuestion -> {
-
+                var intent = Intent(mContext, PreferencesActivity::class.java)
+                startActivity(intent)
+                finish()
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
         }
     }

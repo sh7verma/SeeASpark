@@ -2,6 +2,7 @@ package com.seeaspark
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -16,17 +17,22 @@ import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
 import android.provider.MediaStore
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import android.widget.Toast
 import com.google.android.cameraview.CameraView
 import com.ipaulpro.afilechooser.utils.FileUtils
 import com.soundcloud.android.crop.Crop
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_verify_id.*
+import kotlinx.android.synthetic.main.dialog_profile_review.*
+import kotlinx.android.synthetic.main.dialog_profile_review.view.*
 import kotlinx.android.synthetic.main.tool_bar.*
 import java.io.*
 import java.util.*
@@ -59,6 +65,7 @@ class VerifyIdActivity : BaseActivity() {
         if (mCameraView != null) {
             mCameraView.addCallback(mCallback)
         }
+//        dialogToMentor()
     }
 
     override fun initListener() {
@@ -115,9 +122,14 @@ class VerifyIdActivity : BaseActivity() {
                 imgDisplay.visibility = View.INVISIBLE
             }
             txtDone -> {
-
+                dialogToMentor()
             }
         }
+    }
+
+    private fun dialogToMentor() {
+        var intent = Intent(mContext, ProfileReviewDialog::class.java)
+        startActivity(intent)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

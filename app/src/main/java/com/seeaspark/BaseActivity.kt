@@ -1,16 +1,14 @@
 package com.seeaspark
 
 
+import android.app.NotificationManager
 import android.content.Context
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
-import android.widget.TextView
-import com.facebook.FacebookSdk
 import utils.Connection_Detector
 import utils.CustomLoadingDialog
 import utils.Utils
@@ -23,13 +21,13 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var mErrorAPI = "";
     var mWidth: Int = 0
     var mHeight: Int = 0
-    var utils: Utils? = null;
+    var mUtils: Utils? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getContentView())
         mContext = getContext()
-        utils = Utils(this)
+        mUtils = Utils(this)
         getDefaults()
         initUI()
         onCreateStuff()
@@ -69,8 +67,19 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         windowManager.defaultDisplay.getMetrics(display)
         mWidth = display.widthPixels
         mHeight = display.heightPixels
-        utils!!.setInt("width", mWidth)
-        utils!!.setInt("height", mHeight)
+        mUtils!!.setInt("width", mWidth)
+        mUtils!!.setInt("height", mHeight)
     }
 
+    protected fun moveToSplash() {
+        val notificationManager = mContext!!
+                .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
+        mUtils!!.clear_shf()
+        val inSplash = Intent(mContext, AfterWalkThroughActivity::class.java)
+        inSplash.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        inSplash.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        mContext!!.startActivity(inSplash)
+        System.exit(2)
+    }
 }

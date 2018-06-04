@@ -36,7 +36,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="@dimen/_16sdp"
             android:text="@string/_1024_characters"
-            android:textColor="@color/hint_color_light"
+            android:textColor="@color/hintColorText"
             android:textSize="@dimen/_12ssp" />
 
         <customviews.MaterialEditText

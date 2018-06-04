@@ -89,9 +89,9 @@
                 app:showLabels="false"
                 app:singleThumb="true"
                 app:textAboveThumbsColor="@color/black_color"
-                app:thumbDisabled="@mipmap/ic_slider_dot"
-                app:thumbNormal="@mipmap/ic_slider_dot"
-                app:thumbPressed="@mipmap/ic_slider_dot"
+                app:thumbDisabled="@mipmap/ic_slider_btn"
+                app:thumbNormal="@mipmap/ic_slider_btn"
+                app:thumbPressed="@mipmap/ic_slider_btn"
                 app:thumbShadowColor="@color/colorLine"
                 app:valuesAboveThumbs="false" />
 
@@ -131,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_8sdp"
                 android:layout_marginRight="@dimen/_8sdp"
-                app:absoluteMaxValue="100"
+                app:absoluteMaxValue="30"
                 app:absoluteMinValue="0"
                 app:activateOnDefaultValues="true"
                 app:activeColor="@color/colorMentee"
@@ -140,9 +140,9 @@
                 app:showLabels="false"
                 app:singleThumb="true"
                 app:textAboveThumbsColor="@color/black_color"
-                app:thumbDisabled="@mipmap/ic_slider_dot"
-                app:thumbNormal="@mipmap/ic_slider_dot"
-                app:thumbPressed="@mipmap/ic_slider_dot"
+                app:thumbDisabled="@mipmap/ic_slider_btn"
+                app:thumbNormal="@mipmap/ic_slider_btn"
+                app:thumbPressed="@mipmap/ic_slider_btn"
                 app:thumbShadowColor="@color/colorLine"
                 app:valuesAboveThumbs="false" />
 
@@ -221,11 +221,51 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
 
-            ></LinearLayout>
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/coordinator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_300sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:layout_marginRight="@dimen/_16sdp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/llProfessionListing"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/primary_upper_round_corner"
+                android:orientation="vertical"
+                app:behavior_hideable="false"
+                app:layout_behavior="utils.UserLockBottomSheetBehavior">
+
+                <ImageView
+                    android:id="@+id/imgProfessionUpward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@mipmap/ic_arrow_up" />
+
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_8sdp"
+                    android:text="@string/professions"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_16ssp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvProfessionPrefer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+            </LinearLayout>
+
+
+        </android.support.design.widget.CoordinatorLayout>
 
     </RelativeLayout>
 

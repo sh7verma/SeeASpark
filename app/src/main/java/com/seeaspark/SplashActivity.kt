@@ -39,21 +39,17 @@ class SplashActivity : Activity() {
 
 
         Handler().postDelayed({
-            if (!TextUtils.isEmpty(mUtils.getString("access_token", "")) && mUtils.getBoolean("email_verified", false)) {
+            if (!TextUtils.isEmpty(mUtils.getString("access_token", ""))) {
                 /// email verified.
                 startActivity( Intent(this@SplashActivity, LandingActivity::class.java))
                 finish()
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
             } else {
                 /// not verified or new user
-                startActivity(Intent(this@SplashActivity, AfterWalkThroughActivity::class.java))
+                startActivity(Intent(this@SplashActivity, WalkthroughActivity::class.java))
                 finish()
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
             }
         }, 2000)
     }
-
-
-
-
 }

@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_color"
+    android:background="@drawable/background_gradient"
     android:orientation="vertical">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/vp_walk"
+        android:id="@+id/vpWalk"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <customviews.CirclePageIndicator
-        android:id="@+id/cp_indicator"
+        android:id="@+id/cpIndicatorWalk"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_16sdp"
@@ -20,11 +20,12 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <customviews.ProTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/txtGotIt"
+        android:layout_width="@dimen/_56sdp"
+        android:layout_height="@dimen/_56sdp"
         android:layout_marginBottom="@dimen/_12sdp"
         android:layout_marginRight="@dimen/_8sdp"
-        android:background="@drawable/white_ripple"
+        android:background="@drawable/white_round_ripple"
         android:gravity="center"
         android:padding="@dimen/_8sdp"
         android:text="@string/ok_ngot_it"

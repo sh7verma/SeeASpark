@@ -2,5 +2,9 @@
     {
         "merged": "D:\\Backup Code\\Brezaa\\aFileChooser\\build\\intermediates\\res\\merged\\release\\xml\\mimetypes.xml",
         "source": "D:\\Backup Code\\Brezaa\\aFileChooser\\src\\main\\res\\xml\\mimetypes.xml"
+    },
+    {
+        "merged": "D:\\GitLocationSeeASpark\\SeeASpark\\aFileChooser\\build\\intermediates\\res\\merged\\release\\xml\\mimetypes.xml",
+        "source": "D:\\GitLocationSeeASpark\\SeeASpark\\aFileChooser\\src\\main\\res\\xml\\mimetypes.xml"
     }
 ]

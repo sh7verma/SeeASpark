@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#000000</color>
-    <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#000000</color>
+    <color name="colorPrimary">#f77a52</color>
+    <color name="colorPrimaryDark">#f77a52</color>
+    <color name="colorAccent">#f77a52</color>
 
     <color name="colorMentor">#EDFAE1</color>
     <color name="colorMentorEffect">#EFF7E8</color>
@@ -12,6 +12,7 @@
     <color name="colorLine">#d97261</color>
     <color name="greyLine">#cfd0d2</color>
     <color name="textGrey">#9a9a9c</color>
+    <color name="hintColorText">#b75a51</color>
 
     <color name="navigationBarColor">#202851</color>
     <color name="textColorPrimary">#f77a52</color>

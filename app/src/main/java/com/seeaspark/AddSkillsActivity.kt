@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.add_skills.view.*
 import models.SkillsModel
 import utils.Constants
 
-class AddSkills : BaseActivity() {
+class AddSkillsActivity : BaseActivity() {
 
     private var mSkillsArray = ArrayList<SkillsModel>()
 

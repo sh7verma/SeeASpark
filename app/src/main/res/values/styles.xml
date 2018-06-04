@@ -4,11 +4,16 @@
 
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/slide_in_up</item>
-        <item name="android:windowExitAnimation">@anim/slide_out_up</item>
+        <item name="android:windowExitAnimation">@style/DialogAnimationClose</item>
     </style>
 
     <style name="DialogSlideAnim" parent="@android:style/Theme.Dialog">
         <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+    </style>
+
+    <style name="DialogAnimationClose">
+        <item name="android:windowEnterAnimation">@anim/stay</item>
+        <item name="android:windowExitAnimation">@anim/slide_in_dwon</item>
     </style>
 
     <style name="MainActionBarTheme" parent="@style/Theme.AppCompat.Light">
@@ -88,6 +93,17 @@
     <style name="DatePickerTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/black_color</item>
         <item name="android:windowBackground">@color/white_color</item>
+    </style>
+
+    <style name="CoffeeDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorBackground">     @android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.3</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
     </style>
 
 

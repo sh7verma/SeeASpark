@@ -95,7 +95,7 @@
                     app:met_floatingLabelTextColor="@color/black_color"
                     app:met_hideUnderline="true"
                     app:met_textColor="@color/white_color"
-                    app:met_textColorHint="@color/white_color" />
+                    app:met_textColorHint="@color/hintColorText" />
 
                 <View
                     android:layout_width="match_parent"
@@ -125,7 +125,7 @@
                     app:met_floatingLabelTextColor="@color/black_color"
                     app:met_hideUnderline="true"
                     app:met_textColor="@color/white_color"
-                    app:met_textColorHint="@color/white_color" />
+                    app:met_textColorHint="@color/hintColorText" />
 
                 <View
                     android:layout_width="match_parent"

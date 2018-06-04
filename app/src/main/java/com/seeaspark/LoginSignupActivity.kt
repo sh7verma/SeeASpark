@@ -47,8 +47,8 @@ class LoginSignupActivity : BaseActivity() {
 
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
 
-        edEmail.setTypeface(typeface)
-        edPassword.setTypeface(typeface)
+        edEmail.typeface = typeface
+        edPassword.typeface = typeface
     }
 
     override fun onCreateStuff() {
@@ -56,12 +56,12 @@ class LoginSignupActivity : BaseActivity() {
         callbackManager = CallbackManager.Factory.create();
 
         swipeleft = TranslateAnimation(-(intialViewPosition).toFloat(), 0f, 0f, 0f)
-        swipeleft!!.setDuration(300)
-        swipeleft!!.setFillAfter(true)
+        swipeleft!!.duration = 300
+        swipeleft!!.fillAfter = true
 
         swiperight = TranslateAnimation(0f, -(intialViewPosition).toFloat(), 0f, 0f)
-        swiperight!!.setDuration(300)
-        swiperight!!.setFillAfter(true)
+        swiperight!!.duration = 300
+        swiperight!!.fillAfter = true
 
         setRegister()
 
@@ -75,6 +75,9 @@ class LoginSignupActivity : BaseActivity() {
                     // Getting FB User Data
                     Log.e("First Name  ", jsonObject.getString("first_name"));
                     LoginManager.getInstance().logOut()
+
+                    mUtils!!.setBoolean("addEmailFragment", true)
+                    hitSignupAPI()
                 }
 
                 val parameters = Bundle()
@@ -124,7 +127,7 @@ class LoginSignupActivity : BaseActivity() {
                 verifyDetails()
             }
             imgLinkedin -> {
-                login(imgLinkedin)
+                linkedinLogin(imgLinkedin)
             }
             txtSignin -> {
                 if (modeEnabledSignup) {
@@ -148,7 +151,7 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     private fun setLogin() {
-        edEmail.isFocusable=true
+        edEmail.isFocusable = true
         edEmail.setText(Constants.EMPTY)
         edPassword.setText(Constants.EMPTY)
         txtForgotPassword.visibility = View.VISIBLE
@@ -179,7 +182,7 @@ class LoginSignupActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    fun login(view: View) {
+    fun linkedinLogin(view: View) {
         LISessionManager.getInstance(applicationContext).clearSession()
         LISessionManager.getInstance(applicationContext).init(this, buildScope(), object : AuthListener {
             override fun onAuthSuccess() {
@@ -211,6 +214,8 @@ class LoginSignupActivity : BaseActivity() {
                     val emailAddress = jsonObject.getString("emailAddress");
                     Log.e("Email Address = ", emailAddress)
                     Log.e("Response", "Linkedin apiResponse JSON " + apiResponse.getResponseDataAsString());
+                    mUtils!!.setBoolean("addEmailFragment", true)
+                    hitSignupAPI()
                 } catch (exception: JSONException) {
 
                 }
@@ -234,14 +239,29 @@ class LoginSignupActivity : BaseActivity() {
         else {
             if (connectedToInternet()) {
                 Constants.closeKeyboard(this, txtDone)
-                hitAPI()
+                if (modeEnabledSignup) {
+                    mUtils!!.setBoolean("addEmailFragment", false)
+                    hitSignupAPI()
+                } else
+                    hitLoginAPI()
             } else
                 showInternetAlert(txtDone)
         }
     }
 
-    private fun hitAPI() {
+    private fun hitLoginAPI() {
+        mUtils!!.setString("access_token", "123")
+        var intent = Intent(mContext, LandingActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
 
+    private fun hitSignupAPI() {
+        var intent = Intent(mContext, CreateProfileActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     internal fun validateEmail(text: CharSequence): Boolean {

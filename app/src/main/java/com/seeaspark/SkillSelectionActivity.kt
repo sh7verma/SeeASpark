@@ -1,11 +1,14 @@
 package com.seeaspark
 
+import android.app.Activity
+import android.content.Intent
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import customviews.FlowLayout
+import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.activity_skill_selection.*
 import kotlinx.android.synthetic.main.layout_skills.view.*
 import models.SkillsModel
@@ -29,20 +32,18 @@ class SkillSelectionActivity : BaseActivity() {
     }
 
     private fun addValue() {
-        mSkillsArray.add(SkillsModel("Test",false,false))
-        mSkillsArray.add(SkillsModel("Test",false,false))
-        mSkillsArray.add(SkillsModel("Test",false,false))
-        mSkillsArray.add(SkillsModel("Test",false,false))
-        mSkillsArray.add(SkillsModel("Test",false,false))
-        mSkillsArray.add(SkillsModel("Test",false,false))
-        mSkillsArray.add(SkillsModel("Test",false,false))
-        mSkillsArray.add(SkillsModel("Test",false,false))
-        mSkillsArray.add(SkillsModel("Test",false,false))
-        mSkillsArray.add(SkillsModel("Test",false,false))
-        mSkillsArray.add(SkillsModel("Test",false,false))
+        mSkillsArray.add(SkillsModel("Lorem", false, false))
+        mSkillsArray.add(SkillsModel("Ipsum", false, false))
+        mSkillsArray.add(SkillsModel("Dollar", false, false))
+        mSkillsArray.add(SkillsModel("Sit", false, false))
+        mSkillsArray.add(SkillsModel("Amet", false, false))
+        mSkillsArray.add(SkillsModel("Enim", false, false))
+        mSkillsArray.add(SkillsModel("Aliqua UT", false, false))
     }
 
     override fun initListener() {
+        txtDoneSelection.setOnClickListener(this)
+        imgBackSelection.setOnClickListener(this)
     }
 
     override fun getContentView() = R.layout.activity_skill_selection
@@ -51,7 +52,15 @@ class SkillSelectionActivity : BaseActivity() {
 
     override fun onClick(view: View?) {
         when (view) {
-
+            txtDoneSelection -> {
+                var intent = Intent()
+                intent.putStringArrayListExtra("selectedSkills", mSkillsSelectedArray);
+                setResult(Activity.RESULT_OK, intent)
+                moveBack()
+            }
+            imgBack -> {
+                moveBack()
+            }
         }
     }
 
@@ -89,5 +98,13 @@ class SkillSelectionActivity : BaseActivity() {
         return interestChip
     }
 
+    override fun onBackPressed() {
+        moveBack()
+    }
+
+    fun moveBack() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+    }
 
 }

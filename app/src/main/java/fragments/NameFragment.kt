@@ -1,7 +1,7 @@
 package fragments
 
+import android.graphics.Typeface
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -35,7 +35,8 @@ class NameFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
-
+        val typeface = Typeface.createFromAsset(activity!!.assets, "fonts/medium.otf")
+        edNameProfile.setTypeface(typeface)
     }
 
     override fun onClick(view: View?) {
@@ -53,5 +54,4 @@ class NameFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
 }

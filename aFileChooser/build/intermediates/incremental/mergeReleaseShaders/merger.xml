@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="D:\Backup Code\Brezaa\aFileChooser\src\main\shaders"/></dataSet><dataSet config="release"><source path="D:\Backup Code\Brezaa\aFileChooser\src\release\shaders"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\shaders"/></dataSet><dataSet config="release"><source path="D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\release\shaders"/></dataSet></merger>

@@ -11,7 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.seeaspark.AddSkills
+import com.seeaspark.AddSkillsActivity
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import customviews.FlowLayout
@@ -90,7 +90,7 @@ class SkillsFragment : Fragment(), View.OnClickListener {
         interestChip.txtSkillChip.text = skillValue.skill
 
         interestChip.imgSkillAdd.setOnClickListener {
-            val intent = Intent(activity, AddSkills::class.java)
+            val intent = Intent(activity, AddSkillsActivity::class.java)
             intent.putParcelableArrayListExtra("skillsArray", mCreateProfileInstance!!.mSkillsArray);
             startActivityForResult(intent, ADD_SKILLS)
             activity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)

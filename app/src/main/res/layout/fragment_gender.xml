@@ -39,9 +39,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_16sdp"
                 android:layout_marginRight="@dimen/_16sdp"
-                android:textColor="@color/white_color"
                 android:layout_marginTop="@dimen/_24sdp"
+                android:drawableRight="@mipmap/ic_arrow_r"
                 android:hint="@string/select"
+                android:textColor="@color/white_color"
+                android:textColorHint="@color/hintColorText"
                 android:textSize="@dimen/_16ssp" />
 
             <View

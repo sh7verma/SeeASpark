@@ -47,16 +47,16 @@
             android:layout_marginRight="@dimen/_10sdp"
             app:absoluteMaxValue="30"
             app:absoluteMinValue="0"
-            app:defaultColor="@color/colorLine"
             app:activateOnDefaultValues="true"
             app:activeColor="@color/colorMentee"
             app:barHeight="@dimen/_2sdp"
+            app:defaultColor="@color/colorLine"
             app:showLabels="false"
             app:singleThumb="true"
             app:textAboveThumbsColor="@color/black_color"
-            app:thumbDisabled="@mipmap/ic_slider_dot"
-            app:thumbNormal="@mipmap/ic_slider_dot"
-            app:thumbPressed="@mipmap/ic_slider_dot"
+            app:thumbDisabled="@mipmap/ic_slider_btn"
+            app:thumbNormal="@mipmap/ic_slider_btn"
+            app:thumbPressed="@mipmap/ic_slider_btn"
             app:thumbShadowColor="@color/colorLine" />
 
         <customviews.MediumTextView
@@ -75,16 +75,16 @@
             android:layout_marginRight="@dimen/_10sdp"
             app:absoluteMaxValue="12"
             app:absoluteMinValue="0"
-            app:defaultColor="@color/colorLine"
             app:activateOnDefaultValues="true"
             app:activeColor="@color/colorMentee"
             app:barHeight="@dimen/_2sdp"
+            app:defaultColor="@color/colorLine"
             app:showLabels="false"
             app:singleThumb="true"
             app:textAboveThumbsColor="@color/black_color"
-            app:thumbDisabled="@mipmap/ic_slider_dot"
-            app:thumbNormal="@mipmap/ic_slider_dot"
-            app:thumbPressed="@mipmap/ic_slider_dot"
+            app:thumbDisabled="@mipmap/ic_slider_btn"
+            app:thumbNormal="@mipmap/ic_slider_btn"
+            app:thumbPressed="@mipmap/ic_slider_btn"
             app:thumbShadowColor="@color/colorLine" />
 
 

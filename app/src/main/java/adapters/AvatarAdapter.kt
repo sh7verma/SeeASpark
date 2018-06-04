@@ -5,21 +5,22 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import com.squareup.picasso.Picasso
-import customviews.CircleTransform
 import kotlinx.android.synthetic.main.item_avatar.view.*
-import models.SkillsModel
 
 
-class AvatarAdapter(mSkillsArray: ArrayList<SkillsModel>, mContext: Context) : RecyclerView.Adapter<AvatarAdapter.ViewHolder>() {
+class AvatarAdapter(mAvatarArray: ArrayList<String>, mContext: Context, mCreateProfileInstance: CreateProfileActivity) : RecyclerView.Adapter<AvatarAdapter.ViewHolder>() {
 
-    var mSkillsArray = ArrayList<SkillsModel>()
+    var mAvatarArray = ArrayList<String>()
     var mContext: Context? = null
+    var mCreateProfileInstance: CreateProfileActivity? = null
 
     init {
-        this.mSkillsArray = mSkillsArray
+        this.mAvatarArray = mAvatarArray
         this.mContext = mContext
+        this.mCreateProfileInstance = mCreateProfileInstance
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,11 +31,14 @@ class AvatarAdapter(mSkillsArray: ArrayList<SkillsModel>, mContext: Context) : R
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Picasso.with(mContext).load(mSkillsArray[position].skill).transform(CircleTransform()).into(holder.imgAvatar)
+        Picasso.with(mContext).load(R.mipmap.ic_avatar_1).into(holder.imgAvatar)
+        holder.imgAvatar.setOnClickListener {
+            mCreateProfileInstance!!.moveToNext()
+        }
     }
 
     override fun getItemCount(): Int {
-        return mSkillsArray.size
+        return 15
     }
 
 

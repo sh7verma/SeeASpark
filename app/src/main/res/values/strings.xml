@@ -14,11 +14,6 @@
     <string name="invalid_access_token_code">420</string>
     <string name="treminate_account_code">405</string>
 
-    <string name="enter_email">Please enter email</string>
-    <string name="enter_valid_email">Please enter a valid email</string>
-    <string name="enter_password">Please enter password</string>
-    <string name="error_password">Password must have minimum 8 characters</string>
-
     <string name="ok_ngot_it">OK\nGot it</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</string>
     <string name="welcome_to">Welcome to</string>
@@ -37,8 +32,10 @@
     <string name="name">Name</string>
     <string name="next">Next</string>
     <string name="what_is_your_name">What is your\nName?</string>
+    <string name="what_is_your_email">What is your\nEmail?</string>
     <string name="what_is_your_age">What is your\nAge?</string>
     <string name="what_is_your_profession">What is your\nProfession?</string>
+    <string name="what_language_speak">What languages\ndo you speak?</string>
 
     <string name="select">Select</string>
     <string name="select_your_gender">Select your\nGender</string>
@@ -63,17 +60,34 @@
     <string name="flash_off">Flash off</string>
     <string name="flash_on">Flash on</string>
     <string name="picture_taken">Picture taken</string>
-    <string name="error_name">Please enter Name with minimum 2 characters.</string>
+
     <string name="camera_permission_confirmation">This app demonstrates the usage of CameraView. In order to do that, it needs permission to access camera.</string>
     <string name="camera_permission_not_granted">Camera app cannot do anything without camera permission.</string>
-    <string name="error_age">Please specify Age</string>
-    <string name="error_gender">Please specify Gender</string>
-    <string name="error_bio">Please enter Bio</string>
+
     <string name="distance">Distance</string>
     <string name="gender">Gender</string>
     <string name="experience">Experience</string>
     <string name="skills">Skills</string>
     <string name="select_preferred_skills">Select Preferred\nSkills</string>
+    <string name="professions">Professions</string>
 
+
+    <string name="enter_email">Please enter email</string>
+    <string name="enter_valid_email">Please enter a valid email</string>
+    <string name="enter_password">Please enter password</string>
+    <string name="error_password">Password must have minimum 8 characters</string>
+    <string name="error_age">Please specify Age</string>
+    <string name="error_gender">Please specify Gender</string>
+    <string name="error_bio">Please enter Bio</string>
+    <string name="error_name">Please enter Name with minimum 2 characters.</string>
+    <string name="error_profession">Please specify Profession</string>
+    <string name="error_Language">Please specify Language</string>
+    <string name="logout">Logout</string>
+    <string name="your_profile_is_now_complete_and_is_under_review_will_let_you_know_know_shortly">Your profile is now complete and is under review. Will let you know know shortly</string>
+    <string name="ready">Ready</string>
+    <string name="disclamier">Disclamier</string>
+    <string name="we_need_to_know_your_preferences_regarding_how_would_you_like_to_hear_from_us">We need to know your preferences regarding how would you like to hear from us</string>
+    <string name="skip">SKIP</string>
+    <string name="settings">Settings</string>
 
 </resources>
