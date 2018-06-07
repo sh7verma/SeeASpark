@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import fragments.*
 import kotlinx.android.synthetic.main.activity_create_profile.*
+import kotlinx.android.synthetic.main.fragment_name.*
 import models.LanguageModel
 import models.ProfessionModel
 import models.SkillsModel
@@ -48,6 +49,21 @@ class CreateProfileActivity : BaseActivity() {
 
         /// intialize Skills array for fragment
         mSkillsArray.add(SkillsModel("+", false, true))
+        mSkillsArray.add(SkillsModel("Leadership", false, false))
+        mSkillsArray.add(SkillsModel("Communication", false, false))
+        mSkillsArray.add(SkillsModel("Decision Making", false, false))
+        mSkillsArray.add(SkillsModel("Time Management", false, false))
+        mSkillsArray.add(SkillsModel("Self-motivation", false, false))
+        mSkillsArray.add(SkillsModel("Conflict Resolution", false, false))
+        mSkillsArray.add(SkillsModel("Adaptability", false, false))
+
+        Constants.tempSkills.add("Leadership")
+        Constants.tempSkills.add("Communication")
+        Constants.tempSkills.add("Decision Making")
+        Constants.tempSkills.add("Time Management")
+        Constants.tempSkills.add("Self-motivation")
+        Constants.tempSkills.add("Conflict Resolution")
+        Constants.tempSkills.add("Adaptability")
 
         /// adding demo professions
         addProfession()
@@ -57,7 +73,7 @@ class CreateProfileActivity : BaseActivity() {
 
         /// Adding fragments in array
         addFragments()
-
+        Constants.showKeyboard(mContext, vpProfile)
         mProfileAdapter = CreateProfileAdapter(supportFragmentManager, mFragmentArray)
         vpProfile.adapter = mProfileAdapter
 
@@ -69,6 +85,9 @@ class CreateProfileActivity : BaseActivity() {
             }
 
             override fun onPageSelected(position: Int) {
+                /* if (position == 0)
+                     Constants.showKeyboard(mContext, vpProfile)*/
+
                 mCurrentPosition = position
             }
 
@@ -88,16 +107,15 @@ class CreateProfileActivity : BaseActivity() {
     }
 
     fun addFragments() {
-
         if (mUtils!!.getBoolean("addEmailFragment", true))
             mFragmentArray.add(EmailFragment())
 
-        mFragmentArray.add(AvatarFragment())
         mFragmentArray.add(NameFragment())
         mFragmentArray.add(AgeFragment())
         mFragmentArray.add(GenderFragment())
-        mFragmentArray.add(ProfessionFragment())
+        mFragmentArray.add(AvatarFragment())
         mFragmentArray.add(LanguageFragment())
+        mFragmentArray.add(ProfessionFragment())
         mFragmentArray.add(ExperienceFragment())
         mFragmentArray.add(SkillsFragment())
         mFragmentArray.add(BioFragment())
@@ -125,13 +143,11 @@ class CreateProfileActivity : BaseActivity() {
     }
 
     fun moveToNext() {
-        Constants.closeKeyboard(mContext, vpProfile)
         mCurrentPosition++;
         vpProfile.currentItem = mCurrentPosition
     }
 
     fun moveToPrevious() {
-        Constants.closeKeyboard(mContext, vpProfile)
         if (mCurrentPosition > 0) {
             mCurrentPosition--;
             vpProfile.currentItem = mCurrentPosition

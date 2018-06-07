@@ -30,7 +30,7 @@
     <string name="select_your_n_avatar">Select your\nAvatar</string>
     <string name="enter">Enter</string>
     <string name="name">Name</string>
-    <string name="next">Next</string>
+    <string name="next">NEXT</string>
     <string name="what_is_your_name">What is your\nName?</string>
     <string name="what_is_your_email">What is your\nEmail?</string>
     <string name="what_is_your_age">What is your\nAge?</string>
@@ -77,17 +77,19 @@
     <string name="enter_password">Please enter password</string>
     <string name="error_password">Password must have minimum 8 characters</string>
     <string name="error_age">Please specify Age</string>
+    <string name="error_skills">Please specify Skills</string>
     <string name="error_gender">Please specify Gender</string>
     <string name="error_bio">Please enter Bio</string>
     <string name="error_name">Please enter Name with minimum 2 characters.</string>
     <string name="error_profession">Please specify Profession</string>
     <string name="error_Language">Please specify Language</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Log out</string>
     <string name="your_profile_is_now_complete_and_is_under_review_will_let_you_know_know_shortly">Your profile is now complete and is under review. Will let you know know shortly</string>
     <string name="ready">Ready</string>
     <string name="disclamier">Disclamier</string>
-    <string name="we_need_to_know_your_preferences_regarding_how_would_you_like_to_hear_from_us">We need to know your preferences regarding how would you like to hear from us</string>
+    <string name="we_need_to_know_your_preferences_regarding_how_would_you_like_to_hear_from_us">We need to know your preferences regarding how would you like to hear from us.</string>
     <string name="skip">SKIP</string>
     <string name="settings">Settings</string>
+    <string name="login">Login</string>
 
 </resources>

@@ -33,7 +33,9 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_verify_id.*
 import kotlinx.android.synthetic.main.dialog_profile_review.*
 import kotlinx.android.synthetic.main.dialog_profile_review.view.*
+import kotlinx.android.synthetic.main.fragment_description.*
 import kotlinx.android.synthetic.main.tool_bar.*
+import utils.Constants
 import java.io.*
 import java.util.*
 
@@ -53,7 +55,7 @@ class VerifyIdActivity : BaseActivity() {
 
     override fun initUI() {
         setSupportActionBar(toolBar)
-        supportActionBar!!.setHomeAsUpIndicator(R.mipmap.ic_back_white)
+        supportActionBar!!.setHomeAsUpIndicator(R.mipmap.ic_back_org)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setTitle("")
 
@@ -93,9 +95,14 @@ class VerifyIdActivity : BaseActivity() {
     override fun onClick(view: View?) {
         when (view) {
             imgClick -> {
-                if (mCameraView != null) {
-                    progDailog = ProgressDialog.show(this, "Please wait ...", "Capturing...", true)
-                    mCameraView.takePicture()
+                mOption = 1
+                if (checkPermissions()) {
+                    if (mCameraView != null) {
+                        progDailog = ProgressDialog.show(this, "Please wait ...", "Capturing...", true)
+                        mCameraView.takePicture()
+                    }
+                } else {
+                    Toast.makeText(mContext, "Please enable camera permisssion in settings", Toast.LENGTH_LONG).show()
                 }
             }
             imgFlash -> {
@@ -115,6 +122,8 @@ class VerifyIdActivity : BaseActivity() {
                 mOption = 2
                 if (checkPermissions()) {
                     showGallery()
+                } else {
+                    Toast.makeText(mContext, "Please enable Gallery permisssion in settings", Toast.LENGTH_LONG).show()
                 }
             }
             txtCancel -> {
@@ -167,6 +176,7 @@ class VerifyIdActivity : BaseActivity() {
     }
 
     private fun moveBack() {
+        Constants.showKeyboard(this, imgClick)
         finish()
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }

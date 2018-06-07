@@ -11,13 +11,15 @@ import android.view.ViewGroup
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import kotlinx.android.synthetic.main.fragment_bio.*
-
-
+import kotlinx.android.synthetic.main.fragment_name.*
+import network.RetrofitClient
+import utils.Constants
 
 class BioFragment : Fragment(), View.OnClickListener {
 
     var mCreateProfileInstance: CreateProfileActivity? = null
     var itemView: View? = null
+    var makeVisisble = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_bio, container, false)
@@ -28,6 +30,7 @@ class BioFragment : Fragment(), View.OnClickListener {
         mCreateProfileInstance = activity as CreateProfileActivity
         onCreateStuff()
         initListener()
+
         super.onActivityCreated(savedInstanceState)
     }
 
@@ -37,8 +40,8 @@ class BioFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
-        txtCountCharacter
-
+        edBioProfile.isFocusableInTouchMode = true
+        edBioProfile.requestFocus()
         edBioProfile.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
 
@@ -60,16 +63,30 @@ class BioFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view) {
             imgBackBio -> {
+                Constants.closeKeyboard(activity!!, imgBackBio)
+                makeVisisble=true
                 mCreateProfileInstance!!.moveToPrevious()
             }
             txtNextBio -> {
                 if (TextUtils.isEmpty(edBioProfile.text.toString().trim()))
-                    mCreateProfileInstance!!.showAlertActivity(txtNextBio,getString(R.string.error_bio))
+                    mCreateProfileInstance!!.showAlertActivity(txtNextBio, getString(R.string.error_bio))
                 else {
+                    makeVisisble=true
                     mCreateProfileInstance!!.moveToNext()
-                    mCreateProfileInstance!!.mBio=edBioProfile.text.toString().trim()
+                    mCreateProfileInstance!!.mBio = edBioProfile.text.toString().trim()
                 }
             }
         }
     }
+
+    override fun setMenuVisibility(menuVisible: Boolean) {
+        super.setMenuVisibility(menuVisible)
+        if (menuVisible) {
+            if (makeVisisble) {
+                edBioProfile.isFocusable = true
+                Constants.showKeyboard(activity!!, edBioProfile)
+            }
+        }
+    }
+
 }

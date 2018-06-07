@@ -65,6 +65,7 @@
     <color name="link_color">#4c93f4</color>
     <color name="color_primary_gradient">#FEB374</color>
     <color name="color_secondary_gradient">#FE7973</color>
+    <color name="greyTextColor">#727272</color>
 
 
 </resources>

@@ -15,6 +15,7 @@ import com.seeaspark.AddSkillsActivity
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import customviews.FlowLayout
+import kotlinx.android.synthetic.main.fragment_age.*
 import kotlinx.android.synthetic.main.fragment_skills.*
 import kotlinx.android.synthetic.main.layout_skills.view.*
 import models.SkillsModel
@@ -26,6 +27,7 @@ class SkillsFragment : Fragment(), View.OnClickListener {
     private var itemView: View? = null
 
     private var mSkillsSelectedArray = ArrayList<String>()
+    private var mOwnSkillsArray = ArrayList<SkillsModel>()
     private val ADD_SKILLS: Int = 1
     private var mContext: Context? = null
 
@@ -57,7 +59,12 @@ class SkillsFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View?) {
         when (view) {
             txtNextSkills -> {
-                mCreateProfileInstance!!.moveToNext()
+                if (mSkillsSelectedArray.size == 0)
+                    mCreateProfileInstance!!.showAlertActivity(txtNextSkills, getString(R.string.error_skills))
+                else {
+                    mCreateProfileInstance!!.moveToNext()
+                    Constants.showKeyboard(activity!!, txtNextSkills)
+                }
             }
             imgBackSkills -> {
                 mCreateProfileInstance!!.moveToPrevious()
@@ -91,7 +98,8 @@ class SkillsFragment : Fragment(), View.OnClickListener {
 
         interestChip.imgSkillAdd.setOnClickListener {
             val intent = Intent(activity, AddSkillsActivity::class.java)
-            intent.putParcelableArrayListExtra("skillsArray", mCreateProfileInstance!!.mSkillsArray);
+            intent.putParcelableArrayListExtra("skillsArray", mOwnSkillsArray)
+            intent.putParcelableArrayListExtra("allSkillsArray", mCreateProfileInstance!!.mSkillsArray)
             startActivityForResult(intent, ADD_SKILLS)
             activity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
         }
@@ -117,11 +125,19 @@ class SkillsFragment : Fragment(), View.OnClickListener {
             when (requestCode) {
                 ADD_SKILLS -> {
                     flSkills.removeAllViews()
-                    mCreateProfileInstance!!.mSkillsArray.clear()
-                    mCreateProfileInstance!!.mSkillsArray.add(SkillsModel("+", false, true))
-                    mCreateProfileInstance!!.mSkillsArray.addAll(data!!.getParcelableArrayListExtra<Parcelable>("skillsArray") as ArrayList<out SkillsModel>)
+
+                    mOwnSkillsArray.clear()
+                    mOwnSkillsArray.addAll(data!!.getParcelableArrayListExtra<Parcelable>("skillsArray") as ArrayList<out SkillsModel>)
+
+                    for (skillValue: SkillsModel in mOwnSkillsArray) {
+                        if (!mCreateProfileInstance!!.mSkillsArray.contains(skillValue))
+                            mCreateProfileInstance!!.mSkillsArray.add(1,skillValue)
+
+                        if (!mSkillsSelectedArray.contains(skillValue.skill))
+                            mSkillsSelectedArray.add(skillValue.skill)
+                    }
+
                     for (skillValue: SkillsModel in mCreateProfileInstance!!.mSkillsArray) {
-                        mSkillsSelectedArray.add(skillValue.skill)
                         flSkills.addView(inflateView(skillValue))
                     }
                 }

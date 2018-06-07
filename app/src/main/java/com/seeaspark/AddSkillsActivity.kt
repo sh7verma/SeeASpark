@@ -16,6 +16,8 @@ import utils.Constants
 class AddSkillsActivity : BaseActivity() {
 
     private var mSkillsArray = ArrayList<SkillsModel>()
+    private var mAllSkillsArray = ArrayList<SkillsModel>()
+    private var mTempArray = ArrayList<String>()
 
     override fun initUI() {
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
@@ -24,7 +26,12 @@ class AddSkillsActivity : BaseActivity() {
 
     override fun onCreateStuff() {
         mSkillsArray.addAll(intent.getParcelableArrayListExtra("skillsArray"))
-        mSkillsArray.remove(SkillsModel("+", false, true))
+        mAllSkillsArray.addAll(intent.getParcelableArrayListExtra("allSkillsArray"))
+
+        for (skillValue in mAllSkillsArray) {
+            mTempArray.add(skillValue.skill)
+        }
+
         for (skillValue: SkillsModel in mSkillsArray) {
             flAddSkills.addView(inflateView(skillValue))
         }
@@ -53,14 +60,21 @@ class AddSkillsActivity : BaseActivity() {
                 moveBack()
             }
             imgPlusSkill -> {
-                if (!TextUtils.isEmpty(edSkill.text.toString().trim()))
-                    addSkills()
+                if (!TextUtils.isEmpty(edSkill.text.toString().trim())) {
+                    if (mTempArray.contains(edSkill.text.toString().trim()))
+                        showAlert(imgPlusSkill, "This Skill already exist. Please choose another one.")
+                    else
+                        addSkills()
+                } else
+                    showAlert(imgPlusSkill, "Please enter a skill")
             }
         }
     }
 
     private fun addSkills() {
         flAddSkills.removeAllViews()
+        mTempArray.add(edSkill.text.toString().trim())
+        Constants.tempSkills.add(edSkill.text.toString().trim())
         mSkillsArray.add(0, SkillsModel(edSkill.text.toString().trim(), true, false))
         for (skillValue: SkillsModel in mSkillsArray) {
             flAddSkills.addView(inflateView(skillValue))
@@ -69,6 +83,7 @@ class AddSkillsActivity : BaseActivity() {
     }
 
     private fun moveBack() {
+        Constants.closeKeyboard(mContext, imgPlusSkill)
         finish()
         overridePendingTransition(R.anim.slidedown_in, R.anim.slidedown_out)
     }

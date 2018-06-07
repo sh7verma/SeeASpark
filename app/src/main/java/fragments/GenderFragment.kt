@@ -52,7 +52,7 @@ class GenderFragment : Fragment(), View.OnClickListener {
                     mCreateProfileInstance!!.showAlertActivity(txtNextGender, getString(R.string.error_gender))
                 else {
                     mCreateProfileInstance!!.moveToNext()
-                    mCreateProfileInstance!!.mGender=txtSelectGender.text.toString()
+                    mCreateProfileInstance!!.mGender = txtSelectGender.text.toString()
                 }
             }
         }

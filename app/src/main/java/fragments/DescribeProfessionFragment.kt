@@ -12,13 +12,17 @@ import android.view.ViewGroup
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import com.seeaspark.VerifyIdActivity
+import kotlinx.android.synthetic.main.fragment_bio.*
 import kotlinx.android.synthetic.main.fragment_description.*
+import kotlinx.android.synthetic.main.fragment_name.*
 import kotlinx.android.synthetic.main.fragment_profession.*
+import utils.Constants
 
 class DescribeProfessionFragment : Fragment(), View.OnClickListener {
 
     var mCreateProfileInstance: CreateProfileActivity? = null
     var itemView: View? = null
+    var makeVisisble = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_description, container, false)
@@ -60,13 +64,16 @@ class DescribeProfessionFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view) {
             imgBackDescription -> {
+                makeVisisble = true
                 mCreateProfileInstance!!.moveToPrevious()
             }
             txtNextDescription -> {
                 if (TextUtils.isEmpty(edDescriptionProfile.text.toString().trim()))
-                    mCreateProfileInstance!!.showAlertActivity(txtNextProfession, "Please specify Profession")
+                    mCreateProfileInstance!!.showAlertActivity(txtNextDescription, "Please specify Profession")
                 else {
-                   moveToVerifyID();
+                    makeVisisble = true
+                    Constants.closeKeyboard(activity!!, txtNextDescription)
+                    moveToVerifyID();
                 }
             }
         }
@@ -89,4 +96,15 @@ class DescribeProfessionFragment : Fragment(), View.OnClickListener {
         startActivity(intent)
         activity!!.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
     }
+
+    override fun setMenuVisibility(menuVisible: Boolean) {
+        super.setMenuVisibility(menuVisible)
+        if (menuVisible) {
+            if (makeVisisble) {
+                edDescriptionProfile.isFocusable = true
+                Constants.showKeyboard(activity!!, edDescriptionProfile)
+            }
+        }
+    }
+
 }

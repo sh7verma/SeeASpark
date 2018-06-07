@@ -53,7 +53,6 @@ class AgeFragment : Fragment(), View.OnClickListener {
                 if (TextUtils.isEmpty(txtSelectAge.text.toString()))
                     mCreateProfileInstance!!.showAlertActivity(txtNextAge, getString(R.string.error_age))
                 else {
-                    mCreateProfileInstance!!.mAge = txtSelectAge.text.toString()
                     mCreateProfileInstance!!.moveToNext()
                 }
             }
@@ -110,6 +109,7 @@ class AgeFragment : Fragment(), View.OnClickListener {
         val diffDays = diff / (24 * 60 * 60 * 1000)
         val diffyears = (diffDays / 365).toInt()
         txtSelectAge.setText("$diffyears years")
+        mCreateProfileInstance!!.mAge = txtSelectAge.text.toString()
         return diffyears
     }
 

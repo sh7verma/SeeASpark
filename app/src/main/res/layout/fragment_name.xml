@@ -22,7 +22,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/transparent_ripple"
                 android:padding="@dimen/_12sdp"
-                android:src="@mipmap/ic_back_black" />
+                android:src="@mipmap/ic_back_black"
+                android:visibility="invisible" />
 
             <customviews.BoldTextView
                 android:layout_width="wrap_content"
@@ -40,20 +41,21 @@
                 android:layout_marginLeft="@dimen/_16sdp"
                 android:layout_marginRight="@dimen/_16sdp"
                 android:layout_marginTop="@dimen/_12sdp"
+                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
                 android:gravity="left"
                 android:hint="@string/enter"
-                android:inputType="textCapWords"
+                android:inputType="textCapWords|textMultiLine"
                 android:maxLength="@integer/name_max"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="@dimen/_14ssp"
-                app:met_floatingLabel="normal"
+                app:met_floatingLabel="none"
                 app:met_floatingLabelAnimating="true"
                 app:met_floatingLabelText="@string/name"
                 app:met_floatingLabelTextColor="@color/black_color"
                 app:met_hideUnderline="true"
                 app:met_textColor="@color/white_color"
-                app:met_textColorHint="@color/white_color" />
+                app:met_textColorHint="@color/hintColorText" />
 
             <View
                 android:layout_width="match_parent"
@@ -71,10 +73,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/_5sdp"
             android:layout_marginRight="@dimen/_36sdp"
             android:layout_marginTop="@dimen/_200sdp"
             android:background="@drawable/mentee_ripple"
             android:elevation="@dimen/_3"
+            android:inputType="text"
             android:paddingBottom="@dimen/_8sdp"
             android:paddingLeft="@dimen/_24sdp"
             android:paddingRight="@dimen/_24sdp"

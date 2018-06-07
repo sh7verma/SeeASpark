@@ -30,12 +30,18 @@
             android:textColor="@color/black_color"
             android:textSize="@dimen/_24ssp" />
 
-        <customviews.FlowLayout
-            android:id="@+id/flSkills"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_16sdp"
-            android:gravity="left" />
+            android:layout_marginBottom="@dimen/_24sdp">
+
+            <customviews.FlowLayout
+                android:id="@+id/flSkills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_16sdp"
+                android:gravity="left" />
+        </ScrollView>
 
     </LinearLayout>
 

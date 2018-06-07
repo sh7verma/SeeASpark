@@ -42,6 +42,7 @@
                 android:layout_marginRight="@dimen/_16sdp"
                 android:layout_marginTop="@dimen/_24sdp"
                 android:hint="@string/select"
+                android:drawableRight="@mipmap/ic_arrow_r"
                 android:textColor="@color/white_color"
                 android:textSize="@dimen/_16ssp" />
 
@@ -60,6 +61,7 @@
             android:id="@+id/txtNextAge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_5sdp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/_36sdp"
             android:layout_marginTop="@dimen/_200sdp"

@@ -3,15 +3,17 @@ package com.seeaspark
 import adapters.PreferProfessionAdapter
 import android.app.Activity
 import android.content.Intent
+import android.support.design.widget.BottomSheetBehavior
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import com.cocosw.bottomsheet.BottomSheet
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_preferences.*
-import kotlinx.android.synthetic.main.add_skills.view.*
-import android.support.design.widget.BottomSheetBehavior
-import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_preferences.view.*
+import kotlinx.android.synthetic.main.add_skills.view.*
 import models.ProfessionModel
 
 class PreferencesActivity : BaseActivity() {
@@ -23,6 +25,8 @@ class PreferencesActivity : BaseActivity() {
     var mProfessionArray = ArrayList<ProfessionModel>()
 
     override fun initUI() {
+        var bottomParms = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mHeight / 6)
+        llProfessionText.layoutParams = bottomParms
         initPersistentBottomsheetProfession()
         rvProfessionPrefer.layoutManager = LinearLayoutManager(this)
     }
@@ -55,7 +59,8 @@ class PreferencesActivity : BaseActivity() {
 
     override fun initListener() {
         imgForwardPrefer.setOnClickListener(this)
-        txtGenderPrefer.setOnClickListener(this)
+        llGenderPrefer.setOnClickListener(this)
+        llProfessionListing.setOnClickListener(this)
         llSkillSelection.setOnClickListener(this)
     }
 
@@ -75,6 +80,9 @@ class PreferencesActivity : BaseActivity() {
             imgForwardPrefer -> {
                 intent = Intent(mContext, DisclamierDialog::class.java)
                 startActivity(intent)
+            }
+            llGenderPrefer -> {
+                optionGender()
             }
         }
     }
@@ -159,5 +167,24 @@ class PreferencesActivity : BaseActivity() {
             })
 
     }
+
+    private fun optionGender() {
+        BottomSheet.Builder(this, R.style.BottomSheet_Dialog)
+                .title(getString(R.string.select_gender))
+                .sheet(R.menu.menu_gender).listener { dialog, which ->
+            when (which) {
+                R.id.item_male -> {
+                    txtGenderPrefer.setText(R.string.male)
+                }
+                R.id.item_female -> {
+                    txtGenderPrefer.setText(R.string.female)
+                }
+                R.id.item_other -> {
+                    txtGenderPrefer.setText(R.string.other)
+                }
+            }
+        }.show()
+    }
+
 
 }

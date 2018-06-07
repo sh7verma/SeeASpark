@@ -46,7 +46,7 @@ class AnswerAdapter(mAnswersArray: ArrayList<String>, mContext: Context) : Recyc
         else if (position == 2)
             holder.txtAnswerQuestion.text = "Segmentation"
         else if (position == 3)
-            holder.txtAnswerQuestion.text = "Good Planer"
+            holder.txtAnswerQuestion.text = "Good Planner"
     }
 
     override fun getItemCount(): Int {

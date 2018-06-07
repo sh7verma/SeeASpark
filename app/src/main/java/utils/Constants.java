@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -34,6 +35,7 @@ import kotlin.jvm.JvmStatic;
 public class Constants {
 
     public static String EMPTY = "";
+    public static ArrayList<String> tempSkills = new ArrayList<>();
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
@@ -148,11 +150,13 @@ public class Constants {
     }
 
     public static void showKeyboard(Context mContext, View view) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInputFromWindow(
+        InputMethodManager inputMethodManager =(InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+      /*  inputMethodManager.toggleSoftInputFromWindow(
                 view.getApplicationWindowToken(),
-                InputMethodManager.SHOW_FORCED, 0);
+                InputMethodManager.SHOW_FORCED, 0);*/
+
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
     }
 
     public static void moveToSplash(Context mContext, Utils utils) {

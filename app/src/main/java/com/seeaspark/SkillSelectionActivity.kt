@@ -26,7 +26,7 @@ class SkillSelectionActivity : BaseActivity() {
 
     override fun onCreateStuff() {
         addValue()
-        for (skillValue: SkillsModel in mSkillsArray) {
+        for (skillValue in Constants.tempSkills) {
             flSkillsSelection.addView(inflateView(skillValue))
         }
     }
@@ -58,13 +58,13 @@ class SkillSelectionActivity : BaseActivity() {
                 setResult(Activity.RESULT_OK, intent)
                 moveBack()
             }
-            imgBack -> {
+            imgBackSelection -> {
                 moveBack()
             }
         }
     }
 
-    private fun inflateView(skillValue: SkillsModel): View {
+    private fun inflateView(skillValue: String): View {
         val interestChip = LayoutInflater.from(this).inflate(R.layout.layout_skills, null, false)
 
         val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Constants.dpToPx(52))
@@ -72,7 +72,7 @@ class SkillSelectionActivity : BaseActivity() {
 
         interestChip.imgSkillAdd.visibility = View.GONE
 
-        if (mSkillsSelectedArray.contains(skillValue.skill)) {
+        if (mSkillsSelectedArray.contains(skillValue)) {
             interestChip.txtSkillChip.setBackgroundResource(R.drawable.selected_skills)
             interestChip.txtSkillChip.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
         } else {
@@ -80,19 +80,19 @@ class SkillSelectionActivity : BaseActivity() {
             interestChip.txtSkillChip.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
         }
 
-        interestChip.txtSkillChip.text = skillValue.skill
+        interestChip.txtSkillChip.text = skillValue
 
         interestChip.txtSkillChip.setOnClickListener {
-            if (mSkillsSelectedArray.contains(skillValue.skill)) {
+            if (mSkillsSelectedArray.contains(skillValue)) {
                 interestChip.txtSkillChip.setBackgroundResource(R.drawable.default_skills)
                 interestChip.txtSkillChip.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
-                mSkillsSelectedArray.remove(skillValue.skill)
+                mSkillsSelectedArray.remove(skillValue)
             } else {
                 interestChip.txtSkillChip.setBackgroundResource(R.drawable.selected_skills)
                 interestChip.txtSkillChip.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
-                mSkillsSelectedArray.add(skillValue.skill)
+                mSkillsSelectedArray.add(skillValue)
             }
-            Log.e("Add/Remove = ", skillValue.skill)
+            Log.e("Add/Remove = ", skillValue)
         }
 
         return interestChip

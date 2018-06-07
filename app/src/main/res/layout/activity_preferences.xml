@@ -131,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_8sdp"
                 android:layout_marginRight="@dimen/_8sdp"
-                app:absoluteMaxValue="30"
+                app:absoluteMaxValue="50"
                 app:absoluteMinValue="0"
                 app:activateOnDefaultValues="true"
                 app:activeColor="@color/colorMentee"
@@ -148,6 +148,7 @@
 
 
             <LinearLayout
+                android:id="@+id/llGenderPrefer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -240,21 +241,28 @@
                 app:behavior_hideable="false"
                 app:layout_behavior="utils.UserLockBottomSheetBehavior">
 
-                <ImageView
-                    android:id="@+id/imgProfessionUpward"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/llProfessionText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="@dimen/_8sdp"
-                    android:src="@mipmap/ic_arrow_up" />
+                    android:orientation="vertical">
 
-                <customviews.BoldTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/_8sdp"
-                    android:text="@string/professions"
-                    android:textColor="@color/black_color"
-                    android:textSize="@dimen/_16ssp" />
+                    <ImageView
+                        android:id="@+id/imgProfessionUpward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/_8sdp"
+                        android:src="@mipmap/ic_arrow_up" />
+
+                    <customviews.BoldTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/_8sdp"
+                        android:text="@string/professions"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_16ssp" />
+                </LinearLayout>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rvProfessionPrefer"

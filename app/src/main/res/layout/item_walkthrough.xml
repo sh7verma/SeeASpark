@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal|bottom"
+
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imgWalk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@mipmap/walk1" />
+
+    <customviews.MediumTextView
+        android:id="@+id/txtWalk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp"
+        android:text="Go through thousands of mentor or mentee profiles."
+        android:textColor="@color/white_color"
+        android:layout_marginBottom="@dimen/_66sdp"
+        android:textSize="@dimen/_12ssp" />
+
+</LinearLayout>
+

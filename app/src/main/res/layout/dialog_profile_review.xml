@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llMainDialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/_16sdp"
+    android:layout_marginRight="@dimen/_16sdp"
+    android:background="@drawable/dialog_black_upper_round_corner"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_16sdp"
+        android:src="@mipmap/ic_avatar_1" />
+
+    <customviews.BoldTextView
+        android:id="@+id/txtNameDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_16sdp"
+        android:paddingLeft="@dimen/_16sdp"
+        android:text="HI JOHN!"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/_16ssp" />
+
+    <customviews.MediumTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_36sdp"
+        android:paddingLeft="@dimen/_16sdp"
+        android:paddingRight="@dimen/_16sdp"
+        android:text="@string/your_profile_is_now_complete_and_is_under_review_will_let_you_know_know_shortly"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/_14ssp" />
+
+    <customviews.MediumTextView
+        android:id="@+id/txtReady"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/mentee_ripple"
+        android:elevation="@dimen/_3"
+        android:paddingBottom="@dimen/_8sdp"
+        android:paddingLeft="@dimen/_24sdp"
+        android:paddingRight="@dimen/_24sdp"
+        android:paddingTop="@dimen/_8sdp"
+        android:text="@string/ready"
+        android:textAllCaps="true"
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_14ssp" />
+
+</LinearLayout>

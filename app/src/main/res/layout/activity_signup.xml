@@ -144,24 +144,23 @@
                     android:layout_marginLeft="@dimen/_16sdp"
                     android:background="@drawable/transparent_ripple"
                     android:paddingBottom="@dimen/_5sdp"
+                    android:textAllCaps="true"
                     android:paddingTop="@dimen/_5sdp"
                     android:text="Forgot Password?"
                     android:textColor="@color/black_color"
-                    android:textSize="@dimen/_14ssp" />
+                    android:textSize="@dimen/_13ssp" />
 
             </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_260sdp"
-                android:orientation="horizontal">
+                android:layout_marginTop="@dimen/_260sdp">
 
                     <ImageView
                         android:id="@+id/imgFacebook"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:elevation="@dimen/_3"
                         android:layout_marginLeft="@dimen/_36sdp"
                         android:layout_centerVertical="true"
                         android:src="@mipmap/ic_fb" />
@@ -180,6 +179,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_92sdp"
+                    android:layout_centerVertical="true"
                     android:src="@mipmap/ic_linkedin" />
 
                 <customviews.MediumTextView
@@ -195,6 +195,7 @@
                     android:paddingRight="@dimen/_24sdp"
                     android:paddingTop="@dimen/_8sdp"
                     android:text="@string/done"
+                    android:layout_marginBottom="@dimen/_5sdp"
                     android:textAllCaps="true"
                     android:textColor="@color/black_color"
                     android:textSize="@dimen/_14ssp" />

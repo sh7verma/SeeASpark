@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/transparent_ripple"
             android:padding="@dimen/_12sdp"
+            android:visibility="visible"
             android:text="@string/done"
             android:textAllCaps="true"
             android:textColor="@color/black_color"
@@ -63,7 +64,7 @@
             android:paddingBottom="@dimen/_8sdp"
             android:paddingLeft="@dimen/_8sdp"
             android:text="@string/lorem_ipsum"
-            android:textColor="@color/hintColorText" />
+            android:textColor="@color/greyTextColor" />
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"

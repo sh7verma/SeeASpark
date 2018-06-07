@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
+import kotlinx.android.synthetic.main.activity_preferences.*
 import kotlinx.android.synthetic.main.fragment_experience.*
 import org.florescu.android.rangeseekbar.RangeSeekBar
 
@@ -30,18 +31,20 @@ class ExperienceFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
+
         rsbYears.setNotifyWhileDragging(true)
+        rsbYears.selectedMaxValue = 1
         rsbYears.setOnRangeSeekBarChangeListener(object : RangeSeekBar.OnRangeSeekBarChangeListener<Int> {
             override fun onRangeSeekBarValuesChanged(bar: RangeSeekBar<Int>?, minValue: Int?, maxValue: Int?) {
-                Log.e("Max Value years = ", maxValue.toString())
+                txtYearCount.text = "$maxValue"
             }
-
         })
 
         rsbMonths.setNotifyWhileDragging(true)
+        rsbMonths.selectedMaxValue = 1
         rsbMonths.setOnRangeSeekBarChangeListener(object : RangeSeekBar.OnRangeSeekBarChangeListener<Int> {
             override fun onRangeSeekBarValuesChanged(bar: RangeSeekBar<Int>?, minValue: Int?, maxValue: Int?) {
-                Log.e("Max Value Month = ", maxValue.toString())
+                txtMonthCount.text = "$maxValue"
             }
         })
     }

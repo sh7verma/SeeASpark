@@ -3,19 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/_24sdp">
+    android:paddingBottom="@dimen/_24sdp">
+
+    <ImageView
+        android:id="@+id/imgBackAvatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_12sdp"
+        android:src="@mipmap/ic_back_org" />
 
     <customviews.BoldTextView
+        android:id="@+id/txtAvatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/_16sdp"
+        android:paddingLeft="@dimen/_24sdp"
+        android:paddingRight="@dimen/_24sdp"
         android:text="@string/select_your_n_avatar"
-        android:id="@+id/txtAvatar"
         android:textColor="@color/black_color"
         android:textSize="@dimen/_24ssp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvAvatar"
+        android:paddingLeft="@dimen/_24sdp"
+        android:paddingRight="@dimen/_24sdp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

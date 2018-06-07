@@ -46,8 +46,10 @@ class LoginSignupActivity : BaseActivity() {
         viewLine.layoutParams = viewParms
 
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
+        val typefaceBold = Typeface.createFromAsset(assets, "fonts/bold.otf")
 
         edEmail.typeface = typeface
+
         edPassword.typeface = typeface
     }
 

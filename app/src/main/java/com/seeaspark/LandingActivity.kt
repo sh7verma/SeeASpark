@@ -33,8 +33,8 @@ class LandingActivity : BaseActivity() {
 
     internal fun alertLogoutDialog() {
         val alertDialog = AlertDialog.Builder(this)
-        alertDialog.setTitle("LOGOUT")
-        alertDialog.setMessage("Are you sure you want to Logout?")
+        alertDialog.setTitle("LOG OUT")
+        alertDialog.setMessage("Are you sure you want to Log out?")
         alertDialog.setPositiveButton("CONFIRM") { dialog, which ->
             moveToSplash()
         }
