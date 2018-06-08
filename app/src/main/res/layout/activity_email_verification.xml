@@ -55,8 +55,8 @@
             android:paddingLeft="@dimen/_24sdp"
             android:paddingRight="@dimen/_24sdp"
             android:paddingTop="@dimen/_8sdp"
-            android:textAllCaps="true"
             android:text="@string/login"
+            android:textAllCaps="true"
             android:textColor="@color/white_color"
             android:textSize="@dimen/_14ssp" />
 
@@ -71,7 +71,7 @@
             android:paddingLeft="@dimen/_24sdp"
             android:paddingRight="@dimen/_24sdp"
             android:paddingTop="@dimen/_8sdp"
-            android:text="@string/done"
+            android:text="@string/resend"
             android:textAllCaps="true"
             android:textColor="@color/black_color"
             android:textSize="@dimen/_14ssp" />

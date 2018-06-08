@@ -29,7 +29,7 @@ class AddSkillsActivity : BaseActivity() {
         mAllSkillsArray.addAll(intent.getParcelableArrayListExtra("allSkillsArray"))
 
         for (skillValue in mAllSkillsArray) {
-            mTempArray.add(skillValue.skill)
+            mTempArray.add(skillValue.name)
         }
 
         for (skillValue: SkillsModel in mSkillsArray) {
@@ -73,9 +73,16 @@ class AddSkillsActivity : BaseActivity() {
 
     private fun addSkills() {
         flAddSkills.removeAllViews()
+
         mTempArray.add(edSkill.text.toString().trim())
         Constants.tempSkills.add(edSkill.text.toString().trim())
-        mSkillsArray.add(0, SkillsModel(edSkill.text.toString().trim(), true, false))
+
+        val newSkillModel = SkillsModel()
+        newSkillModel.name = edSkill.text.toString().trim()
+        newSkillModel.isSelected = true
+        newSkillModel.isFirstElement = false
+        mSkillsArray.add(0, newSkillModel)
+
         for (skillValue: SkillsModel in mSkillsArray) {
             flAddSkills.addView(inflateView(skillValue))
         }
@@ -95,7 +102,7 @@ class AddSkillsActivity : BaseActivity() {
         if (skillValue.isFirstElement) {
             interestChip.txtAddSkillChip.visibility = View.GONE
         }
-        interestChip.txtAddSkillChip.text = skillValue.skill
+        interestChip.txtAddSkillChip.text = skillValue.name
         return interestChip
     }
 }

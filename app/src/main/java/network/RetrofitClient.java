@@ -25,7 +25,6 @@ public class RetrofitClient {
 
     private static final String REGISTER_USER = "api/v1/registers";
 
-
     private static Retrofit retrofit = null;
     private static final String CACHE_CONTROL = "Cache-Control";
 
@@ -50,8 +49,8 @@ public class RetrofitClient {
     private static OkHttpClient provideOkHttpClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .readTimeout(120, TimeUnit.SECONDS)
-                .connectTimeout(120, TimeUnit.SECONDS)
+                .readTimeout(5000, TimeUnit.SECONDS)
+                .connectTimeout(5000, TimeUnit.SECONDS)
                 .build();
     }
 

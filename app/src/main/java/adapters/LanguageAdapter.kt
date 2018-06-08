@@ -30,7 +30,7 @@ class LanguageAdapter(mConetxt: Context, mLanguageArray: ArrayList<LanguageModel
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.txtProfessionData.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
-        holder.txtProfessionData.text = mLanguageArray[position].language
+        holder.txtProfessionData.text = mLanguageArray[position].name
 
         if (mLanguageArray[position].isSelected)
             holder.imgSelectedProfession.visibility = View.VISIBLE

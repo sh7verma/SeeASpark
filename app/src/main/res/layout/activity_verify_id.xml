@@ -96,7 +96,7 @@
                 android:textSize="@dimen/_14ssp" />
 
             <customviews.MediumTextView
-                android:id="@+id/txtDone"
+                android:id="@+id/txtDoneVerify"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

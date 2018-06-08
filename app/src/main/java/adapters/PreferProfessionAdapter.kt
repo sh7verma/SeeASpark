@@ -27,7 +27,7 @@ class PreferProfessionAdapter(mConetxt: Context, mProfessionArray: ArrayList<Pro
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.txtProfessionData.text = mProfessionArray[position].profession
+        holder.txtProfessionData.text = mProfessionArray[position].name
 
         if (mProfessionArray[position].isSelected)
             holder.imgSelectedProfession.visibility = View.VISIBLE

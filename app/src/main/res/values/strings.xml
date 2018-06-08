@@ -93,5 +93,10 @@
     <string name="login">Login</string>
     <string name="confrim">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="review">Review</string>
+    <string name="your_profile_is_under_review_for_the_admin_approval_thnaks_for_your_patience">Your profile is under review for the Admin Approval. Thnaks for your patience.</string>
+    <string name="resend">Resend</string>
+    <string name="error_profileunder_review">301</string>
 
 </resources>

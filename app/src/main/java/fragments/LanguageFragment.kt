@@ -12,13 +12,12 @@ import com.seeaspark.R
 import kotlinx.android.synthetic.main.fragment_language.*
 import java.util.*
 
-
 class LanguageFragment : Fragment(), View.OnClickListener {
 
     var mCreateProfileInstance: CreateProfileActivity? = null
     var itemView: View? = null
     var mAdapterLangugae: LanguageAdapter? = null
-    private var mSelectedLanguageArray = ArrayList<String>()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_language, container, false)
@@ -49,13 +48,12 @@ class LanguageFragment : Fragment(), View.OnClickListener {
                 mCreateProfileInstance!!.moveToPrevious()
             }
             txtNextLanguage -> {
-
                 for (languageValue in mCreateProfileInstance!!.mLanguageArray) {
                     if (languageValue.isSelected)
-                        mSelectedLanguageArray.add(languageValue.language)
+                        mCreateProfileInstance!!.mSelectedLanguageArray.add(languageValue.id)
                 }
 
-                if (mSelectedLanguageArray.size == 0)
+                if (mCreateProfileInstance!!.mSelectedLanguageArray.size == 0)
                     mCreateProfileInstance!!.showAlertActivity(txtNextLanguage, getString(R.string.error_Language))
                 else
                     mCreateProfileInstance!!.moveToNext()

@@ -49,7 +49,7 @@ class ProfessionFragment : Fragment(), View.OnClickListener {
             }
 
             txtNextProfession -> {
-                if (TextUtils.isEmpty(mCreateProfileInstance!!.mProfession))
+                if (mCreateProfileInstance!!.mProfession == -1)
                     mCreateProfileInstance!!.showAlertActivity(txtNextProfession, getString(R.string.error_profession))
                 else
                     mCreateProfileInstance!!.moveToNext()

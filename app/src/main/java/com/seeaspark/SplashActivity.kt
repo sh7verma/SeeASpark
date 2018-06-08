@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageInfo
 import android.util.Base64
 import android.util.Log
+import com.google.firebase.iid.FirebaseInstanceId
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -37,11 +38,10 @@ class SplashActivity : Activity() {
 
         }
 
-
         Handler().postDelayed({
             if (!TextUtils.isEmpty(mUtils.getString("access_token", ""))) {
                 /// email verified.
-                startActivity( Intent(this@SplashActivity, LandingActivity::class.java))
+                startActivity(Intent(this@SplashActivity, LandingActivity::class.java))
                 finish()
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
             } else {

@@ -15,6 +15,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.seeaspark.AfterWalkThroughActivity;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -41,10 +43,14 @@ public class Constants {
     public static int LIKENDIN_LOGIN = 2;
     public static int EMAIL_VERIFIED = 1;
     public static int EMAIL_NOTVERIFIED = 0;
+    public static int MENTEE = 1;
+    public static int MENTOR = 0;
     public static int PROCEED_NORMAL = 200;
     public static int PROCEED_AS_OTHER = 2001;
+    public static final String EMAIL_VERIFY = "email_verify";
 
     public static ArrayList<String> tempSkills = new ArrayList<>();
+
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

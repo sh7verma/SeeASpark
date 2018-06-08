@@ -9,6 +9,8 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.view.View
+import android.widget.Toast
+import com.google.gson.Gson
 import utils.Connection_Detector
 import utils.CustomLoadingDialog
 import utils.Utils
@@ -23,6 +25,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var mHeight: Int = 0
     var mPlatformStatus: Int = 2
     var mUtils: Utils? = null;
+    var mGson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +59,10 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
 
     fun showAlert(view: View, message: String) {
         Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
+    }
+
+    fun showToast(context: Context, message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     protected fun showInternetAlert(view: View) {

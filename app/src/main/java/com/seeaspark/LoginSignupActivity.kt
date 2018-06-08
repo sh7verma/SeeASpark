@@ -1,5 +1,6 @@
 package com.seeaspark
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Typeface
@@ -20,6 +21,7 @@ import com.facebook.FacebookException
 import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.google.gson.Gson
 import com.linkedin.platform.APIHelper
 import com.linkedin.platform.LISessionManager
 import com.linkedin.platform.errors.LIApiError
@@ -42,6 +44,8 @@ import java.util.*
 
 class LoginSignupActivity : BaseActivity() {
 
+    private val VERIFY: Int = 1
+
     private var swipeleft: TranslateAnimation? = null
     private var swiperight: TranslateAnimation? = null
     private var modeEnabledSignup = true
@@ -56,6 +60,7 @@ class LoginSignupActivity : BaseActivity() {
     var mAccountType: Int = 0
     var mEmailverified: Int = 0
     var mUserType: Int = 0
+
 
     override fun initUI() {
         intialViewPosition = ((mWidth * 0.5 - mWidth / 12).toInt())
@@ -83,7 +88,10 @@ class LoginSignupActivity : BaseActivity() {
         swiperight!!.duration = 300
         swiperight!!.fillAfter = true
 
-        setRegister()
+        if (intent.hasExtra("path"))
+            setLogin()
+        else
+            setRegister()
 
         loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
         loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
@@ -209,6 +217,18 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                VERIFY -> {
+                    modeEnabledSignup = false;
+                    viewLine.startAnimation(swiperight)
+                    setLogin()
+                    edEmail.requestFocus()
+                    edEmail.setText(Constants.EMPTY)
+                    edPassword.setText(Constants.EMPTY)
+                }
+            }
+        }
         callbackManager!!.onActivityResult(requestCode, resultCode, data)
         LISessionManager.getInstance(getApplicationContext()).onActivityResult(this, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data)
@@ -221,7 +241,7 @@ class LoginSignupActivity : BaseActivity() {
                 // Authentication was successful.  You can now do
                 // other calls with the SDK.
                 Log.d("landing", "Linkedin onAuthSuccess ")
-                getprofiledata()
+                getuserData()
             }
 
             override fun onAuthError(error: LIAuthError) {
@@ -235,7 +255,7 @@ class LoginSignupActivity : BaseActivity() {
         return Scope.build(Scope.R_BASICPROFILE, Scope.R_EMAILADDRESS);
     }
 
-    fun getprofiledata() {
+    fun getuserData() {
         var url = "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,headline,public-profile-url,picture-url,email-address,picture-urls::(original))";
         var apiHelper = APIHelper.getInstance(getApplicationContext())
 
@@ -262,7 +282,7 @@ class LoginSignupActivity : BaseActivity() {
             }
 
             override fun onApiError(LIApiError: LIApiError?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                showAlert(imgLinkedin, LIApiError!!.localizedMessage)
             }
         })
     }
@@ -300,10 +320,14 @@ class LoginSignupActivity : BaseActivity() {
         }
     }
 
+
     private fun hitLoginAPI() {
         showLoader()
         val call = RetrofitClient.getInstance().userLogin(mEmail,
-                mPassword, "123", mPlatformStatus, mUserType)
+                mPassword,
+                mUtils!!.getString("device_token", ""),
+                mPlatformStatus,
+                mUserType)
 
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
@@ -311,9 +335,140 @@ class LoginSignupActivity : BaseActivity() {
                 if (response.body().code == Constants.PROCEED_AS_OTHER && response.body().response != null) {
                     Log.e("Access Token - ", response.body().response.access_token)
                     response.body().response.full_name = mName
-                    alertContinueDialog(response.body().message, response.body())
+
+                    if (response.body().response.email_verified == 0 &&
+                            response.body().response.profile_status == 0 &&
+                            response.body().response.document_verified == 0) {
+
+                        addDataToSharedPreferences(response.body())
+                        /// navigate to email verification screen
+                        intent = Intent(mContext, EmailVerificationActivity::class.java)
+                        intent.putExtra("access_token", response.body().response.access_token)
+                        startActivityForResult(intent, VERIFY)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.profile_status == 0) {
+
+                        /// navigate to alert continue dialog
+                        alertContinueDialog(response.body().message, response.body())
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.profile_status == 0) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to review screen
+                        intent = Intent(mContext, ReviewActivity::class.java)
+                        intent.putExtra("avatar", response.body())
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 1 &&
+                            response.body().response.profile_status == 1) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to questionarrie
+                        intent = Intent(mContext, QuestionnariesActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 1 &&
+                            response.body().response.profile_status == 2) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to landing Screen
+                        intent = Intent(mContext, LandingActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    }
                 } else if (response.body().code == Constants.PROCEED_NORMAL && response.body().response != null) {
-                    Log.e("Access Token N - ", response.body().response.access_token)
+                    var intent: Intent? = null
+                    if (response.body().response.email_verified == 0 &&
+                            response.body().response.profile_status == 0 &&
+                            response.body().response.document_verified == 0) {
+
+                        /// navigate to email verification screen
+                        addDataToSharedPreferences(response.body())
+
+                        intent = Intent(mContext, EmailVerificationActivity::class.java)
+                        intent.putExtra("access_token", response.body().response.access_token)
+                        startActivityForResult(intent, VERIFY)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.profile_status == 0) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to create profile screen
+                        intent = Intent(mContext, CreateProfileActivity::class.java)
+                        intent.putExtra("userData", response.body())
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.profile_status == 0) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to review screen
+                        intent = Intent(mContext, ReviewActivity::class.java)
+                        intent.putExtra("avatar", response.body())
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 1 &&
+                            response.body().response.profile_status == 1) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to questionarrie
+                        intent = Intent(mContext, QuestionnariesActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 1 &&
+                            response.body().response.profile_status == 2) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to landing Screen
+                        intent = Intent(mContext, LandingActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    }
+                } else if (response.body().response == null) {
+                    if (response.body().error!!.code!!.equals(getString(R.string.error_profileunder_review)))
+                        alertProfileSubmittedDialog(response.body().error!!.message!!)
+                    else
+                        showAlert(txtDone, response.body().error!!.message!!)
                 }
             }
 
@@ -329,33 +484,180 @@ class LoginSignupActivity : BaseActivity() {
         showLoader()
         val call = RetrofitClient.getInstance().userSignup(mFacebookId,
                 mEmail, mPassword, mLinkedinId, mAccountType,
-                "123", mPlatformStatus, mEmailverified, mUserType)
+                mUtils!!.getString("device_token", ""),
+                mPlatformStatus, mEmailverified, mUserType)
 
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
+                dismissLoader()
                 if (response.body().code == Constants.PROCEED_NORMAL && response.body().response != null) {
+                    if (response.body().response.email_verified == 0 &&
+                            response.body().response.profile_status == 0 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.account_type == Constants.EMAIL_LOGIN) {
 
-                    if (!TextUtils.isEmpty(response.body().response.email)) {
-                        mUtils!!.setBoolean("addEmailFragment", false)
-                    } else {
-                        mUtils!!.setBoolean("addEmailFragment", true)
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to email verification screen
+                        intent = Intent(mContext, EmailVerificationActivity::class.java)
+                        intent.putExtra("access_token", response.body().response.access_token)
+                        startActivityForResult(intent, VERIFY)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 0 &&
+                            response.body().response.profile_status == 0 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.account_type == Constants.FACEBOOK_LOGIN) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        if (!TextUtils.isEmpty(response.body().response.email)) {
+                            mUtils!!.setBoolean("addEmailFragment", false)
+
+                            intent = Intent(mContext, EmailVerificationActivity::class.java)
+                            intent.putExtra("access_token", response.body().response.access_token)
+                            startActivityForResult(intent, VERIFY)
+                            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        } else {
+                            mUtils!!.setBoolean("addEmailFragment", true)
+                            /// navigate to profile screen
+                            intent = Intent(mContext, CreateProfileActivity::class.java)
+                            intent.putExtra("userData", response.body())
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        }
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.profile_status == 0) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to create profile screen
+                        intent = Intent(mContext, CreateProfileActivity::class.java)
+                        intent.putExtra("userData", response.body())
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.profile_status == 1) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to review screen
+                        intent = Intent(mContext, ReviewActivity::class.java)
+                        intent.putExtra("avatar", response.body())
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 1 &&
+                            response.body().response.profile_status == 1) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to questionarrie
+                        intent = Intent(mContext, QuestionnariesActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 1 &&
+                            response.body().response.profile_status == 2) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to landing Screen
+                        intent = Intent(mContext, LandingActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
                     }
 
-                    response.body().response.full_name = mName
-                    val intent = Intent(mContext, CreateProfileActivity::class.java)
-                    intent.putExtra("profileData", response.body())
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
                 } else if (response.body().code == Constants.PROCEED_AS_OTHER && response.body().response != null) {
-                    response.body().response.full_name = mName
-                    alertContinueDialog(response.body().message, response.body())
+
+                    if (response.body().response.email_verified == 0 &&
+                            response.body().response.profile_status == 0 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.account_type == Constants.FACEBOOK_LOGIN) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        if (!TextUtils.isEmpty(response.body().response.email)) {
+                            mUtils!!.setBoolean("addEmailFragment", false)
+
+                            intent = Intent(mContext, EmailVerificationActivity::class.java)
+                            intent.putExtra("access_token", response.body().response.access_token)
+                            startActivityForResult(intent, VERIFY)
+                            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        } else {
+                            mUtils!!.setBoolean("addEmailFragment", true)
+                            /// navigate to profile screen
+                            intent = Intent(mContext, CreateProfileActivity::class.java)
+                            intent.putExtra("userData", response.body())
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                        }
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.profile_status == 0) {
+
+                        /// navigate to create profile screen
+                        alertContinueDialog(response.body().message, response.body())
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 0 &&
+                            response.body().response.profile_status == 1) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to review screen
+                        intent = Intent(mContext, ReviewActivity::class.java)
+                        intent.putExtra("avatar", response.body())
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 1 &&
+                            response.body().response.profile_status == 1) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to questionarrie
+                        intent = Intent(mContext, QuestionnariesActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 1 &&
+                            response.body().response.profile_status == 2) {
+
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to landing Screen
+                        intent = Intent(mContext, LandingActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                    }
                 } else {
                     showAlert(txtDone, response.body().error!!.message!!)
                 }
-                dismissLoader()
             }
 
             override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {
@@ -379,7 +681,17 @@ class LoginSignupActivity : BaseActivity() {
                 .setCancelable(false)
                 .setPositiveButton(R.string.confrim, DialogInterface.OnClickListener { dialog, id ->
                     val intent = Intent(mContext, CreateProfileActivity::class.java)
-                    intent.putExtra("profileData", signupModel)
+
+                    /// changing userType
+                    if (signupModel.response.user_type == Constants.MENTOR)
+                        signupModel.response.user_type = Constants.MENTEE
+
+                    if (signupModel.response.user_type == Constants.MENTEE)
+                        signupModel.response.user_type = Constants.MENTOR
+
+                    addDataToSharedPreferences(signupModel)
+
+                    intent.putExtra("userData", signupModel)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
@@ -396,5 +708,29 @@ class LoginSignupActivity : BaseActivity() {
         alert.show()
     }
 
+    private fun alertProfileSubmittedDialog(message: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(message)
+                .setCancelable(false)
+                .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener { dialog, id ->
+                    edEmail.requestFocus()
+                    edEmail.setText(Constants.EMPTY)
+                    edPassword.setText(Constants.EMPTY)
+                    dialog.cancel()
+                })
+
+        val alert = builder.create()
+        alert.show()
+    }
+
+    fun addDataToSharedPreferences(signupModel: SignupModel) {
+
+        mUtils!!.setString("userDataLocal", mGson.toJson(signupModel))
+
+        /*mUtils!!.setString("professionData", mGson.toJson(signupModel.professions))
+       mUtils!!.setString("skillsData", mGson.toJson(signupModel.skills))
+       mUtils!!.setString("avatarData", mGson.toJson(signupModel.avatars))
+       mUtils!!.setString("profileDataLocal", mGson.toJson(signupModel.response))*/
+    }
 
 }

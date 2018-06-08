@@ -17,10 +17,13 @@ import kotlinx.android.synthetic.main.fragment_description.*
 import kotlinx.android.synthetic.main.fragment_name.*
 import kotlinx.android.synthetic.main.fragment_profession.*
 import utils.Constants
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DescribeProfessionFragment : Fragment(), View.OnClickListener {
 
     var mCreateProfileInstance: CreateProfileActivity? = null
+    var mDOB = SimpleDateFormat("dd-MM-yyyy", Locale.US)
     var itemView: View? = null
     var makeVisisble = false
 
@@ -82,14 +85,14 @@ class DescribeProfessionFragment : Fragment(), View.OnClickListener {
     private fun moveToVerifyID() {
         mCreateProfileInstance!!.mDescription = edDescriptionProfile.text.toString().trim()
         val intent = Intent(activity, VerifyIdActivity::class.java)
+        intent.putExtra("userData", mCreateProfileInstance!!.userData)
+        intent.putExtra("avatarId", mCreateProfileInstance!!.mAvatarId)
         intent.putExtra("name", mCreateProfileInstance!!.mName)
-        intent.putExtra("age", mCreateProfileInstance!!.mAge)
-        intent.putExtra("dob", mCreateProfileInstance!!.mDob)
-        intent.putExtra("gender", mCreateProfileInstance!!.mGender)
-        intent.putExtra("profession", mCreateProfileInstance!!.mProfession)
-        intent.putExtra("professionId", mCreateProfileInstance!!.mProfessionId)
-        intent.putExtra("expYears", mCreateProfileInstance!!.mExpeirenceYears)
-        intent.putExtra("expMonth", mCreateProfileInstance!!.mExpeirenceMonth)
+        intent.putExtra("dob", mDOB.format(mCreateProfileInstance!!.calDOB!!.time))
+        intent.putExtra("gender", mCreateProfileInstance!!.mGender.toString())
+        intent.putExtra("profession", mCreateProfileInstance!!.mProfession.toString())
+        intent.putIntegerArrayListExtra("languages", mCreateProfileInstance!!.mSelectedLanguageArray)
+        intent.putExtra("experience", "${mCreateProfileInstance!!.mExpeirenceYears},${mCreateProfileInstance!!.mExpeirenceMonth}")
         intent.putStringArrayListExtra("skills", mCreateProfileInstance!!.mSkillsServerArray)
         intent.putExtra("bio", mCreateProfileInstance!!.mBio)
         intent.putExtra("description", mCreateProfileInstance!!.mDescription)

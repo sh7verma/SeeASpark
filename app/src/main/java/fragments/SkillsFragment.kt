@@ -15,7 +15,6 @@ import com.seeaspark.AddSkillsActivity
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import customviews.FlowLayout
-import kotlinx.android.synthetic.main.fragment_age.*
 import kotlinx.android.synthetic.main.fragment_skills.*
 import kotlinx.android.synthetic.main.layout_skills.view.*
 import models.SkillsModel
@@ -62,6 +61,8 @@ class SkillsFragment : Fragment(), View.OnClickListener {
                 if (mSkillsSelectedArray.size == 0)
                     mCreateProfileInstance!!.showAlertActivity(txtNextSkills, getString(R.string.error_skills))
                 else {
+                    mCreateProfileInstance!!.mSkillsServerArray.clear()
+                    mCreateProfileInstance!!.mSkillsServerArray.addAll(mSkillsSelectedArray)
                     mCreateProfileInstance!!.moveToNext()
                     Constants.showKeyboard(activity!!, txtNextSkills)
                 }
@@ -86,7 +87,7 @@ class SkillsFragment : Fragment(), View.OnClickListener {
             interestChip.txtSkillChip.visibility = View.GONE
         }
 
-        if (mSkillsSelectedArray.contains(skillValue.skill)) {
+        if (mSkillsSelectedArray.contains(skillValue.name)) {
             interestChip.txtSkillChip.setBackgroundResource(R.drawable.selected_skills)
             interestChip.txtSkillChip.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
         } else {
@@ -94,7 +95,7 @@ class SkillsFragment : Fragment(), View.OnClickListener {
             interestChip.txtSkillChip.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
         }
 
-        interestChip.txtSkillChip.text = skillValue.skill
+        interestChip.txtSkillChip.text = skillValue.name
 
         interestChip.imgSkillAdd.setOnClickListener {
             val intent = Intent(activity, AddSkillsActivity::class.java)
@@ -105,16 +106,16 @@ class SkillsFragment : Fragment(), View.OnClickListener {
         }
 
         interestChip.txtSkillChip.setOnClickListener {
-            if (mSkillsSelectedArray.contains(skillValue.skill)) {
+            if (mSkillsSelectedArray.contains(skillValue.name)) {
                 interestChip.txtSkillChip.setBackgroundResource(R.drawable.default_skills)
                 interestChip.txtSkillChip.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
-                mSkillsSelectedArray.remove(skillValue.skill)
+                mSkillsSelectedArray.remove(skillValue.name)
             } else {
                 interestChip.txtSkillChip.setBackgroundResource(R.drawable.selected_skills)
                 interestChip.txtSkillChip.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
-                mSkillsSelectedArray.add(skillValue.skill)
+                mSkillsSelectedArray.add(skillValue.name)
             }
-            Log.e("Add/Remove = ", skillValue.skill)
+            Log.e("Add/Remove = ", skillValue.name)
         }
 
         return interestChip
@@ -125,16 +126,17 @@ class SkillsFragment : Fragment(), View.OnClickListener {
             when (requestCode) {
                 ADD_SKILLS -> {
                     flSkills.removeAllViews()
-
                     mOwnSkillsArray.clear()
                     mOwnSkillsArray.addAll(data!!.getParcelableArrayListExtra<Parcelable>("skillsArray") as ArrayList<out SkillsModel>)
 
                     for (skillValue: SkillsModel in mOwnSkillsArray) {
-                        if (!mCreateProfileInstance!!.mSkillsArray.contains(skillValue))
-                            mCreateProfileInstance!!.mSkillsArray.add(1,skillValue)
+                        if (!mCreateProfileInstance!!.mSkillsArrayText.contains(skillValue.name)) {
+                            mCreateProfileInstance!!.mSkillsArray.add(1, skillValue)
+                            mCreateProfileInstance!!.mSkillsArrayText.add(skillValue.name)
+                        }
 
-                        if (!mSkillsSelectedArray.contains(skillValue.skill))
-                            mSkillsSelectedArray.add(skillValue.skill)
+                        if (!mSkillsSelectedArray.contains(skillValue.name))
+                            mSkillsSelectedArray.add(skillValue.name)
                     }
 
                     for (skillValue: SkillsModel in mCreateProfileInstance!!.mSkillsArray) {

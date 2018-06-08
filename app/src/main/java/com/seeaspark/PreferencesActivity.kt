@@ -42,19 +42,9 @@ class PreferencesActivity : BaseActivity() {
         rsbExperience.selectedMaxValue = 8
 
 
-        addProfession()
+
         mAdapterProfession = PreferProfessionAdapter(mContext!!, mProfessionArray)
         rvProfessionPrefer.adapter = mAdapterProfession
-    }
-
-    private fun addProfession() {
-        mProfessionArray.add(ProfessionModel("Actor", false))
-        mProfessionArray.add(ProfessionModel("Architecture", false))
-        mProfessionArray.add(ProfessionModel("Accountant", false))
-        mProfessionArray.add(ProfessionModel("Consultant", false))
-        mProfessionArray.add(ProfessionModel("Designer", false))
-        mProfessionArray.add(ProfessionModel("Dentist", false))
-        mProfessionArray.add(ProfessionModel("Engineer", false))
     }
 
     override fun initListener() {

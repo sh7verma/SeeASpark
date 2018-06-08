@@ -32,17 +32,17 @@ class ProfessionAdapter(mConetxt: Context, mProfessionArray: ArrayList<Professio
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.txtProfessionData.text = mProfessionArray[position].profession
+        holder.txtProfessionData.text = mProfessionArray[position].name
         holder.txtProfessionData.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
 
-        if (mProfessionArray[position].profession
+        if (mProfessionArray[position].id
                 == mCreateProfileInstance!!.mProfession)
             holder.imgSelectedProfession.visibility = View.VISIBLE
         else
             holder.imgSelectedProfession.visibility = View.INVISIBLE
 
         holder.txtProfessionData.setOnClickListener {
-            mCreateProfileInstance!!.mProfession = mProfessionArray[position].profession
+            mCreateProfileInstance!!.mProfession = mProfessionArray[position].id
             notifyDataSetChanged()
         }
     }

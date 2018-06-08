@@ -6,6 +6,8 @@ import android.net.NetworkInfo;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.google.firebase.FirebaseApp;
+
 
 public class MainApplication extends MultiDexApplication {
 
@@ -16,6 +18,7 @@ public class MainApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         MultiDex.install(this);
+        FirebaseApp.initializeApp(this);
         Foreground.init(this);
         instance = this;
     }

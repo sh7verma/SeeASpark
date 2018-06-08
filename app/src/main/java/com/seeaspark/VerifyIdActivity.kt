@@ -2,7 +2,6 @@ package com.seeaspark
 
 import android.Manifest
 import android.app.Activity
-import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -17,24 +16,26 @@ import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
 import android.provider.MediaStore
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.view.Window
 import android.widget.Toast
 import com.google.android.cameraview.CameraView
 import com.ipaulpro.afilechooser.utils.FileUtils
 import com.soundcloud.android.crop.Crop
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_verify_id.*
-import kotlinx.android.synthetic.main.dialog_profile_review.*
-import kotlinx.android.synthetic.main.dialog_profile_review.view.*
-import kotlinx.android.synthetic.main.fragment_description.*
 import kotlinx.android.synthetic.main.tool_bar.*
+import models.SignupModel
+import network.RetrofitClient
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import utils.Constants
 import java.io.*
 import java.util.*
@@ -47,11 +48,12 @@ class VerifyIdActivity : BaseActivity() {
     internal var permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
     private var mOption: Int = 0
     private var progDailog: ProgressDialog? = null
-
+    var serverFile: File? = null
 
     private val TAG = "MainActivity"
     private var isFlashON: Boolean = false
     private var mBackgroundHandler: Handler? = null
+    var userData: SignupModel? = null
 
     override fun initUI() {
         setSupportActionBar(toolBar)
@@ -64,6 +66,9 @@ class VerifyIdActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
+
+        userData = intent.getParcelableExtra("userData")
+
         if (mCameraView != null) {
             mCameraView.addCallback(mCallback)
         }
@@ -76,7 +81,7 @@ class VerifyIdActivity : BaseActivity() {
         imgGallery.setOnClickListener(this)
         llCancelDone.setOnClickListener(this)
         txtCancel.setOnClickListener(this)
-        txtDone.setOnClickListener(this)
+        txtDoneVerify.setOnClickListener(this)
     }
 
     override fun getContentView() = R.layout.activity_verify_id
@@ -130,15 +135,55 @@ class VerifyIdActivity : BaseActivity() {
                 llCancelDone.visibility = View.INVISIBLE
                 imgDisplay.visibility = View.INVISIBLE
             }
-            txtDone -> {
-                dialogToMentor()
+            txtDoneVerify -> {
+                if (connectedToInternet()) {
+                    hitAPI()
+                } else
+                    showInternetAlert(txtDoneVerify)
             }
         }
     }
 
-    private fun dialogToMentor() {
-        var intent = Intent(mContext, ProfileReviewDialog::class.java)
-        startActivity(intent)
+    private fun hitAPI() {
+
+        showLoader()
+        val tempLangauges = intent.getIntegerArrayListExtra("languages").toString()
+                .substring(1, intent.getIntegerArrayListExtra("languages").toString().length - 1).trim()
+
+        val tempSkills = intent.getStringArrayListExtra("skills").toString()
+                .substring(1, intent.getStringArrayListExtra("skills").toString().length - 1).trim()
+
+        val call = RetrofitClient.getInstance().createProfile(
+                createPartFromString(userData!!.response.access_token),
+                createPartFromString(intent.getStringExtra("avatarId")),
+                createPartFromString(userData!!.response.user_type.toString()),
+                createPartFromString(intent.getStringExtra("name")),
+                createPartFromString(intent.getStringExtra("dob")),
+                createPartFromString(intent.getStringExtra("gender")),
+                createPartFromString(tempLangauges),
+                createPartFromString(intent.getStringExtra("profession")),
+                createPartFromString(intent.getStringExtra("experience")),
+                createPartFromString(tempSkills),
+                createPartFromString(intent.getStringExtra("bio")),
+                createPartFromString(intent.getStringExtra("description")),
+                prepareFilePart(serverFile!!))
+
+        call.enqueue(object : Callback<SignupModel> {
+            override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
+                dismissLoader()
+                if (response.body().response != null) {
+                    var intent = Intent(mContext, ProfileReviewDialog::class.java)
+                    intent.putExtra("userProfileData", response.body().response)
+                    startActivity(intent)
+                } else {
+                    showAlert(llCancelDone, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {
+                dismissLoader()
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -163,6 +208,7 @@ class VerifyIdActivity : BaseActivity() {
         llCancelDone.visibility = View.VISIBLE
         imgDisplay.visibility = View.VISIBLE
         var path = getRealPathFromURI(getImageUri(this, getBitmap(picturePath)))
+        serverFile = File(path)
         Picasso.with(mContext).load(File(path)).fit().into(imgDisplay)
     }
 
@@ -259,6 +305,7 @@ class VerifyIdActivity : BaseActivity() {
             var file: File? = null
             getBackgroundHandler().post(Runnable {
                 file = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg")
+                serverFile = file
                 var os: OutputStream? = null
                 try {
                     os = FileOutputStream(file)
@@ -389,6 +436,15 @@ class VerifyIdActivity : BaseActivity() {
         }
 
         return rotate
+    }
+
+    private fun createPartFromString(data: String): RequestBody {
+        return RequestBody.create(MediaType.parse("text/plain"), data)
+    }
+
+    private fun prepareFilePart(mFile: File): MultipartBody.Part {
+        val requestFile = RequestBody.create(MediaType.parse("image/*"), mFile)
+        return MultipartBody.Part.createFormData("document", mFile.name, requestFile)
     }
 
 }

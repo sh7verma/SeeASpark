@@ -9,13 +9,12 @@ import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_avatar.view.*
-import models.SignupModel
-import utils.Constants
+import models.AvatarModel
 
 
-class AvatarAdapter(mAvatarArray: ArrayList<SignupModel.AvatarsBean>, mContext: Context, mCreateProfileInstance: CreateProfileActivity) : RecyclerView.Adapter<AvatarAdapter.ViewHolder>() {
+class AvatarAdapter(mAvatarArray: ArrayList<AvatarModel>, mContext: Context, mCreateProfileInstance: CreateProfileActivity) : RecyclerView.Adapter<AvatarAdapter.ViewHolder>() {
 
-    var mAvatarArray = ArrayList<SignupModel.AvatarsBean>()
+    var mAvatarArray = ArrayList<AvatarModel>()
     var mContext: Context? = null
     var mCreateProfileInstance: CreateProfileActivity? = null
 
@@ -35,6 +34,7 @@ class AvatarAdapter(mAvatarArray: ArrayList<SignupModel.AvatarsBean>, mContext: 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Picasso.with(mContext).load(mAvatarArray[position].avtar_url).into(holder.imgAvatar)
         holder.imgAvatar.setOnClickListener {
+            mCreateProfileInstance!!.mAvatarId = mAvatarArray[position].name
             mCreateProfileInstance!!.moveToNext()
         }
     }

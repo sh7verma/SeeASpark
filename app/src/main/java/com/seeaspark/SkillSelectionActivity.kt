@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import customviews.FlowLayout
-import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.activity_skill_selection.*
 import kotlinx.android.synthetic.main.layout_skills.view.*
 import models.SkillsModel
@@ -25,20 +24,10 @@ class SkillSelectionActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
-        addValue()
+
         for (skillValue in Constants.tempSkills) {
             flSkillsSelection.addView(inflateView(skillValue))
         }
-    }
-
-    private fun addValue() {
-        mSkillsArray.add(SkillsModel("Lorem", false, false))
-        mSkillsArray.add(SkillsModel("Ipsum", false, false))
-        mSkillsArray.add(SkillsModel("Dollar", false, false))
-        mSkillsArray.add(SkillsModel("Sit", false, false))
-        mSkillsArray.add(SkillsModel("Amet", false, false))
-        mSkillsArray.add(SkillsModel("Enim", false, false))
-        mSkillsArray.add(SkillsModel("Aliqua UT", false, false))
     }
 
     override fun initListener() {

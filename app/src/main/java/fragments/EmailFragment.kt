@@ -47,8 +47,7 @@ class EmailFragment : Fragment(), View.OnClickListener {
                 else if (!validateEmail(edEmailProfile.getText()))
                     mCreateProfileInstance!!.showAlertActivity(txtNextEmail, resources.getString(R.string.enter_valid_email))
                 else {
-                    mCreateProfileInstance!!.mName = txtNextEmail.text.toString()
-                    mCreateProfileInstance!!.moveToNext()
+                    mCreateProfileInstance!!.verifyEmail(edEmailProfile.text.toString().trim())
                 }
             }
             imgBackName -> {

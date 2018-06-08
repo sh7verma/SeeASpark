@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import kotlinx.android.synthetic.main.fragment_avatar.*
+import models.AvatarModel
 import models.SignupModel
 
 
@@ -19,7 +20,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
     var mCreateProfileInstance: CreateProfileActivity? = null
     var itemView: View? = null
     var mAvatarAdapter: AvatarAdapter? = null
-    var mAvatarArray = ArrayList<SignupModel.AvatarsBean>()
+    var mAvatarArray = ArrayList<AvatarModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_avatar, container, false)
@@ -56,7 +57,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
             if (mCreateProfileInstance!!.mGender != 0) {
                 mAvatarArray.clear()
                 if (mCreateProfileInstance!!.mGender != 3) {
-                    for (avatar: SignupModel.AvatarsBean in mCreateProfileInstance!!.profileData!!.avatars) {
+                    for (avatar: AvatarModel in mCreateProfileInstance!!.profileData!!.avatars) {
                         if (avatar.gender == mCreateProfileInstance!!.mGender)
                             mAvatarArray.add(avatar)
                     }

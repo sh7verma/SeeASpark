@@ -2,6 +2,7 @@ package com.seeaspark
 
 import android.content.Intent
 import android.view.View
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_afterwalkthrough.*
 
 
@@ -29,10 +30,12 @@ class AfterWalkThroughActivity : BaseActivity() {
 
         when (view) {
             txtMentee -> {
+                mUtils!!.setString("device_token", FirebaseInstanceId.getInstance().token)
                 startActivity(Intent(this, LoginSignupActivity::class.java).putExtra("userType", 1))
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
             }
             txtMentor -> {
+                mUtils!!.setString("device_token", FirebaseInstanceId.getInstance().token)
                 startActivity(Intent(this, LoginSignupActivity::class.java).putExtra("userType", 0))
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
             }

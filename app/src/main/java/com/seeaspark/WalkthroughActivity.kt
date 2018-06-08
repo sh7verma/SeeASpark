@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Handler
 import android.support.v4.view.ViewPager
 import android.view.View
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_walkthrough.*
 
 class WalkthroughActivity : BaseActivity() {
@@ -54,6 +55,7 @@ class WalkthroughActivity : BaseActivity() {
     override fun onClick(p0: View?) {
         when (p0) {
             txtGotIt -> {
+                mUtils!!.setString("device_token", FirebaseInstanceId.getInstance().token)
                 var intent = Intent(mContext, AfterWalkThroughActivity::class.java)
                 startActivity(intent)
                 finish()
