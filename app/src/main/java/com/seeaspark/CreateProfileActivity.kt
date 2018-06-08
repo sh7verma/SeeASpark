@@ -4,12 +4,14 @@ import adapters.CreateProfileAdapter
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.View
 import fragments.*
 import kotlinx.android.synthetic.main.activity_create_profile.*
 import kotlinx.android.synthetic.main.fragment_name.*
 import models.LanguageModel
 import models.ProfessionModel
+import models.SignupModel
 import models.SkillsModel
 import utils.Constants
 import java.util.*
@@ -25,7 +27,8 @@ class CreateProfileActivity : BaseActivity() {
     var mName = Constants.EMPTY
     var mAge = Constants.EMPTY
     var mDob = Constants.EMPTY
-    var mGender = Constants.EMPTY
+    var mGender: Int? = 0
+    var mGenderText = Constants.EMPTY
     var mProfession = Constants.EMPTY
     var mProfessionId = Constants.EMPTY
     var mExpeirenceYears = Constants.EMPTY
@@ -34,6 +37,7 @@ class CreateProfileActivity : BaseActivity() {
     var mBio = Constants.EMPTY
     var mDescription = Constants.EMPTY
     var calDOB: Calendar? = null
+    var profileData: SignupModel? = null
 
     private var mProfileAdapter: CreateProfileAdapter? = null
 
@@ -43,6 +47,11 @@ class CreateProfileActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
+
+        /// getting profile Data
+        profileData = intent.getParcelableExtra("profileData")
+        mName = profileData!!.response.full_name
+
         /// intialize calendar object for fragment
         calDOB = Calendar.getInstance(TimeZone.getDefault())
         calDOB!!.add(Calendar.YEAR, -14)

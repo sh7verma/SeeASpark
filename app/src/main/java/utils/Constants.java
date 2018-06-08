@@ -35,6 +35,15 @@ import kotlin.jvm.JvmStatic;
 public class Constants {
 
     public static String EMPTY = "";
+    public static String EMAIL = "";
+    public static int EMAIL_LOGIN = 0;
+    public static int FACEBOOK_LOGIN = 1;
+    public static int LIKENDIN_LOGIN = 2;
+    public static int EMAIL_VERIFIED = 1;
+    public static int EMAIL_NOTVERIFIED = 0;
+    public static int PROCEED_NORMAL = 200;
+    public static int PROCEED_AS_OTHER = 2001;
+
     public static ArrayList<String> tempSkills = new ArrayList<>();
 
     public static int dpToPx(int dp) {
@@ -150,7 +159,7 @@ public class Constants {
     }
 
     public static void showKeyboard(Context mContext, View view) {
-        InputMethodManager inputMethodManager =(InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
       /*  inputMethodManager.toggleSoftInputFromWindow(
                 view.getApplicationWindowToken(),
                 InputMethodManager.SHOW_FORCED, 0);*/

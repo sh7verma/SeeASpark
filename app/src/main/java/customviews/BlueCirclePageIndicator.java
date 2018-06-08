@@ -524,13 +524,13 @@ public class BlueCirclePageIndicator extends View implements PageIndicator {
         @SuppressWarnings("UnusedDeclaration")
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
             @Override
-            public BlueCirclePageIndicator.SavedState createFromParcel(Parcel in) {
-                return new BlueCirclePageIndicator.SavedState(in);
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
             }
 
             @Override
-            public BlueCirclePageIndicator.SavedState[] newArray(int size) {
-                return new BlueCirclePageIndicator.SavedState[size];
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
             }
         };
     }

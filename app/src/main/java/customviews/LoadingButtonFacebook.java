@@ -473,7 +473,7 @@ public class LoadingButtonFacebook extends View {
         animator.setDuration(400);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setStartDelay(100);
-        animator.addListener(new LoadingButtonFacebook.AnimatorEndListener() {
+        animator.addListener(new AnimatorEndListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 mCurrentState = isReverse ? STATE_BUTTON : STATE_ANIMATION_STEP2;
@@ -494,7 +494,7 @@ public class LoadingButtonFacebook extends View {
         });
         animator2.setDuration(240);
         animator2.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator2.addListener(new LoadingButtonFacebook.AnimatorEndListener() {
+        animator2.addListener(new AnimatorEndListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 mCurrentState = isReverse ? STATE_ANIMATION_STEP1 : STATE_ANIMATION_LOADING;
@@ -539,7 +539,7 @@ public class LoadingButtonFacebook extends View {
         });
         animator.setDuration(240);
         animator.setInterpolator(new DecelerateInterpolator());
-        animator.addListener(new LoadingButtonFacebook.AnimatorEndListener() {
+        animator.addListener(new AnimatorEndListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 mCurrentState = STATE_ANIMATION_SUCCESS;
@@ -560,7 +560,7 @@ public class LoadingButtonFacebook extends View {
         successAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.playSequentially(animator, successAnimator);
-        set.addListener(new LoadingButtonFacebook.AnimatorEndListener() {
+        set.addListener(new AnimatorEndListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 if (mAnimationEndListener != null) {
@@ -585,7 +585,7 @@ public class LoadingButtonFacebook extends View {
         });
         animator.setDuration(100);
         animator.setInterpolator(new DecelerateInterpolator());
-        animator.addListener(new LoadingButtonFacebook.AnimatorEndListener() {
+        animator.addListener(new AnimatorEndListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 mCurrentState = STATE_ANIMATION_FAILED;
@@ -620,7 +620,7 @@ public class LoadingButtonFacebook extends View {
 
         AnimatorSet set = new AnimatorSet();
         set.playSequentially(animator, failedAnimator, failedAnimator2);
-        set.addListener(new LoadingButtonFacebook.AnimatorEndListener() {
+        set.addListener(new AnimatorEndListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 if (resetAfterFailed) {
@@ -653,7 +653,7 @@ public class LoadingButtonFacebook extends View {
         });
         animator.setDuration(240);
         animator.setInterpolator(new DecelerateInterpolator());
-        animator.addListener(new LoadingButtonFacebook.AnimatorEndListener() {
+        animator.addListener(new AnimatorEndListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 mCurrentState = STATE_ANIMATION_STEP2;
@@ -677,7 +677,7 @@ public class LoadingButtonFacebook extends View {
         });
         scaleAnimator.setDuration(300);
         scaleAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        scaleAnimator.addListener(new LoadingButtonFacebook.AnimatorEndListener() {
+        scaleAnimator.addListener(new AnimatorEndListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 mCurrentState = STATE_ANIMATION_STEP2;
@@ -702,7 +702,7 @@ public class LoadingButtonFacebook extends View {
         });
         scaleAnimator.setDuration(200);
         scaleAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        scaleAnimator.addListener(new LoadingButtonFacebook.AnimatorEndListener() {
+        scaleAnimator.addListener(new AnimatorEndListener() {
             @Override
             public void onAnimationEnd(Animator animator) {
                 mCurrentState = STATE_ANIMATION_STEP2;
@@ -725,7 +725,7 @@ public class LoadingButtonFacebook extends View {
         rippleAnimator.setDuration(240);
         rippleAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         if (!isTouchDown) {
-            rippleAnimator.addListener(new LoadingButtonFacebook.AnimatorEndListener() {
+            rippleAnimator.addListener(new AnimatorEndListener() {
                 @Override
                 public void onAnimationEnd(Animator animator) {
                     performClick();

@@ -40,7 +40,9 @@ class NameFragment : Fragment(), View.OnClickListener {
 
     private fun onCreateStuff() {
         val typeface = Typeface.createFromAsset(activity!!.assets, "fonts/medium.otf")
-        edNameProfile.setTypeface(typeface)
+        edNameProfile.typeface = typeface
+        edNameProfile.setText(mCreateProfileInstance!!.mName)
+        edNameProfile.setSelection(edNameProfile.text.toString().length)
     }
 
     override fun onClick(view: View?) {

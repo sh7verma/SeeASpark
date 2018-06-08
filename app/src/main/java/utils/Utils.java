@@ -10,8 +10,6 @@ public class Utils {
 	Context mActivity;
 	SharedPreferences preferences;
 
-
-
 	public Utils(Context activity) {
 		mActivity = activity;
 		preferences = activity.getSharedPreferences(activity.getPackageName(), Context.MODE_PRIVATE);

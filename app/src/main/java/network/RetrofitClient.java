@@ -20,8 +20,11 @@ public class RetrofitClient {
 //    private static final String BASE_URL = "http://13.228.223.105:3032/";// Client
 //    private static final String BASE_URL = "http://13.228.223.105:3030/";// Development
 
-    private static final String BASE_URL = "http://13.228.223.105:3031/";/// Applify Development
+    private static final String BASE_URL = "http://34.247.115.251:3000/";/// Applify Development
 //  private static final String BASE_URL = "http://www.thetulapp.com/";// Live
+
+    private static final String REGISTER_USER = "api/v1/registers";
+
 
     private static Retrofit retrofit = null;
     private static final String CACHE_CONTROL = "Cache-Control";
@@ -47,9 +50,6 @@ public class RetrofitClient {
     private static OkHttpClient provideOkHttpClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .addInterceptor(provideOfflineCacheInterceptor())
-                .addNetworkInterceptor(provideCacheInterceptor())
-                .cache(provideCache())
                 .readTimeout(120, TimeUnit.SECONDS)
                 .connectTimeout(120, TimeUnit.SECONDS)
                 .build();

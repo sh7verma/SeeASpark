@@ -9,21 +9,15 @@ import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_avatar.view.*
+import models.SignupModel
 import utils.Constants
 
 
-class AvatarAdapter(mAvatarArray: ArrayList<String>, mContext: Context, mCreateProfileInstance: CreateProfileActivity) : RecyclerView.Adapter<AvatarAdapter.ViewHolder>() {
+class AvatarAdapter(mAvatarArray: ArrayList<SignupModel.AvatarsBean>, mContext: Context, mCreateProfileInstance: CreateProfileActivity) : RecyclerView.Adapter<AvatarAdapter.ViewHolder>() {
 
-    private val avatarArray = intArrayOf(R.mipmap.ic_avatar_1, R.mipmap.ic_avatar_2, R.mipmap.ic_avatar_3,
-            R.mipmap.ic_avatar_4, R.mipmap.ic_avatar_5, R.mipmap.ic_avatar_6,
-            R.mipmap.ic_avatar_7, R.mipmap.ic_avatar_8, R.mipmap.ic_avatar_9,
-            R.mipmap.ic_avatar_10, R.mipmap.ic_avatar_11, R.mipmap.ic_avatar_12,
-            R.mipmap.ic_avatar_13, R.mipmap.ic_avatar_14, R.mipmap.ic_avatar_15)
-
-    var mAvatarArray = ArrayList<String>()
+    var mAvatarArray = ArrayList<SignupModel.AvatarsBean>()
     var mContext: Context? = null
     var mCreateProfileInstance: CreateProfileActivity? = null
-
 
     init {
         this.mAvatarArray = mAvatarArray
@@ -39,14 +33,14 @@ class AvatarAdapter(mAvatarArray: ArrayList<String>, mContext: Context, mCreateP
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Picasso.with(mContext).load(avatarArray[position]).into(holder.imgAvatar)
+        Picasso.with(mContext).load(mAvatarArray[position].avtar_url).into(holder.imgAvatar)
         holder.imgAvatar.setOnClickListener {
             mCreateProfileInstance!!.moveToNext()
         }
     }
 
     override fun getItemCount(): Int {
-        return 15
+        return mAvatarArray.size
     }
 
 

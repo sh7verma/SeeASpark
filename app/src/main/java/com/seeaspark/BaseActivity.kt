@@ -21,6 +21,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var mErrorAPI = "";
     var mWidth: Int = 0
     var mHeight: Int = 0
+    var mPlatformStatus: Int = 2
     var mUtils: Utils? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {

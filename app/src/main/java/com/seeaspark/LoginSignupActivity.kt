@@ -1,8 +1,11 @@
 package com.seeaspark
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
+import android.text.TextUtils
 import android.util.Log
 import android.util.Patterns
 import android.view.KeyEvent
@@ -26,7 +29,13 @@ import com.linkedin.platform.listeners.ApiResponse
 import com.linkedin.platform.listeners.AuthListener
 import com.linkedin.platform.utils.Scope
 import kotlinx.android.synthetic.main.activity_signup.*
+import models.SignupModel
+import network.RetrofitClient
 import org.json.JSONException
+import org.w3c.dom.Text
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import utils.Constants
 import java.util.*
 
@@ -39,6 +48,15 @@ class LoginSignupActivity : BaseActivity() {
     var intialViewPosition: Int = 0
     private var callbackManager: CallbackManager? = null
 
+    var mFacebookId = Constants.EMPTY
+    var mLinkedinId = Constants.EMPTY
+    var mEmail = Constants.EMPTY
+    var mPassword = Constants.EMPTY
+    var mName = Constants.EMPTY
+    var mAccountType: Int = 0
+    var mEmailverified: Int = 0
+    var mUserType: Int = 0
+
     override fun initUI() {
         intialViewPosition = ((mWidth * 0.5 - mWidth / 12).toInt())
         val viewParms = LinearLayout.LayoutParams(Constants.dpToPx(24), Constants.dpToPx(2))
@@ -46,14 +64,14 @@ class LoginSignupActivity : BaseActivity() {
         viewLine.layoutParams = viewParms
 
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
-        val typefaceBold = Typeface.createFromAsset(assets, "fonts/bold.otf")
 
         edEmail.typeface = typeface
-
         edPassword.typeface = typeface
     }
 
     override fun onCreateStuff() {
+
+        mUserType = intent.getIntExtra("userType", 0)
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -75,13 +93,26 @@ class LoginSignupActivity : BaseActivity() {
                         loginResult.accessToken
                 ) { jsonObject, response ->
                     // Getting FB User Data
-                    Log.e("First Name  ", jsonObject.getString("first_name"));
+
+                    Log.e("Fb data = ", jsonObject.toString())
+                    if (!TextUtils.isEmpty(jsonObject.getString("email"))) {
+                        mEmail = jsonObject.getString("email")
+                        mEmailverified = Constants.EMAIL_VERIFIED
+                    } else {
+                        mEmailverified = Constants.EMAIL_NOTVERIFIED
+                    }
+                    mName = jsonObject.getString("first_name") + jsonObject.getString("last_name")
+                    mPassword = Constants.EMPTY
+                    mFacebookId = jsonObject.getString("id")
+                    mLinkedinId = Constants.EMPTY
+                    mAccountType = Constants.FACEBOOK_LOGIN
                     LoginManager.getInstance().logOut()
 
-                    mUtils!!.setBoolean("addEmailFragment", true)
-                    hitSignupAPI()
+                    if (connectedToInternet())
+                        hitSignupAPI()
+                    else
+                        showInternetAlert(imgFacebook)
                 }
-
                 val parameters = Bundle()
                 parameters.putString("fields", "id,first_name,last_name,email,gender")
                 request.parameters = parameters
@@ -104,7 +135,6 @@ class LoginSignupActivity : BaseActivity() {
             }
             true
         })
-
     }
 
     override fun initListener() {
@@ -213,11 +243,19 @@ class LoginSignupActivity : BaseActivity() {
             override fun onApiSuccess(apiResponse: ApiResponse?) {
                 var jsonObject = apiResponse!!.responseDataAsJson
                 try {
-                    val emailAddress = jsonObject.getString("emailAddress");
-                    Log.e("Email Address = ", emailAddress)
-                    Log.e("Response", "Linkedin apiResponse JSON " + apiResponse.getResponseDataAsString());
-                    mUtils!!.setBoolean("addEmailFragment", true)
-                    hitSignupAPI()
+                    if (connectedToInternet()) {
+                        Log.e("Response", "Linkedin apiResponse JSON " + apiResponse.getResponseDataAsString());
+                        mEmail = jsonObject.getString("emailAddress")
+                        mLinkedinId = jsonObject.getString("id")
+                        mName = jsonObject.getString("firstName") + jsonObject.getString("lastName")
+                        mAccountType = Constants.LIKENDIN_LOGIN
+                        mPassword = Constants.EMPTY
+                        mFacebookId = Constants.EMPTY
+                        mEmailverified = Constants.EMAIL_VERIFIED
+                        hitSignupAPI()
+                    } else
+                        showInternetAlert(imgLinkedin)
+
                 } catch (exception: JSONException) {
 
                 }
@@ -243,27 +281,90 @@ class LoginSignupActivity : BaseActivity() {
                 Constants.closeKeyboard(this, txtDone)
                 if (modeEnabledSignup) {
                     mUtils!!.setBoolean("addEmailFragment", false)
+
+                    mEmail = edEmail.text.toString().trim()
+                    mPassword = edPassword.text.toString().trim()
+                    mFacebookId = Constants.EMPTY
+                    mLinkedinId = Constants.EMPTY
+                    mAccountType = Constants.EMAIL_LOGIN
+                    mEmailverified = Constants.EMAIL_NOTVERIFIED
+
                     hitSignupAPI()
-                } else
+                } else {
+                    mEmail = edEmail.text.toString().trim()
+                    mPassword = edPassword.text.toString().trim()
                     hitLoginAPI()
+                }
             } else
                 showInternetAlert(txtDone)
         }
     }
 
     private fun hitLoginAPI() {
-        mUtils!!.setString("access_token", "123")
-        var intent = Intent(mContext, LandingActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        showLoader()
+        val call = RetrofitClient.getInstance().userLogin(mEmail,
+                mPassword, "123", mPlatformStatus, mUserType)
+
+        call.enqueue(object : Callback<SignupModel> {
+            override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
+                dismissLoader()
+                if (response.body().code == Constants.PROCEED_AS_OTHER && response.body().response != null) {
+                    Log.e("Access Token - ", response.body().response.access_token)
+                    response.body().response.full_name = mName
+                    alertContinueDialog(response.body().message, response.body())
+                } else if (response.body().code == Constants.PROCEED_NORMAL && response.body().response != null) {
+                    Log.e("Access Token N - ", response.body().response.access_token)
+                }
+            }
+
+            override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(txtDone, t!!.getLocalizedMessage())
+            }
+
+        })
     }
 
     private fun hitSignupAPI() {
-        var intent = Intent(mContext, CreateProfileActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        showLoader()
+        val call = RetrofitClient.getInstance().userSignup(mFacebookId,
+                mEmail, mPassword, mLinkedinId, mAccountType,
+                "123", mPlatformStatus, mEmailverified, mUserType)
+
+        call.enqueue(object : Callback<SignupModel> {
+            override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
+                if (response.body().code == Constants.PROCEED_NORMAL && response.body().response != null) {
+
+                    if (!TextUtils.isEmpty(response.body().response.email)) {
+                        mUtils!!.setBoolean("addEmailFragment", false)
+                    } else {
+                        mUtils!!.setBoolean("addEmailFragment", true)
+                    }
+
+                    response.body().response.full_name = mName
+                    val intent = Intent(mContext, CreateProfileActivity::class.java)
+                    intent.putExtra("profileData", response.body())
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+
+                } else if (response.body().code == Constants.PROCEED_AS_OTHER && response.body().response != null) {
+                    response.body().response.full_name = mName
+                    alertContinueDialog(response.body().message, response.body())
+                } else {
+                    showAlert(txtDone, response.body().error!!.message!!)
+                }
+                dismissLoader()
+            }
+
+            override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(txtDone, t!!.getLocalizedMessage())
+            }
+        })
+
+
     }
 
     internal fun validateEmail(text: CharSequence): Boolean {
@@ -271,5 +372,29 @@ class LoginSignupActivity : BaseActivity() {
         val matcher = pattern.matcher(text)
         return matcher.matches()
     }
+
+    private fun alertContinueDialog(message: String, signupModel: SignupModel) {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.confrim, DialogInterface.OnClickListener { dialog, id ->
+                    val intent = Intent(mContext, CreateProfileActivity::class.java)
+                    intent.putExtra("profileData", signupModel)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                })
+                .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener { dialog, id ->
+                    edEmail.setText(Constants.EMPTY)
+                    edPassword.setText(Constants.EMPTY)
+                    dialog.cancel()
+
+                })
+
+        val alert = builder.create()
+        alert.show()
+    }
+
 
 }

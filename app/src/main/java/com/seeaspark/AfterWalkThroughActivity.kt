@@ -29,11 +29,11 @@ class AfterWalkThroughActivity : BaseActivity() {
 
         when (view) {
             txtMentee -> {
-                startActivity(Intent(this, LoginSignupActivity::class.java))
+                startActivity(Intent(this, LoginSignupActivity::class.java).putExtra("userType", 1))
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
             }
             txtMentor -> {
-                startActivity(Intent(this, LoginSignupActivity::class.java))
+                startActivity(Intent(this, LoginSignupActivity::class.java).putExtra("userType", 0))
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
             }
         }

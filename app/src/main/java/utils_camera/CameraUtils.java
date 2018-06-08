@@ -199,7 +199,7 @@ public class CameraUtils {
      *
      * @param context
      */
-    public CameraUtils(Context context, CameraUtils.ImageClicked callback, RelativeLayout previewLayout) {
+    public CameraUtils(Context context, ImageClicked callback, RelativeLayout previewLayout) {
 
         mApplication = context;
         mCallback = callback;

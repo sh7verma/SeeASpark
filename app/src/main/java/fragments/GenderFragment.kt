@@ -30,7 +30,7 @@ class GenderFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
-        txtSelectGender.setText(mCreateProfileInstance!!.mGender)
+        txtSelectGender.text = mCreateProfileInstance!!.mGenderText
     }
 
     private fun initListener() {
@@ -52,7 +52,6 @@ class GenderFragment : Fragment(), View.OnClickListener {
                     mCreateProfileInstance!!.showAlertActivity(txtNextGender, getString(R.string.error_gender))
                 else {
                     mCreateProfileInstance!!.moveToNext()
-                    mCreateProfileInstance!!.mGender = txtSelectGender.text.toString()
                 }
             }
         }
@@ -65,12 +64,18 @@ class GenderFragment : Fragment(), View.OnClickListener {
             when (which) {
                 R.id.item_male -> {
                     txtSelectGender.setText(R.string.male)
+                    mCreateProfileInstance!!.mGenderText = txtSelectGender.text.toString()
+                    mCreateProfileInstance!!.mGender = 1
                 }
                 R.id.item_female -> {
                     txtSelectGender.setText(R.string.female)
+                    mCreateProfileInstance!!.mGenderText = txtSelectGender.text.toString()
+                    mCreateProfileInstance!!.mGender = 2
                 }
                 R.id.item_other -> {
                     txtSelectGender.setText(R.string.other)
+                    mCreateProfileInstance!!.mGenderText = txtSelectGender.text.toString()
+                    mCreateProfileInstance!!.mGender = 3
                 }
             }
         }.show()
