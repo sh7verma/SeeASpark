@@ -72,7 +72,7 @@ public class AvatarModel implements Parcelable {
         this.avtar_url = in.readString();
     }
 
-    public static final Parcelable.Creator<AvatarModel> CREATOR = new Parcelable.Creator<AvatarModel>() {
+    public static final Creator<AvatarModel> CREATOR = new Creator<AvatarModel>() {
         @Override
         public AvatarModel createFromParcel(Parcel source) {
             return new AvatarModel(source);

@@ -380,7 +380,7 @@ public class SignupModel extends BaseModel implements Parcelable {
                 this.updated_at = in.readString();
             }
 
-            public static final Parcelable.Creator<ProfessionBean> CREATOR = new Parcelable.Creator<ProfessionBean>() {
+            public static final Creator<ProfessionBean> CREATOR = new Creator<ProfessionBean>() {
                 @Override
                 public ProfessionBean createFromParcel(Parcel source) {
                     return new ProfessionBean(source);
@@ -497,7 +497,7 @@ public class SignupModel extends BaseModel implements Parcelable {
                 this.professions = in.createTypedArrayList(ProfessionModel.CREATOR);
             }
 
-            public static final Parcelable.Creator<PreferencesBean> CREATOR = new Parcelable.Creator<PreferencesBean>() {
+            public static final Creator<PreferencesBean> CREATOR = new Creator<PreferencesBean>() {
                 @Override
                 public PreferencesBean createFromParcel(Parcel source) {
                     return new PreferencesBean(source);
@@ -572,7 +572,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             in.readList(this.answers, AnswerModel.class.getClassLoader());
         }
 
-        public static final Parcelable.Creator<ResponseBean> CREATOR = new Parcelable.Creator<ResponseBean>() {
+        public static final Creator<ResponseBean> CREATOR = new Creator<ResponseBean>() {
             @Override
             public ResponseBean createFromParcel(Parcel source) {
                 return new ResponseBean(source);

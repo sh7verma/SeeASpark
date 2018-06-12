@@ -64,7 +64,7 @@ public class QuestionAnswerModel implements Parcelable {
         this.question = in.readString();
     }
 
-    public static final Parcelable.Creator<QuestionAnswerModel> CREATOR = new Parcelable.Creator<QuestionAnswerModel>() {
+    public static final Creator<QuestionAnswerModel> CREATOR = new Creator<QuestionAnswerModel>() {
         @Override
         public QuestionAnswerModel createFromParcel(Parcel source) {
             return new QuestionAnswerModel(source);

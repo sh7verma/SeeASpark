@@ -1,23 +1,36 @@
 package adapters
 
 import android.content.Context
+import android.content.Intent
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.seeaspark.QuestionnariesActivity
 import com.seeaspark.R
 import kotlinx.android.synthetic.main.item_answers.view.*
+import models.QuestionAnswerModel
+import models.SelectedQuestionAnswerModel
+import utils.Constants
 
 
-class AnswerAdapter(mAnswersArray: ArrayList<String>, mContext: Context) : RecyclerView.Adapter<AnswerAdapter.ViewHolder>() {
+class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQuestionarieInstance: QuestionnariesActivity?) : RecyclerView.Adapter<AnswerAdapter.ViewHolder>() {
 
     var mAnswersArray = ArrayList<String>()
+    var mAnswersModel: QuestionAnswerModel? = null
     var mContext: Context? = null
+    var mQuestionarieInstance: QuestionnariesActivity? = null
+
+    private var broadcaster: LocalBroadcastManager? = null
 
     init {
-        this.mAnswersArray = mAnswersArray
+        this.mAnswersArray = mAnswersArray.options.split(",") as ArrayList<String>
         this.mContext = mContext
+        mAnswersModel = mAnswersArray
+        this.mQuestionarieInstance = mQuestionarieInstance
+        broadcaster = LocalBroadcastManager.getInstance(mContext)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,28 +42,30 @@ class AnswerAdapter(mAnswersArray: ArrayList<String>, mContext: Context) : Recyc
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-
         holder.txtAnswerQuestion.setOnClickListener {
-            if (holder.txtAnswerQuestion.currentTextColor == ContextCompat.getColor(mContext!!, R.color.black_color)) {
-                holder.txtAnswerQuestion.setBackgroundResource(R.drawable.answer_background)
-                holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.hint_color_light))
-            } else {
-                holder.txtAnswerQuestion.setBackgroundResource(R.drawable.answer_selected)
-                holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
-            }
+            holder.txtAnswerQuestion.setBackgroundResource(R.drawable.answer_selected)
+            holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+            mAnswersModel!!.answers = mAnswersArray[position]
+            val questionIntent = Intent(Constants.QUESTIONS)
+            questionIntent.putExtra("questionId", mAnswersModel!!.id)
+            questionIntent.putExtra("answer", mAnswersModel!!.answers)
+            broadcaster!!.sendBroadcast(questionIntent)
+            notifyDataSetChanged()
         }
-        if (position == 0)
-            holder.txtAnswerQuestion.text = "Evaluation"
-        else if (position == 1)
-            holder.txtAnswerQuestion.text = "Analysis"
-        else if (position == 2)
-            holder.txtAnswerQuestion.text = "Segmentation"
-        else if (position == 3)
-            holder.txtAnswerQuestion.text = "Good Planner"
+
+        if (mAnswersModel!!.answers.equals(mAnswersArray[position])) {
+            holder.txtAnswerQuestion.setBackgroundResource(R.drawable.answer_selected)
+            holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+        } else {
+            holder.txtAnswerQuestion.setBackgroundResource(R.drawable.answer_background)
+            holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.hint_color_light))
+        }
+
+        holder.txtAnswerQuestion.text = mAnswersArray[position]
     }
 
     override fun getItemCount(): Int {
-        return 4
+        return mAnswersArray.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
