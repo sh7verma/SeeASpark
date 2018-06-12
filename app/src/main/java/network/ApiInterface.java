@@ -1,7 +1,9 @@
 package network;
 
 import models.ResendModel;
+import models.SearchSkillModel;
 import models.SignupModel;
+import models.SkillsModel;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -57,6 +59,27 @@ public interface ApiInterface {
     @POST("/api/v1/verifications/send_email")
     Call<ResendModel> verifyEmail(@Field("email") String email,
                                   @Field("access_token") String access_token);
+
+    @FormUrlEncoded
+    @POST("/api/v1/preferences/update_preferences")
+    Call<SignupModel> updatePreferences(@Field("access_token") String access_token,
+                                        @Field("distance") int distance,
+                                        @Field("experience") String experience,
+                                        @Field("gender") int gender,
+                                        @Field("skills") String skills,
+                                        @Field("professions") String professions,
+                                        @Field("languages") String languages);
+
+    @FormUrlEncoded
+    @POST("/api/v1/answers/post_answers")
+    Call<SignupModel> postAnswers(@Field("access_token") String access_token,
+                                  @Field("questions") String questions);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/skills/search_skill")
+    Call<SearchSkillModel> searchSkills(@Field("access_token") String access_token,
+                                        @Field("search") String search);
 
 
 }

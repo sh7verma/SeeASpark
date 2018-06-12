@@ -171,10 +171,22 @@ class VerifyIdActivity : BaseActivity() {
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
                 dismissLoader()
+                var intent: Intent? = null
                 if (response.body().response != null) {
-                    var intent = Intent(mContext, ProfileReviewDialog::class.java)
-                    intent.putExtra("userProfileData", response.body().response)
-                    startActivity(intent)
+
+                    userData!!.response = response.body().response
+                    mUtils!!.setString("userDataLocal", mGson.toJson(userData))
+
+                    if (response.body().response.user_type == Constants.MENTOR) {
+                        intent = Intent(mContext, ProfileReviewDialog::class.java)
+                        intent.putExtra("userProfileData", response.body().response)
+                        startActivity(intent)
+                    } else {
+                        intent = Intent(mContext, QuestionnariesActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    }
                 } else {
                     showAlert(llCancelDone, response.body().error!!.message!!)
                 }

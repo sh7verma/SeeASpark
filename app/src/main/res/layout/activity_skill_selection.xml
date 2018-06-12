@@ -17,6 +17,7 @@
             android:id="@+id/imgBackSelection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
             android:padding="@dimen/_12sdp"
             android:src="@mipmap/ic_back_black" />
 

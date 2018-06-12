@@ -131,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_8sdp"
                 android:layout_marginRight="@dimen/_8sdp"
-                app:absoluteMaxValue="50"
+                app:absoluteMaxValue="20"
                 app:absoluteMinValue="0"
                 app:activateOnDefaultValues="true"
                 app:activeColor="@color/colorMentee"

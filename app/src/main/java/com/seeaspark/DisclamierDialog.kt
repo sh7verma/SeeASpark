@@ -58,4 +58,8 @@ class DisclamierDialog : Activity() {
         mScreenwidth = dm.widthPixels
         mScreenheight = dm.heightPixels
     }
+
+    override fun onBackPressed() {
+
+    }
 }

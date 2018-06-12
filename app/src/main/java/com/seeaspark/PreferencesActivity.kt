@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,17 +16,26 @@ import kotlinx.android.synthetic.main.activity_preferences.*
 import kotlinx.android.synthetic.main.activity_preferences.view.*
 import kotlinx.android.synthetic.main.add_skills.view.*
 import models.ProfessionModel
+import models.SignupModel
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import utils.Constants
 
 class PreferencesActivity : BaseActivity() {
 
     var mSelectedSkillsArray = ArrayList<String>()
+    var mSelectedSkillsNameArray = ArrayList<String>()
     private val SKILLS: Int = 1
 
     var mAdapterProfession: PreferProfessionAdapter? = null
     var mProfessionArray = ArrayList<ProfessionModel>()
+    private var userData: SignupModel? = null
+    private var mGenderValue: Int? = 0
 
     override fun initUI() {
-        var bottomParms = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mHeight / 6)
+        val bottomParms = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mHeight / 6)
         llProfessionText.layoutParams = bottomParms
         initPersistentBottomsheetProfession()
         rvProfessionPrefer.layoutManager = LinearLayoutManager(this)
@@ -33,18 +43,40 @@ class PreferencesActivity : BaseActivity() {
 
     override fun onCreateStuff() {
 
-        rsbDistance.setNotifyWhileDragging(true)
+        rsbDistance.isNotifyWhileDragging = true
         rsbDistance.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtDistanceCount.text = "$maxValue Miles" }
-        rsbDistance.selectedMaxValue = 20
+        rsbDistance.selectedMaxValue = 15
 
-        rsbExperience.setNotifyWhileDragging(true)
+        rsbExperience.isNotifyWhileDragging = true
         rsbExperience.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtExperienceCount.text = "$maxValue Years" }
-        rsbExperience.selectedMaxValue = 8
+        rsbExperience.selectedMaxValue = 1
 
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java);
 
+        if (userData!!.response.gender == "1") {
+            mGenderValue = 2
+            txtGenderPrefer.text = getString(R.string.female)
+        } else if (userData!!.response.gender == "2") {
+            mGenderValue = 1
+            txtGenderPrefer.text = getString(R.string.male)
+        } else {
+            mGenderValue = 3
+            txtGenderPrefer.text = getString(R.string.other)
+        }
+
+        extractProfessionValue()
+        extractLanguageValue()
 
         mAdapterProfession = PreferProfessionAdapter(mContext!!, mProfessionArray)
         rvProfessionPrefer.adapter = mAdapterProfession
+    }
+
+    private fun extractLanguageValue() {
+        /// no operation
+    }
+
+    private fun extractProfessionValue() {
+        mProfessionArray.addAll(userData!!.professions)
     }
 
     override fun initListener() {
@@ -64,17 +96,74 @@ class PreferencesActivity : BaseActivity() {
             llSkillSelection -> {
                 intent = Intent(mContext, SkillSelectionActivity::class.java)
                 intent.putStringArrayListExtra("selectedSkills", mSelectedSkillsArray)
+                intent.putStringArrayListExtra("selectedSkillsName", mSelectedSkillsNameArray)
                 startActivityForResult(intent, SKILLS)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
             imgForwardPrefer -> {
-                intent = Intent(mContext, DisclamierDialog::class.java)
-                startActivity(intent)
+                if (connectedToInternet()) {
+                    hitAPI()
+                } else
+                    showInternetAlert(imgForwardPrefer)
+
+
             }
             llGenderPrefer -> {
                 optionGender()
             }
         }
+    }
+
+    private fun hitAPI() {
+        showLoader()
+        var tempProfessions: String = Constants.EMPTY
+
+        val tempProfessionsArray = ArrayList<String>()
+        for (selectedProfession in mProfessionArray) {
+            if (selectedProfession.isSelected)
+                tempProfessionsArray.add(selectedProfession.id.toString())
+        }
+
+        if (tempProfessionsArray.size > 0)
+            tempProfessions = tempProfessionsArray.toString()
+                    .substring(1, tempProfessionsArray.toString().length - 1).trim()
+
+        Log.e("Selected Professions = ", tempProfessions)
+
+        var tempSkills = Constants.EMPTY
+        if (mSelectedSkillsArray.size > 0)
+            tempSkills = mSelectedSkillsArray.toString()
+                    .substring(1, mSelectedSkillsArray.toString().length - 1).trim()
+
+
+        val call = RetrofitClient.getInstance().updatePreferences(userData!!.response.access_token,
+                rsbDistance.selectedMaxValue as Int,
+                rsbExperience.selectedMaxValue.toString(),
+                mGenderValue!!,
+                tempSkills,
+                tempProfessions,
+                Constants.EMPTY)
+
+        call.enqueue(object : Callback<SignupModel> {
+            override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
+                dismissLoader()
+                if (response.body().response != null) {
+                    userData!!.response = response.body().response
+                    mUtils!!.setString("userDataLocal", mGson.toJson(userData))
+                    mUtils!!.setString("access_token", userData!!.response.access_token)
+                    mUtils!!.setInt("profile_status", userData!!.response.profile_status)
+                    intent = Intent(mContext, DisclamierDialog::class.java)
+                    startActivity(intent)
+                } else {
+                    showAlert(imgForwardPrefer, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(imgForwardPrefer, t!!.localizedMessage)
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -85,7 +174,10 @@ class PreferencesActivity : BaseActivity() {
                     flSkillsPrefer.removeAllViews()
                     mSelectedSkillsArray.clear()
                     mSelectedSkillsArray.addAll(data!!.getStringArrayListExtra("selectedSkills"))
-                    for (skills: String in mSelectedSkillsArray) {
+
+                    mSelectedSkillsNameArray.clear()
+                    mSelectedSkillsNameArray.addAll(data!!.getStringArrayListExtra("selectedSkillsName"))
+                    for (skills: String in mSelectedSkillsNameArray) {
                         if (count == 3) {
                             flSkillsPrefer.addView(inflateView("+ ${mSelectedSkillsArray.size - count} More"))
                             break
@@ -162,18 +254,21 @@ class PreferencesActivity : BaseActivity() {
         BottomSheet.Builder(this, R.style.BottomSheet_Dialog)
                 .title(getString(R.string.select_gender))
                 .sheet(R.menu.menu_gender).listener { dialog, which ->
-            when (which) {
-                R.id.item_male -> {
-                    txtGenderPrefer.setText(R.string.male)
-                }
-                R.id.item_female -> {
-                    txtGenderPrefer.setText(R.string.female)
-                }
-                R.id.item_other -> {
-                    txtGenderPrefer.setText(R.string.other)
-                }
-            }
-        }.show()
+                    when (which) {
+                        R.id.item_male -> {
+                            txtGenderPrefer.setText(R.string.male)
+                            mGenderValue = 1
+                        }
+                        R.id.item_female -> {
+                            txtGenderPrefer.setText(R.string.female)
+                            mGenderValue = 2
+                        }
+                        R.id.item_other -> {
+                            txtGenderPrefer.setText(R.string.other)
+                            mGenderValue = 3
+                        }
+                    }
+                }.show()
     }
 
 

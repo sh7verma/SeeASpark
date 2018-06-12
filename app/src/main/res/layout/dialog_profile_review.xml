@@ -9,6 +9,7 @@
     android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/imgAvatarProfileReview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/_16sdp"
@@ -36,15 +37,14 @@
 
     <customviews.MediumTextView
         android:id="@+id/txtReady"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_120sdp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/_16ssp"
         android:background="@drawable/mentee_ripple"
         android:elevation="@dimen/_3"
+        android:gravity="center"
         android:paddingBottom="@dimen/_8sdp"
-        android:paddingLeft="@dimen/_24sdp"
-        android:paddingRight="@dimen/_24sdp"
         android:paddingTop="@dimen/_8sdp"
         android:text="@string/ok"
         android:textAllCaps="true"
@@ -53,14 +53,13 @@
 
     <customviews.MediumTextView
         android:id="@+id/txtLogoutReview"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_120sdp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/mentee_ripple"
         android:elevation="@dimen/_3"
+        android:gravity="center"
         android:paddingBottom="@dimen/_8sdp"
-        android:paddingLeft="@dimen/_24sdp"
-        android:paddingRight="@dimen/_24sdp"
         android:paddingTop="@dimen/_8sdp"
         android:text="@string/logout"
         android:textAllCaps="true"

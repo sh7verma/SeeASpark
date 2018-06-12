@@ -11,6 +11,12 @@
         <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
     </style>
 
+    <style name="myDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">true</item>
+
+        ...
+    </style>
+
     <style name="DialogAnimationClose">
         <item name="android:windowEnterAnimation">@anim/stay</item>
         <item name="android:windowExitAnimation">@anim/slide_in_dwon</item>

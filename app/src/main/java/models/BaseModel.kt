@@ -7,7 +7,7 @@ abstract class BaseModel {
     var error: Error? = null
 
     inner class Error {
-        var code: String? = null
+        var code: Int = 0
         var message: String? = null
     }
 

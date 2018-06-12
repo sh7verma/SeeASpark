@@ -77,10 +77,7 @@ class WalkthroughActivity : BaseActivity() {
     private val mHandler = Handler()
     internal var runnable: Runnable = object : Runnable {
         override fun run() {
-            /*if (vpWalk.currentItem == 0)
-                delay = 9000
-            else
-                delay = 3000*/
+
             if (vpWalk.currentItem < 4) {
                 vpWalk.currentItem = vpWalk.currentItem + 1
             }

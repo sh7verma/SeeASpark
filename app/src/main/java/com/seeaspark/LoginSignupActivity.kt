@@ -332,140 +332,82 @@ class LoginSignupActivity : BaseActivity() {
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
                 dismissLoader()
-                if (response.body().code == Constants.PROCEED_AS_OTHER && response.body().response != null) {
-                    Log.e("Access Token - ", response.body().response.access_token)
-                    response.body().response.full_name = mName
+                if (response.body().code == Constants.PROCEED_AS_OTHER
+                        && response.body().response != null) {
+                    /// user enter as different user Type as comapred to signup
+                    // but didn't setuped profile yet
 
+                    /// changing userType
+
+                    val signupModel = response.body()
+
+                    if (signupModel.response.user_type == Constants.MENTOR)
+                        signupModel.response.user_type = Constants.MENTEE
+                    else if (signupModel.response.user_type == Constants.MENTEE)
+                        signupModel.response.user_type = Constants.MENTOR
+
+                    signupModel.response.full_name = mName
+
+                    /// add data to shared preference
+                    addDataToSharedPreferences(signupModel)
+
+                    alertContinueDialog(response.body().message, signupModel)
+
+                } else if (response.body().code == Constants.PROFILE_UNDER_REVIEW
+                        && response.body().response != null) {
+
+                    /// add data to shared preference
+                    addDataToSharedPreferences(response.body())
+
+                    /// navigate to review screen
+                    moveToReview(response.body())
+
+                } else if (response.body().code == Constants.PROCEED_NORMAL
+                        && response.body().response != null) {
                     if (response.body().response.email_verified == 0 &&
-                            response.body().response.profile_status == 0 &&
-                            response.body().response.document_verified == 0) {
-
-                        addDataToSharedPreferences(response.body())
-                        /// navigate to email verification screen
-                        intent = Intent(mContext, EmailVerificationActivity::class.java)
-                        intent.putExtra("access_token", response.body().response.access_token)
-                        startActivityForResult(intent, VERIFY)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 0 &&
                             response.body().response.profile_status == 0) {
 
-                        /// navigate to alert continue dialog
-                        alertContinueDialog(response.body().message, response.body())
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 0 &&
-                            response.body().response.profile_status == 0) {
-
+                        /// add data to shared preference
                         addDataToSharedPreferences(response.body())
-
-                        /// navigate to review screen
-                        intent = Intent(mContext, ReviewActivity::class.java)
-                        intent.putExtra("avatar", response.body())
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 1 &&
-                            response.body().response.profile_status == 1) {
-
-                        addDataToSharedPreferences(response.body())
-
-                        /// navigate to questionarrie
-                        intent = Intent(mContext, QuestionnariesActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 1 &&
-                            response.body().response.profile_status == 2) {
-
-                        addDataToSharedPreferences(response.body())
-
-                        /// navigate to landing Screen
-                        intent = Intent(mContext, LandingActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
-                    }
-                } else if (response.body().code == Constants.PROCEED_NORMAL && response.body().response != null) {
-                    var intent: Intent? = null
-                    if (response.body().response.email_verified == 0 &&
-                            response.body().response.profile_status == 0 &&
-                            response.body().response.document_verified == 0) {
 
                         /// navigate to email verification screen
-                        addDataToSharedPreferences(response.body())
-
-                        intent = Intent(mContext, EmailVerificationActivity::class.java)
-                        intent.putExtra("access_token", response.body().response.access_token)
-                        startActivityForResult(intent, VERIFY)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        moveToEmailVerification(response.body())
 
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 0 &&
                             response.body().response.profile_status == 0) {
 
+                        /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
                         /// navigate to create profile screen
-                        intent = Intent(mContext, CreateProfileActivity::class.java)
-                        intent.putExtra("userData", response.body())
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 0 &&
-                            response.body().response.profile_status == 0) {
-
-                        addDataToSharedPreferences(response.body())
-
-                        /// navigate to review screen
-                        intent = Intent(mContext, ReviewActivity::class.java)
-                        intent.putExtra("avatar", response.body())
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        moveToCreateProfile(response.body())
 
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 1) {
 
+                        /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
                         /// navigate to questionarrie
-                        intent = Intent(mContext, QuestionnariesActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        moveToQuestionnaire()
 
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 2) {
 
+                        mUtils!!.setString("access_token", response.body().response.access_token)
+                        mUtils!!.setInt("profile_status", response.body().response.profile_status)
+                        /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
                         /// navigate to landing Screen
-                        intent = Intent(mContext, LandingActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        moveToLanding()
 
                     }
                 } else if (response.body().response == null) {
-                    if (response.body().error!!.code!!.equals(getString(R.string.error_profileunder_review)))
+                    if (response.body().error!!.code == Constants.PROCEED_AS_OTHER_UNDER_REVIEW)
                         alertProfileSubmittedDialog(response.body().error!!.message!!)
                     else
                         showAlert(txtDone, response.body().error!!.message!!)
@@ -490,171 +432,91 @@ class LoginSignupActivity : BaseActivity() {
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
                 dismissLoader()
-                if (response.body().code == Constants.PROCEED_NORMAL && response.body().response != null) {
+
+                if (response.body().code == Constants.PROCEED_AS_OTHER
+                        && response.body().response != null) {
+                    /// user enter as different user Type as comapred to signup
+                    // but didn't setuped profile yet
+
+                    val signupModel = response.body()
+
+                    if (signupModel.response.user_type == Constants.MENTOR)
+                        signupModel.response.user_type = Constants.MENTEE
+                    else if (signupModel.response.user_type == Constants.MENTEE)
+                        signupModel.response.user_type = Constants.MENTOR
+
+                    signupModel.response.full_name = mName
+
+                    /// add data to shared preference
+                    addDataToSharedPreferences(signupModel)
+
+                    alertContinueDialog(response.body().message, signupModel)
+
+                } else if (response.body().code == Constants.PROFILE_UNDER_REVIEW
+                        && response.body().response != null) {
+                    /// add data to shared preference
+                    addDataToSharedPreferences(response.body())
+                    /// navigate to review screen
+                    moveToReview(response.body())
+
+                } else if (response.body().code == Constants.PROCEED_AS_OTHER_UNDER_REVIEW
+                        && response.body().response != null) {
+                    /// different type user login as compared to signup
+
+                } else if (response.body().code == Constants.PROCEED_NORMAL
+                        && response.body().response != null) {
                     if (response.body().response.email_verified == 0 &&
                             response.body().response.profile_status == 0 &&
-                            response.body().response.document_verified == 0 &&
-                            response.body().response.account_type == Constants.EMAIL_LOGIN) {
+                            (response.body().response.account_type == Constants.EMAIL_LOGIN)) {
 
                         addDataToSharedPreferences(response.body())
-
                         /// navigate to email verification screen
-                        intent = Intent(mContext, EmailVerificationActivity::class.java)
-                        intent.putExtra("access_token", response.body().response.access_token)
-                        startActivityForResult(intent, VERIFY)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        moveToEmailVerification(response.body())
 
                     } else if (response.body().response.email_verified == 0 &&
                             response.body().response.profile_status == 0 &&
                             response.body().response.document_verified == 0 &&
-                            response.body().response.account_type == Constants.FACEBOOK_LOGIN) {
+                            (response.body().response.account_type == Constants.FACEBOOK_LOGIN ||
+                                    response.body().response.account_type == Constants.LIKENDIN_LOGIN)) {
 
                         addDataToSharedPreferences(response.body())
 
                         if (!TextUtils.isEmpty(response.body().response.email)) {
                             mUtils!!.setBoolean("addEmailFragment", false)
 
-                            intent = Intent(mContext, EmailVerificationActivity::class.java)
-                            intent.putExtra("access_token", response.body().response.access_token)
-                            startActivityForResult(intent, VERIFY)
-                            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                            moveToEmailVerification(response.body())
                         } else {
                             mUtils!!.setBoolean("addEmailFragment", true)
-                            /// navigate to profile screen
-                            intent = Intent(mContext, CreateProfileActivity::class.java)
-                            intent.putExtra("userData", response.body())
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
+                            /// navigate to create profile screen
+                            moveToCreateProfile(response.body())
                         }
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 0 &&
                             response.body().response.profile_status == 0) {
 
                         addDataToSharedPreferences(response.body())
-
                         /// navigate to create profile screen
-                        intent = Intent(mContext, CreateProfileActivity::class.java)
-                        intent.putExtra("userData", response.body())
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 0 &&
-                            response.body().response.profile_status == 1) {
-
-                        addDataToSharedPreferences(response.body())
-
-                        /// navigate to review screen
-                        intent = Intent(mContext, ReviewActivity::class.java)
-                        intent.putExtra("avatar", response.body())
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        moveToCreateProfile(response.body())
 
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 1) {
 
                         addDataToSharedPreferences(response.body())
-
                         /// navigate to questionarrie
-                        intent = Intent(mContext, QuestionnariesActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        moveToQuestionnaire()
 
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 2) {
 
+                        mUtils!!.setString("access_token", response.body().response.access_token)
+                        mUtils!!.setInt("profile_status", response.body().response.profile_status)
                         addDataToSharedPreferences(response.body())
-
                         /// navigate to landing Screen
-                        intent = Intent(mContext, LandingActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
+                        moveToLanding()
                     }
 
-                } else if (response.body().code == Constants.PROCEED_AS_OTHER && response.body().response != null) {
-
-                    if (response.body().response.email_verified == 0 &&
-                            response.body().response.profile_status == 0 &&
-                            response.body().response.document_verified == 0 &&
-                            response.body().response.account_type == Constants.FACEBOOK_LOGIN) {
-
-                        addDataToSharedPreferences(response.body())
-
-                        if (!TextUtils.isEmpty(response.body().response.email)) {
-                            mUtils!!.setBoolean("addEmailFragment", false)
-
-                            intent = Intent(mContext, EmailVerificationActivity::class.java)
-                            intent.putExtra("access_token", response.body().response.access_token)
-                            startActivityForResult(intent, VERIFY)
-                            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-                        } else {
-                            mUtils!!.setBoolean("addEmailFragment", true)
-                            /// navigate to profile screen
-                            intent = Intent(mContext, CreateProfileActivity::class.java)
-                            intent.putExtra("userData", response.body())
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            startActivity(intent)
-                        }
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 0 &&
-                            response.body().response.profile_status == 0) {
-
-                        /// navigate to create profile screen
-                        alertContinueDialog(response.body().message, response.body())
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 0 &&
-                            response.body().response.profile_status == 1) {
-
-                        addDataToSharedPreferences(response.body())
-
-                        /// navigate to review screen
-                        intent = Intent(mContext, ReviewActivity::class.java)
-                        intent.putExtra("avatar", response.body())
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 1 &&
-                            response.body().response.profile_status == 1) {
-
-                        addDataToSharedPreferences(response.body())
-
-                        /// navigate to questionarrie
-                        intent = Intent(mContext, QuestionnariesActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 1 &&
-                            response.body().response.profile_status == 2) {
-
-                        addDataToSharedPreferences(response.body())
-
-                        /// navigate to landing Screen
-                        intent = Intent(mContext, LandingActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-                    }
                 } else {
                     showAlert(txtDone, response.body().error!!.message!!)
                 }
@@ -669,6 +531,47 @@ class LoginSignupActivity : BaseActivity() {
 
     }
 
+    private fun moveToReview(body: SignupModel?) {
+        intent = Intent(mContext, ReviewActivity::class.java)
+        intent.putExtra("avatar", body!!.response.avatar)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+    }
+
+    private fun moveToEmailVerification(body: SignupModel?) {
+        intent = Intent(mContext, EmailVerificationActivity::class.java)
+        intent.putExtra("access_token", body!!.response.access_token)
+        startActivityForResult(intent, VERIFY)
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+    }
+
+    private fun moveToCreateProfile(body: SignupModel?) {
+        intent = Intent(mContext, CreateProfileActivity::class.java)
+        intent.putExtra("userData", body)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+    }
+
+    private fun moveToQuestionnaire() {
+        intent = Intent(mContext, QuestionnariesActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+    }
+
+    private fun moveToLanding() {
+        intent = Intent(mContext, LandingActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+    }
+
     internal fun validateEmail(text: CharSequence): Boolean {
         val pattern = Patterns.EMAIL_ADDRESS
         val matcher = pattern.matcher(text)
@@ -680,17 +583,8 @@ class LoginSignupActivity : BaseActivity() {
         builder.setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton(R.string.confrim, DialogInterface.OnClickListener { dialog, id ->
+                    mUtils!!.setBoolean("addEmailFragment", false)
                     val intent = Intent(mContext, CreateProfileActivity::class.java)
-
-                    /// changing userType
-                    if (signupModel.response.user_type == Constants.MENTOR)
-                        signupModel.response.user_type = Constants.MENTEE
-
-                    if (signupModel.response.user_type == Constants.MENTEE)
-                        signupModel.response.user_type = Constants.MENTOR
-
-                    addDataToSharedPreferences(signupModel)
-
                     intent.putExtra("userData", signupModel)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -712,7 +606,7 @@ class LoginSignupActivity : BaseActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage(message)
                 .setCancelable(false)
-                .setNegativeButton(R.string.cancel, DialogInterface.OnClickListener { dialog, id ->
+                .setNegativeButton(R.string.ok, DialogInterface.OnClickListener { dialog, id ->
                     edEmail.requestFocus()
                     edEmail.setText(Constants.EMPTY)
                     edPassword.setText(Constants.EMPTY)

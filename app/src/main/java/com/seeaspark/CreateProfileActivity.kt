@@ -56,6 +56,7 @@ class CreateProfileActivity : BaseActivity() {
             userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java);
 
         mName = userData!!.response.full_name
+        mUtils!!.setString("access_token", userData!!.response.access_token)
 
         /// adding languages
         mLanguageArray.addAll(userData!!.languages)

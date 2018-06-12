@@ -9,8 +9,10 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.util.DisplayMetrics
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.Window
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_profile_review.*
 import models.SignupModel
 import utils.Utils
@@ -37,6 +39,10 @@ class ProfileReviewDialog : Activity() {
         mUtils = Utils(this)
         userProfileData = intent.getParcelableExtra("userProfileData")
 
+        txtNameDialog.text = "HI ${userProfileData!!.full_name}!"
+
+        Picasso.with(this).load(userProfileData!!.avatar).into(imgAvatarProfileReview)
+
         txtReady.setOnClickListener {
             var intent = Intent(this, ReviewActivity::class.java)
             intent.putExtra("avatar", userProfileData!!.avatar)
@@ -59,7 +65,7 @@ class ProfileReviewDialog : Activity() {
     }
 
     internal fun alertLogoutDialog() {
-        val alertDialog = AlertDialog.Builder(this)
+        val alertDialog = AlertDialog.Builder(ContextThemeWrapper(this, R.style.myDialog));
         alertDialog.setTitle("LOG OUT")
         alertDialog.setMessage("Are you sure you want to Log out?")
         alertDialog.setPositiveButton("CONFIRM") { dialog, which ->

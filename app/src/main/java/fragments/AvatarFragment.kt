@@ -57,12 +57,12 @@ class AvatarFragment : Fragment(), View.OnClickListener {
             if (mCreateProfileInstance!!.mGender != 0) {
                 mAvatarArray.clear()
                 if (mCreateProfileInstance!!.mGender != 3) {
-                    for (avatar: AvatarModel in mCreateProfileInstance!!.profileData!!.avatars) {
+                    for (avatar: AvatarModel in mCreateProfileInstance!!.userData!!.avatars) {
                         if (avatar.gender == mCreateProfileInstance!!.mGender)
                             mAvatarArray.add(avatar)
                     }
                 } else
-                    mAvatarArray.addAll(mCreateProfileInstance!!.profileData!!.avatars)
+                    mAvatarArray.addAll(mCreateProfileInstance!!.userData!!.avatars)
 
                 rvAvatar.layoutManager = GridLayoutManager(activity!!, 3) as RecyclerView.LayoutManager?
                 mAvatarAdapter = AvatarAdapter(mAvatarArray,

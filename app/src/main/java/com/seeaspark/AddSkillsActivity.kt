@@ -1,16 +1,25 @@
 package com.seeaspark
 
+import adapters.SkillSuggestionAdapter
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Typeface
+import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_add_skills.*
 import kotlinx.android.synthetic.main.add_skills.view.*
+import models.SearchSkillModel
 import models.SkillsModel
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import utils.Constants
 
 class AddSkillsActivity : BaseActivity() {
@@ -18,13 +27,23 @@ class AddSkillsActivity : BaseActivity() {
     private var mSkillsArray = ArrayList<SkillsModel>()
     private var mAllSkillsArray = ArrayList<SkillsModel>()
     private var mTempArray = ArrayList<String>()
+    private var mAddSkillsActivity: AddSkillsActivity? = null
+    private var mCallServer: Boolean = true
+
+    var call: Call<SearchSkillModel>? = null
 
     override fun initUI() {
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
         edSkill.setTypeface(typeface)
+
+        rvSkillSuggestions.layoutManager = LinearLayoutManager(this)
+
     }
 
     override fun onCreateStuff() {
+
+        mAddSkillsActivity = this
+
         mSkillsArray.addAll(intent.getParcelableArrayListExtra("skillsArray"))
         mAllSkillsArray.addAll(intent.getParcelableArrayListExtra("allSkillsArray"))
 
@@ -35,6 +54,47 @@ class AddSkillsActivity : BaseActivity() {
         for (skillValue: SkillsModel in mSkillsArray) {
             flAddSkills.addView(inflateView(skillValue))
         }
+
+        edSkill.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(char: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (char.toString().isNotEmpty()) {
+                    if (mCallServer)
+                        hitAPI(char.toString())
+                    else
+                        mCallServer = true
+                } else {
+                    cvSkillSuggestion.visibility = View.INVISIBLE
+                }
+            }
+        })
+
+    }
+
+    private fun hitAPI(searchText: String) {
+        call = RetrofitClient.getInstance().searchSkills(mUtils!!.getString("access_token", ""), searchText)
+        call!!.enqueue(object : Callback<SearchSkillModel> {
+            override fun onResponse(call: Call<SearchSkillModel>?, response: Response<SearchSkillModel>) {
+                if (response.body().response.size > 0)
+                    cvSkillSuggestion.visibility = View.VISIBLE
+                else
+                    cvSkillSuggestion.visibility = View.INVISIBLE
+
+                rvSkillSuggestions.adapter = SkillSuggestionAdapter(response.body().response as ArrayList<SkillsModel>,
+                        mContext!!, mAddSkillsActivity)
+            }
+
+            override fun onFailure(call: Call<SearchSkillModel>?, t: Throwable?) {
+                showAlert(imgPlusSkill, t!!.localizedMessage)
+            }
+        })
     }
 
     override fun initListener() {
@@ -62,11 +122,11 @@ class AddSkillsActivity : BaseActivity() {
             imgPlusSkill -> {
                 if (!TextUtils.isEmpty(edSkill.text.toString().trim())) {
                     if (mTempArray.contains(edSkill.text.toString().trim()))
-                        showAlert(imgPlusSkill, "This Skill already exist. Please choose another one.")
+                        showAlert(imgPlusSkill, getString(R.string.skill_error))
                     else
                         addSkills()
                 } else
-                    showAlert(imgPlusSkill, "Please enter a skill")
+                    showAlert(imgPlusSkill, getString(R.string.enter_skill_error))
             }
         }
     }
@@ -75,7 +135,6 @@ class AddSkillsActivity : BaseActivity() {
         flAddSkills.removeAllViews()
 
         mTempArray.add(edSkill.text.toString().trim())
-        Constants.tempSkills.add(edSkill.text.toString().trim())
 
         val newSkillModel = SkillsModel()
         newSkillModel.name = edSkill.text.toString().trim()
@@ -104,5 +163,13 @@ class AddSkillsActivity : BaseActivity() {
         }
         interestChip.txtAddSkillChip.text = skillValue.name
         return interestChip
+    }
+
+    fun selectSkill(name: String?) {
+        mCallServer = false
+        cvSkillSuggestion.visibility = View.INVISIBLE
+        rvSkillSuggestions.adapter = null
+        edSkill.setText(name)
+        edSkill.setSelection(edSkill.text.toString().length)
     }
 }

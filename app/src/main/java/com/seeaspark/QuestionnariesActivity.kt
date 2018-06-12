@@ -1,25 +1,52 @@
 package com.seeaspark
 
 import adapters.QuestionAdapter
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
+import android.support.v4.content.LocalBroadcastManager
+import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_questionaires.*
-import models.QuestionModel
+import kotlinx.android.synthetic.main.activity_verify_id.*
+import models.QuestionAnswerModel
+import models.SignupModel
+import network.RetrofitClient
+import org.json.JSONArray
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import utils.Constants
 
 class QuestionnariesActivity : BaseActivity() {
 
-    var mAdapterQuestions: QuestionAdapter? = null
-    var mArrayQuestions = ArrayList<QuestionModel>()
+    private var mAdapterQuestions: QuestionAdapter? = null
+    private var mArrayQuestions = ArrayList<QuestionAnswerModel>()
+    private var userData: SignupModel? = null
+    var mAnswerCount = 0
+    var mQuestionarieInstance: QuestionnariesActivity? = null
+    var mServerQuestion = JSONArray()
 
     override fun initUI() {
 
     }
 
     override fun onCreateStuff() {
-        mAdapterQuestions = QuestionAdapter(mArrayQuestions, mContext!!)
+
+        mQuestionarieInstance = this
+
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        mArrayQuestions.clear()
+        mArrayQuestions.addAll(userData!!.answers)
+
+        mAdapterQuestions = QuestionAdapter(mArrayQuestions, mContext!!, mQuestionarieInstance)
         vpQuestion.adapter = mAdapterQuestions
-        vpQuestion.offscreenPageLimit = 4
+        vpQuestion.offscreenPageLimit = mArrayQuestions.size
         cpIndicator.setViewPager(vpQuestion)
         cpIndicator.fillColor = Color.BLACK
     }
@@ -39,11 +66,83 @@ class QuestionnariesActivity : BaseActivity() {
 
             }
             txtDoneQuestion -> {
-                var intent = Intent(mContext, PreferencesActivity::class.java)
-                startActivity(intent)
-                finish()
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                if (connectedToInternet()) {
+                    if (mAnswerCount == mArrayQuestions.size) {
+                        hitAPI()
+                    }
+                } else
+                    showInternetAlert(llCancelDone)
             }
         }
     }
+
+    private fun hitAPI() {
+        showLoader()
+        val call = RetrofitClient.getInstance().postAnswers(userData!!.response.access_token, mServerQuestion.toString())
+        call.enqueue(object : Callback<SignupModel> {
+
+            override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
+                dismissLoader()
+                if (response.body().response != null) {
+                    userData!!.response = response.body().response
+                    mUtils!!.setString("access_token", userData!!.response.access_token)
+                    mUtils!!.setInt("profile_status", userData!!.response.profile_status)
+                    val intent = Intent(mContext!!, PreferencesActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                } else {
+                    showAlert(llCancelDone, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(txtDoneQuestion, t!!.localizedMessage)
+            }
+        })
+    }
+
+    internal var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+
+            for ((index, questionData) in mArrayQuestions.withIndex()) {
+                if (questionData.id == intent.getIntExtra("questionId", 0)) {
+                    questionData.answers = intent.getStringExtra("answer")
+                    mArrayQuestions.set(index, questionData)
+                    break
+                }
+            }
+
+            mAnswerCount = 0
+            for ((index, questionData) in mArrayQuestions.withIndex()) {
+                if (!TextUtils.isEmpty(questionData.answers)) {
+                    val obj = JSONObject()
+                    obj.put("answers", questionData.answers)
+                    obj.put("question_id", questionData.id)
+                    mServerQuestion.put(obj)
+                    mAnswerCount++
+                }
+                Log.e("Question = Answer = ", "${questionData.id},${questionData.answers}")
+            }
+
+            if (mAnswerCount.equals(mArrayQuestions.size)) {
+                txtDoneQuestion.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
+                IntentFilter(Constants.QUESTIONS))
+
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+    }
+
 }

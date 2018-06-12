@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/transparent_ripple"
             android:padding="@dimen/_12sdp"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:text="@string/done"
             android:textAllCaps="true"
             android:textColor="@color/black_color"

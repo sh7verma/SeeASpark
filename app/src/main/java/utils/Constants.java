@@ -45,12 +45,12 @@ public class Constants {
     public static int EMAIL_NOTVERIFIED = 0;
     public static int MENTEE = 1;
     public static int MENTOR = 0;
+    public static int PROCEED_AS_OTHER_UNDER_REVIEW = 2002;
     public static int PROCEED_NORMAL = 200;
     public static int PROCEED_AS_OTHER = 2001;
+    public static int PROFILE_UNDER_REVIEW = 3001;
     public static final String EMAIL_VERIFY = "email_verify";
-
-    public static ArrayList<String> tempSkills = new ArrayList<>();
-
+    public static final String QUESTIONS = "questions";
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

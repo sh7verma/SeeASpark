@@ -98,5 +98,7 @@
     <string name="your_profile_is_under_review_for_the_admin_approval_thnaks_for_your_patience">Your profile is under review for the Admin Approval. Thnaks for your patience.</string>
     <string name="resend">Resend</string>
     <string name="error_profileunder_review">301</string>
+    <string name="skill_error">This Skill already exist. Please choose another one.</string>
+    <string name="enter_skill_error">Please enter a skill</string>
 
 </resources>

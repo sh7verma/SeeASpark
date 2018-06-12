@@ -17,6 +17,15 @@ public class SignupModel extends BaseModel implements Parcelable {
     private List<LanguageModel> languages;
     private List<ProfessionModel> professions;
     private List<SkillsModel> skills;
+    private List<QuestionAnswerModel> answers;
+
+    public List<QuestionAnswerModel> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<QuestionAnswerModel> answers) {
+        this.answers = answers;
+    }
 
     public String getMessage() {
         return message;
@@ -576,6 +585,9 @@ public class SignupModel extends BaseModel implements Parcelable {
         };
     }
 
+    public SignupModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -590,9 +602,7 @@ public class SignupModel extends BaseModel implements Parcelable {
         dest.writeTypedList(this.languages);
         dest.writeTypedList(this.professions);
         dest.writeTypedList(this.skills);
-    }
-
-    public SignupModel() {
+        dest.writeTypedList(this.answers);
     }
 
     protected SignupModel(Parcel in) {
@@ -603,9 +613,10 @@ public class SignupModel extends BaseModel implements Parcelable {
         this.languages = in.createTypedArrayList(LanguageModel.CREATOR);
         this.professions = in.createTypedArrayList(ProfessionModel.CREATOR);
         this.skills = in.createTypedArrayList(SkillsModel.CREATOR);
+        this.answers = in.createTypedArrayList(QuestionAnswerModel.CREATOR);
     }
 
-    public static final Parcelable.Creator<SignupModel> CREATOR = new Parcelable.Creator<SignupModel>() {
+    public static final Creator<SignupModel> CREATOR = new Creator<SignupModel>() {
         @Override
         public SignupModel createFromParcel(Parcel source) {
             return new SignupModel(source);

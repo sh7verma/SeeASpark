@@ -39,7 +39,8 @@ class SplashActivity : Activity() {
         }
 
         Handler().postDelayed({
-            if (!TextUtils.isEmpty(mUtils.getString("access_token", ""))) {
+            if (!TextUtils.isEmpty(mUtils.getString("access_token", "")) &&
+                    mUtils.getInt("profile_status", 0) == 2) {
                 /// email verified.
                 startActivity(Intent(this@SplashActivity, LandingActivity::class.java))
                 finish()
