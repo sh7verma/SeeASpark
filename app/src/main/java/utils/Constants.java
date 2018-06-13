@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 
-import com.seeaspark.AfterWalkThroughActivity;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
