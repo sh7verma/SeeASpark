@@ -64,7 +64,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
                 } else
                     mAvatarArray.addAll(mCreateProfileInstance!!.userData!!.avatars)
 
-                rvAvatar.layoutManager = GridLayoutManager(activity!!, 3) as RecyclerView.LayoutManager?
+                rvAvatar.layoutManager = GridLayoutManager(activity!!, 3)
                 mAvatarAdapter = AvatarAdapter(mAvatarArray,
                         activity!!, mCreateProfileInstance!!)
                 rvAvatar.adapter = mAvatarAdapter

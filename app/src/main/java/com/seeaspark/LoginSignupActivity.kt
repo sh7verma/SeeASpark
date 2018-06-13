@@ -1,6 +1,5 @@
 package com.seeaspark
 
-import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Typeface
@@ -21,7 +20,6 @@ import com.facebook.FacebookException
 import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
-import com.google.gson.Gson
 import com.linkedin.platform.APIHelper
 import com.linkedin.platform.LISessionManager
 import com.linkedin.platform.errors.LIApiError
@@ -34,7 +32,6 @@ import kotlinx.android.synthetic.main.activity_signup.*
 import models.SignupModel
 import network.RetrofitClient
 import org.json.JSONException
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -109,7 +106,7 @@ class LoginSignupActivity : BaseActivity() {
                     } else {
                         mEmailverified = Constants.EMAIL_NOTVERIFIED
                     }
-                    mName = jsonObject.getString("first_name") + jsonObject.getString("last_name")
+                    mName = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name")
                     mPassword = Constants.EMPTY
                     mFacebookId = jsonObject.getString("id")
                     mLinkedinId = Constants.EMPTY
@@ -157,6 +154,7 @@ class LoginSignupActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_signup
 
     override fun getContext() = this
+
 
     override fun onClick(view: View) {
         when (view) {
@@ -213,10 +211,10 @@ class LoginSignupActivity : BaseActivity() {
 
     private fun moveBack() {
         finish()
-        overridePendingTransition(R.anim.slidedown_in, R.anim.slidedown_out)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK) {
             when (requestCode) {
                 VERIFY -> {
@@ -267,7 +265,7 @@ class LoginSignupActivity : BaseActivity() {
                         Log.e("Response", "Linkedin apiResponse JSON " + apiResponse.getResponseDataAsString());
                         mEmail = jsonObject.getString("emailAddress")
                         mLinkedinId = jsonObject.getString("id")
-                        mName = jsonObject.getString("firstName") + jsonObject.getString("lastName")
+                        mName = jsonObject.getString("firstName") + " " + jsonObject.getString("lastName")
                         mAccountType = Constants.LIKENDIN_LOGIN
                         mPassword = Constants.EMPTY
                         mFacebookId = Constants.EMPTY
@@ -290,7 +288,9 @@ class LoginSignupActivity : BaseActivity() {
     private fun verifyDetails() {
         if (edEmail.getText().toString().trim({ it <= ' ' }).isEmpty())
             showAlert(txtDone, resources.getString(R.string.enter_email))
-        else if (!validateEmail(edEmail.getText()))
+        else if (!validateEmail(edEmail.getText().toString().trim()))
+            showAlert(txtDone, resources.getString(R.string.enter_valid_email))
+        else if (edEmail.getText().toString().trim().startsWith("."))
             showAlert(txtDone, resources.getString(R.string.enter_valid_email))
         else if (edPassword.getText().toString().trim({ it <= ' ' }).isEmpty())
             showAlert(txtDone, resources.getString(R.string.enter_password))
@@ -385,8 +385,20 @@ class LoginSignupActivity : BaseActivity() {
 
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
+                            response.body().response.profile_status == 0) {
+
+                        /// add data to shared preference
+                        addDataToSharedPreferences(response.body())
+
+                        /// navigate to create profile screen
+                        moveToCreateProfile(response.body())
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 1) {
 
+                        mUtils!!.setString("access_token", response.body().response.access_token)
+                        mUtils!!.setInt("profile_status", response.body().response.profile_status)
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
@@ -458,11 +470,6 @@ class LoginSignupActivity : BaseActivity() {
                     addDataToSharedPreferences(response.body())
                     /// navigate to review screen
                     moveToReview(response.body())
-
-                } else if (response.body().code == Constants.PROCEED_AS_OTHER_UNDER_REVIEW
-                        && response.body().response != null) {
-                    /// different type user login as compared to signup
-
                 } else if (response.body().code == Constants.PROCEED_NORMAL
                         && response.body().response != null) {
                     if (response.body().response.email_verified == 0 &&
@@ -479,6 +486,7 @@ class LoginSignupActivity : BaseActivity() {
                             (response.body().response.account_type == Constants.FACEBOOK_LOGIN ||
                                     response.body().response.account_type == Constants.LIKENDIN_LOGIN)) {
 
+                        response.body().response.full_name = mName
                         addDataToSharedPreferences(response.body())
 
                         if (!TextUtils.isEmpty(response.body().response.email)) {
@@ -494,6 +502,18 @@ class LoginSignupActivity : BaseActivity() {
                             response.body().response.document_verified == 0 &&
                             response.body().response.profile_status == 0) {
 
+                        mUtils!!.setBoolean("addEmailFragment", false)
+                        response.body().response.full_name = mName
+                        addDataToSharedPreferences(response.body())
+                        /// navigate to create profile screen
+                        moveToCreateProfile(response.body())
+
+                    } else if (response.body().response.email_verified == 1 &&
+                            response.body().response.document_verified == 1 &&
+                            response.body().response.profile_status == 0) {
+
+                        mUtils!!.setBoolean("addEmailFragment", false)
+                        response.body().response.full_name = mName
                         addDataToSharedPreferences(response.body())
                         /// navigate to create profile screen
                         moveToCreateProfile(response.body())
@@ -501,6 +521,9 @@ class LoginSignupActivity : BaseActivity() {
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 1) {
+
+                        mUtils!!.setString("access_token", response.body().response.access_token)
+                        mUtils!!.setInt("profile_status", response.body().response.profile_status)
 
                         addDataToSharedPreferences(response.body())
                         /// navigate to questionarrie
@@ -518,7 +541,10 @@ class LoginSignupActivity : BaseActivity() {
                     }
 
                 } else {
-                    showAlert(txtDone, response.body().error!!.message!!)
+                    if (response.body().error!!.code == Constants.PROCEED_AS_OTHER_UNDER_REVIEW)
+                        alertProfileSubmittedDialog(response.body().error!!.message!!)
+                    else
+                        showAlert(txtDone, response.body().error!!.message!!)
                 }
             }
 
@@ -527,8 +553,6 @@ class LoginSignupActivity : BaseActivity() {
                 showAlert(txtDone, t!!.getLocalizedMessage())
             }
         })
-
-
     }
 
     private fun moveToReview(body: SignupModel?) {
@@ -543,6 +567,7 @@ class LoginSignupActivity : BaseActivity() {
     private fun moveToEmailVerification(body: SignupModel?) {
         intent = Intent(mContext, EmailVerificationActivity::class.java)
         intent.putExtra("access_token", body!!.response.access_token)
+        intent.putExtra("userType", mUserType)
         startActivityForResult(intent, VERIFY)
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
     }

@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import fragments.*
 import kotlinx.android.synthetic.main.activity_create_profile.*
+import kotlinx.android.synthetic.main.activity_signup.*
 import models.*
 import network.RetrofitClient
 import retrofit2.Callback
@@ -170,6 +171,11 @@ class CreateProfileActivity : BaseActivity() {
                 showAlert(vpProfile, t!!.localizedMessage)
             }
         })
+    }
+
+    override fun onPause() {
+        Constants.closeKeyboard(mContext!!, vpProfile)
+        super.onPause()
     }
 
 }

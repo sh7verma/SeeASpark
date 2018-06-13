@@ -11,11 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/black_color"
-        android:maxLength="80"
         android:paddingBottom="@dimen/_5sdp"
         android:paddingLeft="@dimen/_32sdp"
         android:paddingRight="@dimen/_16sdp"
-        android:text="@string/lorem_ipsum"
+        android:text="@string/verify_id"
         android:textColor="@color/white_color"
         android:textSize="@dimen/_12ssp" />
 

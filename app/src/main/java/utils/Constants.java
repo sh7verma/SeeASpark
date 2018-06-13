@@ -51,6 +51,7 @@ public class Constants {
     public static int PROFILE_UNDER_REVIEW = 3001;
     public static final String EMAIL_VERIFY = "email_verify";
     public static final String QUESTIONS = "questions";
+    public static final int INVALID_ACCESS_TOKEN = 301;
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

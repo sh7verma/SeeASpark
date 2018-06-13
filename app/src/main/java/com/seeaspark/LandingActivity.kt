@@ -29,7 +29,10 @@ class LandingActivity : BaseActivity() {
     override fun onClick(view: View?) {
         when (view) {
             txtLogout -> {
-                alertLogoutDialog()
+                if (connectedToInternet())
+                    alertLogoutDialog()
+                else
+                    showInternetAlert(txtLogout)
             }
         }
     }
@@ -44,7 +47,6 @@ class LandingActivity : BaseActivity() {
         alertDialog.setNegativeButton("CANCEL") { dialog, which -> dialog.cancel() }
         alertDialog.show()
     }
-
 
 
 }

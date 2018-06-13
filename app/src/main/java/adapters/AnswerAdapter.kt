@@ -16,7 +16,8 @@ import models.SelectedQuestionAnswerModel
 import utils.Constants
 
 
-class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQuestionarieInstance: QuestionnariesActivity?) : RecyclerView.Adapter<AnswerAdapter.ViewHolder>() {
+class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQuestionarieInstance: QuestionnariesActivity?)
+    : RecyclerView.Adapter<AnswerAdapter.ViewHolder>() {
 
     var mAnswersArray = ArrayList<String>()
     var mAnswersModel: QuestionAnswerModel? = null

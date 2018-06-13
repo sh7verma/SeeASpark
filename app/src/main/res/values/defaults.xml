@@ -3,7 +3,7 @@
 
     <integer name="email_max">60</integer>
     <integer name="name_max">50</integer>
-    <integer name="password_max">40</integer>
+    <integer name="password_max">25</integer>
     <integer name="desc_max">1000</integer>
     <integer name="title_max">100</integer>
 

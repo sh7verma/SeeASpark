@@ -4,7 +4,11 @@ import android.graphics.Typeface
 import android.util.Patterns
 import android.view.View
 import kotlinx.android.synthetic.main.activity_forgot_password.*
-import kotlinx.android.synthetic.main.activity_signup.*
+import models.ForgotPasswordModel
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import utils.Constants
 
 class ForgotPasswordActivity : BaseActivity() {
@@ -64,7 +68,26 @@ class ForgotPasswordActivity : BaseActivity() {
     }
 
     private fun hitAPI() {
+        showLoader()
+        val call = RetrofitClient.getInstance().forgotPassword(edEmailForgot.text.toString().trim())
+        call.enqueue(object : Callback<ForgotPasswordModel> {
 
+            override fun onResponse(call: Call<ForgotPasswordModel>?, response: Response<ForgotPasswordModel>) {
+                dismissLoader()
+                if (response.body().response != null) {
+                    showToast(mContext!!, response.body().response.message!!)
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+                } else {
+                    showAlert(txtReset, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<ForgotPasswordModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(txtReset, t!!.localizedMessage)
+            }
+        })
     }
 
     internal fun validateEmail(text: CharSequence): Boolean {

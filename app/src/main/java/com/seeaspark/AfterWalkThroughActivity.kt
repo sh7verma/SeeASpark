@@ -32,12 +32,12 @@ class AfterWalkThroughActivity : BaseActivity() {
             txtMentee -> {
                 mUtils!!.setString("device_token", FirebaseInstanceId.getInstance().token)
                 startActivity(Intent(this, LoginSignupActivity::class.java).putExtra("userType", 1))
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
             txtMentor -> {
                 mUtils!!.setString("device_token", FirebaseInstanceId.getInstance().token)
                 startActivity(Intent(this, LoginSignupActivity::class.java).putExtra("userType", 0))
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
         }
     }

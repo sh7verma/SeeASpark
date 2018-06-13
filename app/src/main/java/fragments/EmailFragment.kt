@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
+import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.fragment_email.*
 
 
@@ -45,6 +46,8 @@ class EmailFragment : Fragment(), View.OnClickListener {
                 if (edEmailProfile.getText().toString().trim({ it <= ' ' }).isEmpty())
                     mCreateProfileInstance!!.showAlertActivity(txtNextEmail, resources.getString(R.string.enter_email))
                 else if (!validateEmail(edEmailProfile.getText()))
+                    mCreateProfileInstance!!.showAlertActivity(txtNextEmail, resources.getString(R.string.enter_valid_email))
+                else if (edEmail.getText().toString().trim().startsWith("."))
                     mCreateProfileInstance!!.showAlertActivity(txtNextEmail, resources.getString(R.string.enter_valid_email))
                 else {
                     mCreateProfileInstance!!.verifyEmail(edEmailProfile.text.toString().trim())

@@ -7,14 +7,19 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.util.DisplayMetrics
 import android.view.ContextThemeWrapper
 import android.view.Gravity
+import android.view.View
 import android.view.Window
+import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_profile_review.*
 import models.SignupModel
+import utils.Connection_Detector
+import utils.Constants
 import utils.Utils
 
 class ProfileReviewDialog : Activity() {
@@ -40,20 +45,43 @@ class ProfileReviewDialog : Activity() {
         userProfileData = intent.getParcelableExtra("userProfileData")
 
         txtNameDialog.text = "HI ${userProfileData!!.full_name}!"
+        txtNameDialog.setAllCaps(true)
 
-        Picasso.with(this).load(userProfileData!!.avatar).into(imgAvatarProfileReview)
+        var drawable = ContextCompat.getDrawable(this, R.mipmap.ic_avatar_1)
+
+        Picasso.with(this).load(userProfileData!!.avatar).resize(drawable!!.intrinsicWidth, drawable!!.intrinsicHeight).into(imgAvatarProfileReview)
+
+        if (userProfileData!!.user_type == Constants.MENTEE) {
+            txtMsgReview.text = getString(R.string.mentee_msg)
+            txtLogoutReview.visibility = View.INVISIBLE
+            txtReady.text = getString(R.string.ready)
+        } else {
+            mUtils!!.setString("profileReview", "yes")
+        }
 
         txtReady.setOnClickListener {
-            var intent = Intent(this, ReviewActivity::class.java)
-            intent.putExtra("avatar", userProfileData!!.avatar)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+            var intent: Intent? = null
+            if (userProfileData!!.user_type == Constants.MENTEE) {
+                intent = Intent(this, QuestionnariesActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+            } else {
+                intent = Intent(this, ReviewActivity::class.java)
+                intent.putExtra("avatar", userProfileData!!.avatar)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+            }
         }
 
         txtLogoutReview.setOnClickListener {
-            alertLogoutDialog()
+            if ((Connection_Detector(this).isConnectingToInternet))
+                alertLogoutDialog()
+            else
+                Toast.makeText(this, R.string.internet, Toast.LENGTH_SHORT).show()
         }
     }
 

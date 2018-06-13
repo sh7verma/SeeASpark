@@ -48,6 +48,7 @@ class EmailVerificationActivity : BaseActivity() {
                 if (intent!!.hasExtra("path")) {
                     var intent = Intent(mContext, LoginSignupActivity::class.java)
                     intent.putExtra("setLogin", true)
+                    intent.putExtra("userType", intent.getIntExtra("userType", 0))
                     startActivity(intent)
                     overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
                 } else {
@@ -81,7 +82,7 @@ class EmailVerificationActivity : BaseActivity() {
 
     internal var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-
+            mUtils!!.setBoolean("addEmailFragment", false)
             mUtils!!.setInt(Constants.EMAIL_VERIFY, 1)
 
             val inStarted = Intent(mContext, CreateProfileActivity::class.java)

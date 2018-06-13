@@ -1,12 +1,14 @@
 package com.seeaspark
 
+import adapters.IndicatorAdapter
 import adapters.QuestionAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v4.view.ViewPager
+import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -20,17 +22,19 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
 import utils.Constants
 
 class QuestionnariesActivity : BaseActivity() {
 
     private var mAdapterQuestions: QuestionAdapter? = null
+    private var mIndicatorAdapter: IndicatorAdapter? = null
+
     private var mArrayQuestions = ArrayList<QuestionAnswerModel>()
     private var userData: SignupModel? = null
     var mAnswerCount = 0
     var mQuestionarieInstance: QuestionnariesActivity? = null
     var mServerQuestion = JSONArray()
+    var selectedPos = 0
 
     override fun initUI() {
 
@@ -47,8 +51,28 @@ class QuestionnariesActivity : BaseActivity() {
         mAdapterQuestions = QuestionAdapter(mArrayQuestions, mContext!!, mQuestionarieInstance)
         vpQuestion.adapter = mAdapterQuestions
         vpQuestion.offscreenPageLimit = mArrayQuestions.size
-        cpIndicator.setViewPager(vpQuestion)
-        cpIndicator.fillColor = Color.BLACK
+//        cpIndicator.setViewPager(vpQuestion)
+//        cpIndicator.fillColor = Color.BLACK
+
+        rvIndicators.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        mIndicatorAdapter = IndicatorAdapter(mArrayQuestions, mContext!!, selectedPos)
+        rvIndicators.adapter = mIndicatorAdapter
+
+        vpQuestion.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                mIndicatorAdapter!!.setSelectedPos(position)
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+        })
+
+
     }
 
     override fun initListener() {
@@ -84,6 +108,7 @@ class QuestionnariesActivity : BaseActivity() {
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
                 dismissLoader()
                 if (response.body().response != null) {
+                    mUtils!!.setString("profileReview", "")
                     userData!!.response = response.body().response
                     mUtils!!.setString("access_token", userData!!.response.access_token)
                     mUtils!!.setInt("profile_status", userData!!.response.profile_status)
@@ -92,7 +117,10 @@ class QuestionnariesActivity : BaseActivity() {
                     finish()
                     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
                 } else {
-                    showAlert(llCancelDone, response.body().error!!.message!!)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else
+                        showAlert(llCancelDone, response.body().error!!.message!!)
                 }
             }
 
@@ -110,6 +138,7 @@ class QuestionnariesActivity : BaseActivity() {
                 if (questionData.id == intent.getIntExtra("questionId", 0)) {
                     questionData.answers = intent.getStringExtra("answer")
                     mArrayQuestions.set(index, questionData)
+                    mIndicatorAdapter!!.notifyDataSetChanged()
                     break
                 }
             }

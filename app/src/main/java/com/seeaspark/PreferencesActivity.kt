@@ -155,7 +155,10 @@ class PreferencesActivity : BaseActivity() {
                     intent = Intent(mContext, DisclamierDialog::class.java)
                     startActivity(intent)
                 } else {
-                    showAlert(imgForwardPrefer, response.body().error!!.message!!)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else
+                        showAlert(imgForwardPrefer, response.body().error!!.message!!)
                 }
             }
 

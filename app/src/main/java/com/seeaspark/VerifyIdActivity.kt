@@ -37,10 +37,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
+import utils.Constants.INVALID_ACCESS_TOKEN
 import java.io.*
 import java.util.*
 
 
+@Suppress("DEPRECATION")
 class VerifyIdActivity : BaseActivity() {
 
     internal val GALLERY_INTENT = 2
@@ -69,10 +71,14 @@ class VerifyIdActivity : BaseActivity() {
 
         userData = intent.getParcelableExtra("userData")
 
+        if (userData!!.response.user_type == Constants.MENTEE) {
+            txtOption.text = getString(R.string.skip)
+            txtOption.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+        }
+
         if (mCameraView != null) {
             mCameraView.addCallback(mCallback)
         }
-//        dialogToMentor()
     }
 
     override fun initListener() {
@@ -82,6 +88,7 @@ class VerifyIdActivity : BaseActivity() {
         llCancelDone.setOnClickListener(this)
         txtCancel.setOnClickListener(this)
         txtDoneVerify.setOnClickListener(this)
+        txtOption.setOnClickListener(this)
     }
 
     override fun getContentView() = R.layout.activity_verify_id
@@ -141,6 +148,12 @@ class VerifyIdActivity : BaseActivity() {
                 } else
                     showInternetAlert(txtDoneVerify)
             }
+            txtOption -> {
+                if (connectedToInternet())
+                    hitAPI()
+                else
+                    showInternetAlert(llCancelDone)
+            }
         }
     }
 
@@ -153,42 +166,55 @@ class VerifyIdActivity : BaseActivity() {
         val tempSkills = intent.getStringArrayListExtra("skills").toString()
                 .substring(1, intent.getStringArrayListExtra("skills").toString().length - 1).trim()
 
-        val call = RetrofitClient.getInstance().createProfile(
-                createPartFromString(userData!!.response.access_token),
-                createPartFromString(intent.getStringExtra("avatarId")),
-                createPartFromString(userData!!.response.user_type.toString()),
-                createPartFromString(intent.getStringExtra("name")),
-                createPartFromString(intent.getStringExtra("dob")),
-                createPartFromString(intent.getStringExtra("gender")),
-                createPartFromString(tempLangauges),
-                createPartFromString(intent.getStringExtra("profession")),
-                createPartFromString(intent.getStringExtra("experience")),
-                createPartFromString(tempSkills),
-                createPartFromString(intent.getStringExtra("bio")),
-                createPartFromString(intent.getStringExtra("description")),
-                prepareFilePart(serverFile!!))
+        var call: Call<SignupModel>? = null
+
+        if (serverFile != null)
+            call = RetrofitClient.getInstance().createProfile(
+                    createPartFromString(userData!!.response.access_token),
+                    createPartFromString(intent.getStringExtra("avatarId")),
+                    createPartFromString(userData!!.response.user_type.toString()),
+                    createPartFromString(intent.getStringExtra("name")),
+                    createPartFromString(intent.getStringExtra("dob")),
+                    createPartFromString(intent.getStringExtra("gender")),
+                    createPartFromString(tempLangauges),
+                    createPartFromString(intent.getStringExtra("profession")),
+                    createPartFromString(intent.getStringExtra("experience")),
+                    createPartFromString(tempSkills),
+                    createPartFromString(intent.getStringExtra("bio")),
+                    createPartFromString(intent.getStringExtra("description")),
+                    prepareFilePart(serverFile!!))
+        else
+            call = RetrofitClient.getInstance().createProfile(
+                    createPartFromString(userData!!.response.access_token),
+                    createPartFromString(intent.getStringExtra("avatarId")),
+                    createPartFromString(userData!!.response.user_type.toString()),
+                    createPartFromString(intent.getStringExtra("name")),
+                    createPartFromString(intent.getStringExtra("dob")),
+                    createPartFromString(intent.getStringExtra("gender")),
+                    createPartFromString(tempLangauges),
+                    createPartFromString(intent.getStringExtra("profession")),
+                    createPartFromString(intent.getStringExtra("experience")),
+                    createPartFromString(tempSkills),
+                    createPartFromString(intent.getStringExtra("bio")),
+                    createPartFromString(intent.getStringExtra("description")),
+                    prepareFilePartEmpty())
 
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
                 dismissLoader()
-                var intent: Intent? = null
-                if (response.body().response != null) {
 
+                if (response.body().response != null) {
                     userData!!.response = response.body().response
                     mUtils!!.setString("userDataLocal", mGson.toJson(userData))
+                    val intent = Intent(mContext, ProfileReviewDialog::class.java)
+                    intent.putExtra("userProfileData", response.body().response)
+                    startActivity(intent)
 
-                    if (response.body().response.user_type == Constants.MENTOR) {
-                        intent = Intent(mContext, ProfileReviewDialog::class.java)
-                        intent.putExtra("userProfileData", response.body().response)
-                        startActivity(intent)
-                    } else {
-                        intent = Intent(mContext, QuestionnariesActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
-                    }
                 } else {
-                    showAlert(llCancelDone, response.body().error!!.message!!)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else
+                        showAlert(llCancelDone, response.body().error!!.message!!)
                 }
             }
 
@@ -457,6 +483,11 @@ class VerifyIdActivity : BaseActivity() {
     private fun prepareFilePart(mFile: File): MultipartBody.Part {
         val requestFile = RequestBody.create(MediaType.parse("image/*"), mFile)
         return MultipartBody.Part.createFormData("document", mFile.name, requestFile)
+    }
+
+    private fun prepareFilePartEmpty(): MultipartBody.Part {
+        val requestFile = RequestBody.create(MediaType.parse("image/*"), "")
+        return MultipartBody.Part.createFormData("document", "", requestFile)
     }
 
 }

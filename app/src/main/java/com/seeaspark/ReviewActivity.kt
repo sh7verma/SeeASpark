@@ -3,16 +3,22 @@ package com.seeaspark
 import android.support.v7.app.AlertDialog
 import android.view.View
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.activity_review.*
+import models.SignupModel
 
 class ReviewActivity : BaseActivity() {
+
+    private var userData: SignupModel? = null
 
     override fun initUI() {
 
     }
 
     override fun onCreateStuff() {
-        Picasso.with(mContext).load(intent.getStringExtra("avatar")).into(imgAvatarReview)
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        mUtils!!.setString("profileReview", "yes")
+        Picasso.with(mContext).load(userData!!.response.avatar).into(imgAvatarReview)
     }
 
     override fun initListener() {
@@ -26,7 +32,10 @@ class ReviewActivity : BaseActivity() {
     override fun onClick(view: View?) {
         when (view) {
             txtLogoutReviewScreen -> {
-                alertLogoutDialog()
+                if (connectedToInternet())
+                    alertLogoutDialog()
+                else
+                    showInternetAlert(txtLogout)
             }
         }
     }

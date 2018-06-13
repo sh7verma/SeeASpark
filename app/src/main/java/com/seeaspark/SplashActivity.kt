@@ -39,17 +39,24 @@ class SplashActivity : Activity() {
         }
 
         Handler().postDelayed({
-            if (!TextUtils.isEmpty(mUtils.getString("access_token", "")) &&
-                    mUtils.getInt("profile_status", 0) == 2) {
-                /// email verified.
-                startActivity(Intent(this@SplashActivity, LandingActivity::class.java))
+
+            if (mUtils.getString("profileReview", "").equals("yes")) {
+                startActivity(Intent(this@SplashActivity, ReviewActivity::class.java))
                 finish()
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
             } else {
-                /// not verified or new user
-                startActivity(Intent(this@SplashActivity, WalkthroughActivity::class.java))
-                finish()
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                if (!TextUtils.isEmpty(mUtils.getString("access_token", "")) &&
+                        mUtils.getInt("profile_status", 0) == 2) {
+                    /// email verified.
+                    startActivity(Intent(this@SplashActivity, LandingActivity::class.java))
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                } else {
+                    /// not verified or new user
+                    startActivity(Intent(this@SplashActivity, WalkthroughActivity::class.java))
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                }
             }
         }, 2000)
     }
