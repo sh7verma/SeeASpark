@@ -8,7 +8,7 @@ import android.widget.TextView;
 /**
  * Created by app on 8/29/2016.
  */
-public class MediumTextView extends TextView {
+public class MediumTextView extends android.support.v7.widget.AppCompatTextView {
 
     public MediumTextView(Context context) {
         super(context);
@@ -28,7 +28,7 @@ public class MediumTextView extends TextView {
     private void init() {
         if (!isInEditMode()) {
             Typeface typeface = Typeface.createFromAsset(getContext()
-                    .getAssets(), "fonts/medium.TTF");
+                    .getAssets(), "fonts/medium.otf");
             setTypeface(typeface);
         }
 

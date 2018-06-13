@@ -13,21 +13,45 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 
+import com.seeaspark.AfterWalkThroughActivity;
+
+import org.jetbrains.annotations.Nullable;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import database.Db;
+import kotlin.collections.AbstractList;
+import kotlin.jvm.JvmStatic;
 
 
 public class Constants {
+
+    public static String EMPTY = "";
+    public static String EMAIL = "";
+    public static int EMAIL_LOGIN = 0;
+    public static int FACEBOOK_LOGIN = 1;
+    public static int LIKENDIN_LOGIN = 2;
+    public static int EMAIL_VERIFIED = 1;
+    public static int EMAIL_NOTVERIFIED = 0;
+    public static int MENTEE = 1;
+    public static int MENTOR = 0;
+    public static int PROCEED_AS_OTHER_UNDER_REVIEW = 2002;
+    public static int PROCEED_NORMAL = 200;
+    public static int PROCEED_AS_OTHER = 2001;
+    public static int PROFILE_UNDER_REVIEW = 3001;
+    public static final String EMAIL_VERIFY = "email_verify";
+    public static final String QUESTIONS = "questions";
+    public static final int INVALID_ACCESS_TOKEN = 301;
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
@@ -142,11 +166,13 @@ public class Constants {
     }
 
     public static void showKeyboard(Context mContext, View view) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.toggleSoftInputFromWindow(
+        InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+      /*  inputMethodManager.toggleSoftInputFromWindow(
                 view.getApplicationWindowToken(),
-                InputMethodManager.SHOW_FORCED, 0);
+                InputMethodManager.SHOW_FORCED, 0);*/
+
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
     }
 
     public static void moveToSplash(Context mContext, Utils utils) {

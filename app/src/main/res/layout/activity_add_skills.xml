@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imgCrossSkills"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_ripple"
+            android:padding="@dimen/_12sdp"
+            android:src="@mipmap/ic_cross_skill" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtDoneSkills"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_12sdp"
+            android:text="Done"
+            android:textAllCaps="true"
+            android:textColor="@color/color_secondary_gradient"
+            android:textSize="@dimen/_14ssp" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginRight="@dimen/_16sdp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <customviews.BoldTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_skills"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_24ssp" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <customviews.FlowLayout
+                    android:id="@+id/flAddSkills"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left" />
+            </ScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="@dimen/_24sdp"
+            android:gravity="bottom">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cvSkillSuggestion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/_3sdp"
+                android:visibility="invisible"
+                app:cardCornerRadius="@dimen/_1sdp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvSkillSuggestions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom" />
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:background="@color/bottom_ripple_color" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/_8sdp"
+        android:paddingTop="@dimen/_8sdp">
+
+        <AutoCompleteTextView
+            android:id="@+id/edSkill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white_color"
+            android:ellipsize="end"
+            android:hint="@string/enter_skill"
+            android:inputType="textCapSentences"
+            android:maxLength="30"
+            android:maxLines="1"
+            android:paddingLeft="@dimen/_16sdp"
+            android:paddingRight="@dimen/_8sdp"
+            android:textSize="@dimen/_14ssp" />
+
+        <ImageView
+            android:id="@+id/imgPlusSkill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_ripple"
+            android:padding="@dimen/_5sdp"
+            android:src="@mipmap/ic_add_skill2" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

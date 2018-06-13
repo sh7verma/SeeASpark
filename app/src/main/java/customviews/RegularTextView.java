@@ -25,7 +25,7 @@ public class RegularTextView extends TextView {
     private void init() {
         if (!isInEditMode()) {
             Typeface typeface = Typeface.createFromAsset(getContext()
-                    .getAssets(), "fonts/regular.ttf");
+                    .getAssets(), "fonts/regular.otf");
             setTypeface(typeface);
         }
 

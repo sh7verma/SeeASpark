@@ -2,6 +2,10 @@
     <string name="app_name">See A Spark</string>
     <string name="app_id">1436825226428892</string>
 
+    <string name="facebook_app_id">342648816260897</string>
+    <string name="fb_login_protocol_scheme">fb342648816260897</string>
+
+
     //codes
     <string name="cannot_connect_server">Cannot connect to server</string>
     <string name="error_api">Something went wrong!</string>
@@ -10,9 +14,95 @@
     <string name="invalid_access_token_code">420</string>
     <string name="treminate_account_code">405</string>
 
+    <string name="ok_ngot_it">OK\nGot it</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</string>
+    <string name="welcome_to">Welcome to</string>
+    <string name="mentee">Mentee</string>
+    <string name="mentor">Mentor</string>
+    <string name="done">Done</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="reset">Reset</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="enter_your_email_below_to_receive_your_reset_password_instruction">Enter your email below to receive your reset password instruction</string>
+    <string name="select_your_n_avatar">Select your\nAvatar</string>
+    <string name="enter">Enter</string>
+    <string name="search_your_occupation">Search your occupation</string>
+    <string name="name">Name</string>
+    <string name="next">NEXT</string>
+    <string name="what_is_your_name">What is your Name?</string>
+    <string name="what_is_your_email">What is your\nEmail?</string>
+    <string name="what_is_your_age">What is your Age?</string>
+    <string name="what_is_your_profession">What is your\nOccupation?</string>
+    <string name="what_language_speak">What languages\ndo you speak?</string>
+
+    <string name="select">Select</string>
+    <string name="select_your_gender">Select your\nGender</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
+    <string name="years">Years</string>
+    <string name="months">Months</string>
+    <string name="select_your_experience">Select your\nExperience</string>
+    <string name="select_your_nskills">Select your\nSkills</string>
+    <string name="transition">transition</string>
+    <string name="add_skills">Add Skills</string>
+    <string name="enter_skill">Enter Skill</string>
+    <string name="write_your_short_bio">Write your\nShort Bio</string>
+    <string name="_320_characters">320 Characters Left</string>
+    <string name="_1024_characters">1024 Characters Left</string>
+    <string name="describe_your_profession">Describe your\nProfession</string>
+    <string name="verify_your_id">Verify your Id</string>
+    <string name="questionnaires">Questionnaires</string>
+    <string name="flash_auto">Flash auto</string>
+    <string name="flash_off">Flash off</string>
+    <string name="flash_on">Flash on</string>
+    <string name="picture_taken">Picture taken</string>
+
+    <string name="camera_permission_confirmation">This app demonstrates the usage of CameraView. In order to do that, it needs permission to access camera.</string>
+    <string name="camera_permission_not_granted">Camera app cannot do anything without camera permission.</string>
+
+    <string name="distance">Distance</string>
+    <string name="gender">Gender</string>
+    <string name="experience">Experience</string>
+    <string name="skills">Skills</string>
+    <string name="select_preferred_skills">Select Preferred\nSkills</string>
+    <string name="professions">Professions</string>
+
+
     <string name="enter_email">Please enter email</string>
     <string name="enter_valid_email">Please enter a valid email</string>
-    <string name="enter_password">Please enter password</string>
+    <string name="enter_password">Please enter valid password</string>
     <string name="error_password">Password must have minimum 8 characters</string>
+    <string name="error_age">Please specify Age</string>
+    <string name="error_skills">Please specify Skills</string>
+    <string name="error_gender">Please specify Gender</string>
+    <string name="error_bio">Please enter Bio</string>
+    <string name="error_name">Please enter Name with minimum 2 characters.</string>
+    <string name="error_profession">Please specify Profession</string>
+    <string name="error_Language">Please specify Language</string>
+    <string name="logout">Log out</string>
+    <string name="your_profile_is_now_complete_and_is_under_review_will_let_you_know_know_shortly">Your profile is now complete and is under review. Will let you know shortly.</string>
+    <string name="ready">Ready</string>
+    <string name="disclamier">Disclamier</string>
+    <string name="we_need_to_know_your_preferences_regarding_how_would_you_like_to_hear_from_us">We need to know your preferences regarding how would you like to hear from us.</string>
+    <string name="skip">SKIP</string>
+    <string name="settings">Settings</string>
+    <string name="login">Login</string>
+    <string name="confrim">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="review">Review</string>
+    <string name="your_profile_is_under_review_for_the_admin_approval_thnaks_for_your_patience">Your profile is under review for the Admin Approval. Thanks for your patience.</string>
+    <string name="resend">Resend</string>
+    <string name="error_profileunder_review">301</string>
+    <string name="skill_error">This Skill already exist. Please choose another one.</string>
+    <string name="enter_skill_error">Please enter a skill</string>
+    <string name="mentee_msg">You\'ve completed your profile setup process. Knidly proceed to start getting matches.</string>
+    <string name="questions_hint">Please Answer the following questions to get best matches as per your preferences</string>
+    <string name="verify_id">Please submit your Photo ID which could include work ID as well as driver’s license or passport.</string>
 
 </resources>

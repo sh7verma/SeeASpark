@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llMainDialogDisclamier"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/_16sdp"
+    android:layout_marginRight="@dimen/_16sdp"
+    android:background="@drawable/dialog_black_upper_round_corner"
+    android:orientation="vertical">
+
+    <customviews.BoldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_16sdp"
+        android:paddingLeft="@dimen/_16sdp"
+        android:paddingTop="@dimen/_24sdp"
+        android:text="@string/disclamier"
+        android:textAllCaps="true"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/_16ssp" />
+
+    <customviews.LightTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_36sdp"
+        android:paddingLeft="@dimen/_16sdp"
+        android:paddingRight="@dimen/_16sdp"
+        android:text="@string/we_need_to_know_your_preferences_regarding_how_would_you_like_to_hear_from_us"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/_14ssp" />
+
+    <customviews.MediumTextView
+        android:id="@+id/txtSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/mentee_ripple"
+        android:elevation="@dimen/_3"
+        android:paddingBottom="@dimen/_8sdp"
+        android:paddingLeft="@dimen/_24sdp"
+        android:paddingRight="@dimen/_24sdp"
+        android:paddingTop="@dimen/_8sdp"
+        android:text="@string/settings"
+        android:textAllCaps="true"
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_14ssp" />
+
+    <customviews.MediumTextView
+        android:id="@+id/txtSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:elevation="@dimen/_3"
+        android:paddingBottom="@dimen/_8sdp"
+        android:paddingLeft="@dimen/_24sdp"
+        android:paddingRight="@dimen/_24sdp"
+        android:paddingTop="@dimen/_16sdp"
+        android:text="@string/skip"
+        android:textAllCaps="true"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/_14ssp" />
+
+
+</LinearLayout>

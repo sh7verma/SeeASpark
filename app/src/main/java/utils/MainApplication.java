@@ -1,13 +1,15 @@
 package utils;
 
-import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
+
+import com.google.firebase.FirebaseApp;
 
 
-public class MainApplication extends Application {
+public class MainApplication extends MultiDexApplication {
 
     private static MainApplication instance;
     public static final String TAG = MainApplication.class
@@ -16,6 +18,7 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         MultiDex.install(this);
+        FirebaseApp.initializeApp(this);
         Foreground.init(this);
         instance = this;
     }

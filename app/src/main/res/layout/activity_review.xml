@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <customviews.BoldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="@dimen/_24sdp"
+        android:text="@string/review"
+        android:textAllCaps="true"
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_16ssp" />
+
+    <ImageView
+        android:id="@+id/imgAvatarReview"
+        android:layout_width="@dimen/_120sdp"
+        android:layout_height="@dimen/_120sdp"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/ic_avatar_1" />
+
+    <customviews.MediumTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/_102sdp"
+        android:gravity="center"
+        android:paddingLeft="@dimen/_16sdp"
+        android:paddingRight="@dimen/_16sdp"
+        android:text="@string/your_profile_is_under_review_for_the_admin_approval_thnaks_for_your_patience"
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_14ssp" />
+
+    <customviews.MediumTextView
+        android:id="@+id/txtLogoutReviewScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/_36sdp"
+        android:background="@drawable/mentee_ripple"
+        android:elevation="@dimen/_3"
+        android:paddingBottom="@dimen/_8sdp"
+        android:paddingLeft="@dimen/_24sdp"
+        android:paddingRight="@dimen/_24sdp"
+        android:paddingTop="@dimen/_8sdp"
+        android:text="@string/logout"
+        android:textAllCaps="true"
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_14ssp" />
+
+
+</RelativeLayout>

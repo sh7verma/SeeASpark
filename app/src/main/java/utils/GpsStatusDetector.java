@@ -1,30 +1,9 @@
 package utils;
 
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.IntentSender;
-import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-
-import java.lang.ref.WeakReference;
-
-import static android.app.Activity.RESULT_OK;
-
 public class GpsStatusDetector {
 
-    private static final int REQUEST_CODE = 2;
+/*    private static final int REQUEST_CODE = 2;
 
     private WeakReference<Activity> mActivityWeakReference;
     private WeakReference<GpsStatusDetectorCallBack> mCallBackWeakReference;
@@ -132,6 +111,6 @@ public class GpsStatusDetector {
         void onGpsAlertCanceledByUser();
 
         void showLocationScreen();
-    }
+    }*/
 
 }
