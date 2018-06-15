@@ -65,7 +65,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    protected fun showInternetAlert(view: View) {
+    fun showInternetAlert(view: View) {
         Snackbar.make(view, R.string.internet, Snackbar.LENGTH_SHORT).show()
     }
 

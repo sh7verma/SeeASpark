@@ -35,7 +35,7 @@ class ReviewActivity : BaseActivity() {
                 if (connectedToInternet())
                     alertLogoutDialog()
                 else
-                    showInternetAlert(txtLogout)
+                    showInternetAlert(txtLogoutReviewScreen)
             }
         }
     }

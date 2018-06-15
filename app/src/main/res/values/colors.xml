@@ -13,6 +13,7 @@
     <color name="greyLine">#cfd0d2</color>
     <color name="textGrey">#9a9a9c</color>
     <color name="hintColorText">#b75a51</color>
+    <color name="pagerColorCode">#383838</color>
 
     <color name="navigationBarColor">#202851</color>
     <color name="textColorPrimary">#f77a52</color>
@@ -24,7 +25,7 @@
     <color name="facebook">#4A6CA9</color>
     <color name="black_color">#000000</color>
     <color name="primary_ripple">#FF5C5B5B</color>
-    <color name="background_color">#FDFDFD</color>
+    <color name="background_color">#FCFBFC</color>
     <color name="background">#F0F0F0</color>
     <color name="green_color">#03D68B</color>
     <color name="bottom_color">#EEEEEE</color>
@@ -33,7 +34,7 @@
     <color name="red_color">#ee2830</color>
     <color name="red_effect">#F4898D</color>
     <color name="no_cards_color">#67686c</color>
-    <color name="light_white_transparent">#a1f9f7f7</color>
+    <color name="light_white_transparent">#a1746f6f</color>
     <color name="light_grey">#d9d8d8</color>
     <color name="view_line_color">#e2e1e1</color>
     <color name="view_line_color_orange">#FFFFC2AE</color>

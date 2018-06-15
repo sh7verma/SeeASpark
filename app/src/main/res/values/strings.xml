@@ -68,7 +68,6 @@
     <string name="distance">Distance</string>
     <string name="gender">Gender</string>
     <string name="experience">Experience</string>
-    <string name="skills">Skills</string>
     <string name="select_preferred_skills">Select Preferred\nSkills</string>
     <string name="professions">Professions</string>
 
@@ -104,5 +103,15 @@
     <string name="mentee_msg">You\'ve completed your profile setup process. Knidly proceed to start getting matches.</string>
     <string name="questions_hint">Please Answer the following questions to get best matches as per your preferences</string>
     <string name="verify_id">Please submit your Photo ID which could include work ID as well as driver’s license or passport.</string>
-
+    <string name="work_in_progress">Work in progress</string>
+    <string name="mentors">Mentors</string>
+    <string name="mentees">Mentees</string>
+    <string name="home">Home</string>
+    <string name="notes">Notes</string>
+    <string name="chat">Chat</string>
+    <string name="events">Events</string>
+    <string name="community">Community</string>
+    <string name="Profile">Profile</string>
+    <string name="boost">Boost</string>
+    <string name="skills">Skills</string>
 </resources>
