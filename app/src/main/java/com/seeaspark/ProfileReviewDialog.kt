@@ -24,8 +24,8 @@ import utils.Utils
 
 class ProfileReviewDialog : Activity() {
 
-    internal var mScreenwidth: Int = 0
-    internal var mScreenheight: Int = 0
+    private var mScreenwidth: Int = 0
+    private var mScreenheight: Int = 0
     var mUtils: Utils? = null
     var userProfileData: SignupModel.ResponseBean? = null
 

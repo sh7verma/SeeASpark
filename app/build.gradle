@@ -46,6 +46,7 @@ dependencies {
     implementation project(':aFileChooser')
     implementation project(':cropLib')
 
+
     //multidex
     implementation 'com.android.support:multidex:1.0.3'
 
@@ -69,6 +70,8 @@ dependencies {
     implementation 'com.intuit.ssp:ssp-android:1.0.5'
     implementation 'com.intuit.sdp:sdp-android:1.0.5'
     implementation 'com.facebook.android:facebook-login:[4,5)'
+    implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.12'
 
 }
 

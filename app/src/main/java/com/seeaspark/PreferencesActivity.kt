@@ -49,7 +49,7 @@ class PreferencesActivity : BaseActivity() {
 
         rsbExperience.isNotifyWhileDragging = true
         rsbExperience.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtExperienceCount.text = "$maxValue Years" }
-        rsbExperience.selectedMaxValue = 1
+        rsbExperience.selectedMaxValue = 3
 
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java);
 
@@ -204,8 +204,7 @@ class PreferencesActivity : BaseActivity() {
         return interestChip
     }
 
-
-    fun initPersistentBottomsheetProfession() {
+    private fun initPersistentBottomsheetProfession() {
         // bottom view of accepted job
 
         var behaviorJobDetail = BottomSheetBehavior.from<View>(coordinator.llProfessionListing)

@@ -134,19 +134,14 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-
-        </activity>
-
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
             android:name=".PreferencesActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
             android:name=".SkillSelectionActivity"
@@ -175,6 +170,12 @@
             android:theme="@style/DialogSlideAnim" />
 
         <activity
+            android:name=".ShortProfileDialog"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogSlideAnim" />
+
+        <activity
             android:name=".EmailVerificationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -186,6 +187,13 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".HandshakeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <service android:name="services.MyFirebaseMessagingService">

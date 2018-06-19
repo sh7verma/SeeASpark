@@ -1,103 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swlCard"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/_12sdp"
-    android:elevation="@dimen/_3sdp">
+    android:layout_height="@dimen/_130sdp"
+    android:layout_marginTop="@dimen/_12sdp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/card_background"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:tag="handshake">
+
+        <View
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="match_parent" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:id="@+id/llHandshake"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha="0"
+            android:background="@drawable/handshake_background"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <ImageView
+            <customviews.MediumTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/_8sdp"
-                android:src="@mipmap/ic_avatar_1" />
+                android:drawableTop="@mipmap/ic_handshake_black"
+                android:text="@string/handshake"
+                android:textAllCaps="true"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_14ssp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:tag="pass">
+
+        <View
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/llPass"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha="0"
+            android:background="@drawable/pass_background"
+            android:gravity="center">
+
+            <customviews.MediumTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@mipmap/ic_pass"
+                android:gravity="center"
+                android:text="@string/pass"
+                android:textAllCaps="true"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_14ssp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:tag="Hover">
+
+        <View
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/card_background"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <customviews.BoldTextView
-                    android:id="@+id/txtName"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:paddingRight="@dimen/_8sdp"
-                    android:text="Victor Martin"
-                    android:textColor="@color/black_color"
-                    android:textSize="@dimen/_14ssp" />
+                    android:padding="@dimen/_8sdp"
+                    android:src="@mipmap/ic_avatar_1" />
 
-                <customviews.MediumTextView
-                    android:id="@+id/txtProfession"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:paddingRight="@dimen/_8sdp"
-                    android:paddingTop="@dimen/_5sdp"
-                    android:text="Physician"
-                    android:textColor="@color/hint_color_dark"
-                    android:textSize="@dimen/_12ssp" />
+                    android:orientation="vertical">
+
+                    <customviews.BoldTextView
+                        android:id="@+id/txtName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingRight="@dimen/_8sdp"
+                        android:text="Victor Martin"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_14ssp" />
+
+                    <customviews.MediumTextView
+                        android:id="@+id/txtProfession"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingRight="@dimen/_8sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:text="Physician"
+                        android:textColor="@color/hint_color_dark"
+                        android:textSize="@dimen/_12ssp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <customviews.BoldTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/_10sdp"
-            android:paddingRight="@dimen/_8sdp"
-            android:text="@string/skills"
-            android:textAllCaps="true"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/_10ssp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/_8sdp"
-            android:paddingLeft="@dimen/_8sdp"
-            android:paddingRight="@dimen/_8sdp"
-            android:paddingTop="@dimen/_3sdp">
-
-            <customviews.MediumTextView
-                android:id="@+id/txtSkillHome"
+            <customviews.BoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/_12sdp"
-                android:background="@drawable/skill_card_outer"
-                android:padding="@dimen/_5sdp"
-                android:text="Lorim"
-                android:textColor="@color/black_color"
-                android:textSize="@dimen/_12ssp" />
+                android:paddingLeft="@dimen/_10sdp"
+                android:paddingRight="@dimen/_8sdp"
+                android:text="@string/skills"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_10ssp" />
 
-            <customviews.MediumTextView
-                android:id="@+id/txtSkillCount"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/skill_card_outer"
-                android:padding="@dimen/_5sdp"
-                android:text="Lorim"
-                android:textColor="@color/black_color"
-                android:textSize="@dimen/_12ssp" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_8sdp"
+                android:paddingRight="@dimen/_8sdp"
+                android:paddingTop="@dimen/_3sdp">
 
+                <customviews.MediumTextView
+                    android:id="@+id/txtSkillHome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/_12sdp"
+                    android:background="@drawable/skill_card_outer"
+                    android:padding="@dimen/_5sdp"
+                    android:text="Lorim"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_12ssp" />
+
+                <customviews.MediumTextView
+                    android:id="@+id/txtSkillCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/skill_card_outer"
+                    android:padding="@dimen/_5sdp"
+                    android:text="Lorim"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_12ssp" />
+            </LinearLayout>
         </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/_16sdp"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
-</RelativeLayout>
+</com.daimajia.swipe.SwipeLayout>

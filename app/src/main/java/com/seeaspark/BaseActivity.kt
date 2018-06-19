@@ -41,10 +41,10 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    abstract fun getContentView(): Int /// Initalize Activity Layout
     abstract fun initUI() /// Alter UI here
     abstract fun onCreateStuff() /// Initalize Variables here
     abstract fun initListener() /// Initalize Click Listener Here
-    abstract fun getContentView(): Int /// Initalize Activity Layout
     abstract fun getContext(): Context /// Initalize Activity Context
 
     fun connectedToInternet() = (Connection_Detector(mContext).isConnectingToInternet())

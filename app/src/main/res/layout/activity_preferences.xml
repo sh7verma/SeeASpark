@@ -124,7 +124,7 @@
                         android:id="@+id/txtExperienceCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1 Years"
+                        android:text="3 Years"
                         android:textColor="@color/black_color"
                         android:textSize="@dimen/_12ssp" />
 
