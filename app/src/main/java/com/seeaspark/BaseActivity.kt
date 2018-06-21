@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.view.View
@@ -79,7 +80,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         mUtils!!.setInt("height", mHeight)
     }
 
-    protected fun moveToSplash() {
+    public fun moveToSplash() {
         val notificationManager = mContext!!
                 .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
@@ -90,4 +91,16 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         mContext!!.startActivity(inSplash)
         System.exit(2)
     }
+
+    public fun alertLogoutDialog() {
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("LOG OUT")
+        alertDialog.setMessage("Are you sure you want to Log out?")
+        alertDialog.setPositiveButton("CONFIRM") { dialog, which ->
+            moveToSplash()
+        }
+        alertDialog.setNegativeButton("CANCEL") { dialog, which -> dialog.cancel() }
+        alertDialog.show()
+    }
+
 }

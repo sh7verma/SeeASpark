@@ -62,7 +62,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.0.0'
 
 //    /// google
-//    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
 
     /// external Libraries
     implementation 'com.cocosw:bottomsheet:1.+@aar'

@@ -37,7 +37,7 @@ class CommunityAdapter(mCommunityArray: ArrayList<CommunityModel>, mContext: Con
 
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imgCommunity = itemView.imgCommunity!!
+        val imgCommunity = itemView.imgCommunityHome!!
         val txtCommunityTitle = itemView.txtCommunityTitle!!
         val txtDateCommunity = itemView.txtDateCommunity!!
         val txtCommunityDesc = itemView.txtCommunityDesc!!

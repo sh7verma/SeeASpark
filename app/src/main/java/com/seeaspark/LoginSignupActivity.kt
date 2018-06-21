@@ -398,6 +398,7 @@ class LoginSignupActivity : BaseActivity() {
                             response.body().response.profile_status == 1) {
 
                         mUtils!!.setString("access_token", response.body().response.access_token)
+                        mUtils!!.setString("user_id", response.body().response.id.toString())
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
@@ -411,6 +412,7 @@ class LoginSignupActivity : BaseActivity() {
 
                         mUtils!!.setString("access_token", response.body().response.access_token)
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
+                        mUtils!!.setString("user_id", response.body().response.id.toString())
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
@@ -524,7 +526,7 @@ class LoginSignupActivity : BaseActivity() {
 
                         mUtils!!.setString("access_token", response.body().response.access_token)
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
-
+                        mUtils!!.setString("user_id", response.body().response.id.toString())
                         addDataToSharedPreferences(response.body())
                         /// navigate to questionarrie
                         moveToQuestionnaire()
@@ -535,6 +537,8 @@ class LoginSignupActivity : BaseActivity() {
 
                         mUtils!!.setString("access_token", response.body().response.access_token)
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
+                        mUtils!!.setString("user_id", response.body().response.id.toString())
+
                         addDataToSharedPreferences(response.body())
                         /// navigate to landing Screen
                         moveToLanding()
@@ -643,7 +647,7 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     fun addDataToSharedPreferences(signupModel: SignupModel) {
-
+        mUtils!!.setString("tipsVisible", signupModel.response.tip)
         mUtils!!.setString("userDataLocal", mGson.toJson(signupModel))
 
         /*mUtils!!.setString("professionData", mGson.toJson(signupModel.professions))

@@ -78,6 +78,22 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llCommunity"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/white_ripple"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgCommunity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_community" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/llEvents"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -93,21 +109,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/llCommunity"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/white_ripple"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/imgCommunity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_community" />
-
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
@@ -116,8 +117,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/light_white_transparent"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -254,10 +255,10 @@
                 android:gravity="center">
 
                 <ImageView
-                    android:id="@+id/imgEventsTips"
+                    android:id="@+id/imgCommunityTips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_events_s"
+                    android:src="@mipmap/ic_community_s"
                     android:visibility="invisible" />
 
             </LinearLayout>
@@ -269,13 +270,14 @@
                 android:gravity="center">
 
                 <ImageView
-                    android:id="@+id/imgCommunityTips"
+                    android:id="@+id/imgEventsTips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_community_s"
+                    android:src="@mipmap/ic_events_s"
                     android:visibility="invisible" />
 
             </LinearLayout>
+
         </LinearLayout>
     </RelativeLayout>
 

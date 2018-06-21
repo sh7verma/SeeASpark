@@ -25,16 +25,21 @@ import utils.Constants
 
 class PreferencesActivity : BaseActivity() {
 
-    var mSelectedSkillsArray = ArrayList<String>()
-    var mSelectedSkillsNameArray = ArrayList<String>()
+    private var mSelectedSkillsArray = ArrayList<String>()
+    private var mSelectedSkillsNameArray = ArrayList<String>()
     private val SKILLS: Int = 1
 
     var mAdapterProfession: PreferProfessionAdapter? = null
-    var mProfessionArray = ArrayList<ProfessionModel>()
+    private var mProfessionArray = ArrayList<ProfessionModel>()
+    var mSelectedProfessionsArray = ArrayList<String>()
     private var userData: SignupModel? = null
     private var mGenderValue: Int? = 0
+    private var moveToHome = false
+    private var mPreferActivity: PreferencesActivity? = null
+
 
     override fun initUI() {
+        mPreferActivity = this
         val bottomParms = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mHeight / 6)
         llProfessionText.layoutParams = bottomParms
         initPersistentBottomsheetProfession()
@@ -42,33 +47,71 @@ class PreferencesActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java);
 
         rsbDistance.isNotifyWhileDragging = true
         rsbDistance.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtDistanceCount.text = "$maxValue Miles" }
-        rsbDistance.selectedMaxValue = 15
 
         rsbExperience.isNotifyWhileDragging = true
         rsbExperience.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtExperienceCount.text = "$maxValue Years" }
-        rsbExperience.selectedMaxValue = 3
 
-        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java);
+        if (intent.hasExtra("showPrefilled")) {
+            /// navigating from home section
+            moveToHome = true
+            rsbDistance.selectedMaxValue = userData!!.response.preferences.distance
+            txtDistanceCount.text = "${userData!!.response.preferences.distance} Miles"
 
-        if (userData!!.response.gender == "1") {
-            mGenderValue = 2
-            txtGenderPrefer.text = getString(R.string.female)
-        } else if (userData!!.response.gender == "2") {
-            mGenderValue = 1
-            txtGenderPrefer.text = getString(R.string.male)
+            rsbExperience.selectedMaxValue = userData!!.response.preferences.experience_year
+            txtExperienceCount.text = "${userData!!.response.preferences.experience_year} Years"
+
+            if (userData!!.response.gender == "1") {
+                mGenderValue = 1
+                txtGenderPrefer.text = getString(R.string.male)
+            } else if (userData!!.response.gender == "2") {
+                mGenderValue = 2
+                txtGenderPrefer.text = getString(R.string.female)
+            } else {
+                mGenderValue = 3
+                txtGenderPrefer.text = getString(R.string.other)
+            }
+
+            extractSkills()
+            extractSelectedProfessions()
         } else {
-            mGenderValue = 3
-            txtGenderPrefer.text = getString(R.string.other)
+            rsbDistance.selectedMaxValue = Constants.DISTANCE
+            txtDistanceCount.text = "${Constants.DISTANCE} Miles"
+
+            rsbExperience.selectedMaxValue = Constants.EXPERIENCE
+            txtExperienceCount.text = "${Constants.EXPERIENCE} Years"
+
+            if (userData!!.response.gender == "1") {
+                mGenderValue = 2
+                txtGenderPrefer.text = getString(R.string.female)
+            } else if (userData!!.response.gender == "2") {
+                mGenderValue = 1
+                txtGenderPrefer.text = getString(R.string.male)
+            } else {
+                mGenderValue = 3
+                txtGenderPrefer.text = getString(R.string.other)
+            }
         }
 
         extractProfessionValue()
         extractLanguageValue()
+    }
 
-        mAdapterProfession = PreferProfessionAdapter(mContext!!, mProfessionArray)
-        rvProfessionPrefer.adapter = mAdapterProfession
+    private fun extractSelectedProfessions() {
+        for (profession in userData!!.response.preferences.professions) {
+            mSelectedProfessionsArray.add(profession.id.toString())
+        }
+    }
+
+    private fun extractSkills() {
+        for (skillValue in userData!!.response.preferences.skills) {
+            mSelectedSkillsNameArray.add(skillValue.name)
+            mSelectedSkillsArray.add(skillValue.id.toString())
+        }
+        displaySkillsChips()
     }
 
     private fun extractLanguageValue() {
@@ -77,6 +120,8 @@ class PreferencesActivity : BaseActivity() {
 
     private fun extractProfessionValue() {
         mProfessionArray.addAll(userData!!.professions)
+        mAdapterProfession = PreferProfessionAdapter(mContext!!, mProfessionArray, mPreferActivity)
+        rvProfessionPrefer.adapter = mAdapterProfession
     }
 
     override fun initListener() {
@@ -115,18 +160,18 @@ class PreferencesActivity : BaseActivity() {
     }
 
     private fun hitAPI() {
+
         showLoader()
         var tempProfessions: String = Constants.EMPTY
 
-        val tempProfessionsArray = ArrayList<String>()
         for (selectedProfession in mProfessionArray) {
             if (selectedProfession.isSelected)
-                tempProfessionsArray.add(selectedProfession.id.toString())
+                mSelectedProfessionsArray.add(selectedProfession.id.toString())
         }
 
-        if (tempProfessionsArray.size > 0)
-            tempProfessions = tempProfessionsArray.toString()
-                    .substring(1, tempProfessionsArray.toString().length - 1).trim()
+        if (mSelectedProfessionsArray.size > 0)
+            tempProfessions = mSelectedProfessionsArray.toString()
+                    .substring(1, mSelectedProfessionsArray.toString().length - 1).trim()
 
         Log.e("Selected Professions = ", tempProfessions)
 
@@ -152,10 +197,21 @@ class PreferencesActivity : BaseActivity() {
                     mUtils!!.setString("userDataLocal", mGson.toJson(userData))
                     mUtils!!.setString("access_token", userData!!.response.access_token)
                     mUtils!!.setInt("profile_status", userData!!.response.profile_status)
-                    intent = Intent(mContext, DisclamierDialog::class.java)
-                    startActivity(intent)
+
+                    if (moveToHome) {
+                        /// navigate back to home
+                        intent = Intent()
+                        setResult(Activity.RESULT_OK, intent)
+                        finish()
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                    } else {
+                        /// navigate back to disclamier
+                        intent = Intent(mContext, DisclamierDialog::class.java)
+                        startActivity(intent)
+                    }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+
                         moveToSplash()
                     } else
                         showAlert(imgForwardPrefer, response.body().error!!.message!!)
@@ -173,27 +229,32 @@ class PreferencesActivity : BaseActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 SKILLS -> {
-                    var count = 0
+
                     flSkillsPrefer.removeAllViews()
                     mSelectedSkillsArray.clear()
                     mSelectedSkillsArray.addAll(data!!.getStringArrayListExtra("selectedSkills"))
 
                     mSelectedSkillsNameArray.clear()
                     mSelectedSkillsNameArray.addAll(data!!.getStringArrayListExtra("selectedSkillsName"))
-                    for (skills: String in mSelectedSkillsNameArray) {
-                        if (count == 3) {
-                            flSkillsPrefer.addView(inflateView("+ ${mSelectedSkillsArray.size - count} More"))
-                            break
-                        } else {
-                            flSkillsPrefer.addView(inflateView(skills))
-                        }
-                        count++
-                    }
 
+                    displaySkillsChips()
                 }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun displaySkillsChips() {
+        var count = 0
+        for (skills: String in mSelectedSkillsNameArray) {
+            if (count == 3) {
+                flSkillsPrefer.addView(inflateView("+ ${mSelectedSkillsArray.size - count} More"))
+                break
+            } else {
+                flSkillsPrefer.addView(inflateView(skills))
+            }
+            count++
+        }
     }
 
     private fun inflateView(skillValue: String): View {
@@ -249,7 +310,6 @@ class PreferencesActivity : BaseActivity() {
 
                 }
             })
-
     }
 
     private fun optionGender() {
@@ -271,6 +331,14 @@ class PreferencesActivity : BaseActivity() {
                         }
                     }
                 }.show()
+    }
+
+    override fun onBackPressed() {
+        if (moveToHome) {
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        } else
+            super.onBackPressed()
     }
 
 

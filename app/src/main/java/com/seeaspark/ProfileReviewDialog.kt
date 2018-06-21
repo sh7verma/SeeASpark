@@ -2,14 +2,18 @@ package com.seeaspark
 
 import android.app.Activity
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
@@ -28,6 +32,8 @@ class ProfileReviewDialog : Activity() {
     private var mScreenheight: Int = 0
     var mUtils: Utils? = null
     var userProfileData: SignupModel.ResponseBean? = null
+    var mContext: Context? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +46,8 @@ class ProfileReviewDialog : Activity() {
         setContentView(R.layout.dialog_profile_review)
         getDefaults()
         window.setLayout(mScreenwidth, (mScreenheight * 0.6).toInt())
+
+        mContext = this
 
         mUtils = Utils(this)
         userProfileData = intent.getParcelableExtra("userProfileData")
@@ -112,4 +120,35 @@ class ProfileReviewDialog : Activity() {
         inSplash.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(inSplash)
     }
+
+    override fun onStart() {
+        super.onStart()
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
+                IntentFilter(Constants.REVIEW))
+    }
+
+    override  fun onResume() {
+        super.onResume()
+        Log.e("onResume", "onResume")
+        mUtils!!.setInt("inside_review", 1)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
+    }
+
+    override fun onStop() {
+        mUtils!!.setInt("inside_review", 0)
+        super.onStop()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+    }
+
+    var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val inStarted = Intent(mContext, QuestionnariesActivity::class.java)
+            inStarted.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            inStarted.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(inStarted)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        }
+    }
+
 }

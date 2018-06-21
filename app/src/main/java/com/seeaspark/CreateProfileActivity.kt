@@ -8,7 +8,6 @@ import android.support.v4.view.ViewPager
 import android.view.View
 import fragments.*
 import kotlinx.android.synthetic.main.activity_create_profile.*
-import kotlinx.android.synthetic.main.activity_signup.*
 import models.*
 import network.RetrofitClient
 import retrofit2.Callback
@@ -151,8 +150,8 @@ class CreateProfileActivity : BaseActivity() {
     fun verifyEmail(email: String) {
         showLoader()
         var call = RetrofitClient.getInstance().verifyEmail(email, userData!!.response.access_token)
-        call.enqueue(object : Callback<ResendModel> {
-            override fun onResponse(call: retrofit2.Call<ResendModel>?, response: Response<ResendModel>?) {
+        call.enqueue(object : Callback<BaseSuccessModel> {
+            override fun onResponse(call: retrofit2.Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
                 dismissLoader()
                 if (response!!.body().response != null) {
                     var intent = Intent(mContext, EmailVerificationActivity::class.java)
@@ -166,7 +165,7 @@ class CreateProfileActivity : BaseActivity() {
                 }
             }
 
-            override fun onFailure(call: retrofit2.Call<ResendModel>?, t: Throwable?) {
+            override fun onFailure(call: retrofit2.Call<BaseSuccessModel>?, t: Throwable?) {
                 dismissLoader()
                 showAlert(vpProfile, t!!.localizedMessage)
             }

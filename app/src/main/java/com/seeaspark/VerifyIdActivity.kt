@@ -72,6 +72,7 @@ class VerifyIdActivity : BaseActivity() {
         userData = intent.getParcelableExtra("userData")
 
         if (userData!!.response.user_type == Constants.MENTEE) {
+            txtOption.visibility = View.VISIBLE
             txtOption.text = getString(R.string.skip)
             txtOption.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         }

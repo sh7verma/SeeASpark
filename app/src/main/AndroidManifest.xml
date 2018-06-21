@@ -173,7 +173,7 @@
             android:name=".ShortProfileDialog"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/DialogSlideAnim" />
+            android:theme="@android:style/Theme.Dialog" />
 
         <activity
             android:name=".EmailVerificationActivity"

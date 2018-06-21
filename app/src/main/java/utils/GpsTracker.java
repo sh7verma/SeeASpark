@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class GpsTracker  {
+public class GpsTracker extends Service implements LocationListener {
 
-	/*private final Context mContext;
+	private final Context mContext;
 
 	// flag for GPS Status
 	boolean isGPSEnabled = false;
@@ -118,10 +118,10 @@ public class GpsTracker  {
 		}
 	}
 
-	*//**
+	/**
 	 * Stop using GPS listener Calling this function will stop using GPS in your
 	 * app
-	 *//*
+	 */
 
 	public void stopUsingGPS() {
 		if (locationManager != null) {
@@ -129,9 +129,9 @@ public class GpsTracker  {
 		}
 	}
 
-	*//**
+	/**
 	 * Function to get latitude
-	 *//*
+	 */
 	public double getLatitude() {
 		if (location != null) {
 			latitude = location.getLatitude();
@@ -140,9 +140,9 @@ public class GpsTracker  {
 		return latitude;
 	}
 
-	*//**
+	/**
 	 * Function to get longitude
-	 *//*
+	 */
 	public double getLongitude() {
 		if (location != null) {
 			longitude = location.getLongitude();
@@ -151,16 +151,16 @@ public class GpsTracker  {
 		return longitude;
 	}
 
-	*//**
+	/**
 	 * Function to check GPS/wifi enabled
-	 *//*
+	 */
 	public boolean canGetLocation() {
 		return this.canGetLocation;
 	}
 
-	*//**
+	/**
 	 * Function to show settings alert dialog
-	 *//*
+	 */
 	// public void showSettingsAlert() {
 	// AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 	//
@@ -191,11 +191,11 @@ public class GpsTracker  {
 	// alertDialog.show();
 	// }
 
-	*//**
+	/**
 	 * Get list of address by latitude and longitude
 	 * 
 	 * @return null or List<Address>
-	 *//*
+	 */
 	public List<Address> getGeocoderAddress(Context context) {
 		if (location != null) {
 			Geocoder geocoder = new Geocoder(context, Locale.ENGLISH);
@@ -210,11 +210,11 @@ public class GpsTracker  {
 		return null;
 	}
 
-	*//**
+	/**
 	 * Try to get AddressLine
 	 * 
 	 * @return null or addressLine
-	 *//*
+	 */
 	public String getAddressLine(Context context) {
 		List<Address> addresses = getGeocoderAddress(context);
 		if (addresses != null && addresses.size() > 0) {
@@ -227,11 +227,11 @@ public class GpsTracker  {
 		}
 	}
 
-	*//**
+	/**
 	 * Try to get Locality
 	 * 
 	 * @return null or locality
-	 *//*
+	 */
 	public String getLocality(Context context) {
 		List<Address> addresses = getGeocoderAddress(context);
 		if (addresses != null && addresses.size() > 0) {
@@ -244,11 +244,11 @@ public class GpsTracker  {
 		}
 	}
 
-	*//**
+	/**
 	 * Try to get Postal Code
 	 * 
 	 * @return null or postalCode
-	 *//*
+	 */
 	public String getPostalCode(Context context) {
 		List<Address> addresses = getGeocoderAddress(context);
 		if (addresses != null && addresses.size() > 0) {
@@ -261,11 +261,11 @@ public class GpsTracker  {
 		}
 	}
 
-	*//**
+	/**
 	 * Try to get CountryName
 	 * 
 	 * @return null or postalCode
-	 *//*
+	 */
 	public String getCountryName(Context context) {
 		List<Address> addresses = getGeocoderAddress(context);
 		if (addresses != null && addresses.size() > 0) {
@@ -302,6 +302,6 @@ public class GpsTracker  {
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
-	}*/
+	}
 
 }
