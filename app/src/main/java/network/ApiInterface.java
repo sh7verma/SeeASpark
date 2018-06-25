@@ -1,10 +1,11 @@
 package network;
 
+import models.CardModel;
 import models.ForgotPasswordModel;
-import models.ResendModel;
+import models.BaseSuccessModel;
 import models.SearchSkillModel;
 import models.SignupModel;
-import models.SkillsModel;
+import models.SwipeCardModel;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -56,12 +57,12 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("/api/v1/verifications/resend_email")
-    Call<ResendModel> resendEmail(@Field("access_token") String access_token);
+    Call<BaseSuccessModel> resendEmail(@Field("access_token") String access_token);
 
     @FormUrlEncoded
     @POST("/api/v1/verifications/send_email")
-    Call<ResendModel> verifyEmail(@Field("email") String email,
-                                  @Field("access_token") String access_token);
+    Call<BaseSuccessModel> verifyEmail(@Field("email") String email,
+                                       @Field("access_token") String access_token);
 
     @FormUrlEncoded
     @POST("/api/v1/preferences/update_preferences")
@@ -87,6 +88,25 @@ public interface ApiInterface {
 
     @GET("/api/v1/forget_password")
     Call<ForgotPasswordModel> forgotPassword(@Query("email") String email);
+
+    @GET("/api/v1/cards")
+    Call<CardModel> getCards(@Query("access_token") String access_token,
+                             @Query("latitude") String latitude,
+                             @Query("longitude") String longitude,
+                             @Query("page") String page);
+
+    @FormUrlEncoded
+    @POST("/api/v1/cards/swipe")
+    Call<SwipeCardModel> swipeCards(@Field("access_token") String access_token,
+                                    @Field("swipe_type") int swipe_type,
+                                    @Field("other_user_id") String other_user_id);
+
+
+    @GET("/api/v1/delete_account")
+    Call<BaseSuccessModel> deleteAccount(@Query("access_token") String access_token);
+
+    @GET("/api/v1/skip_tip")
+    Call<BaseSuccessModel> skipTip(@Query("access_token") String access_token);
 
 
 }

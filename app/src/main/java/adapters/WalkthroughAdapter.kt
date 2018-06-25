@@ -37,7 +37,7 @@ class WalkthroughAdapter(mWalkArray: IntArray, mWalkDataArray: ArrayList<String>
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = LayoutInflater.from(container?.context).inflate(R.layout.item_walkthrough, container, false)
         Picasso.with(mContext).load(mWalkArray!![mUtils!!.getInt("walk_position", 0)]).into(view.imgWalk)
-//        view.txtWalk.setText(mWalkDataArray[position])
+//        view.txtWalk.setText(mContentArray[position])
         container.addView(view)
         return view
     }

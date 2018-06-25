@@ -9,7 +9,7 @@ import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_email_verification.*
-import models.ResendModel
+import models.BaseSuccessModel
 import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -63,8 +63,8 @@ class EmailVerificationActivity : BaseActivity() {
     private fun hitAPI() {
         showLoader()
         val call = RetrofitClient.getInstance().resendEmail(intent.getStringExtra("access_token"))
-        call.enqueue(object : Callback<ResendModel> {
-            override fun onResponse(call: Call<ResendModel>?, response: Response<ResendModel>) {
+        call.enqueue(object : Callback<BaseSuccessModel> {
+            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>) {
                 dismissLoader()
                 if (response.body().response != null) {
                     showToast(mContext!!, response.body().response.message)
@@ -73,7 +73,7 @@ class EmailVerificationActivity : BaseActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<ResendModel>?, t: Throwable?) {
+            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
                 dismissLoader()
                 showAlert(txtDoneEmail, t!!.localizedMessage)
             }
@@ -93,7 +93,7 @@ class EmailVerificationActivity : BaseActivity() {
         }
     }
 
-    override protected fun onResume() {
+    override  fun onResume() {
         super.onResume()
         Log.e("onResume", "onResume")
         mUtils!!.setInt("inside_verify", 1)

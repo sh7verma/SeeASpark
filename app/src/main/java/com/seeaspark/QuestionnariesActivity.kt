@@ -51,8 +51,6 @@ class QuestionnariesActivity : BaseActivity() {
         mAdapterQuestions = QuestionAdapter(mArrayQuestions, mContext!!, mQuestionarieInstance)
         vpQuestion.adapter = mAdapterQuestions
         vpQuestion.offscreenPageLimit = mArrayQuestions.size
-//        cpIndicator.setViewPager(vpQuestion)
-//        cpIndicator.fillColor = Color.BLACK
 
         rvIndicators.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         mIndicatorAdapter = IndicatorAdapter(mArrayQuestions, mContext!!, selectedPos)
@@ -165,7 +163,6 @@ class QuestionnariesActivity : BaseActivity() {
         super.onStart()
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
                 IntentFilter(Constants.QUESTIONS))
-
 
     }
 

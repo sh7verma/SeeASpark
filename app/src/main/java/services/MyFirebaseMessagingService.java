@@ -14,11 +14,16 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 import com.seeaspark.CreateProfileActivity;
+import com.seeaspark.HandshakeActivity;
+import com.seeaspark.LandingActivity;
+import com.seeaspark.QuestionnariesActivity;
 import com.seeaspark.R;
 
 import java.util.Map;
 
+import models.SignupModel;
 import utils.Constants;
 import utils.Utils;
 
@@ -45,7 +50,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendNotification(Map<String, String> messageBody) {
         Intent intent = null;
-        String message = messageBody.get("message");
+        String message = messageBody.get("body");
         int notificationId;
 
 //        {access_token=37ba65a651debf9a74a897a0a65d1c53, push_type=1,
@@ -62,6 +67,39 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 /// inside verify email activity
                 Intent notificationIntent = new Intent(Constants.EMAIL_VERIFY);
                 broadcaster.sendBroadcast(notificationIntent);
+            }
+        } else if (messageBody.get("push_type").equalsIgnoreCase("2")) {
+            if (utils.getInt("inside_review", 0) == 0 && utils.getInt("inside_reviewFull", 0) == 0) {
+                /// outside review activity
+                intent = new Intent(this, QuestionnariesActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                ringNotification(intent, message, 0, messageBody.get("body"));
+            } else {
+                /// inside review activity
+                Intent notificationIntent = new Intent(Constants.REVIEW);
+                broadcaster.sendBroadcast(notificationIntent);
+            }
+        } else if (messageBody.get("push_type").equalsIgnoreCase("3")) {
+
+            SignupModel.ResponseBean mMatchModel = new SignupModel.ResponseBean();
+            mMatchModel.setAccess_token(messageBody.get("access_token"));
+            mMatchModel.setFull_name(messageBody.get("full_name"));
+            mMatchModel.setAvatar(messageBody.get("avatar"));
+            mMatchModel.setId(Integer.parseInt(messageBody.get("user_id")));
+
+            String matchData = new Gson().toJson(mMatchModel);
+
+            if (utils.getInt("Background", 0) == 1) {
+                intent = new Intent(this, LandingActivity.class);
+                intent.putExtra("matchData", matchData);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                ringNotification(intent, message, 1, messageBody.get("title"));
+            } else {
+                intent = new Intent(this, HandshakeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                intent.putExtra("matchData", matchData);
+                startActivity(intent);
+
             }
         }
     }

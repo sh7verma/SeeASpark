@@ -97,7 +97,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustNothing|stateHidden" />
 
         <activity
             android:name=".ForgotPasswordActivity"
@@ -134,19 +134,14 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-
-        </activity>
-
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".PreferencesActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".SkillSelectionActivity"
@@ -175,6 +170,18 @@
             android:theme="@style/DialogSlideAnim" />
 
         <activity
+            android:name=".ShortProfileDialog"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog" />
+
+        <activity
+            android:name=".BoostDialog"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog" />
+
+        <activity
             android:name=".EmailVerificationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -188,6 +195,13 @@
             android:theme="@style/MainActionBarTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity
+            android:name=".HandshakeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
         <service android:name="services.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -198,6 +212,14 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+
+        <receiver android:name="utils.ConnectivityReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

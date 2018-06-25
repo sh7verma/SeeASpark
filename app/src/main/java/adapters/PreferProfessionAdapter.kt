@@ -5,18 +5,24 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.seeaspark.PreferencesActivity
 import com.seeaspark.R
 import kotlinx.android.synthetic.main.item_profession.view.*
 import models.ProfessionModel
 
-class PreferProfessionAdapter(mConetxt: Context, mProfessionArray: ArrayList<ProfessionModel>) : RecyclerView.Adapter<PreferProfessionAdapter.ViewHolder>() {
+class PreferProfessionAdapter(mConetxt: Context,
+                              mProfessionArray: ArrayList<ProfessionModel>,
+                              mPreferActivity: PreferencesActivity?)
+    : RecyclerView.Adapter<PreferProfessionAdapter.ViewHolder>() {
 
     var mProfessionArray = ArrayList<ProfessionModel>()
     var mContext: Context? = null
+    var mPreferActivity: PreferencesActivity? = null
 
     init {
         this.mProfessionArray = mProfessionArray
         this.mContext = mConetxt
+        this.mPreferActivity = mPreferActivity
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,18 +35,18 @@ class PreferProfessionAdapter(mConetxt: Context, mProfessionArray: ArrayList<Pro
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.txtProfessionData.text = mProfessionArray[position].name
 
-        if (mProfessionArray[position].isSelected)
+        if (mPreferActivity!!.mSelectedProfessionsArray.contains(mProfessionArray[position].id.toString()))
             holder.imgSelectedProfession.visibility = View.VISIBLE
         else
             holder.imgSelectedProfession.visibility = View.INVISIBLE
 
         holder.txtProfessionData.setOnClickListener {
-            if (mProfessionArray[position].isSelected) {
+            if (mPreferActivity!!.mSelectedProfessionsArray.contains(mProfessionArray[position].id.toString())) {
                 holder.imgSelectedProfession.visibility = View.INVISIBLE
-                mProfessionArray[position].isSelected = false
+                mPreferActivity!!.mSelectedProfessionsArray.remove(mProfessionArray[position].id.toString())
             } else {
                 holder.imgSelectedProfession.visibility = View.VISIBLE
-                mProfessionArray[position].isSelected = true
+                mPreferActivity!!.mSelectedProfessionsArray.add(mProfessionArray[position].id.toString())
             }
             notifyDataSetChanged()
         }

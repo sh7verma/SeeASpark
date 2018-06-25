@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/_24sdp"
+    android:layout_marginLeft="@dimen/_8sdp"
+    android:layout_marginRight="@dimen/_8sdp"
+    android:background="@drawable/signup_gradient">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,9 +21,6 @@
                 android:id="@+id/llMain"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_280sdp"
-                android:layout_marginLeft="@dimen/_8sdp"
-                android:layout_marginRight="@dimen/_8sdp"
-                android:background="@drawable/signup_gradient"
                 android:orientation="vertical">
 
                 <ImageView
@@ -84,10 +85,10 @@
                     android:layout_marginTop="@dimen/_12sdp"
                     android:gravity="left"
                     android:hint="@string/email"
-                    android:textCursorDrawable="@drawable/color_cursor"
                     android:inputType="textEmailAddress"
                     android:maxLength="@integer/email_max"
                     android:maxLines="1"
+                    android:textCursorDrawable="@drawable/color_cursor"
                     android:textSize="@dimen/_14ssp"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelAnimating="true"
@@ -144,9 +145,9 @@
                     android:layout_marginLeft="@dimen/_16sdp"
                     android:background="@drawable/transparent_ripple"
                     android:paddingBottom="@dimen/_5sdp"
-                    android:textAllCaps="true"
                     android:paddingTop="@dimen/_5sdp"
                     android:text="Forgot Password?"
+                    android:textAllCaps="true"
                     android:textColor="@color/black_color"
                     android:textSize="@dimen/_13ssp" />
 
@@ -157,29 +158,29 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_260sdp">
 
-                    <ImageView
-                        android:id="@+id/imgFacebook"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_36sdp"
-                        android:layout_centerVertical="true"
-                        android:src="@mipmap/ic_fb" />
+                <ImageView
+                    android:id="@+id/imgFacebook"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_36sdp"
+                    android:src="@mipmap/ic_fb" />
 
-                    <com.facebook.login.widget.LoginButton
-                        android:id="@+id/loginButton"
-                        android:layout_width="@dimen/_32sdp"
-                        android:layout_height="@dimen/_32sdp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="@dimen/_36sdp"
-                        android:layout_centerVertical="true"
-                        android:alpha="0" />
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/loginButton"
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_36sdp"
+                    android:alpha="0" />
 
                 <ImageView
                     android:id="@+id/imgLinkedin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_92sdp"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/_92sdp"
                     android:src="@mipmap/ic_linkedin" />
 
                 <customviews.MediumTextView
@@ -187,6 +188,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
+                    android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_marginRight="@dimen/_36sdp"
                     android:background="@drawable/mentee_ripple"
                     android:elevation="@dimen/_3"
@@ -195,7 +197,6 @@
                     android:paddingRight="@dimen/_24sdp"
                     android:paddingTop="@dimen/_8sdp"
                     android:text="@string/done"
-                    android:layout_marginBottom="@dimen/_5sdp"
                     android:textAllCaps="true"
                     android:textColor="@color/black_color"
                     android:textSize="@dimen/_14ssp" />
