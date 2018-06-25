@@ -63,6 +63,14 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
     override fun onCreateStuff() {
 
+        if (intent.hasExtra("matchData")) {
+            val matchData: String = intent.getStringExtra("matchData")
+            intent = Intent(this, HandshakeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            intent.putExtra("matchData", matchData)
+            startActivity(intent)
+        }
+
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
         if (userData!!.response.user_type == Constants.MENTEE) {
@@ -143,6 +151,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                     5 -> {
                         imgCommunityTips.visibility = View.INVISIBLE
                         imgEventsTips.visibility = View.VISIBLE
+                        imgNextTips.setImageResource(R.mipmap.ic_ob_done)
                     }
                 }
             }
@@ -252,7 +261,14 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         if (location != null) {
             mLatitude = location.latitude
             mLongitude = location.longitude
-            homeFragment.hitAPI(true)
+            if (connectedToInternet()) {
+                if (intent.hasExtra("matchData"))
+                    homeFragment.hitAPI(false)
+                else
+                    homeFragment.hitAPI(true)
+            } else {
+                showInternetAlert(llCommunity)
+            }
         } else {
             showAlert(llCommunity, getString(R.string.unable_location))
         }
@@ -291,6 +307,9 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     if (mGoogleApiClient == null) {
                         buildGoogleApiClient()
+                        mGpsStatusDetector = GpsStatusDetector(this)
+                        mGpsStatusDetector!!.checkGpsStatus()
+
                     }
                 }
             }

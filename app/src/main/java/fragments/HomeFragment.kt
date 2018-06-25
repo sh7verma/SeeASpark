@@ -1,23 +1,11 @@
 package fragments
 
 import adapters.HomeCardsAdapter
-import android.Manifest
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.Fragment
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.pm.PackageManager.PERMISSION_GRANTED
-import android.location.Location
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
-import android.support.design.widget.Snackbar
-import android.support.design.widget.Snackbar.LENGTH_INDEFINITE
-import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
@@ -27,31 +15,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cocosw.bottomsheet.BottomSheet
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationListener
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
 import com.seeaspark.*
-import com.seeaspark.BuildConfig.APPLICATION_ID
-import kotlinx.android.synthetic.main.activity_verify_id.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import models.BaseSuccessModel
 import models.CardModel
 import models.CardsDisplayModel
-import models.BaseSuccessModel
 import models.SwipeCardModel
 import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import utils.ConnectivityReceiver
 import utils.Constants
-import utils.Constants.moveToSplash
-import utils.GpsStatusDetector
+import utils.MainApplication
 import utils.Utils
+import kotlin.math.log
 
 
-class HomeFragment : Fragment(), View.OnClickListener {
+class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.ConnectivityReceiverListener {
+
 
     private val PREFERENCES: Int = 2
 
@@ -68,6 +50,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private var totalItemCount: Int = 0
     private var lastVisibleItem: Int = 0
     private var visibleThreshold: Int = 3
+    private val previousTotal = 0
     var isLoading: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -102,22 +85,26 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         rvCards.layoutManager = mLayoutManager
 
+
         rvCards.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                totalItemCount = mLayoutManager!!.getItemCount();
+                visibleThreshold = mLayoutManager!!.getChildCount()
+                totalItemCount = mLayoutManager!!.itemCount;
                 lastVisibleItem = mLayoutManager!!.findLastVisibleItemPosition()
 
                 if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    if (mLandingInstance!!.connectedToInternet()) {
-                        mOffset++
-                        val cardsDisplayModel = CardsDisplayModel()
-                        cardsDisplayModel.post_type = Constants.PROGRESS
-                        mArrayCards.add(cardsDisplayModel)
-                        mAdapterCards!!.notifyItemInserted(mArrayCards.size - 1)
-                        hitAPI(false)
-                        isLoading = true
+                    if (mArrayCards.size > 5) {
+                        if (mLandingInstance!!.connectedToInternet()) {
+                            mOffset++
+                            val cardsDisplayModel = CardsDisplayModel()
+                            cardsDisplayModel.post_type = Constants.PROGRESS
+                            mArrayCards.add(cardsDisplayModel)
+                            rvCards.post(Runnable { mAdapterCards!!.notifyItemInserted(mArrayCards.size - 1) })
+                            hitAPI(false)
+                            isLoading = true
+                        }
                     }
                 }
             }
@@ -126,6 +113,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
+
 
     }
 
@@ -145,15 +133,25 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     else {
                         mArrayCards.removeAt(mArrayCards.size - 1)
                         mAdapterCards!!.notifyItemRemoved(mArrayCards.size)
-                        mArrayCards.addAll(response.body().response)
-                        mAdapterCards!!.notifyDataSetChanged()
-                        isLoading = false
+
+                        /* for (cardData in response.body().response) {
+                             mArrayCards.add(cardData);
+                             mAdapterCards!!.notifyItemInserted(mArrayCards.size - 1);
+                         }*/
+
+                        if (response.body().response.size > 0) {
+                            mArrayCards.addAll(response.body().response)
+                            mAdapterCards!!.notifyDataSetChanged()
+                            isLoading = false
+                        } else {
+                            isLoading = true
+                        }
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         mLandingInstance!!.moveToSplash()
                     } else
-                        mLandingInstance!!.showAlert(llCancelDone, response.body().error!!.message!!)
+                        mLandingInstance!!.showAlert(rvCards, response.body().error!!.message!!)
                 }
             }
 
@@ -179,6 +177,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTEE) {
             val cardsDisplayModel = CardsDisplayModel()
             cardsDisplayModel.post_type = 3
+            cardsDisplayModel.time_left = response.time_left
             mArrayCards.add(cardsDisplayModel)
         }
         mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
@@ -210,10 +209,16 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 .sheet(R.menu.menu_account).listener { dialog, which ->
                     when (which) {
                         R.id.item_logout -> {
-                            mLandingInstance!!.alertLogoutDialog()
+                            if (mLandingInstance!!.connectedToInternet())
+                                mLandingInstance!!.alertLogoutDialog()
+                            else
+                                mLandingInstance!!.showInternetAlert(rvCards)
                         }
                         R.id.item_delete_account -> {
-                            alertDeleteAccountDialog()
+                            if (mLandingInstance!!.connectedToInternet())
+                                alertDeleteAccountDialog()
+                            else
+                                mLandingInstance!!.showInternetAlert(rvCards)
                         }
                     }
                 }.show()
@@ -248,11 +253,12 @@ class HomeFragment : Fragment(), View.OnClickListener {
                  mAdapterCards!!.notifyDataSetChanged()
              }*/
         }
+        isLoading = false
         hitSwipeAPI(swiped, id)
     }
 
     private fun hitSwipeAPI(swiped: Int, othetUserId: Int) {
-        var call = RetrofitClient.getInstance().swipeCards(mUtils!!.getString("access_token", ""),
+        val call = RetrofitClient.getInstance().swipeCards(mUtils!!.getString("access_token", ""),
                 swiped, othetUserId.toString())
         call.enqueue(object : Callback<SwipeCardModel> {
             override fun onResponse(call: Call<SwipeCardModel>?, response: Response<SwipeCardModel>) {
@@ -268,7 +274,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         mLandingInstance!!.moveToSplash()
                     } else
-                        mLandingInstance!!.showAlert(llCancelDone, response.body().error!!.message!!)
+                        mLandingInstance!!.showAlert(rvCards, response.body().error!!.message!!)
                 }
             }
 
@@ -283,6 +289,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         if (resultCode == RESULT_OK) {
             when (requestCode) {
                 PREFERENCES -> {
+                    isLoading = false
                     mOffset = 1
                     hitAPI(false)
                 }
@@ -320,7 +327,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         mLandingInstance!!.moveToSplash()
                     } else
-                        mLandingInstance!!.showAlert(llCancelDone, response.body().error!!.message!!)
+                        mLandingInstance!!.showAlert(rvCards, response.body().error!!.message!!)
                 }
             }
 
@@ -329,5 +336,35 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 mLandingInstance!!.showAlert(rvCards, t.localizedMessage)
             }
         })
+    }
+
+    fun boostPlan() {
+        val intent = Intent(mContext, BoostDialog::class.java)
+        startActivity(intent)
+        activity.overridePendingTransition(R.anim.slide_in_up, 0)
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        // register connection status listener
+        MainApplication.getInstance().setConnectivityListener(this)
+    }
+
+    override fun onNetworkConnectionChanged(isConnected: Boolean) {
+        if (isConnected) {
+            if (mArrayCards.size == 0) {
+                mOffset = 1
+                isLoading = false
+                hitAPI(true)
+            } else {
+                mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
+                rvCards.adapter = mAdapterCards
+            }
+        } else {
+            mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
+            rvCards.adapter = mAdapterCards
+        }
     }
 }

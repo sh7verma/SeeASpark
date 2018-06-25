@@ -17,6 +17,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.seeaspark.CreateProfileActivity;
 import com.seeaspark.HandshakeActivity;
+import com.seeaspark.LandingActivity;
 import com.seeaspark.QuestionnariesActivity;
 import com.seeaspark.R;
 
@@ -68,7 +69,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 broadcaster.sendBroadcast(notificationIntent);
             }
         } else if (messageBody.get("push_type").equalsIgnoreCase("2")) {
-            if (utils.getInt("inside_review", 0) == 0) {
+            if (utils.getInt("inside_review", 0) == 0 && utils.getInt("inside_reviewFull", 0) == 0) {
                 /// outside review activity
                 intent = new Intent(this, QuestionnariesActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -89,7 +90,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String matchData = new Gson().toJson(mMatchModel);
 
             if (utils.getInt("Background", 0) == 1) {
-                intent = new Intent(this, HandshakeActivity.class);
+                intent = new Intent(this, LandingActivity.class);
                 intent.putExtra("matchData", matchData);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ringNotification(intent, message, 1, messageBody.get("title"));

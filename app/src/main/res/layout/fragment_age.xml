@@ -1,82 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginBottom="@dimen/_24sdp"
+        android:layout_marginLeft="@dimen/_8sdp"
+        android:layout_marginRight="@dimen/_8sdp"
+        android:background="@drawable/signup_gradient"
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_220sdp"
-            android:layout_marginLeft="@dimen/_8sdp"
-            android:layout_marginRight="@dimen/_8sdp"
-            android:background="@drawable/signup_gradient"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/imgBackAge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/transparent_ripple"
-                android:padding="@dimen/_12sdp"
-                android:src="@mipmap/ic_back_black" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_220sdp"
+                android:orientation="vertical">
 
-            <customviews.BoldTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_16sdp"
-                android:layout_marginRight="@dimen/_16sdp"
-                android:text="@string/what_is_your_age"
-                android:textColor="@color/black_color"
-                android:textSize="@dimen/_24ssp" />
+                <ImageView
+                    android:id="@+id/imgBackAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/transparent_ripple"
+                    android:padding="@dimen/_12sdp"
+                    android:src="@mipmap/ic_back_black" />
 
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_16sdp"
+                    android:layout_marginRight="@dimen/_16sdp"
+                    android:text="@string/what_is_your_age"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_24ssp" />
+
+
+                <customviews.MediumTextView
+                    android:id="@+id/txtSelectAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_16sdp"
+                    android:layout_marginRight="@dimen/_16sdp"
+                    android:layout_marginTop="@dimen/_24sdp"
+                    android:drawableRight="@mipmap/ic_arrow_r"
+                    android:hint="@string/select"
+                    android:textColor="@color/white_color"
+                    android:textSize="@dimen/_16ssp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="@dimen/_8sdp"
+                    android:layout_marginLeft="@dimen/_16sdp"
+                    android:layout_marginRight="@dimen/_16sdp"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:background="@color/colorLine" />
+
+            </LinearLayout>
 
             <customviews.MediumTextView
-                android:id="@+id/txtSelectAge"
-                android:layout_width="match_parent"
+                android:id="@+id/txtNextAge"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_16sdp"
-                android:layout_marginRight="@dimen/_16sdp"
-                android:layout_marginTop="@dimen/_24sdp"
-                android:hint="@string/select"
-                android:drawableRight="@mipmap/ic_arrow_r"
-                android:textColor="@color/white_color"
-                android:textSize="@dimen/_16ssp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="@dimen/_8sdp"
-                android:layout_marginLeft="@dimen/_16sdp"
-                android:layout_marginRight="@dimen/_16sdp"
-                android:layout_marginTop="@dimen/_3sdp"
-                android:background="@color/colorLine" />
-
-        </LinearLayout>
-
-        <customviews.MediumTextView
-            android:id="@+id/txtNextAge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/_36sdp"
-            android:layout_marginTop="@dimen/_200sdp"
-            android:background="@drawable/mentee_ripple"
-            android:elevation="@dimen/_3"
-            android:paddingBottom="@dimen/_8sdp"
-            android:paddingLeft="@dimen/_24sdp"
-            android:paddingRight="@dimen/_24sdp"
-            android:paddingTop="@dimen/_8sdp"
-            android:text="@string/next"
-            android:textAllCaps="true"
-            android:textColor="@color/black_color"
-            android:textSize="@dimen/_14ssp" />
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_36sdp"
+                android:layout_marginTop="@dimen/_200sdp"
+                android:background="@drawable/mentee_ripple"
+                android:elevation="@dimen/_3"
+                android:paddingBottom="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_24sdp"
+                android:paddingRight="@dimen/_24sdp"
+                android:paddingTop="@dimen/_8sdp"
+                android:text="@string/next"
+                android:textAllCaps="true"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_14ssp" />
 
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-</ScrollView>
+    </ScrollView>
+</LinearLayout>

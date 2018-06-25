@@ -90,49 +90,51 @@ class LoginSignupActivity : BaseActivity() {
         else
             setRegister()
 
-        loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
-        loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-            override fun onSuccess(loginResult: LoginResult) {
-                // App code
-                val request = GraphRequest.newMeRequest(
-                        loginResult.accessToken
-                ) { jsonObject, response ->
-                    // Getting FB User Data
+            loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
+            loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+                override fun onSuccess(loginResult: LoginResult) {
+                    // App code
+                    val request = GraphRequest.newMeRequest(
+                            loginResult.accessToken
+                    ) { jsonObject, response ->
+                        // Getting FB User Data
 
-                    Log.e("Fb data = ", jsonObject.toString())
-                    if (!TextUtils.isEmpty(jsonObject.getString("email"))) {
-                        mEmail = jsonObject.getString("email")
-                        mEmailverified = Constants.EMAIL_VERIFIED
-                    } else {
-                        mEmailverified = Constants.EMAIL_NOTVERIFIED
+                        if (jsonObject != null) {
+                            Log.e("Fb data = ", jsonObject.toString())
+                            if (!TextUtils.isEmpty(jsonObject.getString("email"))) {
+                                mEmail = jsonObject.getString("email")
+                                mEmailverified = Constants.EMAIL_VERIFIED
+                            } else {
+                                mEmailverified = Constants.EMAIL_NOTVERIFIED
+                            }
+                            mName = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name")
+                            mPassword = Constants.EMPTY
+                            mFacebookId = jsonObject.getString("id")
+                            mLinkedinId = Constants.EMPTY
+                            mAccountType = Constants.FACEBOOK_LOGIN
+                            LoginManager.getInstance().logOut()
+
+                            if (connectedToInternet())
+                                hitSignupAPI()
+                            else
+                                showInternetAlert(imgFacebook)
+                        }
                     }
-                    mName = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name")
-                    mPassword = Constants.EMPTY
-                    mFacebookId = jsonObject.getString("id")
-                    mLinkedinId = Constants.EMPTY
-                    mAccountType = Constants.FACEBOOK_LOGIN
-                    LoginManager.getInstance().logOut()
-
-                    if (connectedToInternet())
-                        hitSignupAPI()
-                    else
-                        showInternetAlert(imgFacebook)
+                    val parameters = Bundle()
+                    parameters.putString("fields", "id,first_name,last_name,email,gender")
+                    request.parameters = parameters
+                    request.executeAsync()
                 }
-                val parameters = Bundle()
-                parameters.putString("fields", "id,first_name,last_name,email,gender")
-                request.parameters = parameters
-                request.executeAsync()
-            }
 
-            override fun onCancel() {
-                // App code
-            }
+                override fun onCancel() {
+                    // App code
+                }
 
-            override fun onError(exception: FacebookException) {
-                // App code
-                Log.e("Result - ", exception.localizedMessage);
-            }
-        })
+                override fun onError(exception: FacebookException) {
+                    // App code
+                    Log.e("Result - ", exception.localizedMessage);
+                }
+            })
 
         edPassword.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
@@ -154,7 +156,6 @@ class LoginSignupActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_signup
 
     override fun getContext() = this
-
 
     override fun onClick(view: View) {
         when (view) {

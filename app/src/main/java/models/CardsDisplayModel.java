@@ -24,6 +24,7 @@ public class CardsDisplayModel implements Parcelable {
     private ProfessionModel profession;
     private String bio;
     private String pro_description;
+    private String time_left;
     private int experience_year;
     private int experience_month;
     private List<String> skills;
@@ -167,6 +168,14 @@ public class CardsDisplayModel implements Parcelable {
 
     public void setPro_description(String pro_description) {
         this.pro_description = pro_description;
+    }
+
+    public String getTime_left() {
+        return time_left;
+    }
+
+    public void setTime_left(String time_left) {
+        this.time_left = time_left;
     }
 
     public int getExperience_year() {

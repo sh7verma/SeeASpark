@@ -48,7 +48,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     abstract fun initListener() /// Initalize Click Listener Here
     abstract fun getContext(): Context /// Initalize Activity Context
 
-    fun connectedToInternet() = (Connection_Detector(mContext).isConnectingToInternet())
+    fun connectedToInternet() = (Connection_Detector(mContext).isConnectingToInternet)
 
     fun showLoader() {
         CustomLoadingDialog.getLoader().showLoader(mContext)

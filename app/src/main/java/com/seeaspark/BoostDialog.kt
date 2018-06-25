@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.Window
+import kotlinx.android.synthetic.main.dialog_boost.*
 import utils.Utils
 
 class BoostDialog : Activity() {
@@ -23,11 +24,27 @@ class BoostDialog : Activity() {
 
         wmlp.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
         this.setFinishOnTouchOutside(true)
-        setContentView(R.layout.dialog_short_profile)
+        setContentView(R.layout.dialog_boost)
         getDefaults()
-        window.setLayout(mScreenwidth, (mScreenheight * 0.75).toInt())
+        window.setLayout(mScreenwidth, (mScreenheight))
 
         mUtils = Utils(this)
+
+        txtBuyNow.setOnClickListener {
+            finish()
+            overridePendingTransition(0, R.anim.slidedown_out)
+        }
+        txtNoThanks.setOnClickListener {
+            finish()
+            overridePendingTransition(0, R.anim.slidedown_out)
+        }
+
+        llOuterBoost.setOnClickListener {
+            finish()
+            overridePendingTransition(0, R.anim.slidedown_out)
+        }
+
+
     }
 
     private fun getDefaults() {

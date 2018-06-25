@@ -50,24 +50,24 @@ class PreferencesActivity : BaseActivity() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java);
 
         rsbDistance.isNotifyWhileDragging = true
-        rsbDistance.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtDistanceCount.text = "$maxValue Miles" }
+        rsbDistance.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtDistanceCount.text = "$maxValue Mile(s)" }
 
         rsbExperience.isNotifyWhileDragging = true
-        rsbExperience.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtExperienceCount.text = "$maxValue Years" }
+        rsbExperience.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtExperienceCount.text = "$maxValue Year(s)" }
 
         if (intent.hasExtra("showPrefilled")) {
             /// navigating from home section
             moveToHome = true
             rsbDistance.selectedMaxValue = userData!!.response.preferences.distance
-            txtDistanceCount.text = "${userData!!.response.preferences.distance} Miles"
+            txtDistanceCount.text = "${userData!!.response.preferences.distance} Mile(s)"
 
             rsbExperience.selectedMaxValue = userData!!.response.preferences.experience_year
-            txtExperienceCount.text = "${userData!!.response.preferences.experience_year} Years"
+            txtExperienceCount.text = "${userData!!.response.preferences.experience_year} Year(s)"
 
-            if (userData!!.response.gender == "1") {
+            if (userData!!.response.preferences.gender == 1) {
                 mGenderValue = 1
                 txtGenderPrefer.text = getString(R.string.male)
-            } else if (userData!!.response.gender == "2") {
+            } else if (userData!!.response.preferences.gender  == 2) {
                 mGenderValue = 2
                 txtGenderPrefer.text = getString(R.string.female)
             } else {
@@ -79,10 +79,10 @@ class PreferencesActivity : BaseActivity() {
             extractSelectedProfessions()
         } else {
             rsbDistance.selectedMaxValue = Constants.DISTANCE
-            txtDistanceCount.text = "${Constants.DISTANCE} Miles"
+            txtDistanceCount.text = "${Constants.DISTANCE} Mile(s)"
 
             rsbExperience.selectedMaxValue = Constants.EXPERIENCE
-            txtExperienceCount.text = "${Constants.EXPERIENCE} Years"
+            txtExperienceCount.text = "${Constants.EXPERIENCE} Year(s)"
 
             if (userData!!.response.gender == "1") {
                 mGenderValue = 2

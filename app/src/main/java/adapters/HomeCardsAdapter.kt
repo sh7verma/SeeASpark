@@ -1,6 +1,7 @@
 package adapters
 
 import android.content.Context
+import android.os.CountDownTimer
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -11,6 +12,7 @@ import android.widget.Toast
 import com.daimajia.swipe.SwipeLayout
 import com.seeaspark.R
 import com.squareup.picasso.Picasso
+import customviews.BoldTextView
 import fragments.HomeFragment
 import kotlinx.android.synthetic.main.item_cards.view.*
 import kotlinx.android.synthetic.main.item_community.view.*
@@ -18,7 +20,10 @@ import kotlinx.android.synthetic.main.item_home_events.view.*
 import kotlinx.android.synthetic.main.item_out_of_cards.view.*
 import kotlinx.android.synthetic.main.item_progress.view.*
 import models.CardsDisplayModel
+import utils.Connection_Detector
 import utils.Constants
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Context, mWidth: Int, mHomeFragment: HomeFragment?)
@@ -34,6 +39,10 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
     var width: Int = 0
     var height: Int = 0
 
+    var mTimer: CountDownTimer? = null
+    var mTimerTime: Long = 0
+    var localFormat = SimpleDateFormat("HH:mm:ss")
+
     init {
         this.mCardsArray = mCardsArray
         this.mContext = mContext
@@ -43,7 +52,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
 
         var drawable = ContextCompat.getDrawable(mContext, R.mipmap.ic_avatar_1)
         width = drawable!!.intrinsicWidth
-        height = drawable!!.intrinsicHeight
+        height = drawable.intrinsicHeight
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -101,12 +110,17 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
             }
             Constants.OUT_OF_CARD -> {
                 (holder as OutOfCardsViewHolder)
+                timer(mCardsArray[position].time_left, holder.txtTimerHome)
+                holder.txtPlanDetails.setOnClickListener {
+                    mHomeFragment!!.boostPlan()
+                }
             }
             Constants.PROGRESS -> {
                 (holder as LoadMoreViewHolder)
             }
             else -> {
                 (holder as CardViewHolder)
+
                 holder.txtNameCard.text = mCardsArray[position].full_name
 
                 holder.txtProfessionCard.text = mCardsArray[position].profession.name
@@ -136,7 +150,13 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                             } else {
                                 isSwiped = 0
                             }
-                            removeCard(isSwiped, mCardsArray[elementPosition].id)
+                            if (Connection_Detector(mContext).isConnectingToInternet) {
+                                removeCard(isSwiped, mCardsArray[elementPosition].id)
+                            } else {
+                                holder.swlCard.close()
+                                Toast.makeText(mContext!!, mContext!!.getString(R.string.internet), Toast.LENGTH_LONG).show()
+                            }
+
                         }
                     }
 
@@ -243,10 +263,35 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
 
     inner class OutOfCardsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtPlanDetails = itemView.txtPlanDetails!!
+        val txtTimerHome = itemView.txtTimerHome!!
     }
 
     inner class LoadMoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val progressBar = itemView.progressBar!!
     }
 
+    fun timer(time: String, txtTimerHome: BoldTextView) {
+        try {
+            localFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val utcDate = localFormat.parse(time)
+            val cal = Calendar.getInstance()
+            cal.time = utcDate
+            mTimerTime = cal.timeInMillis
+            mTimer = object : CountDownTimer(mTimerTime, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    // mTimerTime = millisUntilFinished;
+                    val calLocal = Calendar.getInstance()
+                    calLocal.timeInMillis = millisUntilFinished
+                    txtTimerHome.text = "${localFormat.format(calLocal.time)}"
+                }
+
+                override fun onFinish() {
+                    timer("24:00:00", txtTimerHome)
+                }
+            }
+            mTimer!!.start()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

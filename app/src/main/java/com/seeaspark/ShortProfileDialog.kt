@@ -51,6 +51,11 @@ class ShortProfileDialog : Activity() {
         /// display Data
         populateData()
 
+        llOuter.setOnClickListener {
+            finish()
+            overridePendingTransition(0, R.anim.slidedown_out)
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -69,9 +74,14 @@ class ShortProfileDialog : Activity() {
             mGender = getString(R.string.other)
 
 
-        txtGenderShortProfile.text = "$mGender . ${calculateAge(mOtherProfileData!!.age)} Years"
+        txtGenderShortProfile.text = "$mGender · ${calculateAge(mOtherProfileData!!.age)} Years"
         txtProfessionShortProfile.text = mOtherProfileData!!.profession.name
-        txtExperienceShortProfile.text = "${mOtherProfileData!!.experience_year}.${mOtherProfileData!!.experience_month} Years of Experience"
+
+        if (mOtherProfileData!!.experience_month != 0)
+            txtExperienceShortProfile.text = "${mOtherProfileData!!.experience_year}.${mOtherProfileData!!.experience_month} Years of Experience"
+        else
+            txtExperienceShortProfile.text = "${mOtherProfileData!!.experience_year} Years of Experience"
+
         txtBioShortProfile.text = mOtherProfileData!!.bio
 
         for ((index, skills) in mOtherProfileData!!.skills.withIndex()) {
@@ -96,9 +106,9 @@ class ShortProfileDialog : Activity() {
         val interestChip = LayoutInflater.from(this).inflate(R.layout.add_skills, null, false)
         val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         interestChip.llMainAddSkills.layoutParams = innerParms
-        interestChip.txtAddSkillChip.background=ContextCompat.getDrawable(this,R.drawable.selected_skills)
+        interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
         interestChip.txtAddSkillChip.text = skillValue
-        interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+        interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         return interestChip
     }
 
@@ -120,7 +130,7 @@ class ShortProfileDialog : Activity() {
 
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(0,R.anim.slidedown_out)
+        overridePendingTransition(0, R.anim.slidedown_out)
     }
 
 }

@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_140sdp"
-    android:layout_marginLeft="@dimen/_12sdp"
-    android:layout_marginRight="@dimen/_12sdp"
     android:orientation="vertical"
-    app:cardCornerRadius="@dimen/_12sdp"
-    app:cardUseCompatPadding="true">
+    android:layout_marginLeft="@dimen/_6sdp"
+    android:layout_marginRight="@dimen/_6sdp"
+    android:paddingTop="@dimen/_8sdp"
+    android:elevation="@dimen/_3sdp"
+    android:paddingBottom="@dimen/_8sdp"
+    android:layout_marginTop="@dimen/_6sdp"
+    android:background="@drawable/ic_card">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/_8sdp"
+        android:visibility="gone"
         android:src="@mipmap/ic_avatar_1" />
 
-    <LinearLayout
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.5"
-        android:background="@drawable/out_of_cards"
         android:orientation="vertical" />
 
     <LinearLayout
@@ -48,7 +50,9 @@
             android:textSize="@dimen/_12ssp" />
 
         <customviews.BoldTextView
-            android:layout_width="wrap_content"
+            android:id="@+id/txtTimerHome"
+            android:layout_width="@dimen/_70sdp"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:paddingBottom="@dimen/_5sdp"
@@ -72,4 +76,4 @@
 
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</FrameLayout>

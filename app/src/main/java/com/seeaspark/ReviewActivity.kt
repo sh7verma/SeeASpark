@@ -51,7 +51,7 @@ class ReviewActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         Log.e("onResume", "onResume")
-        mUtils!!.setInt("inside_review", 1)
+        mUtils!!.setInt("inside_reviewFull", 1)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
     }
@@ -63,7 +63,7 @@ class ReviewActivity : BaseActivity() {
     }
 
     override fun onStop() {
-        mUtils!!.setInt("inside_review", 0)
+        mUtils!!.setInt("inside_reviewFull", 0)
         super.onStop()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }

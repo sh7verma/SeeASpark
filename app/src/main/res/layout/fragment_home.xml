@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/white_ripple"
             android:padding="@dimen/_12sdp"
-            android:src="@mipmap/ic_ava_ob" />
+            android:src="@mipmap/ic_settings_orange" />
 
     </LinearLayout>
 
