@@ -50,8 +50,17 @@ public class Constants {
     public static int PROCEED_AS_OTHER = 2001;
     public static int PROFILE_UNDER_REVIEW = 3001;
     public static final String EMAIL_VERIFY = "email_verify";
+    public static final String REVIEW = "review";
     public static final String QUESTIONS = "questions";
     public static final int INVALID_ACCESS_TOKEN = 301;
+    public static final int COMMUNITY=1;
+    public static final int EVENT=2;
+    public static final int OUT_OF_CARD=3;
+    public static final int PROGRESS=4;
+    public static final int CARD=0;
+    public static final int DISTANCE=15;
+    public static final int EXPERIENCE=3;
+
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
@@ -242,7 +251,7 @@ public class Constants {
     public static String displayDateTime(String endDate)
             throws ParseException {
 
-        SimpleDateFormat utc_format = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        SimpleDateFormat utc_format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault());
         DateFormat date_gmt = new SimpleDateFormat("Z", Locale.US);
         String gmt_text = date_gmt.format(calendar.getTime());
@@ -267,7 +276,7 @@ public class Constants {
             }
         }
 
-        DateFormat dateFormat = new SimpleDateFormat("dd MMM hh:mm aa");
+        DateFormat dateFormat = new SimpleDateFormat("EEEE hh:mm aa");
         return dateFormat.format(utc_create.getTime());
     }
 

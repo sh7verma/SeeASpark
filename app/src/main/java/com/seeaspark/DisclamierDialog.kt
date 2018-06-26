@@ -39,7 +39,6 @@ class DisclamierDialog : Activity() {
         }
 
         txtSkip.setOnClickListener {
-            mUtils!!.setString("access_token", "123")
             var intent = Intent(this, LandingActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

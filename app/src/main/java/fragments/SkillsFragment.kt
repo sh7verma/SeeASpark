@@ -102,7 +102,7 @@ class SkillsFragment : Fragment(), View.OnClickListener {
             intent.putParcelableArrayListExtra("skillsArray", mOwnSkillsArray)
             intent.putParcelableArrayListExtra("allSkillsArray", mCreateProfileInstance!!.mSkillsArray)
             startActivityForResult(intent, ADD_SKILLS)
-            activity!!.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+            activity!!.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         }
 
         interestChip.txtSkillChip.setOnClickListener {

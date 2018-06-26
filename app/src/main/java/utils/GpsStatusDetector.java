@@ -1,9 +1,30 @@
 package utils;
 
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
+import android.content.IntentSender;
+import android.location.LocationManager;
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+
+import java.lang.ref.WeakReference;
+
+import static android.app.Activity.RESULT_OK;
+
 public class GpsStatusDetector {
 
-/*    private static final int REQUEST_CODE = 2;
+    private static final int REQUEST_CODE = 2;
 
     private WeakReference<Activity> mActivityWeakReference;
     private WeakReference<GpsStatusDetectorCallBack> mCallBackWeakReference;
@@ -18,7 +39,7 @@ public class GpsStatusDetector {
         this.mCallBackWeakReference = new WeakReference<>((GpsStatusDetectorCallBack) fragment);
     }
 
-    public void checkGpsStatus(int status) {
+    public void checkGpsStatus() {
         Activity activity = mActivityWeakReference.get();
         GpsStatusDetectorCallBack callBack = mCallBackWeakReference.get();
         if (activity == null || callBack == null) {
@@ -28,10 +49,7 @@ public class GpsStatusDetector {
         if (isGpsEnabled(activity)) {
             callBack.onGpsSettingStatus(true);
         } else {
-            if (status == 1)
-                callBack.showLocationScreen();
-            else
-                setLocationRequest(activity, callBack);
+            setLocationRequest(activity, callBack);
         }
     }
 
@@ -109,8 +127,6 @@ public class GpsStatusDetector {
         void onGpsSettingStatus(boolean enabled);
 
         void onGpsAlertCanceledByUser();
-
-        void showLocationScreen();
-    }*/
+    }
 
 }

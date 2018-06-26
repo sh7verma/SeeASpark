@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_140sdp"
+    android:orientation="vertical"
+    android:layout_marginLeft="@dimen/_6sdp"
+    android:layout_marginRight="@dimen/_6sdp"
+    android:paddingTop="@dimen/_8sdp"
+    android:elevation="@dimen/_3sdp"
+    android:paddingBottom="@dimen/_8sdp"
+    android:layout_marginTop="@dimen/_6sdp"
+    android:background="@drawable/ic_card">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp"
+        android:visibility="gone"
+        android:src="@mipmap/ic_avatar_1" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <customviews.BoldTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="@dimen/_8sdp"
+            android:text="@string/out_of_cards"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp" />
+
+        <customviews.LightTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="@dimen/_5sdp"
+            android:text="Get more cards in"
+            android:textColor="@color/greyTextColor"
+            android:textSize="@dimen/_12ssp" />
+
+        <customviews.BoldTextView
+            android:id="@+id/txtTimerHome"
+            android:layout_width="@dimen/_70sdp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="@dimen/_5sdp"
+            android:text="11:59:53"
+            android:textColor="@color/greyTextColor"
+            android:textSize="@dimen/_12ssp" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtPlanDetails"
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selected_skills"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:text="@string/get_unlimited_cards_msg"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/_12ssp" />
+
+    </LinearLayout>
+
+</FrameLayout>

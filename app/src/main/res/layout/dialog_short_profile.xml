@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="bottom"
+        android:layout_weight="1"
+        android:id="@+id/llOuter"
+        android:orientation="vertical"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_16sdp"
+        android:background="@drawable/short_profile_background"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/_8sdp">
+
+            <ImageView
+                android:id="@+id/imgShortProfile"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/_16sdp">
+
+                <customviews.BoldTextView
+                    android:id="@+id/txtNameShortProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Lisa Martin"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_20sdp" />
+
+                <customviews.MediumTextView
+                    android:id="@+id/txtGenderShortProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Female . 23 Years"
+                    android:textColor="@color/greyTextColor"
+                    android:textSize="@dimen/_12ssp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <customviews.BoldTextView
+            android:id="@+id/txtProfessionShortProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Engineer"
+            android:textColor="@color/hint_color_dark"
+            android:textSize="@dimen/_14ssp" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtExperienceShortProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_8sdp"
+            android:text="4.6 Years of Experience"
+            android:textColor="@color/hint_color_dark"
+            android:textSize="@dimen/_12ssp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyLine" />
+
+        <customviews.BoldTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:text="@string/skills"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_13ssp" />
+
+        <customviews.FlowLayout
+            android:id="@+id/flShortProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_8sdp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyLine" />
+
+        <customviews.BoldTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:text="@string/bio"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/_13ssp" />
+
+        <customviews.LightTextView
+            android:id="@+id/txtBioShortProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="@string/lorem_ipsum"
+            android:textColor="@color/greyTextColor"
+            android:textSize="@dimen/_14ssp" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtViewFullProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:background="@drawable/view_profile_background"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="View Full Profile"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_12ssp" />
+    </LinearLayout>
+
+</LinearLayout>

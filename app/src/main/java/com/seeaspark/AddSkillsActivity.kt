@@ -151,7 +151,7 @@ class AddSkillsActivity : BaseActivity() {
     private fun moveBack() {
         Constants.closeKeyboard(mContext, imgPlusSkill)
         finish()
-        overridePendingTransition(R.anim.slidedown_in, R.anim.slidedown_out)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }
 
     private fun inflateView(skillValue: SkillsModel): View {

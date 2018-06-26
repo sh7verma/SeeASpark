@@ -72,7 +72,7 @@ class DescribeProfessionFragment : Fragment(), View.OnClickListener {
             }
             txtNextDescription -> {
                 if (TextUtils.isEmpty(edDescriptionProfile.text.toString().trim()))
-                    mCreateProfileInstance!!.showAlertActivity(txtNextDescription, "Please specify Profession")
+                    mCreateProfileInstance!!.showAlertActivity(txtNextDescription, getString(R.string.error_description))
                 else {
                     makeVisisble = true
                     Constants.closeKeyboard(activity!!, txtNextDescription)

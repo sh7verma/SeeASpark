@@ -129,6 +129,7 @@ public class SignupModel extends BaseModel implements Parcelable {
         private int experience_year;
         private int experience_month;
         private int document_verified;
+        private String tip;
         private PreferencesBean preferences;
         private List<String> skills;
         private List<LanguageModel> languages;
@@ -286,6 +287,14 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.document_verified = document_verified;
         }
 
+        public String getTip() {
+            return tip;
+        }
+
+        public void setTip(String tip) {
+            this.tip = tip;
+        }
+
         public PreferencesBean getPreferences() {
             return preferences;
         }
@@ -294,7 +303,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.preferences = preferences;
         }
 
-        public List<?> getSkills() {
+        public List<String> getSkills() {
             return skills;
         }
 
@@ -302,7 +311,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.skills = skills;
         }
 
-        public List<?> getLanguages() {
+        public List<LanguageModel> getLanguages() {
             return languages;
         }
 
@@ -310,7 +319,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.languages = languages;
         }
 
-        public List<?> getAnswers() {
+        public List<AnswerModel> getAnswers() {
             return answers;
         }
 
@@ -444,7 +453,7 @@ public class SignupModel extends BaseModel implements Parcelable {
                 this.experience_month = experience_month;
             }
 
-            public List<?> getLanguages() {
+            public List<LanguageModel> getLanguages() {
                 return languages;
             }
 
@@ -452,7 +461,7 @@ public class SignupModel extends BaseModel implements Parcelable {
                 this.languages = languages;
             }
 
-            public List<?> getSkills() {
+            public List<SkillsModel> getSkills() {
                 return skills;
             }
 
@@ -460,7 +469,7 @@ public class SignupModel extends BaseModel implements Parcelable {
                 this.skills = skills;
             }
 
-            public List<?> getProfessions() {
+            public List<ProfessionModel> getProfessions() {
                 return professions;
             }
 
@@ -510,6 +519,9 @@ public class SignupModel extends BaseModel implements Parcelable {
             };
         }
 
+        public ResponseBean() {
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -536,13 +548,11 @@ public class SignupModel extends BaseModel implements Parcelable {
             dest.writeInt(this.experience_year);
             dest.writeInt(this.experience_month);
             dest.writeInt(this.document_verified);
+            dest.writeString(this.tip);
             dest.writeParcelable(this.preferences, flags);
             dest.writeStringList(this.skills);
             dest.writeTypedList(this.languages);
             dest.writeList(this.answers);
-        }
-
-        public ResponseBean() {
         }
 
         protected ResponseBean(Parcel in) {
@@ -565,6 +575,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.experience_year = in.readInt();
             this.experience_month = in.readInt();
             this.document_verified = in.readInt();
+            this.tip = in.readString();
             this.preferences = in.readParcelable(PreferencesBean.class.getClassLoader());
             this.skills = in.createStringArrayList();
             this.languages = in.createTypedArrayList(LanguageModel.CREATOR);

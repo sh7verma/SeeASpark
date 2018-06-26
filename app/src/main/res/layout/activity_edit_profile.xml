@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100sdp"
+        android:background="@drawable/background_gradient" />
+
+    <customviews.ScrollViewX
+        android:id="@+id/svEditProfile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_75sdp"
+                android:background="@drawable/short_profile_background"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/_24sdp"
+                android:paddingRight="@dimen/_24sdp">
+
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp" />
+
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/_8sdp"
+                    android:paddingTop="@dimen/_16sdp"
+                    android:text="@string/full_name"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <EditText
+                    android:id="@+id/edNameProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white_color"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                    android:gravity="left"
+                    android:hint="@string/enter"
+                    android:inputType="textCapWords|textMultiLine"
+                    android:maxLength="@integer/name_max"
+                    android:maxLines="2"
+                    android:paddingBottom="@dimen/_12sdp"
+                    android:textCursorDrawable="@null"
+                    android:textSize="@dimen/_13ssp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/greyLine" />
+
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/_16sdp"
+                    android:text="@string/age"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <customviews.BoldTextView
+                    android:id="@+id/txtAgeEditProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_ripple"
+                    android:drawableEnd="@mipmap/ic_arrow_r"
+                    android:drawableRight="@mipmap/ic_arrow_r"
+                    android:paddingBottom="@dimen/_12sdp"
+                    android:paddingTop="@dimen/_12sdp"
+                    android:text="25 Years"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_13ssp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/greyLine" />
+
+
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/_16sdp"
+                    android:text="@string/gender"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <customviews.BoldTextView
+                    android:id="@+id/txtGenderEditProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_ripple"
+                    android:drawableEnd="@mipmap/ic_arrow_r"
+                    android:drawableRight="@mipmap/ic_arrow_r"
+                    android:paddingBottom="@dimen/_12sdp"
+                    android:paddingTop="@dimen/_12sdp"
+                    android:text="Male"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_13ssp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/greyLine" />
+
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/_16sdp"
+                    android:text="@string/profession"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <customviews.BoldTextView
+                    android:id="@+id/txtProfessionEditProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_ripple"
+                    android:drawableEnd="@mipmap/ic_arrow_r"
+                    android:drawableRight="@mipmap/ic_arrow_r"
+                    android:paddingBottom="@dimen/_12sdp"
+                    android:paddingTop="@dimen/_12sdp"
+                    android:text="25 Years"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_13ssp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/greyLine" />
+
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/_16sdp"
+                    android:text="@string/experience"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <customviews.BoldTextView
+                    android:id="@+id/txtExperienceEditProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_ripple"
+                    android:drawableEnd="@mipmap/ic_arrow_r"
+                    android:drawableRight="@mipmap/ic_arrow_r"
+                    android:paddingBottom="@dimen/_12sdp"
+                    android:paddingTop="@dimen/_12sdp"
+                    android:text="25 Years"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_13ssp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/greyLine" />
+
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/_16sdp"
+                    android:text="@string/languages"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <LinearLayout
+                    android:id="@+id/llLanguageEditProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/_12sdp"
+                    android:paddingTop="@dimen/_12sdp">
+
+                    <customviews.FlowLayout
+                        android:id="@+id/flLanguagesEditProfile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_arrow_r" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/greyLine" />
+
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/_16sdp"
+                    android:text="@string/skills"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <LinearLayout
+                    android:id="@+id/llSkillEditProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/_12sdp"
+                    android:paddingTop="@dimen/_12sdp">
+
+                    <customviews.FlowLayout
+                        android:id="@+id/flSkillEditProfile"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_arrow_r" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/greyLine" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/_8sdp"
+                    android:paddingTop="@dimen/_16sdp">
+
+                    <customviews.BoldTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/short_bio"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <customviews.LightTextView
+                        android:id="@+id/txtCountBioCharacter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:text="@string/_320_characters"
+                        android:textColor="@color/greyTextColor"
+                        android:textSize="@dimen/_12ssp" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/edBioEditProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white_color"
+                    android:gravity="left"
+                    android:hint="@string/enter"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLength="320"
+                    android:paddingBottom="@dimen/_12sdp"
+                    android:textCursorDrawable="@null"
+                    android:textSize="@dimen/_13ssp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/greyLine" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/_8sdp"
+                    android:paddingTop="@dimen/_16sdp">
+
+                    <customviews.BoldTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/description"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <customviews.LightTextView
+                        android:id="@+id/txtCountDescriptionCharacter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:text="@string/_1024_characters"
+                        android:textColor="@color/greyTextColor"
+                        android:textSize="@dimen/_12ssp" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/edDescriptionEditProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white_color"
+                    android:gravity="left"
+                    android:hint="@string/enter"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLength="1024"
+                    android:paddingBottom="@dimen/_72sdp"
+                    android:textCursorDrawable="@null"
+                    android:textSize="@dimen/_13ssp" />
+
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imgEditProfile"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_marginLeft="@dimen/_24sdp"
+                android:layout_marginStart="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_50sdp"
+                android:elevation="@dimen/_5sdp"
+                android:src="@drawable/placeholder_image" />
+
+        </RelativeLayout>
+
+    </customviews.ScrollViewX>
+
+    <include layout="@layout/custom_toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_46sdp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white_color"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <customviews.MediumTextView
+            android:id="@+id/txtSaveEditProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/mentee_ripple"
+            android:elevation="@dimen/_3"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingLeft="@dimen/_24sdp"
+            android:paddingRight="@dimen/_24sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:text="@string/save"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

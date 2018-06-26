@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llCustomToolbar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_48sdp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    app:theme="@style/MainActionBarTheme">
+
+    <ImageView
+        android:id="@+id/imgBackCustom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/transparent_ripple"
+        android:padding="@dimen/_12sdp"
+        android:src="@mipmap/ic_back_black"
+        android:textColor="@color/white_color" />
+
+    <customviews.BoldTextView
+        android:id="@+id/txtTitleCustom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAllCaps="true"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/_14ssp"
+        android:transitionName="@string/transition" />
+
+    <ImageView
+        android:id="@+id/imgOption1Custom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/transparent_ripple"
+        android:padding="@dimen/_12sdp"
+        android:textColor="@color/white_color"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/imgOption2Custom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/transparent_ripple"
+        android:padding="@dimen/_12sdp"
+        android:textColor="@color/white_color"
+        android:visibility="gone" />
+
+    <customviews.MediumTextView
+        android:id="@+id/txtOptionCustom"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/transparent_ripple"
+        android:gravity="center"
+        android:textSize="@dimen/_12ssp"
+        android:textAllCaps="true"
+        android:paddingLeft="@dimen/_12sdp"
+        android:visibility="gone"
+        android:paddingRight="@dimen/_12sdp"
+        android:text="@string/save"
+        android:textColor="@color/black_color" />
+
+</LinearLayout>

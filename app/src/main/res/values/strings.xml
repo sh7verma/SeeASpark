@@ -68,7 +68,6 @@
     <string name="distance">Distance</string>
     <string name="gender">Gender</string>
     <string name="experience">Experience</string>
-    <string name="skills">Skills</string>
     <string name="select_preferred_skills">Select Preferred\nSkills</string>
     <string name="professions">Professions</string>
 
@@ -104,5 +103,69 @@
     <string name="mentee_msg">You\'ve completed your profile setup process. Knidly proceed to start getting matches.</string>
     <string name="questions_hint">Please Answer the following questions to get best matches as per your preferences</string>
     <string name="verify_id">Please submit your Photo ID which could include work ID as well as driver’s license or passport.</string>
+    <string name="work_in_progress">Work in progress</string>
+    <string name="mentors">Mentors</string>
+    <string name="mentees">Mentees</string>
+    <string name="home">Home</string>
+    <string name="notes">Notes</string>
+    <string name="chat">Chat</string>
+    <string name="events">Events</string>
+    <string name="community">Community</string>
+    <string name="Profile">Profile</string>
+    <string name="boost">Boost</string>
+    <string name="skills">Skills</string>
+    <string name="handshake">handshake</string>
+    <string name="pass">pass</string>
+    <string name="right">Right</string>
+    <string name="left">Left</string>
+    <string name="bio">Bio</string>
+    <string name="out_of_cards">Out of Cards</string>
+    <string name="get_unlimited_cards">Get Unlimited Cards</string>
+    <string name="get_unlimited_cards_msg">Get unlimited cards with Premium Plan For $10/MO</string>
+    <string name="buy_now">Buy Now</string>
+    <string name="no_thanks">No Thanks</string>
+    <string name="it_s_a_handshake">It\'s a handshake</string>
+    <string name="start_chat">Start Chat</string>
+    <string name="explore">Explore</string>
+
+    <string name="tips_profile">See your profile and keep it up to date for better matches.</string>
+    <string name="tips_home">Go through thousands of mentor or mentee profiles. Swipe right to handshake OR Swipe left to pass and move on to other profile.</string>
+    <string name="tips_notes">Create notes and share with other user who will give feedback and ask queries.</string>
+    <string name="tips_chat">Chat with mentors or mentees. You can even share photos, videos, files, and notes.</string>
+    <string name="tips_events">Explore hundreds of events related to different fields.</string>
+    <string name="tips_community">Go through the articles written by fellow mentors. There are thousands of them.</string>
+    <string name="tips_boost">Increase your chances by boosting your profile with our best laid out plans.</string>
+
+    <string name="no_location_detected">
+        No location detected. Make sure location is enabled on the device.
+    </string>
+    <string name="permission_denied_explanation">
+        Permission was denied, but is needed for core functionality.
+    </string>
+    <string name="permission_rationale">
+        Location permission is needed for core functionality
+    </string>
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_account_msg">Are you sure you want to Delete Account?</string>
+    <string name="unable_location">Unable to fetch location</string>
+    <string name="languages">Languages</string>
+    <string name="description">Description</string>
+    <string name="become_mentor">Become a Mentor</string>
+    <string name="become_mentee">Become a Mentee</string>
+    <string name="full_name">Full Name</string>
+    <string name="age">Age</string>
+    <string name="profession">Profession</string>
+    <string name="short_bio">Short Bio</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="save">Save</string>
+    <string name="error_description">Please enter description</string>
+    <string name="tell_a_friend">Tell a Friend</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="blocked_users">Blocked Users</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_services">Terms of Services</string>
+    <string name="notifications">Notifications</string>
+    <string name="night_mode">Night Mode</string>
+    <string name="change_password">Change Password</string>
 
 </resources>

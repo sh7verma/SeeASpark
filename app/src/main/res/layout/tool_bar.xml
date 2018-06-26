@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolBar"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="?android:attr/actionBarSize"
     android:gravity="center_vertical|left"
-    android:minHeight="?attr/actionBarSize"
+    android:minHeight="?android:attr/actionBarSize"
     app:theme="@style/MainActionBarTheme">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <customviews.BoldTextView
