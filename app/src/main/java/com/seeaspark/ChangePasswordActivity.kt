@@ -62,11 +62,17 @@ class ChangePasswordActivity : BaseActivity() {
     }
 
     private fun verifyDetails() {
-        if (edCurrentPassword.text.toString().trim { it <= ' ' }.length < 8) {
+        if (edCurrentPassword.text.toString().trim({ it <= ' ' }).isEmpty())
+            showAlert(txtChangePassword, resources.getString(R.string.error_current_password))
+        else if (edCurrentPassword.text.toString().trim { it <= ' ' }.length < 8) {
             showAlert(txtChangePassword, getString(R.string.error_password))
-        } else if (edNewPassword.text.toString().trim { it <= ' ' }.length < 8) {
+        } else if (edNewPassword.text.toString().trim({ it <= ' ' }).isEmpty())
+            showAlert(txtChangePassword, resources.getString(R.string.error_new_password))
+        else if (edNewPassword.text.toString().trim { it <= ' ' }.length < 8) {
             showAlert(txtChangePassword, getString(R.string.error_password))
-        } else if (edConfirmPassword.text.toString().trim({ it <= ' ' }).length < 8) {
+        } else if (edConfirmPassword.text.toString().trim({ it <= ' ' }).isEmpty())
+            showAlert(txtChangePassword, resources.getString(R.string.error_confrim_password))
+        else if (edConfirmPassword.text.toString().trim({ it <= ' ' }).length < 8) {
             showAlert(txtChangePassword, getString(R.string.error_password))
         } else if (edNewPassword.text.toString().trim { it <= ' ' } != edConfirmPassword.text.toString().trim({ it <= ' ' })) {
             showAlert(txtChangePassword, getString(R.string.password_mismatch))

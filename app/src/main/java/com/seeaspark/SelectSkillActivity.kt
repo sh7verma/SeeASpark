@@ -11,8 +11,13 @@ import android.view.ViewGroup
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_select_skill.*
 import kotlinx.android.synthetic.main.layout_skills.view.*
+import models.ServerSkillsModel
 import models.SignupModel
 import models.SkillsModel
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import utils.Constants
 
 class SelectSkillActivity : BaseActivity() {
@@ -34,24 +39,46 @@ class SelectSkillActivity : BaseActivity() {
 
     override fun onCreateStuff() {
 
-        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
-
-        /// Creating only text array to avoid duplicacy
-        for (skillsValue in userData!!.skills) {
-            mSkillsArrayText.add(skillsValue.name)
+        if (connectedToInternet()) {
+            hitAPI()
         }
+
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
         /// adding Skills from server and first element
         var skillPLusModel = SkillsModel()
         skillPLusModel.isFirstElement = true
         mSkillsArray.add(skillPLusModel)
-        mSkillsArray.addAll(userData!!.skills)
+        mSkillsArray.addAll(Constants.OWNSKILLS_ARRAY)
 
         mSkillsSelectedArray.addAll(intent.getStringArrayListExtra("selectedSkills"))
 
-        for (skillValue: SkillsModel in mSkillsArray) {
-            flSkillsSelect.addView(inflateView(skillValue))
-        }
+    }
+
+    private fun hitAPI() {
+        showLoader()
+        val call = RetrofitClient.getInstance().getUserSkills(mUtils!!.getString("access_token", ""))
+        call.enqueue(object : Callback<ServerSkillsModel> {
+            override fun onResponse(call: Call<ServerSkillsModel>?, response: Response<ServerSkillsModel>?) {
+
+                mSkillsArray.addAll(response!!.body().response)
+
+                /// Creating only text array to avoid duplicacy
+                for (skillsValue in response.body().response) {
+                    mSkillsArrayText.add(skillsValue.name)
+                }
+
+                for (skillValue: SkillsModel in mSkillsArray) {
+                    flSkillsSelect.addView(inflateView(skillValue))
+                }
+                dismissLoader()
+            }
+
+            override fun onFailure(call: Call<ServerSkillsModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(flSkillsSelect, t!!.localizedMessage)
+            }
+        })
     }
 
     override fun initListener() {
@@ -134,6 +161,9 @@ class SelectSkillActivity : BaseActivity() {
                     flSkillsSelect.removeAllViews()
                     mOwnSkillsArray.clear()
                     mOwnSkillsArray.addAll(data!!.getParcelableArrayListExtra<Parcelable>("skillsArray") as ArrayList<out SkillsModel>)
+
+                    Constants.OWNSKILLS_ARRAY.clear()
+                    Constants.OWNSKILLS_ARRAY.addAll(data.getParcelableArrayListExtra<Parcelable>("skillsArray") as ArrayList<out SkillsModel>)
 
                     for (skillValue: SkillsModel in mOwnSkillsArray) {
                         if (!mSkillsArrayText.contains(skillValue.name)) {

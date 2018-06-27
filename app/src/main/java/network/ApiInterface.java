@@ -5,6 +5,7 @@ import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
 import models.NotificationModel;
 import models.SearchSkillModel;
+import models.ServerSkillsModel;
 import models.SignupModel;
 import models.SwipeCardModel;
 import okhttp3.MultipartBody;
@@ -106,6 +107,9 @@ public interface ApiInterface {
     @GET("/api/v1/delete_account")
     Call<BaseSuccessModel> deleteAccount(@Query("access_token") String access_token);
 
+    @GET("/api/v1/deactivate_account")
+    Call<BaseSuccessModel> deactivateAccount(@Query("access_token") String access_token);
+
     @GET("/api/v1/skip_tip")
     Call<BaseSuccessModel> skipTip(@Query("access_token") String access_token);
 
@@ -140,6 +144,10 @@ public interface ApiInterface {
 
     @GET("/api/v1/notification_settings")
     Call<NotificationModel> notificationSettings(@Query("access_token") String access_token);
+
+
+    @GET("/api/v1/user_skills")
+    Call<ServerSkillsModel> getUserSkills(@Query("access_token") String access_token);
 
 
 }

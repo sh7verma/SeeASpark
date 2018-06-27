@@ -147,6 +147,9 @@
     </string>
     <string name="delete_account">Delete Account</string>
     <string name="delete_account_msg">Are you sure you want to Delete Account?</string>
+
+    <string name="deactivate_account">Deactivate Account</string>
+    <string name="deactivate_account_msg">Are you sure you want to Deactivate Account?</string>
     <string name="unable_location">Unable to fetch location</string>
     <string name="languages">Languages</string>
     <string name="description">Description</string>
@@ -183,5 +186,10 @@
     <string name="messages">Message</string>
     <string name="whatsapp">Whatsapp</string>
     <string name="facebook">Facebook</string>
+    <string name="error_avatar">Please select your avatar.</string>
+    <string name="gender_changed">It seems that you changed your gender, Please select your avatar as per specified gender.</string>
+    <string name="error_current_password">Current Password Can\'t be empty</string>
+    <string name="error_new_password">New Password Can\'t be empty</string>
+    <string name="error_confrim_password">Confirm Password Can\'t be empty</string>
 
 </resources>

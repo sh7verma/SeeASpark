@@ -33,8 +33,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:paddingTop="@dimen/_8sdp"
-                    android:text="0"
-                    android:drawableRight="@mipmap/ic_star_pro"
+                    android:text="Not Rated"
                     android:textColor="@color/black_color"
                     android:textSize="@dimen/_12ssp" />
 

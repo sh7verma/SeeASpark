@@ -273,6 +273,7 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/viewChangePassword"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="@dimen/_62sdp"
@@ -309,12 +310,75 @@
                 android:layout_marginLeft="@dimen/_62sdp"
                 android:background="@color/greyLine" />
 
+            <LinearLayout
+                android:id="@+id/llDeactivate"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_52sdp"
+                android:background="@drawable/white_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_deactivate" />
+
+                <customviews.MediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/_16sdp"
+                    android:text="@string/deactivate_account"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/_62sdp"
+                android:background="@color/greyLine" />
+
+
+            <LinearLayout
+                android:id="@+id/llDeleteAccount"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_52sdp"
+                android:background="@drawable/white_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_activate" />
+
+                <customviews.MediumTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/_16sdp"
+                    android:text="@string/delete_account"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/_62sdp"
+                android:background="@color/greyLine" />
+
 
             <customviews.LightTextView
                 android:id="@+id/txtVersion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textSize="@dimen/_12ssp"
+                android:padding="@dimen/_8sdp"
                 android:textColor="@color/black_color" />
 
         </LinearLayout>

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.activity_select_language.*
+import kotlinx.android.synthetic.main.activity_signup.*
 import models.LanguageModel
 import models.SignupModel
 import java.util.ArrayList
@@ -44,6 +45,7 @@ class SelectLanguageActivity : BaseActivity() {
     }
 
     override fun initListener() {
+        imgBackSelectLanguage.setOnClickListener(this)
         txtNextSelectLanguage.setOnClickListener(this)
     }
 
@@ -51,6 +53,11 @@ class SelectLanguageActivity : BaseActivity() {
 
     override fun onClick(view: View?) {
         when (view) {
+
+            imgBackSelectLanguage -> {
+                moveBack()
+            }
+
             txtNextSelectLanguage -> {
                 mSelectedLanguageArray.clear()
                 for (languageValue in mLanguageArray) {

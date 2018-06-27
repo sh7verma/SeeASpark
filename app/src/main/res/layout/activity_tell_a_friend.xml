@@ -1,193 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient"
-    android:orientation="vertical">
+    android:background="@drawable/background_gradient">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/imgBackTell"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/transparent_ripple"
-            android:padding="@dimen/_12sdp"
-            android:src="@mipmap/ic_back_black" />
-
-        <customviews.BoldTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/_16sdp"
-            android:text="@string/tell_a_friend"
-            android:textColor="@color/white_color"
-            android:textSize="@dimen/_18ssp" />
-
-        <customviews.LightTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLength="100"
-            android:paddingLeft="@dimen/_16sdp"
-            android:paddingRight="@dimen/_16sdp"
-            android:text="@string/lorem_ipsum"
-            android:textColor="@color/white_color"
-            android:textSize="@dimen/_12ssp" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/_16sdp"
-        android:layout_marginRight="@dimen/_16sdp"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_160sdp"
-            android:background="@drawable/tell_a_friend_back"
-            android:gravity="center" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white_color"
-            android:orientation="vertical"
-            android:padding="@dimen/_16sdp">
-
-            <customviews.BoldTextView
-                android:id="@+id/txtNameFriend"
+            <ImageView
+                android:id="@+id/imgBackTell"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="John 73"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/_14ssp" />
+                android:background="@drawable/transparent_ripple"
+                android:padding="@dimen/_12sdp"
+                android:src="@mipmap/ic_back_black" />
 
             <customviews.BoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/share_and_invite"
-                android:textColor="@color/black_color"
+                android:padding="@dimen/_16sdp"
+                android:text="@string/tell_a_friend"
+                android:textColor="@color/white_color"
+                android:textSize="@dimen/_18ssp" />
+
+            <customviews.LightTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLength="100"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp"
+                android:text="@string/lorem_ipsum"
+                android:textColor="@color/white_color"
                 android:textSize="@dimen/_12ssp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_24sdp"
+            android:layout_marginRight="@dimen/_24sdp"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/_16sdp">
+                android:background="@drawable/tell_a_friend_back"
+                android:gravity="center">
 
-                <LinearLayout
-                    android:id="@+id/llFacebook"
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/white_ripple"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_linkedin" />
-
-                    <customviews.LightTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/_5sdp"
-                        android:text="@string/facebook"
-                        android:textAllCaps="true"
-                        android:textColor="@color/black_color"
-                        android:textSize="@dimen/_10ssp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llwhatsapp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/white_ripple"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_linkedin" />
-
-                    <customviews.LightTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/_5sdp"
-                        android:text="@string/whatsapp"
-                        android:textAllCaps="true"
-                        android:textColor="@color/black_color"
-                        android:textSize="@dimen/_10ssp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/white_ripple"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_linkedin" />
-
-                    <customviews.LightTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/_5sdp"
-                        android:text="@string/email"
-                        android:textAllCaps="true"
-                        android:textColor="@color/black_color"
-                        android:textSize="@dimen/_10ssp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llMessages"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/white_ripple"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@mipmap/ic_linkedin" />
-
-                    <customviews.LightTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/_5sdp"
-                        android:text="@string/messages"
-                        android:textAllCaps="true"
-                        android:textColor="@color/black_color"
-                        android:textSize="@dimen/_10ssp" />
-
-                </LinearLayout>
-
+                    android:paddingBottom="@dimen/_16sdp"
+                    android:paddingTop="@dimen/_16sdp"
+                    android:src="@mipmap/ill_taf" />
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white_color"
+                android:orientation="vertical"
+                android:padding="@dimen/_16sdp">
 
+                <customviews.BoldTextView
+                    android:id="@+id/txtNameFriend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="John 73"
+                    android:textColor="#E48290"
+                    android:textSize="@dimen/_14ssp" />
+
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/share_and_invite"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_12ssp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/_16sdp">
+
+                    <LinearLayout
+                        android:id="@+id/llFacebook"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_ripple"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/ic_facebook" />
+
+                        <customviews.LightTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:text="@string/facebook"
+                            android:textAllCaps="true"
+                            android:textColor="@color/black_color"
+                            android:textSize="@dimen/_10ssp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llwhatsapp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_ripple"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/ic_whatsapp" />
+
+                        <customviews.LightTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:text="@string/whatsapp"
+                            android:textAllCaps="true"
+                            android:textColor="@color/black_color"
+                            android:textSize="@dimen/_10ssp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_ripple"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/ic_email" />
+
+                        <customviews.LightTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:text="@string/email"
+                            android:textAllCaps="true"
+                            android:textColor="@color/black_color"
+                            android:textSize="@dimen/_10ssp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llMessages"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_ripple"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/ic_message" />
+
+                        <customviews.LightTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:text="@string/messages"
+                            android:textAllCaps="true"
+                            android:textColor="@color/black_color"
+                            android:textSize="@dimen/_10ssp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-
-
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="@dimen/_240sdp"
+        android:layout_height="@dimen/_170sdp"
+        android:layout_alignParentBottom="true"
+        android:alpha="0.1"
+        android:layout_marginLeft="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_120sdp"
+        android:background="@drawable/tell_a_friend_alpha" />
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="@dimen/_240sdp"
+        android:layout_height="@dimen/_170sdp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:alpha="0.1"
+        android:layout_marginRight="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_70sdp"
+        android:background="@drawable/tell_a_friend_alpha" />
+
+</RelativeLayout>

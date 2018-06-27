@@ -32,6 +32,7 @@ import java.util.TimeZone;
 import database.Db;
 import kotlin.collections.AbstractList;
 import kotlin.jvm.JvmStatic;
+import models.SkillsModel;
 
 
 public class Constants {
@@ -60,7 +61,7 @@ public class Constants {
     public static final int CARD=0;
     public static final int DISTANCE=15;
     public static final int EXPERIENCE=3;
-
+    public static ArrayList<SkillsModel> OWNSKILLS_ARRAY = new ArrayList<>();
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

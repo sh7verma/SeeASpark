@@ -204,6 +204,7 @@ class EditProfileActivity : BaseActivity() {
 
     private fun verifyDetails() {
         when {
+            mAvatarURL.isEmpty() -> showAlert(txtSaveEditProfile, getString(R.string.error_avatar))
             edNameProfile.text.trim().toString().length < 2 -> showAlert(txtSaveEditProfile, getString(R.string.error_name))
             edBioEditProfile.text.toString().trim().isEmpty() -> showAlert(txtSaveEditProfile, getString(R.string.error_bio))
             edDescriptionEditProfile.text.toString().trim().isEmpty() -> showAlert(txtSaveEditProfile, getString(R.string.error_description))
@@ -266,6 +267,7 @@ class EditProfileActivity : BaseActivity() {
         txtAgeEditProfile.text = "${calculateAge(userData!!.response.age)} Years"
 
         mGender = userData!!.response.gender.toInt()
+
         when {
             userData!!.response.gender == "1" -> txtGenderEditProfile.text = getString(R.string.male)
             userData!!.response.gender == "2" -> txtGenderEditProfile.text = getString(R.string.female)
@@ -384,15 +386,30 @@ class EditProfileActivity : BaseActivity() {
                     when (which) {
                         R.id.item_male -> {
                             txtGenderEditProfile.text = getString(R.string.male)
-                            mGender = 1
+                            if (mGender != 1) {
+                                mGender = 1
+                                mAvatarURL = Constants.EMPTY
+                                showToast(mContext!!, getString(R.string.gender_changed))
+                                Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
+                            }
                         }
                         R.id.item_female -> {
                             txtGenderEditProfile.text = getString(R.string.female)
-                            mGender = 2
+                            if (mGender != 2) {
+                                mGender = 2
+                                mAvatarURL = Constants.EMPTY
+                                showToast(mContext!!, getString(R.string.gender_changed))
+                                Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
+                            }
                         }
                         R.id.item_other -> {
                             txtGenderEditProfile.text = getString(R.string.other)
-                            mGender = 3
+                            if (mGender != 3) {
+                                mGender = 3
+                                mAvatarURL = Constants.EMPTY
+                                showToast(mContext!!, getString(R.string.gender_changed))
+                                Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
+                            }
                         }
                     }
                 }.show()
@@ -467,8 +484,14 @@ class EditProfileActivity : BaseActivity() {
     }
 
     private fun moveBack() {
+        Constants.closeKeyboard(mContext!!, imgBackCustom)
         finish()
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+    }
+
+    override fun onDestroy() {
+        Constants.OWNSKILLS_ARRAY.clear()
+        super.onDestroy()
     }
 
 }

@@ -62,7 +62,7 @@
         android:paddingLeft="@dimen/_24sdp"
         android:paddingRight="@dimen/_24sdp"
         android:paddingTop="@dimen/_8sdp"
-        android:text="@string/next"
+        android:text="@string/done"
         android:textAllCaps="true"
         android:textColor="@color/black_color"
         android:textSize="@dimen/_14ssp" />

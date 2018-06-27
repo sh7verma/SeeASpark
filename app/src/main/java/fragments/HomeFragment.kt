@@ -203,27 +203,6 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         }
     }
 
-    private fun showAccountOptions() {
-        BottomSheet.Builder(activity, R.style.BottomSheet_Dialog)
-                .title("Select Option")
-                .sheet(R.menu.menu_account).listener { dialog, which ->
-                    when (which) {
-                        R.id.item_logout -> {
-                            if (mLandingInstance!!.connectedToInternet())
-                                mLandingInstance!!.alertLogoutDialog()
-                            else
-                                mLandingInstance!!.showInternetAlert(rvCards)
-                        }
-                        R.id.item_delete_account -> {
-                            if (mLandingInstance!!.connectedToInternet())
-                                alertDeleteAccountDialog()
-                            else
-                                mLandingInstance!!.showInternetAlert(rvCards)
-                        }
-                    }
-                }.show()
-
-    }
 
     fun openShortProfile(cardsDisplayModel: CardsDisplayModel) {
         val intent = Intent(mContext, ShortProfileDialog::class.java)
@@ -297,47 +276,6 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
-
-    private fun alertDeleteAccountDialog() {
-        val alertDialog = AlertDialog.Builder(mContext!!)
-        alertDialog.setTitle(getString(R.string.delete_account))
-        alertDialog.setMessage(getString(R.string.delete_account_msg))
-        alertDialog.setPositiveButton("CONFIRM") { dialog, which ->
-
-            if (mLandingInstance!!.connectedToInternet()) {
-                hitDeleteAccountAPI()
-            } else {
-                mLandingInstance!!.showInternetAlert(rvCards)
-            }
-        }
-        alertDialog.setNegativeButton("CANCEL") { dialog, which -> dialog.cancel() }
-        alertDialog.show()
-    }
-
-    private fun hitDeleteAccountAPI() {
-        mLandingInstance!!.showLoader()
-        val call = RetrofitClient.getInstance().deleteAccount(mUtils!!.getString("access_token", ""))
-        call.enqueue(object : Callback<BaseSuccessModel> {
-
-            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>) {
-                mLandingInstance!!.dismissLoader()
-                if (response.body().response != null) {
-                    mLandingInstance!!.moveToSplash()
-                } else {
-                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        mLandingInstance!!.moveToSplash()
-                    } else
-                        mLandingInstance!!.showAlert(rvCards, response.body().error!!.message!!)
-                }
-            }
-
-            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable) {
-                mLandingInstance!!.dismissLoader()
-                mLandingInstance!!.showAlert(rvCards, t.localizedMessage)
-            }
-        })
-    }
-
     fun boostPlan() {
         val intent = Intent(mContext, BoostDialog::class.java)
         startActivity(intent)

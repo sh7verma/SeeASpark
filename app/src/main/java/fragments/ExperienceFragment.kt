@@ -37,6 +37,7 @@ class ExperienceFragment : Fragment(), View.OnClickListener {
         rsbYears.setOnRangeSeekBarChangeListener(object : RangeSeekBar.OnRangeSeekBarChangeListener<Int> {
             override fun onRangeSeekBarValuesChanged(bar: RangeSeekBar<Int>?, minValue: Int?, maxValue: Int?) {
                 txtYearCount.text = "$maxValue"
+                mCreateProfileInstance!!.mExpeirenceYears="$maxValue"
             }
         })
 
@@ -45,6 +46,7 @@ class ExperienceFragment : Fragment(), View.OnClickListener {
         rsbMonths.setOnRangeSeekBarChangeListener(object : RangeSeekBar.OnRangeSeekBarChangeListener<Int> {
             override fun onRangeSeekBarValuesChanged(bar: RangeSeekBar<Int>?, minValue: Int?, maxValue: Int?) {
                 txtMonthCount.text = "$maxValue"
+                mCreateProfileInstance!!.mExpeirenceMonth="$maxValue"
             }
         })
     }

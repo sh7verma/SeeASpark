@@ -2,14 +2,21 @@ package com.seeaspark
 
 import android.view.View
 import kotlinx.android.synthetic.main.activity_tell_a_friend.*
+import models.SignupModel
 
 class TellAFriendActivity : BaseActivity() {
+
+    private var userData: SignupModel? = null
+
     override fun getContentView() = R.layout.activity_tell_a_friend
 
     override fun initUI() {
     }
 
     override fun onCreateStuff() {
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+
+        txtNameFriend.text = userData!!.response.full_name
     }
 
     override fun initListener() {

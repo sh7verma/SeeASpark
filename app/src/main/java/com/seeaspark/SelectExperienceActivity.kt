@@ -40,6 +40,7 @@ class SelectExperienceActivity : BaseActivity() {
     }
 
     override fun initListener() {
+        imgBackExperienceSelect.setOnClickListener(this)
         txtDoneSelectExperience.setOnClickListener(this)
     }
 
@@ -47,6 +48,10 @@ class SelectExperienceActivity : BaseActivity() {
 
     override fun onClick(view: View?) {
         when (view) {
+
+            imgBackExperienceSelect -> {
+                moveBack()
+            }
             txtDoneSelectExperience -> {
                 val intent = Intent()
                 intent.putExtra("Years", mYears)

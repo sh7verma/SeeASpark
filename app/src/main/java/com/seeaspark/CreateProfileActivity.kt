@@ -31,8 +31,8 @@ class CreateProfileActivity : BaseActivity() {
     var mGender: Int? = 0
     var mGenderText = Constants.EMPTY
     var mProfession: Int? = -1
-    var mExpeirenceYears = Constants.EMPTY
-    var mExpeirenceMonth = Constants.EMPTY
+    var mExpeirenceYears = "1"
+    var mExpeirenceMonth = "1"
     var mSkillsServerArray = ArrayList<String>()
     var mBio = Constants.EMPTY
     var mDescription = Constants.EMPTY
