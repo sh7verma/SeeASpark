@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.cocosw.bottomsheet.BottomSheet
 import com.seeaspark.*
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_home.*
 import models.BaseSuccessModel
 import models.CardModel
@@ -52,6 +53,9 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     private var visibleThreshold: Int = 3
     var isLoading: Boolean = false
 
+    private var width = 0
+    private var height = 0
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_home, container, false)
         return itemView
@@ -79,6 +83,14 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             txtTitleHome.text = getString(R.string.mentors)
         else
             txtTitleHome.text = getString(R.string.mentees)
+
+        var drawable = ContextCompat.getDrawable(mContext!!, R.mipmap.ic_ava_ob)
+
+        width = drawable!!.intrinsicWidth
+        height = drawable.intrinsicHeight
+
+        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar)
+                .resize(width, height).into(imgProfileHome)
 
         mLayoutManager = LinearLayoutManager(mContext)
 
@@ -112,6 +124,14 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
+
+        srlCards.setColorSchemeResources(R.color.colorPrimary)
+        srlCards.setOnRefreshListener {
+            isLoading = false
+            mOffset = 1
+            hitAPI(false)
+        }
+
     }
 
     fun hitAPI(visibleLoader: Boolean) {
@@ -160,6 +180,9 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     }
 
     private fun populateData(response: CardModel) {
+
+        if (srlCards.isRefreshing)
+            srlCards.isRefreshing = false
 
         mArrayCards.clear()
 
@@ -252,6 +275,8 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         mLandingInstance!!.moveToSplash()
+                    } else if (response.body().error!!.code == Constants.DELETE_ACCOUNT) {
+                        /// no operation
                     } else
                         mLandingInstance!!.showAlert(rvCards, response.body().error!!.message!!)
                 }
@@ -276,6 +301,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
     fun boostPlan() {
         val intent = Intent(mContext, BoostDialog::class.java)
         startActivity(intent)

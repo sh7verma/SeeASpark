@@ -50,8 +50,6 @@ class SettingsActivity : BaseActivity() {
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
-
-
     }
 
     override fun initListener() {

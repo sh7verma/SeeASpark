@@ -2,7 +2,6 @@ package com.seeaspark
 
 import adapters.TipsAdapter
 import android.Manifest
-import android.app.Fragment
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -16,6 +15,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.squareup.picasso.Picasso
 import fragments.HomeFragment
 import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.activity_verify_id.*
@@ -42,6 +42,9 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
     private var mLocationRequest: LocationRequest? = null
     private var mGpsStatusDetector: GpsStatusDetector? = null
+
+    private var width = 0
+    private var height = 0
 
     val homeFragment = HomeFragment()
 
@@ -72,6 +75,14 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         }
 
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+
+        var drawable = ContextCompat.getDrawable(mContext!!, R.mipmap.ic_ava_ob)
+
+        width = drawable!!.intrinsicWidth
+        height = drawable.intrinsicHeight
+
+        Picasso.with(mContext).load(userData!!.response.avatar)
+                .resize(width, height).into(imgProfileTip)
 
         if (userData!!.response.user_type == Constants.MENTEE) {
             imgEvents.setImageResource(R.mipmap.ic_boost)
@@ -222,9 +233,9 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 getString(R.string.tips_boost))
 
         if (userData!!.response.user_type == Constants.MENTOR)
-            vpTips.adapter = TipsAdapter(iconArray, titleArray, descArray, mContext!!)
+            vpTips.adapter = TipsAdapter(iconArray, titleArray, descArray, mContext!!,userData!!.response.avatar)
         else
-            vpTips.adapter = TipsAdapter(iconArrayMentee, titleArrayMentee, descArrayMentee, mContext!!)
+            vpTips.adapter = TipsAdapter(iconArrayMentee, titleArrayMentee, descArrayMentee, mContext!!,userData!!.response.avatar)
 
         cpIndicatorTips.setViewPager(vpTips)
         cpIndicatorTips.radius = 10f

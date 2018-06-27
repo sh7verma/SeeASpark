@@ -54,6 +54,7 @@ public class Constants {
     public static final String REVIEW = "review";
     public static final String QUESTIONS = "questions";
     public static final int INVALID_ACCESS_TOKEN = 301;
+    public static final int DELETE_ACCOUNT = 6001;
     public static final int COMMUNITY=1;
     public static final int EVENT=2;
     public static final int OUT_OF_CARD=3;
