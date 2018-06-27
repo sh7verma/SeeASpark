@@ -3,6 +3,7 @@ package network;
 import models.CardModel;
 import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
+import models.NotificationModel;
 import models.SearchSkillModel;
 import models.SignupModel;
 import models.SwipeCardModel;
@@ -112,15 +113,33 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/api/v1/profiles/edit_profile")
     Call<SignupModel> editProfile(@Field("access_token") String access_token,
-                                     @Field("avatar") String avatar,
-                                     @Field("full_name") String full_name,
-                                     @Field("age") String age,
-                                     @Field("gender") String gender,
-                                     @Field("languages") String languages,
-                                     @Field("profession_id") String profession_id,
-                                     @Field("experience") String experience,
-                                     @Field("skills") String skills,
-                                     @Field("bio") String bio,
-                                     @Field("pro_description") String pro_description);
+                                  @Field("avatar") String avatar,
+                                  @Field("full_name") String full_name,
+                                  @Field("age") String age,
+                                  @Field("gender") String gender,
+                                  @Field("languages") String languages,
+                                  @Field("profession_id") String profession_id,
+                                  @Field("experience") String experience,
+                                  @Field("skills") String skills,
+                                  @Field("bio") String bio,
+                                  @Field("pro_description") String pro_description);
+
+    @FormUrlEncoded
+    @POST("/api/v1/settings/change_password")
+    Call<BaseSuccessModel> changePassword(@Field("access_token") String access_token,
+                                          @Field("old_password") String old_password,
+                                          @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("/api/v1/settings/update_notifications")
+    Call<BaseSuccessModel> updateNotifications(@Field("access_token") String access_token,
+                                                @Field("messages_notification") Integer messages_notification,
+                                                @Field("posts_notification") Integer posts_notification,
+                                                @Field("qoutes_notification") Integer qoutes_notification,
+                                                @Field("notes_notification") Integer notes_notification);
+
+    @GET("/api/v1/notification_settings")
+    Call<NotificationModel> notificationSettings(@Query("access_token") String access_token);
+
 
 }

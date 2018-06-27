@@ -167,5 +167,21 @@
     <string name="notifications">Notifications</string>
     <string name="night_mode">Night Mode</string>
     <string name="change_password">Change Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confrim_new_password">Confrim New Password</string>
+    <string name="password_mismatch">You must enter the same password twice in order to confirm it.</string>
+    <string name="messages_received">Messages Received</string>
+    <string name="community_posts">Community Posts</string>
+    <string name="inspirational_quotes">Inspirational Quotes</string>
+    <string name="notes_shared">Notes Shared</string>
+    <string name="boosts_reminder">Boosts Reminder</string>
+    <string name="update_on_their_follow_profiles">Update on their follow profiles</string>
+    <string name="inactivity_reminder">Inactivity Reminder</string>
+    <string name="weekend_noti">Weekend Notifications</string>
+    <string name="share_and_invite">Share and Invite</string>
+    <string name="messages">Message</string>
+    <string name="whatsapp">Whatsapp</string>
+    <string name="facebook">Facebook</string>
 
 </resources>

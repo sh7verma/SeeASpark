@@ -121,5 +121,8 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <style name="Color1SwitchStyle">
+        <item name="colorControlActivated">#75D995</item>
+    </style>
 
 </resources>

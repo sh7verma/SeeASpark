@@ -38,8 +38,8 @@ class ViewProfileActivity : BaseActivity() {
 
         txtTitleCustom.alpha = 0f
 
-        imgOption1Custom.visibility=View.VISIBLE
-        imgOption2Custom.visibility=View.VISIBLE
+        imgOption1Custom.visibility = View.VISIBLE
+        imgOption2Custom.visibility = View.VISIBLE
 
         imgOption1Custom.setImageResource(R.mipmap.ic_pencil)
         imgOption2Custom.setImageResource(R.mipmap.ic_settings)
@@ -78,7 +78,9 @@ class ViewProfileActivity : BaseActivity() {
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
             imgOption2Custom -> {
-
+                val intent = Intent(mContext, SettingsActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
             txtChangeUserType -> {
                 showToast(mContext!!, getString(R.string.work_in_progress))

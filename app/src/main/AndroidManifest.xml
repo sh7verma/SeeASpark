@@ -252,6 +252,27 @@
             android:windowSoftInputMode="stateHidden" />
 
         <activity
+            android:name=".NotificationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".TellAFriendActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".ChangePasswordActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateVisible" />
+
+        <activity
             android:name=".EditProfileActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"

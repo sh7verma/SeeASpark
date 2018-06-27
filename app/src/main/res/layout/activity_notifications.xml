@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_color"
+    android:orientation="vertical">
+
+    <include layout="@layout/custom_toolbar" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/greyLine" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_52sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp">
+
+                <customviews.MediumTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/messages_received"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/scMessageReceived"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:theme="@style/Color1SwitchStyle" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:background="@color/greyLine" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_52sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp">
+
+                <customviews.MediumTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/community_posts"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/scCommunity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:theme="@style/Color1SwitchStyle" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:background="@color/greyLine" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_52sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp">
+
+                <customviews.MediumTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/inspirational_quotes"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/scInspirational"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:theme="@style/Color1SwitchStyle" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:background="@color/greyLine" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_52sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp">
+
+                <customviews.MediumTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/notes_shared"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/scNotes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:theme="@style/Color1SwitchStyle" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:background="@color/greyLine" />
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_42sdp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

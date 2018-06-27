@@ -13,7 +13,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_questionaires.*
-import kotlinx.android.synthetic.main.activity_verify_id.*
 import models.QuestionAnswerModel
 import models.SignupModel
 import network.RetrofitClient
@@ -93,7 +92,7 @@ class QuestionnariesActivity : BaseActivity() {
                         hitAPI()
                     }
                 } else
-                    showInternetAlert(llCancelDone)
+                    showInternetAlert(txtDoneQuestion)
             }
         }
     }
@@ -118,7 +117,7 @@ class QuestionnariesActivity : BaseActivity() {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         moveToSplash()
                     } else
-                        showAlert(llCancelDone, response.body().error!!.message!!)
+                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
                 }
             }
 
