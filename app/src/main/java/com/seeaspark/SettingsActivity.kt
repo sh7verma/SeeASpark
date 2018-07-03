@@ -30,8 +30,13 @@ class SettingsActivity : BaseActivity() {
         txtTitleCustom.text = getString(R.string.settings)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
-        scNightMode.setOnCheckedChangeListener { p0, p1 ->
-            showToast(this, getString(R.string.work_in_progress))
+        scNightMode.setOnCheckedChangeListener { p0, status ->
+
+            if (status)
+                mUtils!!.setInt("nightMode", 1)
+            else
+                mUtils!!.setInt("nightMode", 0)
+
         }
     }
 
