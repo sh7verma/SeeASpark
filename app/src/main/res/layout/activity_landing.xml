@@ -1,16 +1,282 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:orientation="vertical">
 
-    <customviews.BoldTextView
-        android:id="@+id/txtLogout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/logout"
-        android:textAllCaps="true"
-        android:textColor="@color/black_color"
-        android:textSize="@dimen/_16ssp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/llFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/background_color"
+            android:orientation="vertical" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyLine" />
+
+        <LinearLayout
+            android:id="@+id/llBottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_46sdp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/llHome"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/white_ripple"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgHome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_home" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llNotes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/white_ripple"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgNotes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_notes" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llChat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/white_ripple"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_speach" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llEvents"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/white_ripple"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgEvents"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_events" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llCommunity"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/white_ripple"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgCommunity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_community" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlMainTips"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_white_transparent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_48sdp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_12sdp"
+                android:src="@mipmap/ic_filter"
+                android:visibility="invisible" />
+
+            <customviews.BoldTextView
+                android:id="@+id/txtTitleHome"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textAllCaps="true"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_16ssp"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/imgProfileTip"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/_12sdp"
+                android:src="@mipmap/ic_ava_ob" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/space"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginRight="@dimen/_8sdp">
+
+            <customviews.NonSwipeable
+                android:id="@+id/vpTips"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_180sdp"
+                android:background="@drawable/tips_background"
+                android:orientation="vertical" />
+
+            <customviews.CirclePageIndicator
+                android:id="@+id/cpIndicatorTips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:padding="@dimen/_10sdp" />
+
+            <ImageView
+                android:id="@+id/imgNextTips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/vpTips"
+                android:layout_alignParentRight="true"
+                android:layout_margin="@dimen/_12sdp"
+                android:src="@mipmap/ic_next" />
+
+        </RelativeLayout>
+
+        <android.support.v4.widget.Space
+            android:id="@+id/space"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_5sdp"
+            android:layout_above="@+id/llTipsBottom" />
+
+        <LinearLayout
+            android:id="@+id/llTipsBottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_46sdp"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgHomeTips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_home_s"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgNotesTips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_notes_s"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgChatTips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_speach_s"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgEventsTips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_events_s"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgCommunityTips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_community_s"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
