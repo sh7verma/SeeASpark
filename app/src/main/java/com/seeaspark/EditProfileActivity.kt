@@ -125,7 +125,7 @@ class EditProfileActivity : BaseActivity() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         val dateParts = userData!!.response.age.split("-")
         calDOB!!.set(Calendar.YEAR, dateParts[2].toInt())
-        calDOB!!.set(Calendar.MONTH, dateParts[1].toInt())
+        calDOB!!.set(Calendar.MONTH, dateParts[1].toInt()-1)
         calDOB!!.set(Calendar.DATE, dateParts[0].toInt())
 
         populateData()
@@ -348,7 +348,7 @@ class EditProfileActivity : BaseActivity() {
     fun setBirthday() {
         Constants.closeKeyboard(this, txtAgeEditProfile)
         val calendar = Calendar.getInstance(TimeZone.getDefault())
-        calendar.add(Calendar.YEAR, -14)
+        calendar.add(Calendar.YEAR, -18)
         val datePickerDOB = DatePickerDialog(this,
                 R.style.DatePickerTheme,
                 dobPickerListener,

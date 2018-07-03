@@ -171,12 +171,14 @@ class LoginSignupActivity : BaseActivity() {
             txtSignin -> {
                 if (modeEnabledSignup) {
                     viewLine.startAnimation(swiperight)
+                    txtSigninOptions.text=getString(R.string.sign_in_with)
                     setLogin()
                     modeEnabledSignup = false;
                 }
             }
             txtSignup -> {
                 if (!modeEnabledSignup) {
+                    txtSigninOptions.text=getString(R.string.sign_up_with)
                     viewLine.startAnimation(swipeleft)
                     setRegister()
                     modeEnabledSignup = true;

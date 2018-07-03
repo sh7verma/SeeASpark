@@ -74,6 +74,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent = new Intent(this, QuestionnariesActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ringNotification(intent, message, 0, messageBody.get("body"));
+                if (utils.getInt("inside_profileDialog", 0) == 1) {
+                    utils.setInt("open_questionnaries",1);
+                }
             } else {
                 /// inside review activity
                 Intent notificationIntent = new Intent(Constants.REVIEW);

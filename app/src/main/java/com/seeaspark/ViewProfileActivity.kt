@@ -70,6 +70,8 @@ class ViewProfileActivity : BaseActivity() {
     override fun onClick(view: View?) {
         when (view) {
             imgBackCustom -> {
+                val intent = Intent()
+                setResult(Activity.RESULT_OK, intent)
                 moveBack()
             }
             imgOption1Custom -> {
@@ -109,9 +111,9 @@ class ViewProfileActivity : BaseActivity() {
         txtProfessionViewProfile.text = userData!!.response.profession.name
 
         if (userData!!.response.experience_month != 0)
-            txtExperienceViewProfile.text = "${userData!!.response.experience_year}.${userData!!.response.experience_month} Years of Experience"
+            txtExperienceViewProfile.text = "${userData!!.response.experience_year}.${userData!!.response.experience_month} Year(s) of Experience"
         else
-            txtExperienceViewProfile.text = "${userData!!.response.experience_year} Years of Experience"
+            txtExperienceViewProfile.text = "${userData!!.response.experience_year} Year(s) of Experience"
 
         txtBioViewProfile.text = userData!!.response.bio
         txtDescriptionViewProfile.text = userData!!.response.pro_description
@@ -194,6 +196,8 @@ class ViewProfileActivity : BaseActivity() {
 
 
     override fun onBackPressed() {
+        val intent = Intent()
+        setResult(Activity.RESULT_OK, intent)
         moveBack()
     }
 

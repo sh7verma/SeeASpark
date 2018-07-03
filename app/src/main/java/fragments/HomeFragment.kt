@@ -15,13 +15,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cocosw.bottomsheet.BottomSheet
+import com.google.gson.Gson
 import com.seeaspark.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_home.*
-import models.BaseSuccessModel
-import models.CardModel
-import models.CardsDisplayModel
-import models.SwipeCardModel
+import models.*
 import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,6 +35,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
 
 
     private val PREFERENCES: Int = 2
+    private val VIEWPROFILE: Int = 4
 
     var mLandingInstance: LandingActivity? = null
     var itemView: View? = null
@@ -214,7 +213,8 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         when (view) {
             imgProfileHome -> {
                 intent = Intent(mContext!!, ViewProfileActivity::class.java)
-                startActivity(intent)
+                startActivityForResult(intent, VIEWPROFILE)
+//                startActivity(intent)
                 activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
             imgPreferHome -> {
@@ -297,9 +297,19 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                     mOffset = 1
                     hitAPI(false)
                 }
+                VIEWPROFILE->{
+                    populateData()
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun populateData() {
+        var mGson = Gson()
+        mLandingInstance!!.userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar)
+                .resize(width, height).into(imgProfileHome)
     }
 
     fun boostPlan() {

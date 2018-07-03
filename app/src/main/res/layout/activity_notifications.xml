@@ -54,6 +54,7 @@
                 android:background="@color/greyLine" />
 
             <LinearLayout
+                android:id="@+id/llCommunity"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_52sdp"
                 android:gravity="center_vertical"
@@ -79,6 +80,7 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/viewCommunity"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="@dimen/_16sdp"

@@ -27,7 +27,7 @@
     <string name="reset">Reset</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="enter_your_email_below_to_receive_your_reset_password_instruction">Enter your email below to receive your reset password instruction</string>
-    <string name="select_your_n_avatar">Select your\nAvatar</string>
+    <string name="select_your_n_avatar">Select your Avatar</string>
     <string name="enter">Enter</string>
     <string name="search_your_occupation">Search your occupation</string>
     <string name="name">Name</string>
@@ -35,26 +35,26 @@
     <string name="what_is_your_name">What is your Name?</string>
     <string name="what_is_your_email">What is your\nEmail?</string>
     <string name="what_is_your_age">What is your Age?</string>
-    <string name="what_is_your_profession">What is your\nOccupation?</string>
-    <string name="what_language_speak">What languages\ndo you speak?</string>
+    <string name="what_is_your_profession">What is your Occupation?</string>
+    <string name="what_language_speak">Select language(s) spoken</string>
 
     <string name="select">Select</string>
-    <string name="select_your_gender">Select your\nGender</string>
+    <string name="select_your_gender">Select your Gender</string>
     <string name="select_gender">Select Gender</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="other">Other</string>
-    <string name="years">Years</string>
-    <string name="months">Months</string>
-    <string name="select_your_experience">Select your\nExperience</string>
-    <string name="select_your_nskills">Select your\nSkills</string>
+    <string name="years">Year(s)</string>
+    <string name="months">Month(s)</string>
+    <string name="select_your_experience">Select duration of experience</string>
+    <string name="select_your_nskills">Select your Skills</string>
     <string name="transition">transition</string>
     <string name="add_skills">Add Skills</string>
     <string name="enter_skill">Enter Skill</string>
-    <string name="write_your_short_bio">Write your\nShort Bio</string>
+    <string name="write_your_short_bio">Write a short biography</string>
     <string name="_320_characters">320 Characters Left</string>
     <string name="_1024_characters">1024 Characters Left</string>
-    <string name="describe_your_profession">Describe your\nProfession</string>
+    <string name="describe_your_profession">Describe your Occupation</string>
     <string name="verify_your_id">Verify your Id</string>
     <string name="questionnaires">Questionnaires</string>
     <string name="flash_auto">Flash auto</string>
@@ -191,5 +191,8 @@
     <string name="error_current_password">Current Password Can\'t be empty</string>
     <string name="error_new_password">New Password Can\'t be empty</string>
     <string name="error_confrim_password">Confirm Password Can\'t be empty</string>
+    <string name="handshakes">Handshakes</string>
+    <string name="sign_up_with">Sign up with</string>
+    <string name="sign_in_with">Sign in with</string>
 
 </resources>

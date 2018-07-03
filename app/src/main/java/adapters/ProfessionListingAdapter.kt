@@ -43,6 +43,7 @@ class ProfessionListingAdapter(mConetxt: Context, mProfessionArray: ArrayList<Pr
         holder.txtProfessionData.setOnClickListener {
             mProfessionListing!!.mProfession = mProfessionArray[position].id
             mProfessionListing!!.mProfessionName = mProfessionArray[position].name
+            mProfessionListing!!.setSearchText(mProfessionListing!!.mProfessionName)
             notifyDataSetChanged()
         }
     }

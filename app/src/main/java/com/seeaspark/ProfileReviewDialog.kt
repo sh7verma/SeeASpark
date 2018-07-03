@@ -52,6 +52,8 @@ class ProfileReviewDialog : Activity() {
         mUtils = Utils(this)
         userProfileData = intent.getParcelableExtra("userProfileData")
 
+        mUtils!!.setInt("open_questionnaries", 0)
+
         txtNameDialog.text = "HI ${userProfileData!!.full_name}!"
         txtNameDialog.setAllCaps(true)
 
@@ -127,12 +129,25 @@ class ProfileReviewDialog : Activity() {
                 IntentFilter(Constants.REVIEW))
     }
 
-    override  fun onResume() {
+    override fun onResume() {
         super.onResume()
         Log.e("onResume", "onResume")
         mUtils!!.setInt("inside_review", 1)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
+        mUtils!!.setInt("inside_profileDialog", 0)
+        if (mUtils!!.getInt("open_questionnaries", 0) == 1) {
+            val inStarted = Intent(mContext, QuestionnariesActivity::class.java)
+            inStarted.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            inStarted.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(inStarted)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mUtils!!.setInt("inside_profileDialog", 1)
     }
 
     override fun onStop() {
@@ -149,6 +164,10 @@ class ProfileReviewDialog : Activity() {
             startActivity(inStarted)
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         }
+    }
+
+    override fun onBackPressed() {
+
     }
 
 }

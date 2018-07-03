@@ -1,13 +1,17 @@
 package com.seeaspark
 
+import adapters.ProfessionAdapter
 import adapters.ProfessionListingAdapter
 import android.app.Activity
 import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import kotlinx.android.synthetic.main.activity_profession_listing.*
 import models.ProfessionModel
 import models.SignupModel
+import utils.Constants
 
 
 class SelectProfessionActivity : BaseActivity() {
@@ -17,6 +21,7 @@ class SelectProfessionActivity : BaseActivity() {
     private var mAdapterProfession: ProfessionListingAdapter? = null
     private var mProfessionListing: SelectProfessionActivity? = null
     private var mProfessionArray = ArrayList<ProfessionModel>()
+    private var tempArray = ArrayList<ProfessionModel>()
     private var userData: SignupModel? = null
 
     override fun getContentView() = R.layout.activity_profession_listing
@@ -38,6 +43,38 @@ class SelectProfessionActivity : BaseActivity() {
         rvProfessionListing.layoutManager = LinearLayoutManager(this)
         mAdapterProfession = ProfessionListingAdapter(this, mProfessionArray, mProfessionListing!!)
         rvProfessionListing.adapter = mAdapterProfession
+
+
+        edProfessionSelect.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val searString = s.toString().toLowerCase()
+
+                if (searString.trim().isEmpty()) {
+                    tempArray.clear()
+                    tempArray.addAll(mProfessionArray)
+                    mAdapterProfession = ProfessionListingAdapter(mContext!!, tempArray, mProfessionListing!!)
+                    rvProfessionListing.adapter = mAdapterProfession
+                } else {
+                    tempArray.clear()
+                    for (profession in mProfessionArray) {
+                        if ((profession.name).toLowerCase().contains(searString)) {
+                            tempArray.add(profession);
+                        }
+                    }
+                    mAdapterProfession = ProfessionListingAdapter(mContext!!, tempArray, mProfessionListing!!)
+                    rvProfessionListing.adapter = mAdapterProfession
+                }
+            }
+        })
+
+
     }
 
     override fun initListener() {
@@ -60,6 +97,12 @@ class SelectProfessionActivity : BaseActivity() {
                 moveBack()
             }
         }
+    }
+
+    fun setSearchText(mProfessionName: String?) {
+        edProfessionSelect.setText(mProfessionName)
+        edProfessionSelect.setSelection(edProfessionSelect.text.trim().length)
+        Constants.closeKeyboard(this, edProfessionSelect)
     }
 
     override fun onBackPressed() {

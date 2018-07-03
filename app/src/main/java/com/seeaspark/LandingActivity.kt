@@ -85,8 +85,8 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 .resize(width, height).into(imgProfileTip)
 
         if (userData!!.response.user_type == Constants.MENTEE) {
-            imgEvents.setImageResource(R.mipmap.ic_boost)
-            imgEventsTips.setImageResource(R.mipmap.ic_boost_s)
+            imgCommunity.setImageResource(R.mipmap.ic_boost)
+            imgCommunityTips.setImageResource(R.mipmap.ic_boost_s)
         }
         /// adding home fragment
         replaceFragment(homeFragment)
@@ -105,6 +105,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         llEvents.setOnClickListener(this)
         llCommunity.setOnClickListener(this)
         rlMainTips.setOnClickListener(this)
+        cpIndicatorTips.setOnClickListener(this)
     }
 
     override fun getContentView() = R.layout.activity_landing
@@ -157,11 +158,11 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                     }
                     4 -> {
                         imgChatTips.visibility = View.INVISIBLE
-                        imgCommunityTips.visibility = View.VISIBLE
+                        imgEventsTips.visibility = View.VISIBLE
                     }
                     5 -> {
-                        imgCommunityTips.visibility = View.INVISIBLE
-                        imgEventsTips.visibility = View.VISIBLE
+                        imgEventsTips.visibility = View.INVISIBLE
+                        imgCommunityTips.visibility = View.VISIBLE
                         imgNextTips.setImageResource(R.mipmap.ic_ob_done)
                     }
                 }
@@ -202,34 +203,34 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 R.mipmap.ic_home_big,
                 R.mipmap.ic_notes_big,
                 R.mipmap.ic_chat_big,
-                R.mipmap.ic_community_big,
-                R.mipmap.ic_events_big)
+                R.mipmap.ic_events_big,
+                R.mipmap.ic_community_big)
 
         val titleArray = arrayListOf<String>(getString(R.string.Profile), getString(R.string.home), getString(R.string.notes),
-                getString(R.string.chat), getString(R.string.community), getString(R.string.events))
+                getString(R.string.handshakes), getString(R.string.events), getString(R.string.community))
 
         val descArray = arrayListOf<String>(getString(R.string.tips_profile),
                 getString(R.string.tips_home),
                 getString(R.string.tips_notes),
                 getString(R.string.tips_chat),
-                getString(R.string.tips_community),
-                getString(R.string.tips_events))
+                getString(R.string.tips_events),
+                getString(R.string.tips_community))
 
         val iconArrayMentee = intArrayOf(R.mipmap.ic_ava_ob,
                 R.mipmap.ic_home_big,
                 R.mipmap.ic_notes_big,
                 R.mipmap.ic_chat_big,
-                R.mipmap.ic_community_big,
+                R.mipmap.ic_events_big,
                 R.mipmap.ic_boost_big)
 
         val titleArrayMentee = arrayListOf<String>(getString(R.string.Profile), getString(R.string.home), getString(R.string.notes),
-                getString(R.string.chat), getString(R.string.community), getString(R.string.boost))
+                getString(R.string.handshakes), getString(R.string.events), getString(R.string.boost))
 
         val descArrayMentee = arrayListOf<String>(getString(R.string.tips_profile),
                 getString(R.string.tips_home),
                 getString(R.string.tips_notes),
                 getString(R.string.tips_chat),
-                getString(R.string.tips_community),
+                getString(R.string.tips_events),
                 getString(R.string.tips_boost))
 
         if (userData!!.response.user_type == Constants.MENTOR)
@@ -267,6 +268,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     override fun onConnectionSuspended(p0: Int) {
     }
 
+    @Suppress("DEPRECATION")
     override fun onLocationChanged(location: Location?) {
         //stop location updates
         if (location != null) {

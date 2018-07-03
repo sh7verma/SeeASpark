@@ -7,6 +7,7 @@ import kotlinx.android.synthetic.main.activity_notifications.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import models.BaseSuccessModel
 import models.NotificationModel
+import models.SignupModel
 import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -21,11 +22,18 @@ class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListe
     var mPosts: Int = 0
     var mQuotes: Int = 0
     var mNotes: Int = 0
+    private var userData: SignupModel? = null
 
     override fun initUI() {
         imgBackCustom.setImageResource(R.mipmap.ic_back_org)
         txtTitleCustom.text = getString(R.string.notifications)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        if (userData!!.response.user_type == Constants.MENTEE) {
+            llCommunity.visibility = View.GONE
+            viewCommunity.visibility = View.GONE
+        }
     }
 
     override fun onCreateStuff() {

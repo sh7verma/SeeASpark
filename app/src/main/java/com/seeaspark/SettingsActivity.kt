@@ -89,7 +89,7 @@ class SettingsActivity : BaseActivity() {
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
             llRateUS -> {
-
+                showToast(mContext!!, getString(R.string.work_in_progress))
             }
             llBlockedUser -> {
                 showToast(mContext!!, getString(R.string.work_in_progress))

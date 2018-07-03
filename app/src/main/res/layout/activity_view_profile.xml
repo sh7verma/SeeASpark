@@ -128,11 +128,12 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/_12ssp" />
 
-                <customviews.LightTextView
+                <customviews.MediumTextView
                     android:id="@+id/txtBioViewProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/_12sdp"
+                    android:textColor="@color/greyTextColor"
                     android:textSize="@dimen/_12ssp" />
 
                 <View
@@ -149,11 +150,12 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/_12ssp" />
 
-                <customviews.LightTextView
+                <customviews.MediumTextView
                     android:id="@+id/txtDescriptionViewProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/_46sdp"
+                    android:textColor="@color/greyTextColor"
                     android:textSize="@dimen/_12ssp" />
 
             </LinearLayout>

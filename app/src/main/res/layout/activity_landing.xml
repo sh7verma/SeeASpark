@@ -78,22 +78,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/llCommunity"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/white_ripple"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/imgCommunity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_community" />
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/llEvents"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -106,6 +90,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@mipmap/ic_events" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llCommunity"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/white_ripple"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgCommunity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_community" />
 
             </LinearLayout>
 
@@ -168,7 +168,7 @@
 
             <customviews.CirclePageIndicator
                 android:id="@+id/cpIndicatorTips"
-                android:layout_width="@dimen/_80sdp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginBottom="@dimen/_16sdp"
@@ -253,10 +253,10 @@
                 android:gravity="center">
 
                 <ImageView
-                    android:id="@+id/imgCommunityTips"
+                    android:id="@+id/imgEventsTips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_community_s"
+                    android:src="@mipmap/ic_events_s"
                     android:visibility="invisible" />
 
             </LinearLayout>
@@ -268,10 +268,10 @@
                 android:gravity="center">
 
                 <ImageView
-                    android:id="@+id/imgEventsTips"
+                    android:id="@+id/imgCommunityTips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_events_s"
+                    android:src="@mipmap/ic_community_s"
                     android:visibility="invisible" />
 
             </LinearLayout>

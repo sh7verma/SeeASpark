@@ -8,17 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
+import fragments.ProfessionFragment
 import kotlinx.android.synthetic.main.item_profession.view.*
 import models.ProfessionModel
 
 
-class ProfessionAdapter(mConetxt: Context, mProfessionArray: ArrayList<ProfessionModel>, mCreateProfileInstance: CreateProfileActivity) : RecyclerView.Adapter<ProfessionAdapter.ViewHolder>() {
+class ProfessionAdapter(mConetxt: Context, mProfessionArray: ArrayList<ProfessionModel>,
+                        mCreateProfileInstance: CreateProfileActivity,
+                        mProfessionFragment: ProfessionFragment?) : RecyclerView.Adapter<ProfessionAdapter.ViewHolder>() {
 
     var mProfessionArray = ArrayList<ProfessionModel>()
     var mContext: Context? = null
     var mCreateProfileInstance: CreateProfileActivity? = null
+    var mProfessionFragment: ProfessionFragment? = null
 
     init {
+        this.mProfessionFragment = mProfessionFragment
         this.mProfessionArray = mProfessionArray
         this.mContext = mConetxt
         this.mCreateProfileInstance = mCreateProfileInstance
@@ -42,7 +47,9 @@ class ProfessionAdapter(mConetxt: Context, mProfessionArray: ArrayList<Professio
             holder.imgSelectedProfession.visibility = View.INVISIBLE
 
         holder.txtProfessionData.setOnClickListener {
+            mCreateProfileInstance!!.mProfessionName = mProfessionArray[position].name
             mCreateProfileInstance!!.mProfession = mProfessionArray[position].id
+            mProfessionFragment!!.setSearchText(mCreateProfileInstance!!.mProfessionName)
             notifyDataSetChanged()
         }
     }

@@ -68,7 +68,7 @@ class AgeFragment : Fragment(), View.OnClickListener {
     fun setBday() {
         Constants.closeKeyboard(activity, txtSelectAge)
         val calendar = Calendar.getInstance(TimeZone.getDefault())
-        calendar.add(Calendar.YEAR, -14)
+        calendar.add(Calendar.YEAR, -18)
         val datePickerDOB = DatePickerDialog(activity,
                 R.style.DatePickerTheme,
                 dobPickerListener,

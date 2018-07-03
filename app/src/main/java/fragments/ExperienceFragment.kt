@@ -32,23 +32,19 @@ class ExperienceFragment : Fragment(), View.OnClickListener {
 
     private fun onCreateStuff() {
 
-        rsbYears.setNotifyWhileDragging(true)
-        rsbYears.selectedMaxValue = 1
-        rsbYears.setOnRangeSeekBarChangeListener(object : RangeSeekBar.OnRangeSeekBarChangeListener<Int> {
-            override fun onRangeSeekBarValuesChanged(bar: RangeSeekBar<Int>?, minValue: Int?, maxValue: Int?) {
-                txtYearCount.text = "$maxValue"
-                mCreateProfileInstance!!.mExpeirenceYears="$maxValue"
-            }
-        })
+        rsbYears.isNotifyWhileDragging = true
+        rsbYears.selectedMaxValue = 2
+        rsbYears.setOnRangeSeekBarChangeListener { bar, minValue, maxValue ->
+            txtYearCount.text = "$maxValue"
+            mCreateProfileInstance!!.mExpeirenceYears = "$maxValue"
+        }
 
-        rsbMonths.setNotifyWhileDragging(true)
-        rsbMonths.selectedMaxValue = 1
-        rsbMonths.setOnRangeSeekBarChangeListener(object : RangeSeekBar.OnRangeSeekBarChangeListener<Int> {
-            override fun onRangeSeekBarValuesChanged(bar: RangeSeekBar<Int>?, minValue: Int?, maxValue: Int?) {
-                txtMonthCount.text = "$maxValue"
-                mCreateProfileInstance!!.mExpeirenceMonth="$maxValue"
-            }
-        })
+        rsbMonths.isNotifyWhileDragging = true
+        rsbMonths.selectedMaxValue = 0
+        rsbMonths.setOnRangeSeekBarChangeListener { bar, minValue, maxValue ->
+            txtMonthCount.text = "$maxValue"
+            mCreateProfileInstance!!.mExpeirenceMonth = "$maxValue"
+        }
     }
 
     private fun initListener() {
