@@ -37,7 +37,7 @@ class AgeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
-        txtSelectAge.setText(mCreateProfileInstance!!.mAge)
+        txtSelectAge.text = mCreateProfileInstance!!.mAge
 
     }
 
@@ -102,16 +102,14 @@ class AgeFragment : Fragment(), View.OnClickListener {
         val birth_date = birth_format.parse(birthdate)
         val cal = Calendar.getInstance()
         val today = cal.time
-        val diff = today.time - birth_date.getTime()
+        val diff = today.time - birth_date.time
         val diffSeconds = diff / 1000 % 60
         val diffMinutes = diff / (60 * 1000) % 60
         val diffHours = diff / (60 * 60 * 1000) % 24
         val diffDays = diff / (24 * 60 * 60 * 1000)
         val diffyears = (diffDays / 365).toInt()
-        txtSelectAge.setText("$diffyears years")
+        txtSelectAge.text = "$diffyears years"
         mCreateProfileInstance!!.mAge = txtSelectAge.text.toString()
         return diffyears
     }
-
-
 }

@@ -3,13 +3,16 @@ package fragments
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewPager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import com.squareup.picasso.Picasso
+import customviews.FlowLayout
 import kotlinx.android.synthetic.main.fragment_name.*
 import kotlinx.android.synthetic.main.item_walkthrough.view.*
 import utils.Constants
@@ -39,6 +42,8 @@ class NameFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
+
+
         val typeface = Typeface.createFromAsset(activity!!.assets, "fonts/medium.otf")
         edNameProfile.typeface = typeface
         edNameProfile.setText(mCreateProfileInstance!!.mName)
