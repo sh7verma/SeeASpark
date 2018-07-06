@@ -17,10 +17,17 @@ import utils.Constants
 
 class ReviewActivity : BaseActivity() {
 
+
     private var userData: SignupModel? = null
 
     override fun initUI() {
 
+    }
+
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
     }
 
     override fun onCreateStuff() {

@@ -17,6 +17,7 @@ import utils.Constants
 
 class SkillSelectionActivity : BaseActivity() {
 
+
     private var mSkillsSelectedArray = ArrayList<String>()
     private var mSelectedSkillsNameArray = ArrayList<String>()
     private var userData: SignupModel? = null
@@ -37,6 +38,12 @@ class SkillSelectionActivity : BaseActivity() {
         for (skillValue in userData!!.skills) {
             flSkillsSelection.addView(inflateView(skillValue))
         }
+    }
+
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
     }
 
     override fun initListener() {

@@ -63,6 +63,9 @@ public class Constants {
     public static final int DISTANCE=15;
     public static final int EXPERIENCE=3;
     public static ArrayList<SkillsModel> OWNSKILLS_ARRAY = new ArrayList<>();
+    public static final String NIGHT_MODE ="NightMode";
+    public static final Integer DAY=1;
+    public static final Integer NIGHT=2;
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

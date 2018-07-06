@@ -17,6 +17,8 @@
     <color name="textGrey">#9a9a9c</color>
     <color name="hintColorText">#b75a51</color>
     <color name="pagerColorCode">#383838</color>
+    <color name="cardColorDark">#23251F</color>
+
 
     <color name="navigationBarColor">#202851</color>
     <color name="textColorPrimary">#f77a52</color>

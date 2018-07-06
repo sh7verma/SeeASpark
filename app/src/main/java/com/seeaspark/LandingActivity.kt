@@ -2,12 +2,14 @@ package com.seeaspark
 
 import adapters.TipsAdapter
 import android.Manifest
+import android.app.Fragment
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.view.View
 import com.google.android.gms.common.ConnectionResult
@@ -16,6 +18,8 @@ import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.squareup.picasso.Picasso
+import fragments.CommunityFragment
+import fragments.EventsFragment
 import fragments.HomeFragment
 import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.activity_verify_id.*
@@ -48,6 +52,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
     val homeFragment = HomeFragment()
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
         if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -57,11 +62,28 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             mGpsStatusDetector = GpsStatusDetector(this)
             mGpsStatusDetector!!.checkGpsStatus()
         }
-        displayLightModeUI()
     }
 
-    private fun displayLightModeUI() {
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayDayMode() {
         llBottomNavigation.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
+        llHome.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        llNotes.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        llChat.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        llEvents.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        llCommunity.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        homeFragment.resetData()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayNightMode() {
+        llBottomNavigation.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+        llHome.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        llNotes.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        llChat.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        llEvents.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        llCommunity.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        homeFragment.resetData()
     }
 
     override fun onCreateStuff() {
@@ -89,7 +111,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             imgCommunityTips.setImageResource(R.mipmap.ic_boost_s)
         }
         /// adding home fragment
-        replaceFragment(homeFragment)
+        addHomeFragment(homeFragment)
 
         if (mUtils!!.getString("tipsVisible", "") == "0")
             displayTipsData()
@@ -115,7 +137,10 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     override fun onClick(view: View?) {
         when (view) {
             llHome -> {
-
+                imgHome.setImageResource(R.mipmap.ic_home_s)
+                imgEvents.setImageResource(R.mipmap.ic_events)
+                imgCommunity.setImageResource(R.mipmap.ic_community)
+                replaceFragment(homeFragment)
             }
             llNotes -> {
                 showToast(mContext!!, getString(R.string.work_in_progress))
@@ -124,10 +149,16 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 showToast(mContext!!, getString(R.string.work_in_progress))
             }
             llEvents -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                imgHome.setImageResource(R.mipmap.ic_home)
+                imgEvents.setImageResource(R.mipmap.ic_events_s)
+                imgCommunity.setImageResource(R.mipmap.ic_community)
+                replaceFragment(EventsFragment())
             }
             llCommunity -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                imgHome.setImageResource(R.mipmap.ic_home)
+                imgEvents.setImageResource(R.mipmap.ic_events)
+                imgCommunity.setImageResource(R.mipmap.ic_community_s)
+                replaceFragment(CommunityFragment())
             }
             imgNextTips -> {
                 if (currentPosition < 5) {
@@ -170,6 +201,12 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         }
     }
 
+    private fun replaceFragment(eventsFragment: Fragment) {
+        fragmentManager.beginTransaction()
+                .replace(R.id.llFragment, eventsFragment, null)
+                .addToBackStack(null).commit()
+    }
+
     private fun hitTipsAPI() {
         val call = RetrofitClient.getInstance().skipTip(mUtils!!.getString("access_token", ""))
         call.enqueue(object : Callback<BaseSuccessModel> {
@@ -191,7 +228,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         })
     }
 
-    private fun replaceFragment(fragment: HomeFragment) {
+    private fun addHomeFragment(fragment: HomeFragment) {
         fragmentManager.beginTransaction().replace(R.id.llFragment, fragment, null).commit()
     }
 
@@ -234,9 +271,9 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 getString(R.string.tips_boost))
 
         if (userData!!.response.user_type == Constants.MENTOR)
-            vpTips.adapter = TipsAdapter(iconArray, titleArray, descArray, mContext!!,userData!!.response.avatar)
+            vpTips.adapter = TipsAdapter(iconArray, titleArray, descArray, mContext!!, userData!!.response.avatar)
         else
-            vpTips.adapter = TipsAdapter(iconArrayMentee, titleArrayMentee, descArrayMentee, mContext!!,userData!!.response.avatar)
+            vpTips.adapter = TipsAdapter(iconArrayMentee, titleArrayMentee, descArrayMentee, mContext!!, userData!!.response.avatar)
 
         cpIndicatorTips.setViewPager(vpTips)
         cpIndicatorTips.radius = 10f

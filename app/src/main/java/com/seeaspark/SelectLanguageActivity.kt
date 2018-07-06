@@ -13,6 +13,7 @@ import java.util.ArrayList
 
 class SelectLanguageActivity : BaseActivity() {
 
+
     var mAdapterLangugae: LanguageAdapter? = null
     private var userData: SignupModel? = null
     var mLanguageArray = ArrayList<LanguageModel>()
@@ -38,6 +39,12 @@ class SelectLanguageActivity : BaseActivity() {
         rvSelectLanguage.layoutManager = LinearLayoutManager(this)
         mAdapterLangugae = LanguageAdapter(this, mLanguageArray)
         rvSelectLanguage.adapter = mAdapterLangugae
+    }
+
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
     }
 
     override fun onCreateStuff() {

@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_75sdp"
-                android:background="@drawable/short_profile_background"
+                android:background="@drawable/white_short_profile_background"
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/_24sdp"
                 android:paddingRight="@dimen/_24sdp">

@@ -46,6 +46,14 @@ class PreferencesActivity : BaseActivity() {
         rvProfessionPrefer.layoutManager = LinearLayoutManager(this)
     }
 
+    override fun displayDayMode() {
+
+    }
+
+    override fun displayNightMode() {
+
+    }
+
     override fun onCreateStuff() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 

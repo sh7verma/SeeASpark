@@ -5,16 +5,15 @@ import android.app.Activity.RESULT_OK
 import android.app.Fragment
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.cocosw.bottomsheet.BottomSheet
 import com.google.gson.Gson
 import com.seeaspark.*
 import com.squareup.picasso.Picasso
@@ -28,11 +27,9 @@ import utils.ConnectivityReceiver
 import utils.Constants
 import utils.MainApplication
 import utils.Utils
-import kotlin.math.log
 
 
 class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.ConnectivityReceiverListener {
-
 
     private val PREFERENCES: Int = 2
     private val VIEWPROFILE: Int = 4
@@ -60,23 +57,43 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         return itemView
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         mContext = activity
         mLandingInstance = activity as LandingActivity
         mHomeFragment = this
-        displayLightModeUI()
+
+        mUtils=Utils(mContext)
+
+        if (mUtils!!.getInt("nightMode", 0) == 1)
+            displayNightMode()
+        else
+            displayDayMode()
+
         initListener()
         onCreateStuff()
         super.onActivityCreated(savedInstanceState)
     }
 
-    private fun displayLightModeUI() {
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    private fun displayDayMode() {
         llHomeToolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.white_color))
+        imgPreferHome.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
+        txtTitleHome.setTextColor(ContextCompat.getColor(activity, R.color.black_color))
+        imgProfileHome.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
         rlCardBase.setBackgroundColor(ContextCompat.getColor(activity, R.color.background))
     }
 
-    private fun onCreateStuff() {
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    private fun displayNightMode() {
+        llHomeToolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.black_color))
+        imgPreferHome.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
+        txtTitleHome.setTextColor(ContextCompat.getColor(activity, R.color.white_color))
+        imgProfileHome.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
+        rlCardBase.setBackgroundColor(ContextCompat.getColor(activity, R.color.black_color))
+    }
 
+    private fun onCreateStuff() {
         mUtils = Utils(mContext)
         if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTEE)
             txtTitleHome.text = getString(R.string.mentors)
@@ -94,7 +111,6 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         mLayoutManager = LinearLayoutManager(mContext)
 
         rvCards.layoutManager = mLayoutManager
-
 
         rvCards.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
@@ -134,7 +150,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     }
 
     fun hitAPI(visibleLoader: Boolean) {
-        if (visibleLoader)
+      /*  if (visibleLoader)
             mLandingInstance!!.showLoader()
         val call = RetrofitClient.getInstance().getCards(mUtils!!.getString("access_token", ""),
                 mLandingInstance!!.mLatitude.toString(), mLandingInstance!!.mLongitude.toString(), mOffset.toString())
@@ -150,10 +166,10 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                         mArrayCards.removeAt(mArrayCards.size - 1)
                         mAdapterCards!!.notifyItemRemoved(mArrayCards.size)
 
-                        /* for (cardData in response.body().response) {
+                        *//* for (cardData in response.body().response) {
                              mArrayCards.add(cardData);
                              mAdapterCards!!.notifyItemInserted(mArrayCards.size - 1);
-                         }*/
+                         }*//*
 
                         if (response.body().response.size > 0) {
                             mArrayCards.addAll(response.body().response)
@@ -175,7 +191,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 if (visibleLoader)
                     mLandingInstance!!.dismissLoader()
             }
-        })
+        })*/
     }
 
     private fun populateData(response: CardModel) {
@@ -297,7 +313,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                     mOffset = 1
                     hitAPI(false)
                 }
-                VIEWPROFILE->{
+                VIEWPROFILE -> {
                     populateData()
                 }
             }
@@ -337,6 +353,22 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 rvCards.adapter = mAdapterCards
             }
         } else {
+            mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
+            rvCards.adapter = mAdapterCards
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    fun resetData() {
+        if (mAdapterCards != null) {
+
+            if (mUtils!!.getInt("nightMode", 0) == 1)
+                displayNightMode()
+            else
+                displayDayMode()
+
+            isLoading = false
+            mOffset = 1
             mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
             rvCards.adapter = mAdapterCards
         }

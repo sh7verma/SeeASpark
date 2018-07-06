@@ -1,7 +1,9 @@
 package adapters
 
 import android.content.Context
+import android.os.Build
 import android.os.CountDownTimer
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -22,6 +24,7 @@ import kotlinx.android.synthetic.main.item_progress.view.*
 import models.CardsDisplayModel
 import utils.Connection_Detector
 import utils.Constants
+import utils.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,6 +41,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
     private var mHomeFragment: HomeFragment? = null
     var width: Int = 0
     var height: Int = 0
+    var mUtils: Utils? = null
 
     var mTimer: CountDownTimer? = null
     var mTimerTime: Long = 0
@@ -46,6 +50,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
     init {
         this.mCardsArray = mCardsArray
         this.mContext = mContext
+        mUtils = Utils(mContext)
         mScreenWidth = mWidth / 2
         mScreenCalculated = mScreenWidth / 100
         this.mHomeFragment = mHomeFragment
@@ -55,6 +60,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
         height = drawable.intrinsicHeight
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view: View
         when (viewType) {
@@ -225,8 +231,10 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
         return 0
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var swlCard = itemView.swlCard!!
+        var llCard = itemView.llCard!!
         var llHandshake = itemView.swlCard.llHandshake!!
         var llPass = itemView.swlCard.llPass!!
         var llData = itemView.llData!!
@@ -240,11 +248,33 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
             swlCard.showMode = SwipeLayout.ShowMode.LayDown
             swlCard.addDrag(SwipeLayout.DragEdge.Right, swlCard.findViewWithTag(mContext!!.getString(R.string.handshake)))
             swlCard.addDrag(SwipeLayout.DragEdge.Left, swlCard.findViewWithTag(mContext!!.getString(R.string.pass)))
+            if (mUtils!!.getInt("nightMode", 0) == 1)
+                displayNightMode()
+            else
+                displayDayMode()
+        }
+
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+        private fun displayNightMode() {
+            llCard.background = ContextCompat.getDrawable(mContext!!, R.drawable.night_card_background)
+            txtNameCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            txtProfessionCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.greyTextColor))
+            txtSkillCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            txtSkillCountCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+        }
+
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+        private fun displayDayMode() {
+            llCard.background = ContextCompat.getDrawable(mContext!!, R.drawable.card_background)
+            txtNameCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+            txtProfessionCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.greyTextColor))
+            txtSkillCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+            txtSkillCountCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
         }
     }
 
     inner class CommunityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val cvClick = itemView.cvClick!!
+        val cvClick = itemView.cvCommunityListing!!
         val imgCommunityHome = itemView.imgCommunityHome!!
         val txtCommunityTitle = itemView.txtCommunityTitle!!
         val txtDateCommunity = itemView.txtDateCommunity!!

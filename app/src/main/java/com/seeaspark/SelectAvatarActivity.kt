@@ -12,6 +12,7 @@ import utils.Constants
 
 class SelectAvatarActivity : BaseActivity() {
 
+
     var mAvatarAdapter: SelectAvatarAdapter? = null
     var mAvatarArray = ArrayList<AvatarModel>()
     private var mSelectAvatar: SelectAvatarActivity? = null
@@ -26,6 +27,11 @@ class SelectAvatarActivity : BaseActivity() {
 
     }
 
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
+    }
     override fun onCreateStuff() {
 
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)

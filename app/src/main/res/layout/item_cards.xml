@@ -91,6 +91,7 @@
             android:layout_height="match_parent" />
 
         <LinearLayout
+            android:id="@+id/llCard"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -135,7 +136,7 @@
                         android:paddingRight="@dimen/_8sdp"
                         android:paddingTop="@dimen/_5sdp"
                         android:text="Physician"
-                        android:textColor="@color/hint_color_dark"
+                        android:textColor="@color/greyTextColor"
                         android:textSize="@dimen/_12ssp" />
 
                 </LinearLayout>

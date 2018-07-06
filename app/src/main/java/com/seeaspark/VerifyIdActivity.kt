@@ -45,6 +45,7 @@ import java.util.*
 @Suppress("DEPRECATION")
 class VerifyIdActivity : BaseActivity() {
 
+
     internal val GALLERY_INTENT = 2
     private val MULTIPLE_PERMISSIONS = 5
     internal var permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
@@ -65,6 +66,12 @@ class VerifyIdActivity : BaseActivity() {
 
         txtTitle.text = getString(R.string.verify_your_id)
 
+    }
+
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
     }
 
     override fun onCreateStuff() {

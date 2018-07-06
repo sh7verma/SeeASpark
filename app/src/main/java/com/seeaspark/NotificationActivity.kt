@@ -1,5 +1,7 @@
 package com.seeaspark
 
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.CompoundButton
@@ -24,6 +26,7 @@ class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListe
     var mNotes: Int = 0
     private var userData: SignupModel? = null
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
         imgBackCustom.setImageResource(R.mipmap.ic_back_org)
         txtTitleCustom.text = getString(R.string.notifications)
@@ -34,17 +37,64 @@ class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListe
             llCommunity.visibility = View.GONE
             viewCommunity.visibility = View.GONE
         }
+
+        displayDayMode()
+//        displayNightMode()
+
     }
 
     override fun onCreateStuff() {
-
         if (connectedToInternet()) {
             hitNotificationSettings()
         } else {
             showInternetAlert(llCustomToolbar)
         }
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayDayMode() {
+
+        txtTitleCustom.setTextColor(ContextCompat.getColor(this,R.color.black_color))
+
+        llMainNotifications.setBackgroundColor(ContextCompat.getColor(this,R.color.white_color))
+
+        llMessage.background=ContextCompat.getDrawable(this,R.drawable.white_ripple)
+        txtMessages.setTextColor(ContextCompat.getColor(this,R.color.black_color))
+
+        llCommunity.background=ContextCompat.getDrawable(this,R.drawable.white_ripple)
+        txtCommunityPosts.setTextColor(ContextCompat.getColor(this,R.color.black_color))
+
+        llInspirational.background=ContextCompat.getDrawable(this,R.drawable.white_ripple)
+        txtInspirational.setTextColor(ContextCompat.getColor(this,R.color.black_color))
+
+        llNotes.background=ContextCompat.getDrawable(this,R.drawable.white_ripple)
+        txtNotes.setTextColor(ContextCompat.getColor(this,R.color.black_color))
 
     }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayNightMode() {
+
+        txtTitleCustom.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+
+        llMainNotifications.setBackgroundColor(ContextCompat.getColor(this,R.color.black_color))
+
+        llMessage.background=ContextCompat.getDrawable(this,R.drawable.black_ripple)
+        txtMessages.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+
+        llCommunity.background=ContextCompat.getDrawable(this,R.drawable.black_ripple)
+        txtCommunityPosts.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+
+        llInspirational.background=ContextCompat.getDrawable(this,R.drawable.black_ripple)
+        txtInspirational.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+
+        llNotes.background=ContextCompat.getDrawable(this,R.drawable.black_ripple)
+        txtNotes.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+
+    }
+
+
 
     private fun hitNotificationSettings() {
         showLoader()
@@ -162,5 +212,12 @@ class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListe
                     0
             }
         }
+    }
+
+    override fun onBackPressed() {
+        if (connectedToInternet())
+            hitAPI()
+        else
+            showInternetAlert(imgBackCustom)
     }
 }

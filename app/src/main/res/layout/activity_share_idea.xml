@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/llMainIdea"
+    android:layout_margin="@dimen/_16sdp"
+    android:background="@drawable/white_default"
+    android:orientation="vertical"
+    android:padding="@dimen/_16sdp">
+
+    <customviews.BoldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/share_your_idea"
+        android:paddingBottom="@dimen/_12sdp"
+        android:textAllCaps="true"
+        android:textColor="@color/red_color"
+        android:textSize="@dimen/_14ssp" />
+
+    <EditText
+        android:id="@+id/edSubject"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:background="@drawable/idea_background"
+        android:ellipsize="end"
+        android:hint="@string/subject"
+        android:inputType="textCapSentences"
+        android:maxLength="80"
+        android:maxLines="1"
+        android:padding="@dimen/_8sdp"
+        android:textColor="@color/black_color"
+        android:textColorHint="@color/greyTextColor"
+        android:textSize="@dimen/_14ssp" />
+
+    <customviews.BoldTextView
+        android:id="@+id/txtEnterIdea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_12sdp"
+        android:paddingTop="@dimen/_12sdp"
+        android:text="@string/enter_your_idea"
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_14ssp" />
+
+    <EditText
+        android:id="@+id/edContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/idea_background"
+        android:ellipsize="end"
+        android:gravity="top"
+        android:inputType="textCapSentences|textMultiLine"
+        android:maxLength="80"
+        android:padding="@dimen/_8sdp"
+        android:textColor="@color/black_color"
+        android:textColorHint="@color/greyTextColor"
+        android:textSize="@dimen/_14ssp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_36sdp"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:orientation="horizontal">
+
+        <customviews.BoldTextView
+            android:id="@+id/txtSend"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/grey_default"
+            android:gravity="center"
+            android:text="@string/send"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="match_parent" />
+
+        <customviews.BoldTextView
+            android:id="@+id/txtCancel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/grey_default"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp" />
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

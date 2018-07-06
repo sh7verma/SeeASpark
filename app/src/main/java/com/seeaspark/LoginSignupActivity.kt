@@ -41,6 +41,7 @@ import java.util.*
 
 class LoginSignupActivity : BaseActivity() {
 
+
     private val VERIFY: Int = 1
 
     private var swipeleft: TranslateAnimation? = null
@@ -69,6 +70,14 @@ class LoginSignupActivity : BaseActivity() {
 
         edEmail.typeface = typeface
         edPassword.typeface = typeface
+    }
+
+    override fun displayDayMode() {
+
+    }
+
+    override fun displayNightMode() {
+
     }
 
     override fun onCreateStuff() {

@@ -46,6 +46,7 @@ dependencies {
     implementation project(':aFileChooser')
     implementation project(':cropLib')
     implementation project(':library_swipe')
+    implementation project(':likebutton')
 
     //multidex
     implementation 'com.android.support:multidex:1.0.3'

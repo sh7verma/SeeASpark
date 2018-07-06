@@ -115,6 +115,14 @@ class EditProfileActivity : BaseActivity() {
 
     }
 
+    override fun displayDayMode() {
+
+    }
+
+    override fun displayNightMode() {
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreateStuff() {
 

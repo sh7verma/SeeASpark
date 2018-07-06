@@ -25,6 +25,7 @@ import utils.Constants
 
 class QuestionnariesActivity : BaseActivity() {
 
+
     private var mAdapterQuestions: QuestionAdapter? = null
     private var mIndicatorAdapter: IndicatorAdapter? = null
 
@@ -37,6 +38,13 @@ class QuestionnariesActivity : BaseActivity() {
 
     override fun initUI() {
 
+    }
+
+    override fun displayDayMode() {
+
+    }
+
+    override fun displayNightMode() {
     }
 
     override fun onCreateStuff() {

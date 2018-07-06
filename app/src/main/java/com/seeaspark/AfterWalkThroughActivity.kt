@@ -12,8 +12,15 @@ class AfterWalkThroughActivity : BaseActivity() {
 
     }
 
-    override fun onCreateStuff() {
+    override fun displayDayMode() {
+        /// no operation
+    }
 
+    override fun displayNightMode() {
+        /// no operation
+    }
+
+    override fun onCreateStuff() {
 
     }
 

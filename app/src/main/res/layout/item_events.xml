@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvEventsListing"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/_12sdp"
+    android:layout_marginRight="@dimen/_12sdp"
+    android:layout_marginTop="@dimen/_12sdp"
+    app:cardCornerRadius="@dimen/_8sdp"
+    app:cardElevation="@dimen/_3sdp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imgEventsListing"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_140sdp" />
+
+            <ImageView
+                android:id="@+id/imgBookmarkEventsListing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/transparent_ripple"
+                android:padding="@dimen/_5sdp"
+                android:src="@mipmap/ic_bookmark_border" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/_12sdp"
+            android:paddingRight="@dimen/_12sdp">
+
+            <customviews.BoldTextView
+                android:id="@+id/txtTitleEventsListing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingBottom="@dimen/_5sdp"
+                android:text="The talk big ideas"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_16ssp" />
+
+            <customviews.LightTextView
+                android:id="@+id/txtDescEventsListing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingBottom="@dimen/_5sdp"
+                android:text="@string/lorem_ipsum"
+                android:textColor="@color/greyTextColor"
+                android:textSize="@dimen/_12ssp" />
+
+            <customviews.MediumTextView
+                android:id="@+id/txtLocationEventsListing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ic_location_green"
+                android:drawablePadding="@dimen/_5sdp"
+                android:paddingBottom="@dimen/_5sdp"
+                android:text="Southren"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_12ssp" />
+
+            <customviews.MediumTextView
+                android:id="@+id/txtTimeEventListing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@mipmap/ic_time_green"
+                android:drawablePadding="@dimen/_5sdp"
+                android:text="Southren"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_12ssp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <com.like.LikeButton
+                        android:id="@+id/imgLikeEventsListing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="-22dp"
+                        app:icon_size="@dimen/_20sdp"
+                        app:icon_type="heart"
+                        app:like_drawable="@mipmap/ic_heart_red"
+                        app:liked="false"
+                        app:unlike_drawable="@mipmap/ic_heart" />
+
+                    <customviews.MediumTextView
+                        android:id="@+id/txtLikeCountEventsListing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="55 LIKES"
+                        android:layout_marginLeft="@dimen/_26sdp"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_10ssp" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_comments" />
+
+                    <customviews.MediumTextView
+                        android:id="@+id/txtCommentCountEventsListing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/_8sdp"
+                        android:text="55 COMMENTS"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_10ssp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

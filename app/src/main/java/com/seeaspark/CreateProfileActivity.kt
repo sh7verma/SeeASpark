@@ -48,6 +48,14 @@ class CreateProfileActivity : BaseActivity() {
         vpProfile.offscreenPageLimit = mFragmentArray.size
     }
 
+    override fun displayDayMode() {
+
+    }
+
+    override fun displayNightMode() {
+
+    }
+
     override fun onCreateStuff() {
 
         /// getting profile Data

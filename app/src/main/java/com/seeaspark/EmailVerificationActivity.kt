@@ -23,6 +23,14 @@ class EmailVerificationActivity : BaseActivity() {
 
     }
 
+    override fun displayDayMode() {
+       /// no operation
+    }
+
+    override fun displayNightMode() {
+        /// no operation
+    }
+
     override fun onCreateStuff() {
     }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvCommunityListing"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/_12sdp"
@@ -9,7 +10,6 @@
     app:cardBackgroundColor="@color/white_color"
     app:cardCornerRadius="@dimen/_8sdp"
     app:cardElevation="@dimen/_3sdp"
-    android:id="@+id/cvClick"
     app:cardUseCompatPadding="true">
 
     <RelativeLayout
@@ -27,7 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/imgCommunityHome"
             android:orientation="vertical"
-            android:padding="@dimen/_8sdp">
+            android:paddingLeft="@dimen/_8sdp"
+            android:paddingRight="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp">
 
             <customviews.BoldTextView
                 android:id="@+id/txtCommunityTitle"
@@ -53,9 +55,71 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:maxLines="3"
+                android:maxLines="2"
+                android:text="@string/lorem_ipsum"
                 android:textColor="@color/hint_color_dark"
                 android:textSize="@dimen/_13ssp" />
+
+            <LinearLayout
+                android:id="@+id/llCommunityLikesComments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <com.like.LikeButton
+                        android:id="@+id/imgLikeCommunityListing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="-22dp"
+                        app:icon_size="@dimen/_20sdp"
+                        app:icon_type="heart"
+                        app:like_drawable="@mipmap/ic_heart_red"
+                        app:liked="false"
+                        app:unlike_drawable="@mipmap/ic_heart" />
+
+                    <customviews.MediumTextView
+                        android:id="@+id/txtLikeCountCommunityListing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/_26sdp"
+                        android:text="55 LIKES"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_10ssp" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_comments" />
+
+                    <customviews.MediumTextView
+                        android:id="@+id/txtCommentCountCommunityListing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/_8sdp"
+                        android:text="55 COMMENTS"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_10ssp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -69,6 +133,15 @@
             android:padding="@dimen/_5sdp"
             android:text="Lorem Ipsum"
             android:textSize="@dimen/_12ssp" />
+
+        <ImageView
+            android:id="@+id/imgCommunityListingBookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="@dimen/_5sdp"
+            android:visibility="invisible"
+            android:src="@mipmap/ic_bookmark_border" />
 
     </RelativeLayout>
 

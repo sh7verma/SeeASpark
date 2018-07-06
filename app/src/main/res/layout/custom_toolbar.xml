@@ -23,6 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textAllCaps="true"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="@color/white_color"
         android:textSize="@dimen/_14ssp"
         android:transitionName="@string/transition" />

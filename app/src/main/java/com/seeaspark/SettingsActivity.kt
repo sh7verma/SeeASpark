@@ -17,7 +17,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
 import android.R.attr.versionName
+import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
+import android.support.annotation.RequiresApi
 
 
 class SettingsActivity : BaseActivity() {
@@ -25,19 +28,119 @@ class SettingsActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_settings
     private var userData: SignupModel? = null
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
         imgBackCustom.setImageResource(R.mipmap.ic_back_org)
         txtTitleCustom.text = getString(R.string.settings)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
+        scNightMode.isChecked = mUtils!!.getInt("nightMode", 0) == 1
+
         scNightMode.setOnCheckedChangeListener { p0, status ->
-
-            if (status)
+            if (status) {
                 mUtils!!.setInt("nightMode", 1)
-            else
+                val broadCastIntent = Intent(Constants.NIGHT_MODE)
+                broadCastIntent.putExtra("status", Constants.NIGHT)
+                broadcaster!!.sendBroadcast(broadCastIntent)
+            } else {
                 mUtils!!.setInt("nightMode", 0)
-
+                val broadCastIntent = Intent(Constants.NIGHT_MODE)
+                broadCastIntent.putExtra("status", Constants.DAY)
+                broadcaster!!.sendBroadcast(broadCastIntent)
+            }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayDayMode() {
+
+        txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llMainSettings.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llTellFriend.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtTellFriend.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llRateUS.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtRateUs.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llBlockedUser.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtBlockedUsers.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llPrivacyPolicy.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtPrivacyPolicy.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llTerms.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtTerms.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llNotifications.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtNotification.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llNightMode.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtNightMode.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llAutoNightMode.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtAutoNightMode.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llChangePassword.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtChangePassword.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llLogout.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtLogout.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llDeactivate.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtDeactivate.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llDeleteAccount.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtDeleteAccount.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        txtVersion.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayNightMode() {
+
+        txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llMainSettings.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llTellFriend.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtTellFriend.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llRateUS.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtRateUs.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llBlockedUser.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtBlockedUsers.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llPrivacyPolicy.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtPrivacyPolicy.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llTerms.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtTerms.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llNotifications.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtNotification.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llNightMode.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtNightMode.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llAutoNightMode.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtAutoNightMode.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llChangePassword.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtChangePassword.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llLogout.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtLogout.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llDeactivate.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtDeactivate.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llDeleteAccount.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtDeleteAccount.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        txtVersion.setTextColor(ContextCompat.getColor(this, R.color.white_color))
     }
 
     override fun onCreateStuff() {

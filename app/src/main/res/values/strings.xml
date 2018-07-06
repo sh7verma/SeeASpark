@@ -169,6 +169,7 @@
     <string name="terms_of_services">Terms of Services</string>
     <string name="notifications">Notifications</string>
     <string name="night_mode">Night Mode</string>
+    <string name="auto_night_mode">Auto Night Mode</string>
     <string name="change_password">Change Password</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
@@ -194,5 +195,16 @@
     <string name="handshakes">Handshakes</string>
     <string name="sign_up_with">Sign up with</string>
     <string name="sign_in_with">Sign in with</string>
+    <string name="Events">Events</string>
+    <string name="Bookmarks">Bookmarks</string>
+    <string name="interested">Interested</string>
+    <string name="going">Going</string>
+    <string name="share_your_idea">Share An Idea</string>
+    <string name="subject">Subject</string>
+    <string name="enter_your_idea">Enter Your Idea:</string>
+    <string name="send">Send</string>
+    <string name="error_subject">Please enter subject</string>
+    <string name="error_content">Please enter your idea</string>
+    <string name="no_result_found">No result found</string>
 
 </resources>

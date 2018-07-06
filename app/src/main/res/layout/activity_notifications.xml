@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llMainNotifications"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_color"
@@ -22,6 +23,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/llMessage"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_52sdp"
                 android:gravity="center_vertical"
@@ -30,6 +32,7 @@
                 android:paddingRight="@dimen/_16sdp">
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtMessages"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -63,6 +66,7 @@
                 android:paddingRight="@dimen/_16sdp">
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtCommunityPosts"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -88,6 +92,7 @@
                 android:background="@color/greyLine" />
 
             <LinearLayout
+                android:id="@+id/llInspirational"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_52sdp"
                 android:gravity="center_vertical"
@@ -96,6 +101,7 @@
                 android:paddingRight="@dimen/_16sdp">
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtInspirational"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -120,6 +126,7 @@
                 android:background="@color/greyLine" />
 
             <LinearLayout
+                android:id="@+id/llNotes"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_52sdp"
                 android:gravity="center_vertical"
@@ -128,6 +135,7 @@
                 android:paddingRight="@dimen/_16sdp">
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtNotes"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

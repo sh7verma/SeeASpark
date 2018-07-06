@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/llDialogInteresetd"
+    android:layout_height="wrap_content"
+    android:gravity="bottom"
+    android:layout_marginLeft="@dimen/_12sdp"
+    android:layout_marginRight="@dimen/_12sdp"
+    android:paddingLeft="@dimen/_12sdp"
+    android:paddingRight="@dimen/_12sdp"
+    android:orientation="vertical">
+
+    <customviews.MediumTextView
+        android:id="@+id/txtInterestedDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="@dimen/_12sdp"
+        android:paddingTop="@dimen/_12sdp"
+        android:text="@string/interested"
+        android:textAllCaps="true"
+        android:textColor="@color/black_color" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/greyLine" />
+
+    <customviews.MediumTextView
+        android:id="@+id/txtGoingDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="@dimen/_12sdp"
+        android:paddingTop="@dimen/_12sdp"
+        android:text="@string/going"
+        android:textAllCaps="true"
+        android:textColor="@color/black_color" />
+
+</LinearLayout>

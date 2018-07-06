@@ -29,6 +29,13 @@ class SelectProfessionActivity : BaseActivity() {
     override fun initUI() {
     }
 
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
+    }
+
+
     override fun onCreateStuff() {
 
         mProfession = intent.getIntExtra("professionId", 0)

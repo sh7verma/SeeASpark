@@ -22,6 +22,7 @@ import utils.Constants
 
 class SelectSkillActivity : BaseActivity() {
 
+
     private var mSkillsSelectedArray = ArrayList<String>()
     private var mOwnSkillsArray = ArrayList<SkillsModel>()
     var mSkillsArrayText = ArrayList<String>()
@@ -35,6 +36,12 @@ class SelectSkillActivity : BaseActivity() {
 
 
     override fun initUI() {
+    }
+
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
     }
 
     override fun onCreateStuff() {

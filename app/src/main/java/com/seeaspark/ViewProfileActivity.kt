@@ -27,6 +27,7 @@ import java.util.*
 
 class ViewProfileActivity : BaseActivity() {
 
+
     private val EDITPROFILE: Int = 1
 
     private var userData: SignupModel? = null
@@ -51,6 +52,12 @@ class ViewProfileActivity : BaseActivity() {
         svViewProfile.setOnScrollViewListener { v, l, t, oldl, oldt ->
             cd.alpha = getAlphaforActionBar(v.scrollY)
         }
+    }
+
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)

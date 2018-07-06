@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200sdp"
+        android:background="@drawable/background_gradient" />
+
+    <customviews.ScrollViewX
+        android:id="@+id/svViewCommunity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/llMainCommunity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_180sdp"
+                android:background="@drawable/white_short_profile_background"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/_24sdp"
+                android:paddingRight="@dimen/_24sdp"
+                android:paddingTop="@dimen/_24sdp">
+
+                <customviews.BoldTextView
+                    android:id="@+id/txtTitleCommunity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/_8sdp"
+                    android:text="The talk big ideas"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_16ssp" />
+
+                <customviews.MediumTextView
+                    android:id="@+id/txtTimeCommunity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_8sdp"
+                    android:text="Southren"
+                    android:textColor="@color/greyTextColor"
+                    android:textSize="@dimen/_12ssp" />
+
+                <customviews.LightTextView
+                    android:id="@+id/txtDescCommunity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/_8sdp"
+                    android:paddingTop="@dimen/_8sdp"
+                    android:text="@string/lorem_ipsum"
+                    android:textColor="@color/greyTextColor"
+                    android:textSize="@dimen/_12ssp" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+    </customviews.ScrollViewX>
+
+    <include layout="@layout/custom_toolbar" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/llBottomCommunity"
+        android:layout_marginLeft="@dimen/_24sdp"
+        android:layout_marginRight="@dimen/_24sdp"
+        android:background="@color/greyLine" />
+
+    <LinearLayout
+        android:id="@+id/llBottomCommunity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white_color"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/_24sdp"
+        android:paddingRight="@dimen/_24sdp">
+
+        <RelativeLayout
+            android:id="@+id/llLikesCommunity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"
+            android:background="@drawable/white_ripple"
+            android:gravity="center_vertical">
+
+            <com.like.LikeButton
+                android:id="@+id/imgLikeCommunity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="-22dp"
+                app:icon_size="@dimen/_20sdp"
+                app:icon_type="heart"
+                app:like_drawable="@mipmap/ic_heart_red"
+                app:liked="false"
+                app:unlike_drawable="@mipmap/ic_heart" />
+
+            <customviews.MediumTextView
+                android:id="@+id/txtLikeCountCommunity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/_26sdp"
+                android:text="55 LIKES"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_10ssp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llCommentsCommunity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/white_ripple"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_comments" />
+
+            <customviews.MediumTextView
+                android:id="@+id/txtCommentCountCommunity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/_8sdp"
+                android:text="55 COMMENTS"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_10ssp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
