@@ -11,12 +11,21 @@ class SearchEventCommunityActivity : BaseActivity() {
     }
 
     override fun displayDayMode() {
+        imgBackSearch.setImageResource(R.mipmap.ic_back_black)
+        llMainSearchEvents.setBackgroundColor(whiteColor)
+        edSearchEventCommunity.setTextColor(blackColor)
     }
 
     override fun displayNightMode() {
+        imgBackSearch.setImageResource(R.mipmap.ic_back_org)
+        llMainSearchEvents.setBackgroundColor(blackColor)
+        edSearchEventCommunity.setTextColor(whiteColor)
     }
 
     override fun onCreateStuff() {
+
+
+
     }
 
     override fun initListener() {
