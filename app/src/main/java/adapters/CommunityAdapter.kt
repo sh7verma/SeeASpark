@@ -6,10 +6,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.seeaspark.CommunityBookmarkActivity
 import com.seeaspark.R
+import com.seeaspark.SearchEventCommunityActivity
 import fragments.CommunityFragment
 import kotlinx.android.synthetic.main.item_community.view.*
-import kotlinx.android.synthetic.main.item_events.view.*
 import models.CommunityModel
 import utils.Utils
 
@@ -19,13 +20,25 @@ class CommunityAdapter(mCommunityArray: ArrayList<CommunityModel>, mContext: Con
     var mCommunityArray = ArrayList<CommunityModel>()
     var mContext: Context? = null
     var mUtils: Utils? = null
-    var mCommunityFragment: CommunityFragment? = null
+    private var mCommunityFragment: CommunityFragment? = null
+    private var mSearchInstance: SearchEventCommunityActivity? = null
+    private var mBookmarkInstance: CommunityBookmarkActivity? = null
 
     init {
         this.mCommunityArray = mCommunityArray
         this.mContext = mContext
         mUtils = Utils(mContext)
         this.mCommunityFragment = mCommunityFragment
+    }
+
+    constructor(mCommunityArray: ArrayList<CommunityModel>, mContext: Context, mSearchInstance: SearchEventCommunityActivity, mCommunityFragment: CommunityFragment?)
+            : this(mCommunityArray, mContext, mCommunityFragment) {
+        this.mSearchInstance = mSearchInstance
+    }
+
+    constructor(mCommunityArray: ArrayList<CommunityModel>, mContext: Context, mBookmarkInstance: CommunityBookmarkActivity, mCommunityFragment: CommunityFragment?)
+            : this(mCommunityArray, mContext, mCommunityFragment) {
+        this.mBookmarkInstance = mBookmarkInstance
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,7 +50,11 @@ class CommunityAdapter(mCommunityArray: ArrayList<CommunityModel>, mContext: Con
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.cvCommunityListing.setOnClickListener {
-            mCommunityFragment!!.moveToEventDetail()
+            when {
+                mCommunityFragment != null -> mCommunityFragment!!.moveToCommunityDetail()
+                mSearchInstance != null -> mSearchInstance!!.moveToCommunityDetail()
+                mBookmarkInstance != null -> mBookmarkInstance!!.moveToCommunityDetail()
+            }
         }
     }
 
@@ -61,7 +78,7 @@ class CommunityAdapter(mCommunityArray: ArrayList<CommunityModel>, mContext: Con
 
         init {
             llCommunityLikesComments.visibility = View.VISIBLE
-            imgCommunityListingBookmark.visibility=View.VISIBLE
+            imgCommunityListingBookmark.visibility = View.VISIBLE
             if (mUtils!!.getInt("nightMode", 0) == 1)
                 displayNightMode()
             else

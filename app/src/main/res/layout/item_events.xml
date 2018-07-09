@@ -50,6 +50,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:paddingBottom="@dimen/_5sdp"
+                android:paddingTop="@dimen/_8sdp"
                 android:text="The talk big ideas"
                 android:textColor="@color/black_color"
                 android:textSize="@dimen/_16ssp" />
@@ -115,8 +116,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:text="55 LIKES"
                         android:layout_marginLeft="@dimen/_26sdp"
+                        android:text="55 LIKES"
                         android:textColor="@color/black_color"
                         android:textSize="@dimen/_10ssp" />
                 </RelativeLayout>

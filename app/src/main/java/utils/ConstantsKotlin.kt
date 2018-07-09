@@ -11,7 +11,7 @@ import android.provider.MediaStore
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.seeaspark.AfterWalkThroughActivity
-import database.Db
+import database.Database
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -145,7 +145,7 @@ class ConstantsKotlin {
                 .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
         utils.clear_shf()
-        val db = Db(mContext)
+        val db = Database(mContext)
         db.deleteAllTables()
         val inSplash = Intent(mContext, AfterWalkThroughActivity::class.java)
         inSplash.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP

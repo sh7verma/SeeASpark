@@ -1,31 +1,31 @@
 package com.seeaspark
 
 import adapters.BookmarkCommunityAdapter
-import adapters.BookmarkEventsAdapter
+import adapters.CommunityAdapter
 import android.content.Intent
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import kotlinx.android.synthetic.main.activity_events_bookmark.*
+import kotlinx.android.synthetic.main.activity_community_bookmark.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_community.*
 import models.CommunityModel
 
 class CommunityBookmarkActivity : BaseActivity() {
     private var mLayoutManager: LinearLayoutManager? = null
-    private var mEventsAdapter: BookmarkCommunityAdapter? = null
+    private var mCommunityAdapter: CommunityAdapter? = null
     private var mCommunityArray = ArrayList<CommunityModel>()
 
     var mCommunityBookmark: CommunityBookmarkActivity? = null
 
-    override fun getContentView() = R.layout.activity_events_bookmark
+    override fun getContentView() = R.layout.activity_community_bookmark
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
 
-        mCommunityBookmark=this
+        mCommunityBookmark = this
 
         txtTitleCustom.text = getString(R.string.Bookmarks)
 
@@ -34,7 +34,7 @@ class CommunityBookmarkActivity : BaseActivity() {
 
         mLayoutManager = LinearLayoutManager(mContext)
 
-        rvEventsBookmark.layoutManager = mLayoutManager
+        rvCommunityBookmark.layoutManager = mLayoutManager
 
         if (mUtils!!.getInt("nightMode", 0) == 1)
             displayNightMode()
@@ -49,7 +49,7 @@ class CommunityBookmarkActivity : BaseActivity() {
         imgBackCustom.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
         imgOption1Custom.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
-        rvEventsBookmark.setBackgroundColor(ContextCompat.getColor(this, R.color.background))
+        rvCommunityBookmark.setBackgroundColor(ContextCompat.getColor(this, R.color.background))
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -59,12 +59,12 @@ class CommunityBookmarkActivity : BaseActivity() {
         imgBackCustom.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         imgOption1Custom.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
-        rvEventsBookmark.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+        rvCommunityBookmark.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
     }
 
     override fun onCreateStuff() {
-        mEventsAdapter = BookmarkCommunityAdapter(mCommunityArray,mContext!!, mCommunityBookmark)
-        rvEventsBookmark.adapter = mEventsAdapter
+        mCommunityAdapter = CommunityAdapter(mCommunityArray, mContext!!, mCommunityBookmark!!, null)
+        rvCommunityBookmark.adapter = mCommunityAdapter
     }
 
     override fun initListener() {
@@ -81,7 +81,7 @@ class CommunityBookmarkActivity : BaseActivity() {
             }
             imgOption1Custom -> {
                 intent = Intent(mContext, SearchEventCommunityActivity::class.java)
-                intent.putExtra("path","community")
+                intent.putExtra("path", "community")
                 startActivity(intent)
             }
         }
@@ -96,7 +96,7 @@ class CommunityBookmarkActivity : BaseActivity() {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }
 
-    fun moveToDetail() {
+    fun moveToCommunityDetail() {
         if (connectedToInternet()) {
             val intent = Intent(mContext, CommunityDetailActivity::class.java)
             startActivity(intent)

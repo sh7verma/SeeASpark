@@ -1,7 +1,7 @@
 package com.seeaspark
 
 
-import adapters.BookmarkEventsAdapter
+import adapters.EventsAdapter
 import android.content.Intent
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -11,13 +11,13 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_events_bookmark.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_community.*
-import models.EventsModel
+import models.PostModel
 
 class EventsBookmarkActivity : BaseActivity() {
 
     private var mLayoutManager: LinearLayoutManager? = null
-    private var mEventsAdapter: BookmarkEventsAdapter? = null
-    private var mEventsArray = ArrayList<EventsModel>()
+    private var mEventsAdapter: EventsAdapter? = null
+    private var mEventsArray = ArrayList<PostModel.ResponseBean>()
     private var mbookmarkEvents:EventsBookmarkActivity?=null
 
     override fun getContentView() = R.layout.activity_events_bookmark
@@ -61,7 +61,7 @@ class EventsBookmarkActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
-        mEventsAdapter = BookmarkEventsAdapter(mContext, mEventsArray,mbookmarkEvents)
+        mEventsAdapter =  EventsAdapter( mContext!!,mEventsArray,null, mbookmarkEvents!!)
         rvEventsBookmark.adapter = mEventsAdapter
     }
 
@@ -85,7 +85,7 @@ class EventsBookmarkActivity : BaseActivity() {
         }
     }
 
-    fun moveToDetail() {
+    fun moveToEventDetail() {
         if (connectedToInternet()) {
             val intent = Intent(mContext, EventsDetailActivity::class.java)
             startActivity(intent)

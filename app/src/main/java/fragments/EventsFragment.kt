@@ -15,7 +15,12 @@ import android.view.ViewGroup
 import com.seeaspark.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_event.*
-import models.EventsModel
+import models.PostModel
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import utils.Constants
 import utils.Utils
 
 class EventsFragment : Fragment(), View.OnClickListener {
@@ -27,8 +32,10 @@ class EventsFragment : Fragment(), View.OnClickListener {
 
     private var mLayoutManager: LinearLayoutManager? = null
     private var mEventsAdapter: EventsAdapter? = null
-    private var mEventsArray = ArrayList<EventsModel>()
+    private var mEventsArray = ArrayList<PostModel.ResponseBean>()
     private var mEventFragment: EventsFragment? = null
+
+    private val mOffset: Int = 1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_event, container, false)
@@ -91,6 +98,55 @@ class EventsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
+        if (mLandingInstance!!.connectedToInternet())
+            hitAPI()
+        else
+            mLandingInstance!!.showInternetAlert(rvEventsListing)
+    }
+
+    private fun hitAPI() {
+        mLandingInstance!!.showLoader()
+        val call = RetrofitClient.getInstance().getPosts(mLandingInstance!!.mUtils!!.getString("access_token", "")
+                , Constants.EVENT.toString(), mOffset)
+        call.enqueue(object : Callback<PostModel> {
+
+            override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>) {
+
+                if (response.body().response != null) {
+                    if (mOffset == 1)
+                        addToLocalDatabase(response.body().response)
+
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        mLandingInstance!!.moveToSplash()
+                    } else
+                        mLandingInstance!!.showAlert(rvEventsListing, response.body().error!!.message!!)
+                }
+                mLandingInstance!!.dismissLoader()
+            }
+
+            override fun onFailure(call: Call<PostModel>?, t: Throwable?) {
+                mLandingInstance!!.dismissLoader()
+                mLandingInstance!!.showAlert(rvEventsListing, t!!.localizedMessage)
+            }
+        })
+    }
+
+    private fun addToLocalDatabase(response: List<PostModel.ResponseBean>) {
+        for (responseData in response) {
+            mLandingInstance!!.db!!.addPosts(responseData)
+            for (imagesData in responseData.images) {
+                mLandingInstance!!.db!!.addPostImages(imagesData, responseData.id.toString())
+            }
+            for(goingUserData in responseData.going_list) {
+                mLandingInstance!!.db!!.addPostGoingUsers(goingUserData, responseData.id.toString())
+            }
+        }
+        populateData()
+    }
+
+    private fun populateData() {
+        mEventsArray.addAll(mLandingInstance!!.db!!.getPostsByType(Constants.EVENT))
         mEventsAdapter = EventsAdapter(mContext, mEventsArray, mEventFragment)
         rvEventsListing.adapter = mEventsAdapter
     }
@@ -111,7 +167,7 @@ class EventsFragment : Fragment(), View.OnClickListener {
             }
             imgOption1Custom -> {
                 intent = Intent(mContext, SearchEventCommunityActivity::class.java)
-                intent.putExtra("path","events")
+                intent.putExtra("path", "events")
                 startActivity(intent)
             }
             imgOption2Custom -> {
@@ -121,9 +177,10 @@ class EventsFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    fun moveToEventDetail() {
+    fun moveToEventDetail(responseBean: PostModel.ResponseBean) {
         if (mLandingInstance!!.connectedToInternet()) {
             val intent = Intent(mContext, EventsDetailActivity::class.java)
+            intent.putExtra("eventData",responseBean)
             startActivity(intent)
             activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         } else

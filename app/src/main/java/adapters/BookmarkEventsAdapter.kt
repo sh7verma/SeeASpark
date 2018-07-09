@@ -9,13 +9,16 @@ import android.view.ViewGroup
 import com.seeaspark.EventsBookmarkActivity
 import com.seeaspark.R
 import kotlinx.android.synthetic.main.item_events.view.*
-import models.EventsModel
+import models.PostModel
 import utils.Utils
 
-class BookmarkEventsAdapter(mContext: Context?, mEventsArray: ArrayList<EventsModel>, mbookmarkEvents: EventsBookmarkActivity?)
+class BookmarkEventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel>, mbookmarkEvents: EventsBookmarkActivity?)
     : RecyclerView.Adapter<BookmarkEventsAdapter.ViewHolder>() {
 
-    var mEventsArray = ArrayList<EventsModel>()
+    /* Not in use Currently
+   * Created for future purpose onli if there will be any changes */
+
+    var mEventsArray = ArrayList<PostModel>()
     var mContext: Context? = null
     var mUtils: Utils? = null
     var mbookmarkEvents: EventsBookmarkActivity? = null
@@ -36,7 +39,7 @@ class BookmarkEventsAdapter(mContext: Context?, mEventsArray: ArrayList<EventsMo
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.cvEventsListing.setOnClickListener {
-            mbookmarkEvents!!.moveToDetail()
+            mbookmarkEvents!!.moveToEventDetail()
         }
 
     }

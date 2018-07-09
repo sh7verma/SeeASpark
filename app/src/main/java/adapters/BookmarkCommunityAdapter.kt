@@ -15,6 +15,9 @@ import utils.Utils
 class BookmarkCommunityAdapter (mCommunityArray: ArrayList<CommunityModel>, mContext: Context, mCommunityBookmark: CommunityBookmarkActivity?)
     : RecyclerView.Adapter<BookmarkCommunityAdapter.ViewHolder>() {
 
+    /* Not in use Currently
+     * Created for future purpose onli if there will be any changes */
+
     var mCommunityArray = ArrayList<CommunityModel>()
     var mContext: Context? = null
     var mUtils: Utils? = null
@@ -36,7 +39,7 @@ class BookmarkCommunityAdapter (mCommunityArray: ArrayList<CommunityModel>, mCon
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.cvCommunityListing.setOnClickListener {
-            mCommunityBookmark!!.moveToDetail()
+            mCommunityBookmark!!.moveToCommunityDetail()
         }
     }
 

@@ -121,7 +121,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    fun moveToEventDetail() {
+    fun moveToCommunityDetail() {
         if (mLandingInstance!!.connectedToInternet()) {
             val intent = Intent(mContext, CommunityDetailActivity::class.java)
             startActivity(intent)

@@ -11,16 +11,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import com.seeaspark.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_going_user.view.*
 import models.EventUserModel
+import models.PostModel
 import utils.Utils
 
-class EventGoingAdapter(mEventUserArray: ArrayList<EventUserModel>, mContext: Context) : RecyclerView.Adapter<EventGoingAdapter.ViewHolder>() {
+class EventGoingAdapter(mEventUserArray: ArrayList<PostModel.ResponseBean.GoingUserBean>, mContext: Context) : RecyclerView.Adapter<EventGoingAdapter.ViewHolder>() {
 
-    var mEventUserArray = ArrayList<EventUserModel>()
+    var mEventUserArray = ArrayList<PostModel.ResponseBean.GoingUserBean>()
     var mContext: Context? = null
     var mUtils: Utils? = null
-
 
     init {
         this.mEventUserArray = mEventUserArray
@@ -37,13 +38,12 @@ class EventGoingAdapter(mEventUserArray: ArrayList<EventUserModel>, mContext: Co
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-//        Picasso.with(mContext).load(mEventUserArray[position].avtar_url).resize(width, width).into(holder.imgEventGoingListing)
-
+        holder.txtNameEventGoing.text = mEventUserArray[position].full_name
+        Picasso.with(mContext).load(mEventUserArray[position].avatar).into(holder.imgEventGoingListing)
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return mEventUserArray.size
     }
 
 
@@ -71,8 +71,5 @@ class EventGoingAdapter(mEventUserArray: ArrayList<EventUserModel>, mContext: Co
             llClickEventGoing.background = ContextCompat.getDrawable(mContext!!, R.drawable.white_ripple)
             txtNameEventGoing.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
         }
-
-
     }
-
 }

@@ -17,6 +17,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Toast
 import com.google.gson.Gson
+import database.Database
 import utils.Connection_Detector
 import utils.Constants
 import utils.CustomLoadingDialog
@@ -32,6 +33,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var mHeight: Int = 0
     var mPlatformStatus: Int = 2
     var mUtils: Utils? = null;
+    var db: Database? = null
     var mGson = Gson()
     var broadcaster: LocalBroadcastManager? = null
     var blackColor = 0
@@ -45,6 +47,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         mContext = getContext()
         broadcaster = LocalBroadcastManager.getInstance(baseContext)
         mUtils = Utils(this)
+        db=Database(mContext!!)
         getDefaults()
 
         blackColor = ContextCompat.getColor(this, R.color.black_color)

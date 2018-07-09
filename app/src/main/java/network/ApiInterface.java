@@ -1,6 +1,7 @@
 package network;
 
 import models.CardModel;
+import models.PostModel;
 import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
 import models.NotificationModel;
@@ -137,10 +138,10 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/api/v1/settings/update_notifications")
     Call<BaseSuccessModel> updateNotifications(@Field("access_token") String access_token,
-                                                @Field("messages_notification") Integer messages_notification,
-                                                @Field("posts_notification") Integer posts_notification,
-                                                @Field("qoutes_notification") Integer qoutes_notification,
-                                                @Field("notes_notification") Integer notes_notification);
+                                               @Field("messages_notification") Integer messages_notification,
+                                               @Field("posts_notification") Integer posts_notification,
+                                               @Field("qoutes_notification") Integer qoutes_notification,
+                                               @Field("notes_notification") Integer notes_notification);
 
     @GET("/api/v1/notification_settings")
     Call<NotificationModel> notificationSettings(@Query("access_token") String access_token);
@@ -148,6 +149,18 @@ public interface ApiInterface {
 
     @GET("/api/v1/user_skills")
     Call<ServerSkillsModel> getUserSkills(@Query("access_token") String access_token);
+
+
+    @GET("/api/v1/posts")
+    Call<PostModel> getPosts(@Query("access_token") String access_token,
+                             @Query("post_type") String post_type,
+                             @Query("page") int page);
+
+    @FormUrlEncoded
+    @POST("/api/v1/activities")
+    Call<BaseSuccessModel> eventActivity(@Field("access_token") String access_token,
+                                  @Field("post_id") int post_id,
+                                  @Field("activity_type") int activity_type);
 
 
 }

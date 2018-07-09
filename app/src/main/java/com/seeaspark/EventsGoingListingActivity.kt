@@ -6,13 +6,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.activity_events_going_listing.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
-import models.EventUserModel
+import models.PostModel
 
 class EventsGoingListingActivity : BaseActivity() {
 
     private var mLayoutManager: LinearLayoutManager? = null
     private var mEventsGoingAdapter: EventGoingAdapter? = null
-    private var mEventsUsersArray = ArrayList<EventUserModel>()
+    private var mEventsUsersArray = ArrayList<PostModel.ResponseBean.GoingUserBean>()
 
     override fun getContentView() = R.layout.activity_events_going_listing
 

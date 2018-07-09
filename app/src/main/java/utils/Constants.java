@@ -15,8 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.seeaspark.AfterWalkThroughActivity;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -29,9 +27,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import database.Db;
-import kotlin.collections.AbstractList;
-import kotlin.jvm.JvmStatic;
+import database.Database;
 import models.SkillsModel;
 
 
@@ -55,17 +51,19 @@ public class Constants {
     public static final String QUESTIONS = "questions";
     public static final int INVALID_ACCESS_TOKEN = 301;
     public static final int DELETE_ACCOUNT = 6001;
-    public static final int COMMUNITY=1;
-    public static final int EVENT=2;
-    public static final int OUT_OF_CARD=3;
-    public static final int PROGRESS=4;
-    public static final int CARD=0;
-    public static final int DISTANCE=15;
-    public static final int EXPERIENCE=3;
+    public static final int COMMUNITY = 1;
+    public static final int EVENT = 2;
+    public static final int OUT_OF_CARD = 3;
+    public static final int PROGRESS = 4;
+    public static final int CARD = 0;
+    public static final int DISTANCE = 15;
+    public static final int EXPERIENCE = 3;
     public static ArrayList<SkillsModel> OWNSKILLS_ARRAY = new ArrayList<>();
-    public static final String NIGHT_MODE ="NightMode";
-    public static final Integer DAY=1;
-    public static final Integer NIGHT=2;
+    public static final String NIGHT_MODE = "NightMode";
+    public static final Integer DAY = 1;
+    public static final Integer NIGHT = 2;
+    public static final int INTERESTED=2;
+    public static final int GOING=1;
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
@@ -194,8 +192,8 @@ public class Constants {
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
         utils.clear_shf();
-        Db db = new Db(mContext);
-        db.deleteAllTables();
+        Database database = new Database(mContext);
+        database.deleteAllTables();
         Intent inSplash = new Intent(mContext, AfterWalkThroughActivity.class);
         inSplash.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         inSplash.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -281,7 +279,7 @@ public class Constants {
             }
         }
 
-        DateFormat dateFormat = new SimpleDateFormat("EEEE hh:mm aa");
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM, hh:mm aa");
         return dateFormat.format(utc_create.getTime());
     }
 

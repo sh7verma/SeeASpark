@@ -6,26 +6,45 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.seeaspark.EventsBookmarkActivity
 import com.seeaspark.R
+import com.seeaspark.SearchEventCommunityActivity
+import com.squareup.picasso.Picasso
 import fragments.EventsFragment
 import kotlinx.android.synthetic.main.item_events.view.*
-import models.EventsModel
+import models.PostModel
+import utils.Constants
 import utils.Utils
 
 
-class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<EventsModel>, mEventFragment: EventsFragment?)
+class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.ResponseBean>, mEventFragment: EventsFragment?)
     : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
 
-    var mEventsArray = ArrayList<EventsModel>()
+    var mEventsArray = ArrayList<PostModel.ResponseBean>()
     var mContext: Context? = null
     var mUtils: Utils? = null
-    var mEventFragment: EventsFragment? = null
+    private var mEventFragment: EventsFragment? = null
+    private var mSearchInstance: SearchEventCommunityActivity? = null
+    private var mBookmarkInstance: EventsBookmarkActivity? = null
+    private var mWidth = 0
 
     init {
         this.mEventsArray = mEventsArray
         this.mContext = mContext
+        mWidth = mEventFragment!!.mLandingInstance!!.mWidth
+        mWidth -= (mWidth / 9)
         mUtils = Utils(mContext)
         this.mEventFragment = mEventFragment
+    }
+
+    constructor(mContext: Context?, mEventsArray: ArrayList<PostModel.ResponseBean>, mEventFragment: EventsFragment?, mSearchInstance: SearchEventCommunityActivity)
+            : this(mContext, mEventsArray, mEventFragment) {
+        this.mSearchInstance = mSearchInstance
+    }
+
+    constructor(mContext: Context?, mEventsArray: ArrayList<PostModel.ResponseBean>, mEventFragment: EventsFragment?, mBookmarkInstance: EventsBookmarkActivity)
+            : this(mContext, mEventsArray, mEventFragment) {
+        this.mBookmarkInstance = mBookmarkInstance
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,14 +56,36 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<EventsModel>, mE
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.cvEventsListing.setOnClickListener {
-            mEventFragment!!.moveToEventDetail()
-        }
+        Picasso.with(mContext).load(mEventsArray[position].images[0].thumbnail_url)
+                .resize(mWidth, mContext!!.resources.getDimension(R.dimen._140sdp).toInt())
+                .centerCrop() .into(holder.imgEventsListing)
 
+        holder.txtTitleEventsListing.text = mEventsArray[position].title
+        holder.txtDescEventsListing.text = mEventsArray[position].description
+        holder.txtLocationEventsListing.text = mEventsArray[position].address
+        holder.txtTimeEventListing.text = Constants.displayDateTime(mEventsArray[position].date_time)
+
+        if (mEventsArray[position].like == 1)
+            holder.txtLikeCountEventsListing.text = "${mEventsArray[position].like} LIKE"
+        else
+            holder.txtLikeCountEventsListing.text = "${mEventsArray[position].like} LIKES"
+
+        if (mEventsArray[position].comment == 1)
+            holder.txtCommentCountEventsListing.text = "${mEventsArray[position].comment} COMMENT"
+        else
+            holder.txtCommentCountEventsListing.text = "${mEventsArray[position].comment} COMMENTS"
+
+        holder.cvEventsListing.setOnClickListener {
+            when {
+                mEventFragment != null -> mEventFragment!!.moveToEventDetail(mEventsArray[position])
+                mSearchInstance != null -> mSearchInstance!!.moveToEventDetail()
+                mBookmarkInstance != null -> mBookmarkInstance!!.moveToEventDetail()
+            }
+        }
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return mEventsArray.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
