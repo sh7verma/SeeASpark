@@ -87,12 +87,21 @@ class SearchEventCommunityActivity : BaseActivity() {
             showInternetAlert(rvSearchEventCommunity)
     }
 
-    fun moveToEventDetail() {
+    fun moveToEventDetail(id: Int) {
         if (connectedToInternet()) {
             val intent = Intent(mContext, EventsDetailActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         } else
             showInternetAlert(rvSearchEventCommunity)
+    }
+
+    fun updateLikeStatus(liked: Int, id: Int, like: Int) {
+
+
+    }
+
+    fun updateBookmarkStatus(bookmarked: Int, id: Int) {
+
     }
 }

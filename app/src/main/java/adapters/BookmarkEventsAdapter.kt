@@ -12,13 +12,13 @@ import kotlinx.android.synthetic.main.item_events.view.*
 import models.PostModel
 import utils.Utils
 
-class BookmarkEventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel>, mbookmarkEvents: EventsBookmarkActivity?)
+class BookmarkEventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.ResponseBean>, mbookmarkEvents: EventsBookmarkActivity?)
     : RecyclerView.Adapter<BookmarkEventsAdapter.ViewHolder>() {
 
     /* Not in use Currently
    * Created for future purpose onli if there will be any changes */
 
-    var mEventsArray = ArrayList<PostModel>()
+    var mEventsArray = ArrayList<PostModel.ResponseBean>()
     var mContext: Context? = null
     var mUtils: Utils? = null
     var mbookmarkEvents: EventsBookmarkActivity? = null
@@ -39,7 +39,7 @@ class BookmarkEventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostMode
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.cvEventsListing.setOnClickListener {
-            mbookmarkEvents!!.moveToEventDetail()
+            mbookmarkEvents!!.moveToEventDetail(mEventsArray[position].id)
         }
 
     }

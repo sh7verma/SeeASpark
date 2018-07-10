@@ -46,7 +46,6 @@ class EventGoingAdapter(mEventUserArray: ArrayList<PostModel.ResponseBean.GoingU
         return mEventUserArray.size
     }
 
-
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val llClickEventGoing = itemView.llClickEventGoing!!

@@ -148,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/white_ripple"
-                android:paddingBottom="@dimen/_500sdp"
+                android:paddingBottom="@dimen/_5sdp"
                 android:paddingTop="@dimen/_5sdp"
                 android:text="www.google.com"
                 android:textColor="@color/link_color"
@@ -189,7 +189,7 @@
             android:gravity="center_vertical">
 
             <com.like.LikeButton
-                android:id="@+id/imgLikeEvents"
+                android:id="@+id/imgLikeEvent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

@@ -99,7 +99,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    protected fun getDefaults() {
+     fun getDefaults() {
         val display = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(display)
         mWidth = display.widthPixels
@@ -108,7 +108,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         mUtils!!.setInt("height", mHeight)
     }
 
-    public fun moveToSplash() {
+     fun moveToSplash() {
         val notificationManager = mContext!!
                 .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
@@ -120,7 +120,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         System.exit(2)
     }
 
-    public fun alertLogoutDialog() {
+     fun alertLogoutDialog() {
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setTitle("LOG OUT")
         alertDialog.setMessage("Are you sure you want to Log out?")

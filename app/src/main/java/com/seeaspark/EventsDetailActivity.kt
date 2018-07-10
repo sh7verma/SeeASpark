@@ -17,8 +17,10 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_events_details.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.dialog_interested.*
+import kotlinx.android.synthetic.main.fragment_event.*
 import models.BaseSuccessModel
 import models.PostModel
+import models.SignupModel
 import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,8 +31,11 @@ import utils.Constants
 class EventsDetailActivity : BaseActivity() {
 
     var mEventData: PostModel.ResponseBean? = null
-    var isGoing = 0
-    var isIntreseted = 0
+    private var isGoing = 0
+    private var isIntreseted = 0
+    private var isLiked = 0
+
+    private var userData: SignupModel? = null
 
     override fun getContentView() = R.layout.activity_events_details
 
@@ -44,6 +49,7 @@ class EventsDetailActivity : BaseActivity() {
         imgOption1Custom.setImageResource(R.mipmap.ic_share_white)
         imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_border)
 
+
         val cd = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
         llCustomToolbar.background = cd
         cd.alpha = 0
@@ -52,17 +58,42 @@ class EventsDetailActivity : BaseActivity() {
             cd.alpha = getAlphaforActionBar(v.scrollY)
         }
 
-        imgLikeEvents.setOnLikeListener(object : OnLikeListener {
+        imgLikeEvent.setOnLikeListener(object : OnLikeListener {
             override fun liked(p0: LikeButton?) {
-                mEventData!!.like++
-                displayLikeData()
+                if (connectedToInternet()) {
+                    isLiked = 1
+                    mEventData!!.liked = 1
+                    hitLikeAPI(Constants.LIKE)
+                    sendLikeBroadcast(Constants.LIKED)
+                    mEventData!!.like++
+                    displayLikeData()
+                    db!!.updateLikeEventStatus(mEventData!!.id, Constants.LIKED, mEventData!!.like)
+                } else {
+                    imgLikeEvent.isLiked = false
+                }
             }
 
             override fun unLiked(p0: LikeButton?) {
-                mEventData!!.like--
-                displayLikeData()
+                if (connectedToInternet()) {
+                    isLiked = 0
+                    mEventData!!.liked = 0
+                    hitLikeAPI(Constants.LIKE)
+                    sendLikeBroadcast(Constants.UNLIKED)
+                    mEventData!!.like--
+                    displayLikeData()
+                    db!!.updateLikeEventStatus(mEventData!!.id, Constants.UNLIKED, mEventData!!.like)
+                } else {
+                    imgLikeEvent.isLiked = true
+                }
             }
         })
+    }
+
+    private fun sendLikeBroadcast(status: Int) {
+        val broadCastIntent = Intent(Constants.EVENT_BROADCAST)
+        broadCastIntent.putExtra("status", status)
+        broadCastIntent.putExtra("postId", mEventData!!.id)
+        broadcaster!!.sendBroadcast(broadCastIntent)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -112,7 +143,8 @@ class EventsDetailActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
-        mEventData = intent.getParcelableExtra("eventData")
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        mEventData = db!!.getPostDataById(intent.getIntExtra("eventId", 0), Constants.EVENT)
         populateData()
     }
 
@@ -126,6 +158,13 @@ class EventsDetailActivity : BaseActivity() {
         txtTimeEvent.text = Constants.displayDateTime(mEventData!!.date_time)
         txtDescEvents.text = mEventData!!.description
         txtEventLink.text = mEventData!!.url
+
+        if (mEventData!!.liked == 1) isLiked = 1
+
+        if (mEventData!!.bookmarked == 1)
+            imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_white)
+        else
+            imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_border)
 
         displayLikeData()
 
@@ -149,31 +188,34 @@ class EventsDetailActivity : BaseActivity() {
 
     private fun displayCommentData() {
         if (mEventData!!.comment == 1)
-            txtCommentCountEvents.text = "${mEventData!!.comment} COMMENT"
+            txtCommentCountEvents.text = "${mEventData!!.comment} COMMENT(S)"
         else
-            txtCommentCountEvents.text = "${mEventData!!.comment} COMMENTS"
+            txtCommentCountEvents.text = "${mEventData!!.comment} COMMENT(S)"
     }
 
     private fun displayLikeData() {
-        if (mEventData!!.like == 1)
-            txtLikeCountEvents.text = "${mEventData!!.like} LIKE"
-        else
-            txtLikeCountEvents.text = "${mEventData!!.like} LIKES"
+        if (mEventData!!.liked == 1) {
+            imgLikeEvent.isLiked = true
+            txtLikeCountEvents.text = "${mEventData!!.like} LIKE(S)"
+        } else {
+            imgLikeEvent.isLiked = false
+            txtLikeCountEvents.text = "${mEventData!!.like} LIKE(S)"
+        }
     }
 
     private fun displayGoingData() {
-        if (mEventData!!.going <= 3) {
-            txtGoingCount.text = "${mEventData!!.going} GOING"
+        if (mEventData!!.going_list.size <= 3) {
+            txtGoingCount.text = "${mEventData!!.going_list.size} GOING"
 
             when {
-                mEventData!!.going == 1 -> {
+                mEventData!!.going_list.size == 1 -> {
                     Picasso.with(mContext).load(mEventData!!.going_list[0].avatar)
                             .placeholder(R.drawable.placeholder_image)
                             .into(imgPeopleEvents1)
                     imgPeopleEvents2.setImageResource(0)
                     imgPeopleEvents3.setImageResource(0)
                 }
-                mEventData!!.going == 2 -> {
+                mEventData!!.going_list.size == 2 -> {
 
                     Picasso.with(mContext).load(mEventData!!.going_list[0].avatar)
                             .placeholder(R.drawable.placeholder_image)
@@ -184,7 +226,7 @@ class EventsDetailActivity : BaseActivity() {
                             .into(imgPeopleEvents2)
                     imgPeopleEvents3.setImageResource(0)
                 }
-                mEventData!!.going == 3 -> {
+                mEventData!!.going_list.size == 3 -> {
 
                     Picasso.with(mContext).load(mEventData!!.going_list[0].avatar)
                             .placeholder(R.drawable.placeholder_image)
@@ -200,7 +242,7 @@ class EventsDetailActivity : BaseActivity() {
                 }
             }
         } else {
-            txtGoingCount.text = "${mEventData!!.going - 3} GOING"
+            txtGoingCount.text = "${mEventData!!.going_list.size - 3} GOING"
 
             Picasso.with(mContext).load(mEventData!!.going_list[0].avatar)
                     .placeholder(R.drawable.placeholder_image).into(imgPeopleEvents1)
@@ -235,13 +277,25 @@ class EventsDetailActivity : BaseActivity() {
 
             }
             imgOption2Custom -> {
-
-            }
-            llLikesEvents -> {
-
+                if (connectedToInternet()) {
+                    if (mEventData!!.bookmarked == 1) {
+                        mEventData!!.bookmarked = 0
+                        imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_border)
+                    } else {
+                        mEventData!!.bookmarked = 1
+                        imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_white)
+                    }
+                    db!!.updateBookmarkEventStatus(mEventData!!.id, mEventData!!.bookmarked)
+                    sendBookMarkBroadcast(mEventData!!.bookmarked)
+                    hitBookmarkAPI(mEventData!!.id)
+                } else
+                    showInternetAlert(llGoingEvents)
             }
             llCommentsEvents -> {
-
+                intent = Intent(mContext!!, CommentsActivity::class.java)
+                intent.putExtra("postId", mEventData!!.id)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
             txtEventLink -> {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mEventData!!.url))
@@ -255,10 +309,19 @@ class EventsDetailActivity : BaseActivity() {
             }
             llGoingEvents -> {
                 intent = Intent(mContext, EventsGoingListingActivity::class.java)
+                intent.putParcelableArrayListExtra("goingList", mEventData!!.going_list as ArrayList)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
         }
+    }
+
+    private fun sendBookMarkBroadcast(bookmarkStatus: Int) {
+        val broadCastIntent = Intent(Constants.EVENT_BROADCAST)
+        broadCastIntent.putExtra("status", Constants.BOOKMARK)
+        broadCastIntent.putExtra("bookmarkStatus", bookmarkStatus)
+        broadCastIntent.putExtra("postId", mEventData!!.id)
+        broadcaster!!.sendBroadcast(broadCastIntent)
     }
 
     override fun onBackPressed() {
@@ -340,6 +403,8 @@ class EventsDetailActivity : BaseActivity() {
                     if (isGoing == 0) {
                         isGoing = 1
                         isIntreseted = 0
+                        db!!.updateGoingStatusEvents(mEventData!!.id, isGoing, isIntreseted)/// updating going and intresetd status
+                        addOwnToGoingList()/// adding data from local database
                         mEventData!!.going++
                         displayGoingData()
                         txtInterestedEvents.setTextColor(blackColor)
@@ -348,6 +413,8 @@ class EventsDetailActivity : BaseActivity() {
                     } else {
                         isGoing = 0
                         isIntreseted = 0
+                        db!!.updateGoingStatusEvents(mEventData!!.id, isGoing, isIntreseted)/// updating going and intresetd status
+                        removeGoingList()/// removing data to local database
                         mEventData!!.going--
                         displayGoingData()
                         txtInterestedEvents.setTextColor(ContextCompat.getColor(this@EventsDetailActivity, R.color.greyTextColor))
@@ -368,9 +435,11 @@ class EventsDetailActivity : BaseActivity() {
                     }
                     if (isGoing == 1) {
                         isGoing = 0
+                        removeGoingList()
                         mEventData!!.going--
                         displayGoingData()
                     }
+                    db!!.updateGoingStatusEvents(mEventData!!.id, isGoing, isIntreseted)/// updating going and intresetd status
                 }
                 dismissLoader()
             }
@@ -382,4 +451,70 @@ class EventsDetailActivity : BaseActivity() {
         })
     }
 
+    private fun hitLikeAPI(status: Int) {
+        val call = RetrofitClient.getInstance().eventActivity(mUtils!!.getString("access_token", ""),
+                mEventData!!.id, status)
+        call.enqueue(object : Callback<BaseSuccessModel> {
+            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
+                if (response!!.body().response == null) {
+                    /// change db status to previous
+                    setPreviousDBStatus(status)
+                }
+            }
+
+            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
+                /// change db status to previous
+                setPreviousDBStatus(status)
+            }
+        })
+    }
+
+    private fun hitBookmarkAPI(postId: Int) {
+        val call = RetrofitClient.getInstance().eventBookmark(mUtils!!.getString("access_token", ""),
+                postId)
+        call.enqueue(object : Callback<BaseSuccessModel> {
+
+            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>) {
+                if (response.body().response != null) {
+
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else
+                        showAlert(rvEventsListing, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
+                showAlert(rvEventsListing, t!!.localizedMessage)
+            }
+        })
+    }
+
+    private fun setPreviousDBStatus(status: Int) {
+        if (status == 1) {
+            /// Change to Unlike
+        } else {
+            /// Change to Like
+        }
+    }
+
+    private fun addOwnToGoingList() {
+        val goingUserData = PostModel.ResponseBean.GoingUserBean()
+        goingUserData.avatar = userData!!.response.avatar
+        goingUserData.full_name = userData!!.response.full_name
+        goingUserData.id = userData!!.response.id
+        mEventData!!.going_list!!.add(0, goingUserData)
+        db!!.addPostGoingUsers(goingUserData, mEventData!!.id.toString())
+    }
+
+    private fun removeGoingList() {
+        for (goingData in mEventData!!.going_list) {
+            if (goingData.id == userData!!.response.id) {
+                mEventData!!.going_list.remove(goingData)
+                break
+            }
+        }
+        db!!.removeGoingUser(userData!!.response.id)
+    }
 }

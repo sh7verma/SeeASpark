@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.like.LikeButton
+import com.like.OnLikeListener
 import com.seeaspark.EventsBookmarkActivity
 import com.seeaspark.R
 import com.seeaspark.SearchEventCommunityActivity
@@ -13,6 +15,7 @@ import com.squareup.picasso.Picasso
 import fragments.EventsFragment
 import kotlinx.android.synthetic.main.item_events.view.*
 import models.PostModel
+import utils.Connection_Detector
 import utils.Constants
 import utils.Utils
 
@@ -58,28 +61,94 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
 
         Picasso.with(mContext).load(mEventsArray[position].images[0].thumbnail_url)
                 .resize(mWidth, mContext!!.resources.getDimension(R.dimen._140sdp).toInt())
-                .centerCrop() .into(holder.imgEventsListing)
+                .centerCrop().into(holder.imgEventsListing)
 
         holder.txtTitleEventsListing.text = mEventsArray[position].title
         holder.txtDescEventsListing.text = mEventsArray[position].description
         holder.txtLocationEventsListing.text = mEventsArray[position].address
         holder.txtTimeEventListing.text = Constants.displayDateTime(mEventsArray[position].date_time)
 
-        if (mEventsArray[position].like == 1)
-            holder.txtLikeCountEventsListing.text = "${mEventsArray[position].like} LIKE"
-        else
-            holder.txtLikeCountEventsListing.text = "${mEventsArray[position].like} LIKES"
+        holder.imgLikeEventsListing.isLiked = mEventsArray[position].liked == 1
 
-        if (mEventsArray[position].comment == 1)
-            holder.txtCommentCountEventsListing.text = "${mEventsArray[position].comment} COMMENT"
+        if (mEventsArray[position].bookmarked == 1)
+            holder.imgBookmarkEventsListing.setImageResource(R.mipmap.ic_bookmark_white)
         else
-            holder.txtCommentCountEventsListing.text = "${mEventsArray[position].comment} COMMENTS"
+            holder.imgBookmarkEventsListing.setImageResource(R.mipmap.ic_bookmark_border)
+
+        holder.txtLikeCountEventsListing.text = "${mEventsArray[position].like} LIKE(S)"
+
+        holder.txtCommentCountEventsListing.text = "${mEventsArray[position].comment} COMMENT(S)"
+
+        holder.imgBookmarkEventsListing.setOnClickListener {
+            if ((Connection_Detector(mContext).isConnectingToInternet)) {
+                if (mEventsArray[position].bookmarked == 1) {
+                    mEventsArray[position].bookmarked = 0
+                    when {
+                        mEventFragment != null -> mEventFragment!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
+                                mEventsArray[position].id)
+                        mSearchInstance != null -> mSearchInstance!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
+                                mEventsArray[position].id)
+                        mBookmarkInstance != null -> mBookmarkInstance!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
+                                mEventsArray[position].id)
+                    }
+                } else {
+                    mEventsArray[position].bookmarked = 1
+                    when {
+                        mEventFragment != null -> mEventFragment!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
+                                mEventsArray[position].id)
+                        mSearchInstance != null -> mSearchInstance!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
+                                mEventsArray[position].id)
+                        mBookmarkInstance != null -> mBookmarkInstance!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
+                                mEventsArray[position].id)
+                    }
+                }
+                notifyDataSetChanged()
+            }
+        }
+
+        holder.imgLikeEventsListing.setOnLikeListener(object : OnLikeListener {
+            override fun liked(p0: LikeButton?) {
+                if ((Connection_Detector(mContext).isConnectingToInternet)) {
+                    mEventsArray[position].liked = 1
+                    mEventsArray[position].like++
+                    notifyDataSetChanged()
+                    when {
+                        mEventFragment != null -> mEventFragment!!.updateLikeStatus(mEventsArray[position].liked,
+                                mEventsArray[position].id, mEventsArray[position].like)
+                        mSearchInstance != null -> mSearchInstance!!.updateLikeStatus(mEventsArray[position].liked,
+                                mEventsArray[position].id, mEventsArray[position].like)
+                        mBookmarkInstance != null -> mBookmarkInstance!!.updateLikeStatus(mEventsArray[position].liked,
+                                mEventsArray[position].id, mEventsArray[position].like)
+                    }
+                } else {
+                    holder.imgLikeEventsListing.isLiked = false
+                }
+            }
+
+            override fun unLiked(p0: LikeButton?) {
+                if ((Connection_Detector(mContext).isConnectingToInternet)) {
+                    mEventsArray[position].liked = 0
+                    mEventsArray[position].like--
+                    notifyDataSetChanged()
+                    when {
+                        mEventFragment != null -> mEventFragment!!.updateLikeStatus(mEventsArray[position].liked,
+                                mEventsArray[position].id, mEventsArray[position].like)
+                        mSearchInstance != null -> mSearchInstance!!.updateLikeStatus(mEventsArray[position].liked,
+                                mEventsArray[position].id, mEventsArray[position].like)
+                        mBookmarkInstance != null -> mBookmarkInstance!!.updateLikeStatus(mEventsArray[position].liked,
+                                mEventsArray[position].id, mEventsArray[position].like)
+                    }
+                } else {
+                    holder.imgLikeEventsListing.isLiked = true
+                }
+            }
+        })
 
         holder.cvEventsListing.setOnClickListener {
             when {
-                mEventFragment != null -> mEventFragment!!.moveToEventDetail(mEventsArray[position])
-                mSearchInstance != null -> mSearchInstance!!.moveToEventDetail()
-                mBookmarkInstance != null -> mBookmarkInstance!!.moveToEventDetail()
+                mEventFragment != null -> mEventFragment!!.moveToEventDetail(mEventsArray[position].id)
+                mSearchInstance != null -> mSearchInstance!!.moveToEventDetail(mEventsArray[position].id)
+                mBookmarkInstance != null -> mBookmarkInstance!!.moveToEventDetail(mEventsArray[position].id)
             }
         }
     }
@@ -98,6 +167,7 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
         var txtTimeEventListing = itemView.txtTimeEventListing!!
         var txtLikeCountEventsListing = itemView.txtLikeCountEventsListing!!
         var txtCommentCountEventsListing = itemView.txtCommentCountEventsListing!!
+        var imgLikeEventsListing = itemView.imgLikeEventsListing!!
 
         init {
             if (mUtils!!.getInt("nightMode", 0) == 1)

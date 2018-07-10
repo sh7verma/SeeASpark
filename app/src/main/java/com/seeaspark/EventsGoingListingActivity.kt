@@ -35,6 +35,9 @@ class EventsGoingListingActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
+
+        mEventsUsersArray.addAll(intent.getParcelableArrayListExtra("goingList"))
+
         mEventsGoingAdapter = EventGoingAdapter(mEventsUsersArray, mContext!!)
         rvEventsGoing.adapter = mEventsGoingAdapter
     }

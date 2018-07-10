@@ -85,7 +85,7 @@ class EventsBookmarkActivity : BaseActivity() {
         }
     }
 
-    fun moveToEventDetail() {
+    fun moveToEventDetail(id: Int) {
         if (connectedToInternet()) {
             val intent = Intent(mContext, EventsDetailActivity::class.java)
             startActivity(intent)
@@ -101,5 +101,13 @@ class EventsBookmarkActivity : BaseActivity() {
     private fun moveBack() {
         finish()
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+    }
+
+    fun updateLikeStatus(liked: Int, id: Int, like: Int) {
+
+    }
+
+    fun updateBookmarkStatus(bookmarked: Int, id: Int) {
+
     }
 }

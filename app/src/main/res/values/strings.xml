@@ -208,5 +208,7 @@
     <string name="no_result_found">No result found</string>
     <string name="not_going">Not Going</string>
     <string name="not_interested">Not Interested</string>
+    <string name="write_a_comment">Write a Comment...</string>
+    <string name="comments">Comments</string>
 
 </resources>

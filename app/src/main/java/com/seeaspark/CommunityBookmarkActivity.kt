@@ -36,10 +36,6 @@ class CommunityBookmarkActivity : BaseActivity() {
 
         rvCommunityBookmark.layoutManager = mLayoutManager
 
-        if (mUtils!!.getInt("nightMode", 0) == 1)
-            displayNightMode()
-        else
-            displayDayMode()
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)

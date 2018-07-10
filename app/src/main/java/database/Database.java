@@ -87,7 +87,8 @@ public class Database extends SQLiteOpenHelper {
                 + " (" + IMAGE_ID + " TEXT ,"
                 + IMAGE_URL + " TEXT ,"
                 + THUMBNAIL_URL + " TEXT ,"
-                + POST_ID + " TEXT )";
+                + POST_ID + " TEXT ,"
+                + POST_TYPE + " TEXT )";
         db.execSQL(imagesQuery);
 
         String goingQuery = "create table if not exists " + GOING_TABLE
@@ -190,7 +191,7 @@ public class Database extends SQLiteOpenHelper {
         return mArrayListPosts;
     }
 
-    public void addPostImages(PostModel.ResponseBean.ImagesBean imagesData, String postId) {
+    public void addPostImages(PostModel.ResponseBean.ImagesBean imagesData, String postId, int postType) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         Cursor data = null;
@@ -199,6 +200,7 @@ public class Database extends SQLiteOpenHelper {
             values.put(IMAGE_URL, imagesData.getImage_url());
             values.put(THUMBNAIL_URL, imagesData.getThumbnail_url());
             values.put(POST_ID, postId);
+            values.put(POST_TYPE, postType);
 
             data = getReadableDatabase().rawQuery("Select * from " + IMAGES_TABLE + " where "
                     + IMAGE_ID + " = '" + imagesData.getId() + "'", null);
@@ -245,6 +247,53 @@ public class Database extends SQLiteOpenHelper {
         return mArrayListImages;
     }
 
+    public void updateGoingStatusEvents(int postId, int goingStatus, int interested) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put(IS_GOING, goingStatus);
+            cv.put(INTRESTED, interested);
+            db.update(POSTS_TABLE, cv, POST_ID + " = '" + postId + "'", null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception = ", e + "");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+
+    public void updateLikeEventStatus(int postId, int likeStatus, int likeCount) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put(LIKED, likeStatus);
+            cv.put(LIKE_COUNT, likeCount);
+            db.update(POSTS_TABLE, cv, POST_ID + " = '" + postId + "'", null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception = ", e + "");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void updateBookmarkEventStatus(int postId, int bookmarkStatus) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put(IS_BOOKMARKED, bookmarkStatus);
+            db.update(POSTS_TABLE, cv, POST_ID + " = '" + postId + "'", null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception = ", e + "");
+        } finally {
+            db.endTransaction();
+        }
+    }
 
     public void addPostGoingUsers(PostModel.ResponseBean.GoingUserBean goingUserData, String postId) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -299,6 +348,80 @@ public class Database extends SQLiteOpenHelper {
                 cur.close();
         }
         return mArrayListGoing;
+    }
+
+    public PostModel.ResponseBean getPostDataById(int postId, int postType) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        Cursor cur = null;
+        PostModel.ResponseBean postModel = new PostModel.ResponseBean();
+        try {
+            String qry = "select * from " + POSTS_TABLE + " where " + POST_TYPE + " = '" + postType + "' and " + POST_ID + " = '" + postId + "'";
+            cur = db.rawQuery(qry, null);
+            cur.moveToFirst();
+            postModel.setId(Integer.parseInt(cur.getString(0)));
+            postModel.setPost_type(Integer.parseInt(cur.getString(1)));
+            postModel.setTitle(cur.getString(2));
+            postModel.setDescription(cur.getString(3));
+            postModel.setProfession_id(cur.getString(4));
+            postModel.setAddress(cur.getString(5));
+            postModel.setLatitude(cur.getString(6));
+            postModel.setLongitude(cur.getString(7));
+            postModel.setDate_time(cur.getString(8));
+            postModel.setUrl(cur.getString(9));
+            postModel.setLike(Integer.parseInt(cur.getString(10)));
+            postModel.setComment(Integer.parseInt(cur.getString(11)));
+            postModel.setGoing(Integer.parseInt(cur.getString(12)));
+            postModel.setInterested(Integer.parseInt(cur.getString(13)));
+            postModel.setBookmarked(Integer.parseInt(cur.getString(14)));
+            postModel.setLiked(Integer.parseInt(cur.getString(15)));
+            postModel.setIs_going(Integer.parseInt(cur.getString(16)));
+            postModel.setGoing_list(getPostGoingUsers(cur.getString(0)));
+            postModel.setImages(getImageByPostId(cur.getString(0)));
+
+        } catch (Exception e) {
+            Log.e("Exception", "is " + e);
+        } finally {
+            db.endTransaction();
+            if (cur != null)
+                cur.close();
+        }
+        return postModel;
+    }
+
+    public void removeGoingUser(int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            String unShortlist = "Delete from " + GOING_TABLE + " where " + USER_ID + " = '" + userId + "'";
+            db.execSQL(unShortlist);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception = ", e + "");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void deleteEventData(int postType) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            String dropEvents = "Delete from  " + POSTS_TABLE + " where " + POST_TYPE + " = '" + postType + "'";
+            db.execSQL(dropEvents);
+
+            String dropImages = "Delete from  " + IMAGES_TABLE + " where " + POST_TYPE + " = '" + postType + "'";
+            db.execSQL(dropImages);
+
+            String dropGoingUsers = "Delete from  " + GOING_TABLE;
+            db.execSQL(dropGoingUsers);
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception = ", e + "");
+        } finally {
+            db.endTransaction();
+        }
     }
 
 

@@ -2,19 +2,24 @@ package fragments
 
 import adapters.EventsAdapter
 import android.app.Fragment
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.seeaspark.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_event.*
+import models.BaseSuccessModel
 import models.PostModel
 import network.RetrofitClient
 import retrofit2.Call
@@ -133,12 +138,13 @@ class EventsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun addToLocalDatabase(response: List<PostModel.ResponseBean>) {
+        mLandingInstance!!.db!!.deleteEventData(Constants.EVENT)
         for (responseData in response) {
             mLandingInstance!!.db!!.addPosts(responseData)
             for (imagesData in responseData.images) {
-                mLandingInstance!!.db!!.addPostImages(imagesData, responseData.id.toString())
+                mLandingInstance!!.db!!.addPostImages(imagesData, responseData.id.toString(), Constants.EVENT)
             }
-            for(goingUserData in responseData.going_list) {
+            for (goingUserData in responseData.going_list) {
                 mLandingInstance!!.db!!.addPostGoingUsers(goingUserData, responseData.id.toString())
             }
         }
@@ -177,13 +183,125 @@ class EventsFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    fun moveToEventDetail(responseBean: PostModel.ResponseBean) {
+    fun moveToEventDetail(id: Int) {
         if (mLandingInstance!!.connectedToInternet()) {
             val intent = Intent(mContext, EventsDetailActivity::class.java)
-            intent.putExtra("eventData",responseBean)
+            intent.putExtra("eventId", id)
             startActivity(intent)
             activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         } else
             mLandingInstance!!.showInternetAlert(rvEventsListing)
     }
+
+    override fun onStart() {
+        LocalBroadcastManager.getInstance(activity).registerReceiver(receiver,
+                IntentFilter(Constants.EVENT_BROADCAST))
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(receiver)
+        super.onDestroy()
+    }
+
+    fun updateLikeStatus(likedStatus: Int, postId: Int, likeCount: Int) {
+        mLandingInstance!!.db!!.updateLikeEventStatus(postId, likedStatus, likeCount)
+        hitLikeAPI(postId)
+    }
+
+    private fun hitLikeAPI(postId: Int) {
+        val call = RetrofitClient.getInstance().eventActivity(mUtils!!.getString("access_token", ""),
+                postId, Constants.LIKE)
+        call.enqueue(object : Callback<BaseSuccessModel> {
+            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
+                if (response!!.body().response == null) {
+                    /// change db status to previous
+                    setPreviousDBStatus(postId)
+                }
+            }
+
+            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
+                /// change db status to previous
+                setPreviousDBStatus(postId)
+            }
+        })
+    }
+
+    private fun setPreviousDBStatus(postId: Int) {
+
+    }
+
+    fun updateBookmarkStatus(bookmarked: Int, postId: Int) {
+        mLandingInstance!!.db!!.updateBookmarkEventStatus(postId, bookmarked)
+        hitBookmarkAPI(bookmarked, postId)
+    }
+
+    private fun hitBookmarkAPI(bookmarked: Int, postId: Int) {
+        val call = RetrofitClient.getInstance().eventBookmark(mUtils!!.getString("access_token", ""),
+                postId)
+        call.enqueue(object : Callback<BaseSuccessModel> {
+
+            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>) {
+                if (response.body().response != null) {
+
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        mLandingInstance!!.moveToSplash()
+                    } else
+                        mLandingInstance!!.showAlert(rvEventsListing, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
+                mLandingInstance!!.showAlert(rvEventsListing, t!!.localizedMessage)
+            }
+        })
+
+    }
+
+    internal var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            try {
+                if (intent.getIntExtra("status", 0) == Constants.LIKED) {
+                    Log.e("Liked = ", "Yes")
+                    for ((index, eventData) in mEventsArray.withIndex()) {
+                        if (eventData.id == intent.getIntExtra("postId", 0)) {
+                            eventData.liked = Constants.LIKED
+                            eventData.like++
+                            mEventsArray[index] = eventData
+                            break
+                        }
+                    }
+                    mEventsAdapter!!.notifyDataSetChanged()
+                } else if (intent.getIntExtra("status", 0) == Constants.UNLIKED) {
+                    Log.e("Liked = ", "No")
+                    for ((index, eventData) in mEventsArray.withIndex()) {
+                        if (eventData.id == intent.getIntExtra("postId", 0)
+                                && eventData.liked == Constants.LIKED) {
+                            eventData.liked = Constants.UNLIKED
+                            eventData.like--
+                            mEventsArray[index] = eventData
+                            break
+                        }
+                    }
+                    mEventsAdapter!!.notifyDataSetChanged()
+                } else if (intent.getIntExtra("status", 0) == Constants.BOOKMARK) {
+                    Log.e("Bookmark = ", "No")
+                    for ((index, eventData) in mEventsArray.withIndex()) {
+                        if (eventData.id == intent.getIntExtra("postId", 0)) {
+                            eventData.bookmarked = intent.getIntExtra("bookmarkStatus", 0)
+                            mEventsArray[index] = eventData
+                            break
+                        }
+                    }
+                    mEventsAdapter!!.notifyDataSetChanged()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+    }
+
+
 }

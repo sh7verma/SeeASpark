@@ -1,6 +1,7 @@
 package network;
 
 import models.CardModel;
+import models.CommentModel;
 import models.PostModel;
 import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
@@ -159,8 +160,18 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/api/v1/activities")
     Call<BaseSuccessModel> eventActivity(@Field("access_token") String access_token,
-                                  @Field("post_id") int post_id,
-                                  @Field("activity_type") int activity_type);
+                                         @Field("post_id") int post_id,
+                                         @Field("activity_type") int activity_type);
+
+    @FormUrlEncoded
+    @POST("/api/v1/bookmarks")
+    Call<BaseSuccessModel> eventBookmark(@Field("access_token") String access_token,
+                                         @Field("post_id") int post_id);
+
+    @GET("/api/v1/comments")
+    Call<CommentModel> getComments(@Query("access_token") String access_token,
+                                   @Query("post_id") int post_id,
+                                   @Query("page") int page);
 
 
 }

@@ -15,6 +15,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.seeaspark.AfterWalkThroughActivity;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -62,8 +64,14 @@ public class Constants {
     public static final String NIGHT_MODE = "NightMode";
     public static final Integer DAY = 1;
     public static final Integer NIGHT = 2;
-    public static final int INTERESTED=2;
-    public static final int GOING=1;
+    public static final int INTERESTED = 2;
+    public static final int GOING = 1;
+    public static final int LIKED = 1;
+    public static final int LIKE = 3;
+    public static final int UNLIKED = 0;
+    public static final String EVENT_BROADCAST = "event_like";
+    public static final String Community_BROADCAST = "community";
+    public static final Integer BOOKMARK = 2;
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

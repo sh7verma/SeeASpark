@@ -203,8 +203,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
     private fun replaceFragment(eventsFragment: Fragment) {
         fragmentManager.beginTransaction()
-                .replace(R.id.llFragment, eventsFragment, null)
-                .addToBackStack(null).commit()
+                .replace(R.id.llFragment, eventsFragment, null).commit()
     }
 
     private fun hitTipsAPI() {
