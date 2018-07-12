@@ -52,6 +52,7 @@ public class Constants {
     public static final String REVIEW = "review";
     public static final String QUESTIONS = "questions";
     public static final int INVALID_ACCESS_TOKEN = 301;
+    public static final int POST_DELETED = 1111;
     public static final int DELETE_ACCOUNT = 6001;
     public static final int COMMUNITY = 1;
     public static final int EVENT = 2;
@@ -69,10 +70,11 @@ public class Constants {
     public static final int LIKED = 1;
     public static final int LIKE = 3;
     public static final int UNLIKED = 0;
-    public static final String EVENT_BROADCAST = "event_like";
+    public static final String POST_BROADCAST = "event_like";
     public static final String Community_BROADCAST = "community";
     public static final Integer BOOKMARK = 2;
     public static final Integer COMMENT=3;
+    public static final Integer DELETE=4;
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

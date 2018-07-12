@@ -18,7 +18,6 @@ import java.util.*
 class CommentsAdapter(mConetxt: Context, mCommentArray: ArrayList<CommentModel.ResponseBean>, mComments: CommentsActivity) : RecyclerView.Adapter<CommentsAdapter.ViewHolder>() {
 
     var mCommentArray = ArrayList<CommentModel.ResponseBean>()
-
     var mContext: Context? = null
     var mUtils: Utils? = null
     var mComments: CommentsActivity? = null
@@ -38,7 +37,7 @@ class CommentsAdapter(mConetxt: Context, mCommentArray: ArrayList<CommentModel.R
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Picasso.with(mContext).load(mCommentArray[position].avatar).into(holder.imgComments)
+        Picasso.with(mContext).load(mCommentArray[position].avatar).placeholder(R.drawable.placeholder_image).into(holder.imgComments)
         holder.txtNameComments.text = mCommentArray[position].full_name
         holder.txtMessageComments.text = mCommentArray[position].description
         if (mCommentArray[position].id != 0)

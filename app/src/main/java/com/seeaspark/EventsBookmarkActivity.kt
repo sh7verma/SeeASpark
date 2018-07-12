@@ -159,14 +159,14 @@ class EventsBookmarkActivity : BaseActivity() {
     }
 
     fun updateLikeStatus(likedStatus: Int, postId: Int, likeCount: Int) {
-        db!!.updateLikeEventStatus(postId, likedStatus, likeCount)
+        db!!.updateLikeStatus(postId, likedStatus, likeCount)
         sendLikeBroadcast(postId, likedStatus)
         hitLikeAPI(postId)
     }
 
     fun updateBookmarkStatus(bookmarked: Int, postId: Int, postData: PostModel.ResponseBean) {
         removeEvent(postData)
-        db!!.updateBookmarkEventStatus(postId, bookmarked)
+        db!!.updateBookmarkStatus(postId, bookmarked)
         sendBookMarkBroadcast(postId, bookmarked)
         hitBookmarkAPI(bookmarked, postId)
     }
@@ -180,13 +180,20 @@ class EventsBookmarkActivity : BaseActivity() {
     }
 
     private fun hitLikeAPI(postId: Int) {
-        val call = RetrofitClient.getInstance().eventActivity(mUtils!!.getString("access_token", ""),
+        val call = RetrofitClient.getInstance().postActivity(mUtils!!.getString("access_token", ""),
                 postId, Constants.LIKE)
         call.enqueue(object : Callback<BaseSuccessModel> {
             override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
                 if (response!!.body().response == null) {
                     /// change db status to previous
                     setPreviousDBStatus(postId)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        removeElement(postId)
+                    } else
+                        showAlert(rvEventsBookmark, response.body().error!!.message!!)
                 }
             }
 
@@ -198,7 +205,7 @@ class EventsBookmarkActivity : BaseActivity() {
     }
 
     private fun hitBookmarkAPI(bookmarked: Int, postId: Int) {
-        val call = RetrofitClient.getInstance().eventBookmark(mUtils!!.getString("access_token", ""),
+        val call = RetrofitClient.getInstance().markBookmark(mUtils!!.getString("access_token", ""),
                 postId)
         call.enqueue(object : Callback<BaseSuccessModel> {
 
@@ -208,6 +215,9 @@ class EventsBookmarkActivity : BaseActivity() {
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        removeElement(postId)
                     } else
                         showAlert(rvEventsBookmark, response.body().error!!.message!!)
                 }
@@ -226,7 +236,7 @@ class EventsBookmarkActivity : BaseActivity() {
 
     override fun onStart() {
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
-                IntentFilter(Constants.EVENT_BROADCAST))
+                IntentFilter(Constants.POST_BROADCAST))
         super.onStart()
     }
 
@@ -298,6 +308,9 @@ class EventsBookmarkActivity : BaseActivity() {
                             }
                         }
                         mEventsAdapter!!.notifyDataSetChanged()
+                    } else if (intent.getIntExtra("status", 0) == Constants.DELETE) {
+                        Log.e("Delete = ", "Yes")
+                        removeElement(intent.getIntExtra("postId", 0))
                     }
                 }
             } catch (e: Exception) {
@@ -308,18 +321,30 @@ class EventsBookmarkActivity : BaseActivity() {
     }
 
     private fun sendLikeBroadcast(postId: Int, likedStatus: Int) {
-        val broadCastIntent = Intent(Constants.EVENT_BROADCAST)
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
         broadCastIntent.putExtra("status", likedStatus)
         broadCastIntent.putExtra("postId", postId)
         broadcaster!!.sendBroadcast(broadCastIntent)
     }
 
     private fun sendBookMarkBroadcast(postId: Int, bookmarked: Int) {
-        val broadCastIntent = Intent(Constants.EVENT_BROADCAST)
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
         broadCastIntent.putExtra("status", Constants.BOOKMARK)
         broadCastIntent.putExtra("bookmarkStatus", bookmarked)
         broadCastIntent.putExtra("postId", postId)
         broadcaster!!.sendBroadcast(broadCastIntent)
     }
+
+    private fun removeElement(postId: Int) {
+        for ((index, postData) in mEventsArray.withIndex()) {
+            if (postData.id == postId) {
+                db!!.deletePostById(postId)
+                mEventsArray.remove(postData)
+                mEventsAdapter!!.notifyDataSetChanged()
+                break
+            }
+        }
+    }
+
 
 }

@@ -1,20 +1,35 @@
 package com.seeaspark
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.annotation.RequiresApi
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
-import android.view.Gravity
+import android.support.v4.content.LocalBroadcastManager
 import android.view.View
-import android.widget.FrameLayout
+import com.like.LikeButton
+import com.like.OnLikeListener
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_community_detail.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
-import kotlinx.android.synthetic.main.dialog_interested.*
+import models.BaseSuccessModel
+import models.PostModel
+import models.SignupModel
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import utils.Constants
 
 class CommunityDetailActivity : BaseActivity() {
+
+    var mCommunityData: PostModel.ResponseBean? = null
+    private var isLiked = 0
+
+    private var userData: SignupModel? = null
 
     override fun getContentView() = R.layout.activity_community_detail
 
@@ -35,6 +50,43 @@ class CommunityDetailActivity : BaseActivity() {
         svViewCommunity.setOnScrollViewListener { v, l, t, oldl, oldt ->
             cd.alpha = getAlphaforActionBar(v.scrollY)
         }
+
+        imgLikeCommunity.setOnLikeListener(object : OnLikeListener {
+            override fun liked(p0: LikeButton?) {
+                if (connectedToInternet()) {
+                    isLiked = 1
+                    mCommunityData!!.liked = 1
+                    hitLikeAPI(Constants.LIKE)
+                    sendLikeBroadcast(Constants.LIKED)
+                    mCommunityData!!.like++
+                    displayLikeData()
+                    db!!.updateLikeStatus(mCommunityData!!.id, Constants.LIKED, mCommunityData!!.like)
+                } else {
+                    imgLikeCommunity.isLiked = false
+                }
+            }
+
+            override fun unLiked(p0: LikeButton?) {
+                if (connectedToInternet()) {
+                    isLiked = 0
+                    mCommunityData!!.liked = 0
+                    hitLikeAPI(Constants.LIKE)
+                    sendLikeBroadcast(Constants.UNLIKED)
+                    mCommunityData!!.like--
+                    displayLikeData()
+                    db!!.updateLikeStatus(mCommunityData!!.id, Constants.UNLIKED, mCommunityData!!.like)
+                } else {
+                    imgLikeCommunity.isLiked = true
+                }
+            }
+        })
+    }
+
+    private fun sendLikeBroadcast(status: Int) {
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
+        broadCastIntent.putExtra("status", status)
+        broadCastIntent.putExtra("postId", mCommunityData!!.id)
+        broadcaster!!.sendBroadcast(broadCastIntent)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -43,8 +95,8 @@ class CommunityDetailActivity : BaseActivity() {
         llMainCommunity.background = ContextCompat.getDrawable(this, R.drawable.white_short_profile_background)
 
         txtTitleCommunity.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        txtTimeCommunity.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        txtDescCommunity.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+        txtTimeCommunity.setTextColor(ContextCompat.getColor(this, R.color.textGrey))
+        txtDescCommunity.setTextColor(ContextCompat.getColor(this, R.color.greyTextColor))
 
         llBottomCommunity.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
         llLikesCommunity.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
@@ -74,14 +126,15 @@ class CommunityDetailActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
-
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        mCommunityData = db!!.getPostDataById(intent.getIntExtra("communityId", 0), Constants.COMMUNITY)
+        populateData()
     }
 
     override fun initListener() {
         imgBackCustom.setOnClickListener(this)
         imgOption1Custom.setOnClickListener(this)
         imgOption2Custom.setOnClickListener(this)
-        llLikesCommunity.setOnClickListener(this)
         llCommentsCommunity.setOnClickListener(this)
     }
 
@@ -97,18 +150,72 @@ class CommunityDetailActivity : BaseActivity() {
 
             }
             imgOption2Custom -> {
-
+                if (connectedToInternet()) {
+                    if (mCommunityData!!.bookmarked == 1) {
+                        mCommunityData!!.bookmarked = 0
+                        imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_border)
+                    } else {
+                        mCommunityData!!.bookmarked = 1
+                        imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_white)
+                    }
+                    db!!.updateBookmarkStatus(mCommunityData!!.id, mCommunityData!!.bookmarked)
+                    sendBookMarkBroadcast(mCommunityData!!.bookmarked)
+                    hitBookmarkAPI(mCommunityData!!.id)
+                } else
+                    showInternetAlert(llMainCommunity)
+            }
+            llCommentsCommunity -> {
+                intent = Intent(mContext!!, CommentsActivity::class.java)
+                intent.putExtra("postId", mCommunityData!!.id)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
         }
     }
 
-    override fun onBackPressed() {
-        moveBack()
+    private fun populateData() {
+        Picasso.with(mContext).load(mCommunityData!!.images[0].image_url).centerCrop().resize(mWidth, resources.getDimension(R.dimen._240sdp).toInt())
+                .into(imgCommunityDetail)
+        txtTitleCustom.text = mCommunityData!!.title
+        txtTitleCommunity.text = mCommunityData!!.title
+        if (mCommunityData!!.date_time.isNotEmpty())
+            txtTimeCommunity.text = Constants.displayDateTime(mCommunityData!!.date_time)
+        txtDescCommunity.text = mCommunityData!!.description
+
+        if (mCommunityData!!.liked == 1) isLiked = 1
+
+        if (mCommunityData!!.bookmarked == 1)
+            imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_white)
+        else
+            imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_border)
+
+        displayLikeData()
+        displayCommentData()
     }
 
-    private fun moveBack() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+    private fun displayCommentData() {
+        if (mCommunityData!!.comment == 1)
+            txtCommentCountCommunity.text = "${mCommunityData!!.comment} COMMENT(S)"
+        else
+            txtCommentCountCommunity.text = "${mCommunityData!!.comment} COMMENT(S)"
+    }
+
+    private fun displayLikeData() {
+        if (mCommunityData!!.liked == 1) {
+            imgLikeCommunity.isLiked = true
+            txtLikeCountCommunity.text = "${mCommunityData!!.like} LIKE(S)"
+        } else {
+            imgLikeCommunity.isLiked = false
+            txtLikeCountCommunity.text = "${mCommunityData!!.like} LIKE(S)"
+        }
+    }
+
+    private fun sendBookMarkBroadcast(bookmarkStatus: Int) {
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
+        broadCastIntent.putExtra("status", Constants.BOOKMARK)
+        broadCastIntent.putExtra("bookmarkStatus", bookmarkStatus)
+        broadCastIntent.putExtra("postId", mCommunityData!!.id)
+        broadcaster!!.sendBroadcast(broadCastIntent)
     }
 
     private fun getAlphaforActionBar(scrollY: Int): Int {
@@ -132,28 +239,107 @@ class CommunityDetailActivity : BaseActivity() {
         }
     }
 
-    private fun showInterestedOptions() {
-        val dialog = BottomSheetDialog(this)
-        dialog.setContentView(R.layout.dialog_interested)
+    private fun hitBookmarkAPI(postId: Int) {
+        val call = RetrofitClient.getInstance().markBookmark(mUtils!!.getString("access_token", ""),
+                postId)
+        call.enqueue(object : Callback<BaseSuccessModel> {
 
+            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>) {
+                if (response.body().response != null) {
 
-        var dialogParms = CoordinatorLayout.LayoutParams(mWidth - (mWidth / 16), mHeight / 6)
-        dialogParms.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-        val bottomSheet = dialog.window.findViewById(android.support.design.R.id.design_bottom_sheet) as FrameLayout
-        bottomSheet.setBackgroundResource(R.drawable.white_short_profile_background)
-        bottomSheet.layoutParams = dialogParms
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        sendDeleteBroadCast()
+                        finish()
+                    } else
+                        showAlert(llMainCommunity, response.body().error!!.message!!)
+                }
+            }
 
-        val txtInterestedDialog = dialog.txtInterestedDialog
-        val txtGoingDialog = dialog.txtGoingDialog
-
-        txtInterestedDialog.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        txtGoingDialog.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
+            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
+                showAlert(llMainCommunity, t!!.localizedMessage)
+            }
+        })
     }
+
+    private fun hitLikeAPI(status: Int) {
+        val call = RetrofitClient.getInstance().postActivity(mUtils!!.getString("access_token", ""),
+                mCommunityData!!.id, status)
+        call.enqueue(object : Callback<BaseSuccessModel> {
+            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
+                if (response!!.body().response == null) {
+                    /// change db status to previous
+                    setPreviousDBStatus(status)
+
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        sendDeleteBroadCast()
+                        finish()
+                    } else
+                        showAlert(llMainCommunity, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
+                /// change db status to previous
+                setPreviousDBStatus(status)
+            }
+        })
+    }
+
+    private fun sendDeleteBroadCast() {
+        db!!.deletePostById(mCommunityData!!.id)
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
+        broadCastIntent.putExtra("status", Constants.DELETE)
+        broadCastIntent.putExtra("postId", mCommunityData!!.id)
+        broadcaster!!.sendBroadcast(broadCastIntent)
+    }
+
+    private fun setPreviousDBStatus(status: Int) {
+        if (status == 1) {
+            /// Change to Unlike
+        } else {
+            /// Change to Like
+        }
+    }
+
+    override fun onStart() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
+                IntentFilter(Constants.POST_BROADCAST))
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+        super.onDestroy()
+    }
+
+    private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            try {
+                if (intent.getIntExtra("status", 0) == Constants.COMMENT) {
+                    txtCommentCountCommunity.text = "${intent.getIntExtra("commentCount", 0)} COMMENT(S)"
+                } else if (intent.getIntExtra("status", 0) == Constants.DELETE) {
+                    finish()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        moveBack()
+    }
+
+    private fun moveBack() {
+        finish()
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+    }
+
 }

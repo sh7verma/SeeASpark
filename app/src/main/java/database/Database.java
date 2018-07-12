@@ -264,7 +264,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
 
-    public void updateLikeEventStatus(int postId, int likeStatus, int likeCount) {
+    public void updateLikeStatus(int postId, int likeStatus, int likeCount) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -280,7 +280,7 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    public void updateBookmarkEventStatus(int postId, int bookmarkStatus) {
+    public void updateBookmarkStatus(int postId, int bookmarkStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -440,6 +440,45 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
+    public void deleteCommunityData(int postType) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            String dropEvents = "Delete from  " + POSTS_TABLE + " where " + POST_TYPE + " = '" + postType + "'";
+            db.execSQL(dropEvents);
+
+            String dropImages = "Delete from  " + IMAGES_TABLE + " where " + POST_TYPE + " = '" + postType + "'";
+            db.execSQL(dropImages);
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception = ", e + "");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+
+    public void deletePostById(int postId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            String dropEvents = "Delete from  " + POSTS_TABLE + " where " + POST_ID + " = '" + postId + "'";
+            db.execSQL(dropEvents);
+
+            String dropImages = "Delete from  " + IMAGES_TABLE + " where " + POST_ID + " = '" + postId + "'";
+            db.execSQL(dropImages);
+
+            String dropGoingUsers = "Delete from  " + GOING_TABLE + " where " + POST_ID + " = '" + postId + "'";
+            db.execSQL(dropGoingUsers);
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception = ", e + "");
+        } finally {
+            db.endTransaction();
+        }
+    }
 
     public void deleteAllTables() {
 

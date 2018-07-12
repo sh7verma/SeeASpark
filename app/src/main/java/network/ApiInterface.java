@@ -159,14 +159,14 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("/api/v1/activities")
-    Call<BaseSuccessModel> eventActivity(@Field("access_token") String access_token,
-                                         @Field("post_id") int post_id,
-                                         @Field("activity_type") int activity_type);
+    Call<BaseSuccessModel> postActivity(@Field("access_token") String access_token,
+                                        @Field("post_id") int post_id,
+                                        @Field("activity_type") int activity_type);
 
     @FormUrlEncoded
     @POST("/api/v1/bookmarks")
-    Call<BaseSuccessModel> eventBookmark(@Field("access_token") String access_token,
-                                         @Field("post_id") int post_id);
+    Call<BaseSuccessModel> markBookmark(@Field("access_token") String access_token,
+                                        @Field("post_id") int post_id);
 
     @GET("/api/v1/comments")
     Call<CommentModel> getComments(@Query("access_token") String access_token,

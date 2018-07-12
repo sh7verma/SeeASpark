@@ -211,5 +211,6 @@
     <string name="write_a_comment">Write a Comment...</string>
     <string name="comments">Comments</string>
     <string name="no_events_available">No Events Available</string>
+    <string name="no_community_available">No Community Available</string>
 
 </resources>

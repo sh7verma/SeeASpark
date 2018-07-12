@@ -12,7 +12,6 @@ import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -22,7 +21,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_events_details.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.dialog_interested.*
-import kotlinx.android.synthetic.main.fragment_event.*
 import models.BaseSuccessModel
 import models.PostModel
 import models.SignupModel
@@ -72,7 +70,7 @@ class EventsDetailActivity : BaseActivity() {
                     sendLikeBroadcast(Constants.LIKED)
                     mEventData!!.like++
                     displayLikeData()
-                    db!!.updateLikeEventStatus(mEventData!!.id, Constants.LIKED, mEventData!!.like)
+                    db!!.updateLikeStatus(mEventData!!.id, Constants.LIKED, mEventData!!.like)
                 } else {
                     imgLikeEvent.isLiked = false
                 }
@@ -86,7 +84,7 @@ class EventsDetailActivity : BaseActivity() {
                     sendLikeBroadcast(Constants.UNLIKED)
                     mEventData!!.like--
                     displayLikeData()
-                    db!!.updateLikeEventStatus(mEventData!!.id, Constants.UNLIKED, mEventData!!.like)
+                    db!!.updateLikeStatus(mEventData!!.id, Constants.UNLIKED, mEventData!!.like)
                 } else {
                     imgLikeEvent.isLiked = true
                 }
@@ -95,7 +93,7 @@ class EventsDetailActivity : BaseActivity() {
     }
 
     private fun sendLikeBroadcast(status: Int) {
-        val broadCastIntent = Intent(Constants.EVENT_BROADCAST)
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
         broadCastIntent.putExtra("status", status)
         broadCastIntent.putExtra("postId", mEventData!!.id)
         broadcaster!!.sendBroadcast(broadCastIntent)
@@ -290,7 +288,7 @@ class EventsDetailActivity : BaseActivity() {
                         mEventData!!.bookmarked = 1
                         imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_white)
                     }
-                    db!!.updateBookmarkEventStatus(mEventData!!.id, mEventData!!.bookmarked)
+                    db!!.updateBookmarkStatus(mEventData!!.id, mEventData!!.bookmarked)
                     sendBookMarkBroadcast(mEventData!!.bookmarked)
                     hitBookmarkAPI(mEventData!!.id)
                 } else
@@ -322,7 +320,7 @@ class EventsDetailActivity : BaseActivity() {
     }
 
     private fun sendBookMarkBroadcast(bookmarkStatus: Int) {
-        val broadCastIntent = Intent(Constants.EVENT_BROADCAST)
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
         broadCastIntent.putExtra("status", Constants.BOOKMARK)
         broadCastIntent.putExtra("bookmarkStatus", bookmarkStatus)
         broadCastIntent.putExtra("postId", mEventData!!.id)
@@ -400,7 +398,7 @@ class EventsDetailActivity : BaseActivity() {
 
     private fun hitActivityAPI(status: Int) {
         showLoader()
-        val call = RetrofitClient.getInstance().eventActivity(mUtils!!.getString("access_token", ""),
+        val call = RetrofitClient.getInstance().postActivity(mUtils!!.getString("access_token", ""),
                 mEventData!!.id, status)
         call.enqueue(object : Callback<BaseSuccessModel> {
             override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
@@ -457,13 +455,21 @@ class EventsDetailActivity : BaseActivity() {
     }
 
     private fun hitLikeAPI(status: Int) {
-        val call = RetrofitClient.getInstance().eventActivity(mUtils!!.getString("access_token", ""),
+        val call = RetrofitClient.getInstance().postActivity(mUtils!!.getString("access_token", ""),
                 mEventData!!.id, status)
         call.enqueue(object : Callback<BaseSuccessModel> {
             override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
                 if (response!!.body().response == null) {
                     /// change db status to previous
                     setPreviousDBStatus(status)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        sendDeleteBroadCast()
+                        finish()
+                    } else
+                        showAlert(llMainEvents, response.body().error!!.message!!)
                 }
             }
 
@@ -474,8 +480,16 @@ class EventsDetailActivity : BaseActivity() {
         })
     }
 
+    private fun sendDeleteBroadCast() {
+        db!!.deletePostById(mEventData!!.id)
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
+        broadCastIntent.putExtra("status", Constants.DELETE)
+        broadCastIntent.putExtra("postId", mEventData!!.id)
+        broadcaster!!.sendBroadcast(broadCastIntent)
+    }
+
     private fun hitBookmarkAPI(postId: Int) {
-        val call = RetrofitClient.getInstance().eventBookmark(mUtils!!.getString("access_token", ""),
+        val call = RetrofitClient.getInstance().markBookmark(mUtils!!.getString("access_token", ""),
                 postId)
         call.enqueue(object : Callback<BaseSuccessModel> {
 
@@ -485,13 +499,16 @@ class EventsDetailActivity : BaseActivity() {
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        sendDeleteBroadCast()
+                        finish()
                     } else
-                        showAlert(rvEventsListing, response.body().error!!.message!!)
+                        showAlert(llMainEvents, response.body().error!!.message!!)
                 }
             }
-
             override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
-                showAlert(rvEventsListing, t!!.localizedMessage)
+                showAlert(llMainEvents, t!!.localizedMessage)
             }
         })
     }
@@ -525,7 +542,7 @@ class EventsDetailActivity : BaseActivity() {
 
     override fun onStart() {
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
-                IntentFilter(Constants.EVENT_BROADCAST))
+                IntentFilter(Constants.POST_BROADCAST))
         super.onStart()
     }
 
@@ -539,7 +556,8 @@ class EventsDetailActivity : BaseActivity() {
             try {
                 if (intent.getIntExtra("status", 0) == Constants.COMMENT) {
                     txtCommentCountEvents.text = "${intent.getIntExtra("commentCount", 0)} COMMENT(S)"
-
+                } else if (intent.getIntExtra("status", 0) == Constants.DELETE) {
+                    finish()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

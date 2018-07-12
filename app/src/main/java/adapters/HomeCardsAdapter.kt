@@ -94,9 +94,11 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 (holder as CommunityViewHolder)
                 holder.txtCommunityTitle.text = mCardsArray[position].title
                 holder.txtCommunityDesc.text = mCardsArray[position].description
-                holder.txtDateCommunity.text = Constants.displayDateTime(mCardsArray[position].date_time)
 
-                Picasso.with(mContext).load(mCardsArray[position].images[0].image_url).fit().into(holder.imgCommunityHome)
+                if (mCardsArray[position].date_time.isNotEmpty())
+                    holder.txtDateCommunity.text = Constants.displayDateTime(mCardsArray[position].date_time)
+
+                Picasso.with(mContext).load(mCardsArray[position].images[0].image_url).fit().into(holder.imgCommunityListing)
 
                 holder.cvClick.setOnClickListener {
                     mHomeFragment!!.moveToCommunityDetail(mCardsArray[position].id)
@@ -275,7 +277,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
 
     inner class CommunityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cvClick = itemView.cvCommunityListing!!
-        val imgCommunityHome = itemView.imgCommunityHome!!
+        val imgCommunityListing = itemView.imgCommunityListing!!
         val txtCommunityTitle = itemView.txtCommunityTitle!!
         val txtDateCommunity = itemView.txtDateCommunity!!
         val txtCommunityDesc = itemView.txtCommunityDesc!!

@@ -38,9 +38,9 @@ class BookmarkCommunityAdapter (mCommunityArray: ArrayList<CommunityModel>, mCon
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.cvCommunityListing.setOnClickListener {
-            mCommunityBookmark!!.moveToCommunityDetail()
-        }
+//        holder.cvCommunityListing.setOnClickListener {
+//            mCommunityBookmark!!.moveToCommunityDetail(mCommunityArray[position].id)
+//        }
     }
 
     override fun getItemCount(): Int {
@@ -51,7 +51,7 @@ class BookmarkCommunityAdapter (mCommunityArray: ArrayList<CommunityModel>, mCon
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cvCommunityListing = itemView.cvCommunityListing!!
         val imgCommunityListingBookmark= itemView.imgCommunityListingBookmark!!
-        val imgCommunity = itemView.imgCommunityHome!!
+        val imgCommunityListing = itemView.imgCommunityListing!!
         val txtCommunityTitle = itemView.txtCommunityTitle!!
         val txtDateCommunity = itemView.txtDateCommunity!!
         val txtCommunityDesc = itemView.txtCommunityDesc!!

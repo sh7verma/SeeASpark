@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.activity_comments.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
+import kotlinx.android.synthetic.main.fragment_event.*
 import models.BaseSuccessModel
 import models.CommentModel
 import models.SignupModel
@@ -104,11 +105,23 @@ class CommentsActivity : BaseActivity() {
                 , postId, mOffset)
         call.enqueue(object : Callback<CommentModel> {
             override fun onResponse(call: Call<CommentModel>?, response: Response<CommentModel>) {
-                if (mOffset == 1)
-                    dismissLoader()
-                populateData(response.body().response)
-                mCommentCount = response.body().comment_count
-                updateCommentCountByBroadcast()
+
+                if (response.body().response != null) {
+                    if (mOffset == 1)
+                        dismissLoader()
+                    populateData(response.body().response)
+                    mCommentCount = response.body().comment_count
+                    updateCommentCountByBroadcast()
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        sendDeleteBroadCast()
+                        finish()
+                    } else
+                        showAlert(rvEventsListing, response.body().error!!.message!!)
+                }
             }
 
             override fun onFailure(call: Call<CommentModel>?, t: Throwable?) {
@@ -116,6 +129,14 @@ class CommentsActivity : BaseActivity() {
                     dismissLoader()
             }
         })
+    }
+
+    private fun sendDeleteBroadCast() {
+        db!!.deletePostById(postId)
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
+        broadCastIntent.putExtra("status", Constants.DELETE)
+        broadCastIntent.putExtra("postId", postId)
+        broadcaster!!.sendBroadcast(broadCastIntent)
     }
 
     private fun populateData(response: List<CommentModel.ResponseBean>) {
@@ -194,8 +215,12 @@ class CommentsActivity : BaseActivity() {
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        sendDeleteBroadCast()
+                        finish()
                     } else
-                        showAlert(llMainComments, response.body().error!!.message!!)
+                        showAlert(rvEventsListing, response.body().error!!.message!!)
                 }
             }
 
@@ -232,10 +257,15 @@ class CommentsActivity : BaseActivity() {
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        sendDeleteBroadCast()
+                        finish()
                     } else
-                        showAlert(llMainComments, response.body().error!!.message!!)
+                        showAlert(rvEventsListing, response.body().error!!.message!!)
                 }
             }
+
             override fun onFailure(call: Call<CommentModel>?, t: Throwable?) {
 
             }
@@ -243,9 +273,9 @@ class CommentsActivity : BaseActivity() {
     }
 
     private fun updateCommentCountByBroadcast() {
-        db!!.updateCommentCount(postId,mCommentCount)
+        db!!.updateCommentCount(postId, mCommentCount)
         txtCommentsCount.text = "$mCommentCount COMMENTS"
-        val broadCastIntent = Intent(Constants.EVENT_BROADCAST)
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
         broadCastIntent.putExtra("status", Constants.COMMENT)
         broadCastIntent.putExtra("commentCount", mCommentCount)
         broadCastIntent.putExtra("postId", postId)
@@ -264,7 +294,7 @@ class CommentsActivity : BaseActivity() {
     }
 
     private fun getDate(): String {
-        val formatter = SimpleDateFormat("dd MMM yyyy, hh:mm aa",Locale.US)
+        val formatter = SimpleDateFormat("dd MMM yyyy, hh:mm aa", Locale.US)
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = System.currentTimeMillis()
         return formatter.format(calendar.time)

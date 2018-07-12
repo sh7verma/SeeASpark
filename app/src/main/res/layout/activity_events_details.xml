@@ -6,7 +6,6 @@
     android:background="@color/white_color"
     android:orientation="vertical">
 
-
     <ImageView
         android:id="@+id/imgEventDetail"
         android:layout_width="match_parent"

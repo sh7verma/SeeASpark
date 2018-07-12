@@ -56,7 +56,7 @@ class AvatarAdapter(mAvatarArray: ArrayList<AvatarModel>, mContext: Context, mCr
             holder.imgTick.visibility = View.INVISIBLE
         }
 
-        Picasso.with(mContext).load(mAvatarArray[position].avtar_url).resize(width, width).into(holder.imgAvatar)
+        Picasso.with(mContext).load(mAvatarArray[position].avtar_url).resize(width, width).placeholder(R.drawable.placeholder_image).into(holder.imgAvatar)
 
         Picasso.with(mContext).load(R.drawable.avatar_selected).resize(width, width).into(holder.llSelected)
 

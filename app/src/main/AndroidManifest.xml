@@ -335,6 +335,7 @@
             android:theme="@style/MainActionBarTheme"
             android:windowSoftInputMode="stateVisible" />
 
+
         <service android:name="services.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

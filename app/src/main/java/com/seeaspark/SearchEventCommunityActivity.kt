@@ -12,9 +12,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_search_events.*
 import models.BaseSuccessModel
-import models.CommunityModel
 import models.PostModel
 import network.RetrofitClient
 import retrofit2.Call
@@ -26,7 +27,7 @@ class SearchEventCommunityActivity : BaseActivity() {
 
     private var mCommunityAdapter: CommunityAdapter? = null
     private var mEventsAdapter: EventsAdapter? = null
-    private var mCommunityArray = ArrayList<CommunityModel>()
+    private var mCommunityArray = ArrayList<PostModel.ResponseBean>()
     private var mEventsArray = ArrayList<PostModel.ResponseBean>()
     private var mSearchInstance: SearchEventCommunityActivity? = null
     private var mLayoutManager: LinearLayoutManager? = null
@@ -63,14 +64,6 @@ class SearchEventCommunityActivity : BaseActivity() {
         if (intent.getStringExtra("path") == "community")
             isCommunity = true
 
-        if (isCommunity) {
-            mCommunityAdapter = CommunityAdapter(mCommunityArray, mContext!!, mSearchInstance!!, null)
-            rvSearchEventCommunity.adapter = mCommunityAdapter
-        } else {
-            mEventsAdapter = EventsAdapter(mContext!!, mEventsArray, null, mSearchInstance!!)
-            rvSearchEventCommunity.adapter = mEventsAdapter
-        }
-
         edSearchEventCommunity.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
 
@@ -81,28 +74,48 @@ class SearchEventCommunityActivity : BaseActivity() {
             }
 
             override fun onTextChanged(char: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (connectedToInternet()) {
-                    hitAPI(char.toString())
-                }
+                /* if (connectedToInternet()) {
+                     hitAPI(char.toString())
+                 }*/
             }
         })
 
+        edSearchEventCommunity.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if (connectedToInternet()) {
+                    if (edSearchEventCommunity.text.toString().trim({ it <= ' ' }).isNotEmpty()) {
+                        Constants.closeKeyboard(mContext, llMainSearchEvents)
+                        hitAPI(edSearchEventCommunity.text.toString())
+                    }
+                } else
+                    showInternetAlert(llMainSearchEvents)
+                return@OnEditorActionListener true
+            }
+            false
+        })
     }
 
     private fun hitAPI(searchText: String) {
-
         if (isBookmark) {
             /// search from bookmark
             if (isCommunity) {
                 /// community section
-                val call = RetrofitClient.getInstance().searchPost(mUtils!!.getString("access_token", ""), Constants.COMMUNITY, searchText, mOffset)
+                val call = RetrofitClient.getInstance().searchBookmarkPost(mUtils!!.getString("access_token", ""),
+                        Constants.COMMUNITY, searchText, mOffset)
                 call.enqueue(object : Callback<PostModel> {
-                    override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>?) {
-
+                    override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>) {
+                        if (response.body().response != null) {
+                            populateCommunityData(response.body().response)
+                        } else {
+                            if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                moveToSplash()
+                            } else
+                                showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
+                        }
                     }
 
                     override fun onFailure(call: Call<PostModel>?, t: Throwable?) {
-
+                        showAlert(llMainSearchEvents, t!!.localizedMessage)
                     }
                 })
             } else {
@@ -112,7 +125,7 @@ class SearchEventCommunityActivity : BaseActivity() {
                 call.enqueue(object : Callback<PostModel> {
                     override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>) {
                         if (response.body().response != null) {
-                            populateData(response.body().response)
+                            populateEventData(response.body().response)
                         } else {
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                                 moveToSplash()
@@ -129,13 +142,22 @@ class SearchEventCommunityActivity : BaseActivity() {
         } else {
             if (isCommunity) {
                 /// community section
-                val call = RetrofitClient.getInstance().searchPost(mUtils!!.getString("access_token", ""), Constants.COMMUNITY, searchText, mOffset)
+                val call = RetrofitClient.getInstance().searchPost(mUtils!!.getString("access_token", ""),
+                        Constants.COMMUNITY, searchText, mOffset)
                 call.enqueue(object : Callback<PostModel> {
-                    override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>?) {
-
+                    override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>) {
+                        if (response.body().response != null) {
+                            populateCommunityData(response.body().response)
+                        } else {
+                            if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                moveToSplash()
+                            } else
+                                showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
+                        }
                     }
 
                     override fun onFailure(call: Call<PostModel>?, t: Throwable?) {
+                        showAlert(llMainSearchEvents, t!!.localizedMessage)
                     }
                 })
             } else {
@@ -145,7 +167,7 @@ class SearchEventCommunityActivity : BaseActivity() {
                 call.enqueue(object : Callback<PostModel> {
                     override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>) {
                         if (response.body().response != null) {
-                            populateData(response.body().response)
+                            populateEventData(response.body().response)
                         } else {
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                                 moveToSplash()
@@ -162,7 +184,23 @@ class SearchEventCommunityActivity : BaseActivity() {
         }
     }
 
-    private fun populateData(response: MutableList<PostModel.ResponseBean>) {
+    private fun populateCommunityData(response: List<PostModel.ResponseBean>) {
+        mCommunityArray.clear()
+        mCommunityArray.addAll(response)
+        if (mOffset == 1) {
+            if (mCommunityArray.size == 0)
+                txtNoResultFound.visibility = View.VISIBLE
+            else {
+                txtNoResultFound.visibility = View.GONE
+                mCommunityAdapter = CommunityAdapter(mCommunityArray, mContext!!, mSearchInstance!!, null)
+                rvSearchEventCommunity.adapter = mCommunityAdapter
+            }
+        } else {
+            mCommunityAdapter!!.notifyDataSetChanged()
+        }
+    }
+
+    private fun populateEventData(response: MutableList<PostModel.ResponseBean>) {
         mEventsArray.clear()
         mEventsArray.addAll(response)
         if (mOffset == 1) {
@@ -191,6 +229,17 @@ class SearchEventCommunityActivity : BaseActivity() {
                 moveBack()
             }
             imgCancelSearch -> {
+                if (isCommunity) {
+                    mCommunityArray.clear()
+                    if (mCommunityAdapter != null) {
+                        mCommunityAdapter!!.notifyDataSetChanged()
+                    }
+                } else {
+                    mEventsArray.clear()
+                    if (mEventsAdapter != null) {
+                        mEventsAdapter!!.notifyDataSetChanged()
+                    }
+                }
                 edSearchEventCommunity.setText(Constants.EMPTY)
             }
         }
@@ -202,9 +251,10 @@ class SearchEventCommunityActivity : BaseActivity() {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }
 
-    fun moveToCommunityDetail() {
+    fun moveToCommunityDetail(communityId: Int) {
         if (connectedToInternet()) {
             val intent = Intent(mContext, CommunityDetailActivity::class.java)
+            intent.putExtra("communityId", communityId)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         } else
@@ -222,25 +272,35 @@ class SearchEventCommunityActivity : BaseActivity() {
     }
 
     fun updateLikeStatus(likedStatus: Int, postId: Int, likeCount: Int) {
-        db!!.updateLikeEventStatus(postId, likedStatus, likeCount)
+        db!!.updateLikeStatus(postId, likedStatus, likeCount)
         sendEventLikeBroadcast(postId, likedStatus)
         hitLikeAPI(postId)
     }
 
     fun updateBookmarkStatus(bookmarked: Int, postId: Int) {
-        db!!.updateBookmarkEventStatus(postId, bookmarked)
+        db!!.updateBookmarkStatus(postId, bookmarked)
         sendEventBookMarkBroadcast(postId, bookmarked)
         hitBookmarkAPI(bookmarked, postId)
     }
 
     private fun hitLikeAPI(postId: Int) {
-        val call = RetrofitClient.getInstance().eventActivity(mUtils!!.getString("access_token", ""),
+        val call = RetrofitClient.getInstance().postActivity(mUtils!!.getString("access_token", ""),
                 postId, Constants.LIKE)
         call.enqueue(object : Callback<BaseSuccessModel> {
             override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
                 if (response!!.body().response == null) {
                     /// change db status to previous
                     setPreviousDBStatus(postId)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        if (isCommunity)
+                            removeCommunityElement(postId)
+                        else
+                            removeEventElement(postId)
+                    } else
+                        showAlert(llMainSearchEvents, response.body().error!!.message!!)
                 }
             }
 
@@ -252,7 +312,7 @@ class SearchEventCommunityActivity : BaseActivity() {
     }
 
     private fun hitBookmarkAPI(bookmarked: Int, postId: Int) {
-        val call = RetrofitClient.getInstance().eventBookmark(mUtils!!.getString("access_token", ""),
+        val call = RetrofitClient.getInstance().markBookmark(mUtils!!.getString("access_token", ""),
                 postId)
         call.enqueue(object : Callback<BaseSuccessModel> {
 
@@ -262,8 +322,14 @@ class SearchEventCommunityActivity : BaseActivity() {
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        if (isCommunity)
+                            removeCommunityElement(postId)
+                        else
+                            removeEventElement(postId)
                     } else
-                        showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
+                        showAlert(llMainSearchEvents, response.body().error!!.message!!)
                 }
             }
 
@@ -278,14 +344,14 @@ class SearchEventCommunityActivity : BaseActivity() {
     }
 
     private fun sendEventLikeBroadcast(postId: Int, likedStatus: Int) {
-        val broadCastIntent = Intent(Constants.EVENT_BROADCAST)
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
         broadCastIntent.putExtra("status", likedStatus)
         broadCastIntent.putExtra("postId", postId)
         broadcaster!!.sendBroadcast(broadCastIntent)
     }
 
     private fun sendEventBookMarkBroadcast(postId: Int, bookmarked: Int) {
-        val broadCastIntent = Intent(Constants.EVENT_BROADCAST)
+        val broadCastIntent = Intent(Constants.POST_BROADCAST)
         broadCastIntent.putExtra("status", Constants.BOOKMARK)
         broadCastIntent.putExtra("bookmarkStatus", bookmarked)
         broadCastIntent.putExtra("postId", postId)
@@ -294,7 +360,7 @@ class SearchEventCommunityActivity : BaseActivity() {
 
     override fun onStart() {
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
-                IntentFilter(Constants.EVENT_BROADCAST))
+                IntentFilter(Constants.POST_BROADCAST))
         super.onStart()
     }
 
@@ -319,53 +385,133 @@ class SearchEventCommunityActivity : BaseActivity() {
                 if (mCurrentVisible == 0) {/// only work user performed operations from other activities
                     if (intent.getIntExtra("status", 0) == Constants.LIKED) {
                         Log.e("Liked = ", "Yes")
-                        for ((index, eventData) in mEventsArray.withIndex()) {
-                            if (eventData.id == intent.getIntExtra("postId", 0)
-                                    && eventData.liked == Constants.UNLIKED) {
-                                eventData.liked = Constants.LIKED
-                                eventData.like++
-                                mEventsArray[index] = eventData
-                                break
+                        if (isCommunity) {
+                            for ((index, communityData) in mCommunityArray.withIndex()) {
+                                if (communityData.id == intent.getIntExtra("postId", 0)
+                                        && communityData.liked == Constants.UNLIKED) {
+                                    communityData.liked = Constants.LIKED
+                                    communityData.like++
+                                    mCommunityArray[index] = communityData
+                                    break
+                                }
                             }
+                            mCommunityAdapter!!.notifyDataSetChanged()
+                        } else {
+                            for ((index, eventData) in mEventsArray.withIndex()) {
+                                if (eventData.id == intent.getIntExtra("postId", 0)
+                                        && eventData.liked == Constants.UNLIKED) {
+                                    eventData.liked = Constants.LIKED
+                                    eventData.like++
+                                    mEventsArray[index] = eventData
+                                    break
+                                }
+                            }
+                            mEventsAdapter!!.notifyDataSetChanged()
                         }
-                        mEventsAdapter!!.notifyDataSetChanged()
                     } else if (intent.getIntExtra("status", 0) == Constants.UNLIKED) {
                         Log.e("Liked = ", "No")
-                        for ((index, eventData) in mEventsArray.withIndex()) {
-                            if (eventData.id == intent.getIntExtra("postId", 0)
-                                    && eventData.liked == Constants.LIKED) {
-                                eventData.liked = Constants.UNLIKED
-                                eventData.like--
-                                mEventsArray[index] = eventData
-                                break
+                        if (isCommunity) {
+                            for ((index, communityData) in mCommunityArray.withIndex()) {
+                                if (communityData.id == intent.getIntExtra("postId", 0)
+                                        && communityData.liked == Constants.LIKED) {
+                                    communityData.liked = Constants.UNLIKED
+                                    communityData.like--
+                                    mCommunityArray[index] = communityData
+                                    break
+                                }
                             }
+                            mCommunityAdapter!!.notifyDataSetChanged()
+                        } else {
+                            for ((index, eventData) in mEventsArray.withIndex()) {
+                                if (eventData.id == intent.getIntExtra("postId", 0)
+                                        && eventData.liked == Constants.LIKED) {
+                                    eventData.liked = Constants.UNLIKED
+                                    eventData.like--
+                                    mEventsArray[index] = eventData
+                                    break
+                                }
+                            }
+                            mEventsAdapter!!.notifyDataSetChanged()
                         }
-                        mEventsAdapter!!.notifyDataSetChanged()
                     } else if (intent.getIntExtra("status", 0) == Constants.BOOKMARK) {
                         Log.e("Bookmark = ", "Yes")
-                        for ((index, eventData) in mEventsArray.withIndex()) {
-                            if (eventData.id == intent.getIntExtra("postId", 0)) {
-                                eventData.bookmarked = intent.getIntExtra("bookmarkStatus", 0)
-                                mEventsArray[index] = eventData
-                                break
+                        if (isCommunity) {
+                            for ((index, communityData) in mCommunityArray.withIndex()) {
+                                if (communityData.id == intent.getIntExtra("postId", 0)) {
+                                    communityData.bookmarked = intent.getIntExtra("bookmarkStatus", 0)
+                                    mCommunityArray[index] = communityData
+                                    break
+                                }
                             }
+                            mCommunityAdapter!!.notifyDataSetChanged()
+                        } else {
+                            for ((index, eventData) in mEventsArray.withIndex()) {
+                                if (eventData.id == intent.getIntExtra("postId", 0)) {
+                                    eventData.bookmarked = intent.getIntExtra("bookmarkStatus", 0)
+                                    mEventsArray[index] = eventData
+                                    break
+                                }
+                            }
+                            mEventsAdapter!!.notifyDataSetChanged()
                         }
-                        mEventsAdapter!!.notifyDataSetChanged()
                     } else if (intent.getIntExtra("status", 0) == Constants.COMMENT) {
                         Log.e("comment = ", "Yes")
-                        for ((index, eventData) in mEventsArray.withIndex()) {
-                            if (eventData.id == intent.getIntExtra("postId", 0)) {
-                                eventData.comment = intent.getIntExtra("commentCount", 0)
-                                mEventsArray[index] = eventData
-                                break
+                        if (isCommunity) {
+                            for ((index, communityData) in mCommunityArray.withIndex()) {
+                                if (communityData.id == intent.getIntExtra("postId", 0)) {
+                                    communityData.comment = intent.getIntExtra("commentCount", 0)
+                                    mCommunityArray[index] = communityData
+                                    break
+                                }
                             }
+                            mCommunityAdapter!!.notifyDataSetChanged()
+                        } else {
+                            for ((index, eventData) in mEventsArray.withIndex()) {
+                                if (eventData.id == intent.getIntExtra("postId", 0)) {
+                                    eventData.comment = intent.getIntExtra("commentCount", 0)
+                                    mEventsArray[index] = eventData
+                                    break
+                                }
+                            }
+                            mEventsAdapter!!.notifyDataSetChanged()
                         }
-                        mEventsAdapter!!.notifyDataSetChanged()
+                    } else if (intent.getIntExtra("status", 0) == Constants.DELETE) {
+                        Log.e("comment = ", "Yes")
+                        if (isCommunity) {
+                            removeCommunityElement(intent.getIntExtra("postId", 0))
+                        } else {
+                            removeEventElement(intent.getIntExtra("postId", 0))
+                        }
                     }
+
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
+    private fun removeEventElement(postId: Int) {
+        for ((index, postData) in mEventsArray.withIndex()) {
+            if (postData.id == postId) {
+                db!!.deletePostById(postId)
+                mEventsArray.remove(postData)
+                mEventsAdapter!!.notifyDataSetChanged()
+                break
+            }
+        }
+    }
+
+    private fun removeCommunityElement(postId: Int) {
+        for ((index, postData) in mCommunityArray.withIndex()) {
+            if (postData.id == postId) {
+                db!!.deletePostById(postId)
+                mCommunityArray.remove(postData)
+                mCommunityAdapter!!.notifyDataSetChanged()
+                break
+            }
+        }
+    }
+
+
 }

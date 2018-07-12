@@ -50,26 +50,26 @@ class ShareIdeaActivity : BaseActivity() {
     }
 
     override fun initListener() {
-        txtSend.setOnClickListener(this)
-        txtCancel.setOnClickListener(this)
+        imgCancelIdea.setOnClickListener(this)
+        imgDoneIdea.setOnClickListener(this)
     }
 
     override fun getContext() = this
     override fun onClick(view: View?) {
         when (view) {
-            txtCancel -> {
+            imgCancelIdea -> {
                 finish()
             }
-            txtSend -> {
+            imgDoneIdea -> {
                 if (edSubject.text.toString().trim().isEmpty())
-                    showAlert(txtSend, getString(R.string.error_subject))
+                    showAlert(imgDoneIdea, getString(R.string.error_subject))
                 else if (edContent.text.toString().trim().isEmpty())
-                    showAlert(txtSend, getString(R.string.error_content))
+                    showAlert(imgDoneIdea, getString(R.string.error_content))
                 else {
                     if (connectedToInternet())
                         hitAPI()
                     else
-                        showInternetAlert(txtSend)
+                        showInternetAlert(imgDoneIdea)
                 }
             }
         }

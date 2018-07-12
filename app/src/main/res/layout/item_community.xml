@@ -17,7 +17,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/imgCommunityHome"
+            android:id="@+id/imgCommunityListing"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_160sdp"
             android:background="@color/greyTextColor" />
@@ -25,7 +25,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imgCommunityHome"
+            android:layout_below="@+id/imgCommunityListing"
             android:orientation="vertical"
             android:paddingLeft="@dimen/_8sdp"
             android:paddingRight="@dimen/_8sdp"

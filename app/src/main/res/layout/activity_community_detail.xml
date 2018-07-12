@@ -6,9 +6,10 @@
     android:background="@color/white_color"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/imgCommunityDetail"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_200sdp"
+        android:layout_height="@dimen/_240sdp"
         android:background="@drawable/background_gradient" />
 
     <customviews.ScrollViewX
@@ -46,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/_5sdp"
                     android:paddingBottom="@dimen/_8sdp"
-                    android:text="Southren"
+                    android:text="Not Specified"
                     android:textColor="@color/greyTextColor"
                     android:textSize="@dimen/_12ssp" />
 

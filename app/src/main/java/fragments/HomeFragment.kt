@@ -40,7 +40,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     var mContext: Context? = null
     private var mAdapterCards: HomeCardsAdapter? = null
     private var mHomeFragment: HomeFragment? = null
-    private var mArrayCards = ArrayList<CardsDisplayModel>()
+
     private var mUtils: Utils? = null
     private var mOffset = 1
 
@@ -72,6 +72,10 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             displayDayMode()
 
         initListener()
+
+        if (mLandingInstance!!.mLatitude != 0.0 && mLandingInstance!!.mLatitude != 0.0)
+            displayCards()
+
         onCreateStuff()
         super.onActivityCreated(savedInstanceState)
     }
@@ -100,8 +104,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             txtTitleHome.text = getString(R.string.mentors)
         else
             txtTitleHome.text = getString(R.string.mentees)
-
-        var drawable = ContextCompat.getDrawable(mContext!!, R.mipmap.ic_ava_ob)
+        val drawable = ContextCompat.getDrawable(mContext!!, R.mipmap.ic_ava_ob)
 
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
@@ -111,24 +114,24 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
 
         mLayoutManager = LinearLayoutManager(mContext)
 
-        rvCards.layoutManager = mLayoutManager
+        rvCards.layoutManager = mLayoutManager!!
 
         rvCards.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                visibleThreshold = mLayoutManager!!.getChildCount()
+                visibleThreshold = mLayoutManager!!.childCount
                 totalItemCount = mLayoutManager!!.itemCount;
                 lastVisibleItem = mLayoutManager!!.findLastVisibleItemPosition()
 
                 if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
-                    if (mArrayCards.size > 5) {
+                    if (mLandingInstance!!.mArrayCards.size > 5) {
                         if (mLandingInstance!!.connectedToInternet()) {
                             mOffset++
                             val cardsDisplayModel = CardsDisplayModel()
                             cardsDisplayModel.post_type = Constants.PROGRESS
-                            mArrayCards.add(cardsDisplayModel)
-                            rvCards.post(Runnable { mAdapterCards!!.notifyItemInserted(mArrayCards.size - 1) })
+                            mLandingInstance!!.mArrayCards.add(cardsDisplayModel)
+                            rvCards.post(Runnable { mAdapterCards!!.notifyItemInserted(mLandingInstance!!.mArrayCards.size - 1) })
                             hitAPI(false)
                             isLoading = true
                         }
@@ -164,16 +167,11 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                     if (mOffset == 1)
                         populateData(response.body())
                     else {
-                        mArrayCards.removeAt(mArrayCards.size - 1)
-                        mAdapterCards!!.notifyItemRemoved(mArrayCards.size)
-
-                        /* for (cardData in response.body().response) {
-                             mArrayCards.add(cardData);
-                             mAdapterCards!!.notifyItemInserted(mArrayCards.size - 1);
-                         }*/
+                        mLandingInstance!!.mArrayCards.removeAt(mLandingInstance!!.mArrayCards.size - 1)
+                        mAdapterCards!!.notifyItemRemoved(mLandingInstance!!.mArrayCards.size)
 
                         if (response.body().response.size > 0) {
-                            mArrayCards.addAll(response.body().response)
+                            mLandingInstance!!.mArrayCards.addAll(response.body().response)
                             mAdapterCards!!.notifyDataSetChanged()
                             isLoading = false
                         } else {
@@ -196,37 +194,45 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     }
 
     private fun populateData(response: CardModel) {
+        if (llMainHomeFrag != null) {
+            if (srlCards != null && srlCards.isRefreshing)
+                srlCards.isRefreshing = false
 
-        if (srlCards.isRefreshing)
-            srlCards.isRefreshing = false
+            mLandingInstance!!.mArrayCards.clear()
 
-        mArrayCards.clear()
-
-        for (cardsValue in response.response) {
-            mArrayCards.add(cardsValue)
-        }
-
-        for (postValue in response.posts) {
-            mArrayCards.add(postValue)
-
-            val postData = createPostData(postValue)
-
-            mLandingInstance!!.db!!.addPosts(postData)
-            for (imagesData in postData.images) {
-                mLandingInstance!!.db!!.addPostImages(imagesData, postData.id.toString(), Constants.EVENT)
+            for (cardsValue in response.response) {
+                mLandingInstance!!.mArrayCards.add(cardsValue)
             }
-            for (goingUserData in postData.going_list) {
-                mLandingInstance!!.db!!.addPostGoingUsers(goingUserData, postData.id.toString())
-            }
-        }
 
-        if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTEE) {
-            val cardsDisplayModel = CardsDisplayModel()
-            cardsDisplayModel.post_type = 3
-            cardsDisplayModel.time_left = response.time_left
-            mArrayCards.add(cardsDisplayModel)
+            for (postValue in response.posts) {
+                mLandingInstance!!.mArrayCards.add(postValue)
+
+                val postData = createPostData(postValue)
+
+                mLandingInstance!!.db!!.addPosts(postData)
+                for (imagesData in postData.images) {
+                    if (postValue.post_type == Constants.EVENT)
+                        mLandingInstance!!.db!!.addPostImages(imagesData, postData.id.toString(), Constants.EVENT)
+                    else
+                        mLandingInstance!!.db!!.addPostImages(imagesData, postData.id.toString(), Constants.COMMUNITY)
+                }
+                for (goingUserData in postData.going_list) {
+                    mLandingInstance!!.db!!.addPostGoingUsers(goingUserData, postData.id.toString())
+                }
+            }
+
+            if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTEE) {
+                val cardsDisplayModel = CardsDisplayModel()
+                cardsDisplayModel.post_type = 3
+                cardsDisplayModel.time_left = response.time_left
+                mLandingInstance!!.mArrayCards.add(cardsDisplayModel)
+            }
+            displayCards()
         }
-        mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
+    }
+
+    private fun displayCards() {
+        mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
         rvCards.adapter = mAdapterCards
     }
 
@@ -286,7 +292,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
 
     fun swipeRightLeft(swiped: Int, id: Int) {
         if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTOR) {
-            if (mArrayCards.size == 0) {
+            if (mLandingInstance!!.mArrayCards.size == 0) {
                 rvCards.visibility = View.GONE
                 llOutOfCards.visibility = View.VISIBLE
             }
@@ -378,16 +384,16 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
         if (isConnected) {
-            if (mArrayCards.size == 0) {
+            if (mLandingInstance!!.mArrayCards.size == 0) {
                 mOffset = 1
                 isLoading = false
                 hitAPI(true)
             } else {
-                mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
+                mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
                 rvCards.adapter = mAdapterCards
             }
         } else {
-            mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
+            mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
             rvCards.adapter = mAdapterCards
         }
     }
@@ -403,14 +409,19 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
 
             isLoading = false
             mOffset = 1
-            mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
+            mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
             rvCards.adapter = mAdapterCards
         }
     }
 
     fun moveToCommunityDetail(postId: Int) {
-
-
+        if (mLandingInstance!!.connectedToInternet()) {
+            val intent = Intent(mContext, CommunityDetailActivity::class.java)
+            intent.putExtra("communityId", postId)
+            startActivity(intent)
+            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        } else
+            mLandingInstance!!.showInternetAlert(rvEventsListing)
     }
 
     fun moveToEventDetail(postId: Int) {

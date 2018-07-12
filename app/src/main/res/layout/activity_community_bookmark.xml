@@ -11,10 +11,30 @@
         android:layout_height="1dp"
         android:background="@color/greyLine" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvCommunityBookmark"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background_color" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvCommunityBookmark"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_color" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtNoCommunityBookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawablePadding="@dimen/_8sdp"
+            android:drawableTop="@mipmap/ill_events"
+            android:gravity="center"
+            android:text="@string/no_community_available"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
 
 </LinearLayout>

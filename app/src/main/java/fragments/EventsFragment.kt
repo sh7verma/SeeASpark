@@ -12,6 +12,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +41,11 @@ class EventsFragment : Fragment(), View.OnClickListener {
     private var mEventsArray = ArrayList<PostModel.ResponseBean>()
     private var mEventFragment: EventsFragment? = null
 
-    private val mOffset: Int = 1
+    private var totalItemCount: Int = 0
+    private var lastVisibleItem: Int = 0
+    private var visibleThreshold: Int = 3
+    var isLoading: Boolean = false
+    private var mOffset: Int = 1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_event, container, false)
@@ -74,6 +79,34 @@ class EventsFragment : Fragment(), View.OnClickListener {
         mLayoutManager = LinearLayoutManager(mContext)
 
         rvEventsListing.layoutManager = mLayoutManager
+
+        rvEventsListing.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                visibleThreshold = mLayoutManager!!.childCount
+                totalItemCount = mLayoutManager!!.itemCount;
+                lastVisibleItem = mLayoutManager!!.findLastVisibleItemPosition()
+
+                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    if (mEventsArray.size > 5) {
+                        if (mLandingInstance!!.connectedToInternet()) {
+                            mOffset++
+                            val postModel = PostModel.ResponseBean()
+                            postModel.post_type = Constants.PROGRESS
+                            mEventsArray.add(postModel)
+                            rvEventsListing.post(Runnable { mEventsAdapter!!.notifyItemInserted(mEventsArray.size - 1) })
+                            hitAPI(false)
+                            isLoading = true
+                        }
+                    }
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+        })
 
         mUtils = Utils(activity)
         if (mUtils!!.getInt("nightMode", 0) == 1)
@@ -143,7 +176,12 @@ class EventsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun addToLocalDatabase(response: List<PostModel.ResponseBean>) {
-        mLandingInstance!!.db!!.deleteEventData(Constants.EVENT)
+        if (mOffset == 1)
+            mLandingInstance!!.db!!.deleteEventData(Constants.EVENT)
+        else {
+            isLoading = response.isEmpty()
+        }
+
         for (responseData in response) {
             mLandingInstance!!.db!!.addPosts(responseData)
             for (imagesData in responseData.images) {
@@ -157,17 +195,25 @@ class EventsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun populateData() {
-        mEventsArray.clear()
-        mEventsArray.addAll(mLandingInstance!!.db!!.getPostsByType(Constants.EVENT))
-        if (rvEventsListing.adapter == null) {
-            if (mEventsArray.size == 0) {
-                txtNoEventsListing.visibility = View.VISIBLE
-            } else {
-                mEventsAdapter = EventsAdapter(mContext, mEventsArray, mEventFragment)
-                rvEventsListing.adapter = mEventsAdapter
+        if (llMainEventFrag != null) {
+            if (mOffset == 1)
+                mEventsArray.clear()
+            else {
+                mEventsArray.removeAt(mEventsArray.size - 1)
+                mEventsAdapter!!.notifyItemRemoved(mEventsArray.size)
             }
-        } else {
-            mEventsAdapter!!.notifyDataSetChanged()
+
+            mEventsArray.addAll(mLandingInstance!!.db!!.getPostsByType(Constants.EVENT))
+            if (rvEventsListing.adapter == null) {
+                if (mEventsArray.size == 0) {
+                    txtNoEventsListing.visibility = View.VISIBLE
+                } else {
+                    mEventsAdapter = EventsAdapter(mContext, mEventsArray, mEventFragment)
+                    rvEventsListing.adapter = mEventsAdapter
+                }
+            } else {
+                mEventsAdapter!!.notifyDataSetChanged()
+            }
         }
     }
 
@@ -210,7 +256,7 @@ class EventsFragment : Fragment(), View.OnClickListener {
 
     override fun onStart() {
         LocalBroadcastManager.getInstance(activity).registerReceiver(receiver,
-                IntentFilter(Constants.EVENT_BROADCAST))
+                IntentFilter(Constants.POST_BROADCAST))
         super.onStart()
     }
 
@@ -220,18 +266,25 @@ class EventsFragment : Fragment(), View.OnClickListener {
     }
 
     fun updateLikeStatus(likedStatus: Int, postId: Int, likeCount: Int) {
-        mLandingInstance!!.db!!.updateLikeEventStatus(postId, likedStatus, likeCount)
+        mLandingInstance!!.db!!.updateLikeStatus(postId, likedStatus, likeCount)
         hitLikeAPI(postId)
     }
 
     private fun hitLikeAPI(postId: Int) {
-        val call = RetrofitClient.getInstance().eventActivity(mUtils!!.getString("access_token", ""),
+        val call = RetrofitClient.getInstance().postActivity(mUtils!!.getString("access_token", ""),
                 postId, Constants.LIKE)
         call.enqueue(object : Callback<BaseSuccessModel> {
             override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
                 if (response!!.body().response == null) {
                     /// change db status to previous
                     setPreviousDBStatus(postId)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        mLandingInstance!!.moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        mLandingInstance!!.showToast(mContext!!, response.body().error!!.message!!)
+                        removeElement(postId)
+                    } else
+                        mLandingInstance!!.showAlert(rvEventsListing, response.body().error!!.message!!)
                 }
             }
 
@@ -247,12 +300,12 @@ class EventsFragment : Fragment(), View.OnClickListener {
     }
 
     fun updateBookmarkStatus(bookmarked: Int, postId: Int) {
-        mLandingInstance!!.db!!.updateBookmarkEventStatus(postId, bookmarked)
+        mLandingInstance!!.db!!.updateBookmarkStatus(postId, bookmarked)
         hitBookmarkAPI(bookmarked, postId)
     }
 
     private fun hitBookmarkAPI(bookmarked: Int, postId: Int) {
-        val call = RetrofitClient.getInstance().eventBookmark(mUtils!!.getString("access_token", ""),
+        val call = RetrofitClient.getInstance().markBookmark(mUtils!!.getString("access_token", ""),
                 postId)
         call.enqueue(object : Callback<BaseSuccessModel> {
 
@@ -262,6 +315,9 @@ class EventsFragment : Fragment(), View.OnClickListener {
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         mLandingInstance!!.moveToSplash()
+                    } else if (response.body().error!!.code == Constants.POST_DELETED) {
+                        mLandingInstance!!.showToast(mContext!!, response.body().error!!.message!!)
+                        removeElement(postId)
                     } else
                         mLandingInstance!!.showAlert(rvEventsListing, response.body().error!!.message!!)
                 }
@@ -272,6 +328,15 @@ class EventsFragment : Fragment(), View.OnClickListener {
             }
         })
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    fun resetData() {
+        if (mUtils!!.getInt("nightMode", 0) == 1)
+            displayNightMode()
+        else
+            displayDayMode()
+        populateData()
     }
 
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -321,6 +386,9 @@ class EventsFragment : Fragment(), View.OnClickListener {
                         }
                     }
                     mEventsAdapter!!.notifyDataSetChanged()
+                } else if (intent.getIntExtra("status", 0) == Constants.DELETE) {
+                    Log.e("Delete = ", "Yes")
+                    removeElement(intent.getIntExtra("postId", 0))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -329,5 +397,15 @@ class EventsFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun removeElement(postId: Int) {
+        for ((index, postData) in mEventsArray.withIndex()) {
+            if (postData.id == postId) {
+                mLandingInstance!!.db!!.deletePostById(postId)
+                mEventsArray.remove(postData)
+                mEventsAdapter!!.notifyDataSetChanged()
+                break
+            }
+        }
+    }
 
 }

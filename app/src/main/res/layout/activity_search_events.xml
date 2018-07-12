@@ -27,7 +27,10 @@
             android:layout_weight="1"
             android:background="@color/white_color"
             android:hint="Search..."
+            android:inputType="text"
+            android:imeOptions="actionSearch"
             android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@color/black_color"
             android:textColorHint="@color/greyTextColor"
             android:textSize="@dimen/_14ssp" />
@@ -36,8 +39,8 @@
             android:id="@+id/imgCancelSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/white_ripple"
             android:padding="@dimen/_12sdp"
+            android:background="@drawable/white_ripple"
             android:src="@mipmap/ic_cancel" />
 
     </LinearLayout>
