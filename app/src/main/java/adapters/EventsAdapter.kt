@@ -34,9 +34,9 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
     init {
         this.mEventsArray = mEventsArray
         this.mContext = mContext
-        mWidth = mEventFragment!!.mLandingInstance!!.mWidth
-        mWidth -= (mWidth / 9)
         mUtils = Utils(mContext)
+        mWidth = mUtils!!.getInt("width", 0)
+        mWidth -= (mWidth / 9)
         this.mEventFragment = mEventFragment
     }
 
@@ -89,7 +89,7 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
                         mSearchInstance != null -> mSearchInstance!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
                                 mEventsArray[position].id)
                         mBookmarkInstance != null -> mBookmarkInstance!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
-                                mEventsArray[position].id)
+                                mEventsArray[position].id, mEventsArray[position])
                     }
                 } else {
                     mEventsArray[position].bookmarked = 1
@@ -97,8 +97,6 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
                         mEventFragment != null -> mEventFragment!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
                                 mEventsArray[position].id)
                         mSearchInstance != null -> mSearchInstance!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
-                                mEventsArray[position].id)
-                        mBookmarkInstance != null -> mBookmarkInstance!!.updateBookmarkStatus(mEventsArray[position].bookmarked,
                                 mEventsArray[position].id)
                     }
                 }

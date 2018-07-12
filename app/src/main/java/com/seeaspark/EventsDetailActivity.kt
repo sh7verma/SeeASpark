@@ -1,6 +1,9 @@
 package com.seeaspark
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -8,6 +11,8 @@ import android.support.annotation.RequiresApi
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -516,5 +521,30 @@ class EventsDetailActivity : BaseActivity() {
             }
         }
         db!!.removeGoingUser(userData!!.response.id)
+    }
+
+    override fun onStart() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
+                IntentFilter(Constants.EVENT_BROADCAST))
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+        super.onDestroy()
+    }
+
+    private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            try {
+                if (intent.getIntExtra("status", 0) == Constants.COMMENT) {
+                    txtCommentCountEvents.text = "${intent.getIntExtra("commentCount", 0)} COMMENT(S)"
+
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
     }
 }

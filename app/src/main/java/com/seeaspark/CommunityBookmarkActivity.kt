@@ -78,6 +78,7 @@ class CommunityBookmarkActivity : BaseActivity() {
             imgOption1Custom -> {
                 intent = Intent(mContext, SearchEventCommunityActivity::class.java)
                 intent.putExtra("path", "community")
+                intent.putExtra("bookmark", "yes")
                 startActivity(intent)
             }
         }

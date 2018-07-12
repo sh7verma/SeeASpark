@@ -295,6 +295,22 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
+    public void updateCommentCount(int postId, int commentCount) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put(COMMENT_COUNT, commentCount);
+            db.update(POSTS_TABLE, cv, POST_ID + " = '" + postId + "'", null);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception = ", e + "");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+
     public void addPostGoingUsers(PostModel.ResponseBean.GoingUserBean goingUserData, String postId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();

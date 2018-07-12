@@ -69,7 +69,7 @@
     <string name="gender">Gender</string>
     <string name="experience">Experience</string>
     <string name="select_preferred_skills">Select Preferred\nSkills</string>
-    <string name="professions">Professions</string>
+    <string name="professions">Occupations</string>
 
 
     <string name="enter_email">Please enter email</string>
@@ -210,5 +210,6 @@
     <string name="not_interested">Not Interested</string>
     <string name="write_a_comment">Write a Comment...</string>
     <string name="comments">Comments</string>
+    <string name="no_events_available">No Events Available</string>
 
 </resources>

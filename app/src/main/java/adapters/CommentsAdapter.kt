@@ -13,10 +13,12 @@ import kotlinx.android.synthetic.main.item_comments.view.*
 import models.CommentModel
 import utils.Constants
 import utils.Utils
+import java.util.*
 
 class CommentsAdapter(mConetxt: Context, mCommentArray: ArrayList<CommentModel.ResponseBean>, mComments: CommentsActivity) : RecyclerView.Adapter<CommentsAdapter.ViewHolder>() {
 
     var mCommentArray = ArrayList<CommentModel.ResponseBean>()
+
     var mContext: Context? = null
     var mUtils: Utils? = null
     var mComments: CommentsActivity? = null
@@ -39,7 +41,10 @@ class CommentsAdapter(mConetxt: Context, mCommentArray: ArrayList<CommentModel.R
         Picasso.with(mContext).load(mCommentArray[position].avatar).into(holder.imgComments)
         holder.txtNameComments.text = mCommentArray[position].full_name
         holder.txtMessageComments.text = mCommentArray[position].description
-        holder.txtTimeComments.text = Constants.displayDateTime(mCommentArray[position].date_time)
+        if (mCommentArray[position].id != 0)
+            holder.txtTimeComments.text = Constants.displayDateTime(mCommentArray[position].date_time)
+        else
+            holder.txtTimeComments.text = mCommentArray[position].date_time
     }
 
     override fun getItemCount() = mCommentArray.size

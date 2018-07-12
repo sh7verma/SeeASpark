@@ -6,8 +6,17 @@ import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.view.View
 import kotlinx.android.synthetic.main.activity_share_idea.*
+import models.BaseSuccessModel
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import utils.Constants
 
 class ShareIdeaActivity : BaseActivity() {
+
+    var mPostType = 1
+
     override fun getContentView(): Int {
         this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
         return R.layout.activity_share_idea
@@ -36,7 +45,8 @@ class ShareIdeaActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
-
+        if (intent.getStringExtra("path") == "event")
+            mPostType = 2
     }
 
     override fun initListener() {
@@ -66,6 +76,28 @@ class ShareIdeaActivity : BaseActivity() {
     }
 
     private fun hitAPI() {
+        showLoader()
+        val call = RetrofitClient.getInstance().shareAnIdea(mUtils!!.getString("access_token", ""),
+                edSubject.text.toString().trim(), edContent.text.toString().trim(), mPostType)
+        call.enqueue(object : Callback<BaseSuccessModel> {
+            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>) {
+                dismissLoader()
+                if (response.body().response != null) {
+                    showToast(mContext!!, response.body().response.message)
+                    finish()
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else
+                        showAlert(llMainIdea, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
+                dismissLoader()
+            }
+
+        })
 
     }
 }

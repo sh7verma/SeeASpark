@@ -51,7 +51,6 @@
         android:ellipsize="end"
         android:gravity="top"
         android:inputType="textCapSentences|textMultiLine"
-        android:maxLength="80"
         android:padding="@dimen/_8sdp"
         android:textColor="@color/black_color"
         android:textColorHint="@color/greyTextColor"

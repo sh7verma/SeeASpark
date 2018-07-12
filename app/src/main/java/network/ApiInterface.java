@@ -173,5 +173,45 @@ public interface ApiInterface {
                                    @Query("post_id") int post_id,
                                    @Query("page") int page);
 
+    @FormUrlEncoded
+    @POST("/api/v1/comments")
+    Call<BaseSuccessModel> postComments(@Field("access_token") String access_token,
+                                        @Field("post_id") int post_id,
+                                        @Field("description") String description);
+
+    @FormUrlEncoded
+    @POST("/api/v1/comments/latest_comments")
+    Call<CommentModel> getLatestCommnets(@Field("access_token") String access_token,
+                                         @Field("post_id") int post_id,
+                                         @Field("last_id") int last_id);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/suggestions")
+    Call<BaseSuccessModel> shareAnIdea(@Field("access_token") String access_token,
+                                       @Field("title") String title,
+                                       @Field("description") String description,
+                                       @Field("post_type") int post_type);
+
+
+    @GET("/api/v1/bookmarks")
+    Call<PostModel> getBookmarkPosts(@Query("access_token") String access_token,
+                                     @Query("page") int page,
+                                     @Query("post_type") int post_type);
+
+    @FormUrlEncoded
+    @POST("/api/v1/posts/search_post")
+    Call<PostModel> searchPost(@Field("access_token") String access_token,
+                               @Field("post_type") int post_type,
+                               @Field("query") String query,
+                               @Field("page") int page);
+
+    @FormUrlEncoded
+    @POST("/api/v1/bookmarks/search")
+    Call<PostModel> searchBookmarkPost(@Field("access_token") String access_token,
+                                       @Field("post_type") int post_type,
+                                       @Field("query") String query,
+                                       @Field("page") int page);
+
 
 }

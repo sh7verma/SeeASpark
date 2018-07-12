@@ -72,6 +72,7 @@ public class Constants {
     public static final String EVENT_BROADCAST = "event_like";
     public static final String Community_BROADCAST = "community";
     public static final Integer BOOKMARK = 2;
+    public static final Integer COMMENT=3;
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
@@ -235,11 +236,11 @@ public class Constants {
 
     }
 
-    public static String convertSelectdDate(String endDate)
+    public static String convertSelectedDate(String endDate)
             throws ParseException {
         try {
-            SimpleDateFormat displayFormat = new SimpleDateFormat("dd MMM yyyy", Locale.US);
-            SimpleDateFormat parseFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            SimpleDateFormat displayFormat = new SimpleDateFormat("dd MMM yyyy, hh:mm aa", Locale.US);
+            SimpleDateFormat parseFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.US);
             return displayFormat.format(parseFormat.parse(endDate));
         } catch (Exception e) {
             e.printStackTrace();
@@ -287,7 +288,7 @@ public class Constants {
             }
         }
 
-        DateFormat dateFormat = new SimpleDateFormat("dd MMM, hh:mm aa");
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, hh:mm aa");
         return dateFormat.format(utc_create.getTime());
     }
 

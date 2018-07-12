@@ -99,7 +99,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 Picasso.with(mContext).load(mCardsArray[position].images[0].image_url).fit().into(holder.imgCommunityHome)
 
                 holder.cvClick.setOnClickListener {
-                    Toast.makeText(mContext, mContext!!.getString(R.string.work_in_progress), Toast.LENGTH_LONG).show()
+                    mHomeFragment!!.moveToCommunityDetail(mCardsArray[position].id)
                 }
             }
             Constants.EVENT -> {
@@ -111,7 +111,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 Picasso.with(mContext).load(mCardsArray[position].images[0].image_url).fit().into(holder.imgEventCard)
 
                 holder.txtEventExploreCard.setOnClickListener {
-                    Toast.makeText(mContext, mContext!!.getString(R.string.work_in_progress), Toast.LENGTH_LONG).show()
+                    mHomeFragment!!.moveToEventDetail(mCardsArray[position].id)
                 }
             }
             Constants.OUT_OF_CARD -> {

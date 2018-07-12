@@ -12,10 +12,30 @@
         android:layout_height="1dp"
         android:background="@color/greyLine" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvEventsListing"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background_color" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvEventsListing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background_color" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtNoEventsListing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawablePadding="@dimen/_8sdp"
+            android:drawableTop="@mipmap/ill_events"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="@string/no_events_available"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp" />
+
+
+    </RelativeLayout>
 
 </LinearLayout>

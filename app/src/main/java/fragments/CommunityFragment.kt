@@ -116,6 +116,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
             }
             imgOption2Custom -> {
                 intent = Intent(mContext, ShareIdeaActivity::class.java)
+                intent.putExtra("path","community")
                 startActivity(intent)
             }
         }

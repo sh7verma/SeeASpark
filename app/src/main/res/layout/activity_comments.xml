@@ -26,7 +26,8 @@
             android:layout_height="wrap_content"
             android:background="@color/white_color"
             android:paddingBottom="@dimen/_5sdp"
-            android:text="22 Comments"
+            android:text="0 Comments"
+            android:textAllCaps="true"
             android:textColor="@color/greyTextColor"
             android:textSize="@dimen/_12ssp" />
 

@@ -3,58 +3,65 @@
     android:id="@+id/llClickComments"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/white_default">
-
-    <ImageView
-        android:id="@+id/imgComments"
-        android:layout_width="@dimen/_50sdp"
-        android:layout_height="@dimen/_50sdp"
-        android:layout_marginBottom="@dimen/_12sdp"
-        android:layout_marginLeft="@dimen/_12sdp"
-        android:layout_marginRight="@dimen/_8sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:src="@drawable/placeholder_image" />
+    android:background="@drawable/white_default"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/_16sdp">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <customviews.MediumTextView
-            android:id="@+id/txtNameComments"
+        <ImageView
+            android:id="@+id/imgComments"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginBottom="@dimen/_12sdp"
+            android:layout_marginLeft="@dimen/_12sdp"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:src="@drawable/placeholder_image" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:text="Micahel"
-            android:textColor="@color/black_color"
-            android:textSize="@dimen/_12ssp" />
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/_16sdp">
 
-        <customviews.MediumTextView
-            android:id="@+id/txtMessageComments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="Micahel"
-            android:textColor="@color/greyTextColor"
-            android:textSize="@dimen/_12ssp" />
+            <customviews.MediumTextView
+                android:id="@+id/txtNameComments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="Micahel"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_12ssp" />
 
-        <customviews.MediumTextView
-            android:id="@+id/txtTimeComments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingBottom="@dimen/_12sdp"
-            android:text="Micahel"
-            android:textColor="@color/greyLine"
-            android:textSize="@dimen/_12ssp" />
+            <customviews.MediumTextView
+                android:id="@+id/txtMessageComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="Micahel"
+                android:textColor="@color/greyTextColor"
+                android:textSize="@dimen/_12ssp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/greyLine" />
+            <customviews.LightTextView
+                android:id="@+id/txtTimeComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="Micahel"
+                android:textColor="@color/textGrey"
+                android:textSize="@dimen/_10ssp" />
 
+        </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/_90sdp"
+        android:background="@color/greyLine" />
 
 </LinearLayout>

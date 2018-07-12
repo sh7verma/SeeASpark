@@ -11,6 +11,8 @@ public class CommentModel extends BaseModel {
      */
 
     private int code;
+    private int comment_count;
+
     private List<ResponseBean> response;
 
     public int getCode() {
@@ -19,6 +21,14 @@ public class CommentModel extends BaseModel {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public int getComment_count() {
+        return comment_count;
+    }
+
+    public void setComment_count(int comment_count) {
+        this.comment_count = comment_count;
     }
 
     public List<ResponseBean> getResponse() {

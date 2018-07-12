@@ -103,35 +103,40 @@ class EventsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
-        if (mLandingInstance!!.connectedToInternet())
-            hitAPI()
-        else
+        if (mLandingInstance!!.connectedToInternet()) {
+            if (mLandingInstance!!.db!!.getPostsByType(Constants.EVENT).size > 0) {
+                hitAPI(false)
+                populateData()
+            } else {
+                hitAPI(true)
+            }
+        } else
             mLandingInstance!!.showInternetAlert(rvEventsListing)
     }
 
-    private fun hitAPI() {
-        mLandingInstance!!.showLoader()
+    private fun hitAPI(isLoaderVisible: Boolean) {
+        if (isLoaderVisible)
+            mLandingInstance!!.showLoader()
         val call = RetrofitClient.getInstance().getPosts(mLandingInstance!!.mUtils!!.getString("access_token", "")
                 , Constants.EVENT.toString(), mOffset)
         call.enqueue(object : Callback<PostModel> {
 
             override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>) {
-
                 if (response.body().response != null) {
-                    if (mOffset == 1)
-                        addToLocalDatabase(response.body().response)
-
+                    addToLocalDatabase(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         mLandingInstance!!.moveToSplash()
                     } else
                         mLandingInstance!!.showAlert(rvEventsListing, response.body().error!!.message!!)
                 }
-                mLandingInstance!!.dismissLoader()
+                if (isLoaderVisible)
+                    mLandingInstance!!.dismissLoader()
             }
 
             override fun onFailure(call: Call<PostModel>?, t: Throwable?) {
-                mLandingInstance!!.dismissLoader()
+                if (isLoaderVisible)
+                    mLandingInstance!!.dismissLoader()
                 mLandingInstance!!.showAlert(rvEventsListing, t!!.localizedMessage)
             }
         })
@@ -152,9 +157,18 @@ class EventsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun populateData() {
+        mEventsArray.clear()
         mEventsArray.addAll(mLandingInstance!!.db!!.getPostsByType(Constants.EVENT))
-        mEventsAdapter = EventsAdapter(mContext, mEventsArray, mEventFragment)
-        rvEventsListing.adapter = mEventsAdapter
+        if (rvEventsListing.adapter == null) {
+            if (mEventsArray.size == 0) {
+                txtNoEventsListing.visibility = View.VISIBLE
+            } else {
+                mEventsAdapter = EventsAdapter(mContext, mEventsArray, mEventFragment)
+                rvEventsListing.adapter = mEventsAdapter
+            }
+        } else {
+            mEventsAdapter!!.notifyDataSetChanged()
+        }
     }
 
     private fun initListener() {
@@ -178,6 +192,7 @@ class EventsFragment : Fragment(), View.OnClickListener {
             }
             imgOption2Custom -> {
                 intent = Intent(mContext, ShareIdeaActivity::class.java)
+                intent.putExtra("path", "event")
                 startActivity(intent)
             }
         }
@@ -259,13 +274,14 @@ class EventsFragment : Fragment(), View.OnClickListener {
 
     }
 
-    internal var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             try {
                 if (intent.getIntExtra("status", 0) == Constants.LIKED) {
                     Log.e("Liked = ", "Yes")
                     for ((index, eventData) in mEventsArray.withIndex()) {
-                        if (eventData.id == intent.getIntExtra("postId", 0)) {
+                        if (eventData.id == intent.getIntExtra("postId", 0)
+                                && eventData.liked == Constants.UNLIKED) {
                             eventData.liked = Constants.LIKED
                             eventData.like++
                             mEventsArray[index] = eventData
@@ -286,10 +302,20 @@ class EventsFragment : Fragment(), View.OnClickListener {
                     }
                     mEventsAdapter!!.notifyDataSetChanged()
                 } else if (intent.getIntExtra("status", 0) == Constants.BOOKMARK) {
-                    Log.e("Bookmark = ", "No")
+                    Log.e("Bookmark = ", "Yes")
                     for ((index, eventData) in mEventsArray.withIndex()) {
                         if (eventData.id == intent.getIntExtra("postId", 0)) {
                             eventData.bookmarked = intent.getIntExtra("bookmarkStatus", 0)
+                            mEventsArray[index] = eventData
+                            break
+                        }
+                    }
+                    mEventsAdapter!!.notifyDataSetChanged()
+                } else if (intent.getIntExtra("status", 0) == Constants.COMMENT) {
+                    Log.e("comment = ", "Yes")
+                    for ((index, eventData) in mEventsArray.withIndex()) {
+                        if (eventData.id == intent.getIntExtra("postId", 0)) {
+                            eventData.comment = intent.getIntExtra("commentCount", 0)
                             mEventsArray[index] = eventData
                             break
                         }

@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import com.google.gson.Gson
 import com.seeaspark.*
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_event.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import models.*
 import network.RetrofitClient
@@ -63,7 +64,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         mLandingInstance = activity as LandingActivity
         mHomeFragment = this
 
-        mUtils=Utils(mContext)
+        mUtils = Utils(mContext)
 
         if (mUtils!!.getInt("nightMode", 0) == 1)
             displayNightMode()
@@ -150,7 +151,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     }
 
     fun hitAPI(visibleLoader: Boolean) {
-      /*  if (visibleLoader)
+        if (visibleLoader)
             mLandingInstance!!.showLoader()
         val call = RetrofitClient.getInstance().getCards(mUtils!!.getString("access_token", ""),
                 mLandingInstance!!.mLatitude.toString(), mLandingInstance!!.mLongitude.toString(), mOffset.toString())
@@ -166,10 +167,10 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                         mArrayCards.removeAt(mArrayCards.size - 1)
                         mAdapterCards!!.notifyItemRemoved(mArrayCards.size)
 
-                        *//* for (cardData in response.body().response) {
+                        /* for (cardData in response.body().response) {
                              mArrayCards.add(cardData);
                              mAdapterCards!!.notifyItemInserted(mArrayCards.size - 1);
-                         }*//*
+                         }*/
 
                         if (response.body().response.size > 0) {
                             mArrayCards.addAll(response.body().response)
@@ -191,7 +192,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 if (visibleLoader)
                     mLandingInstance!!.dismissLoader()
             }
-        })*/
+        })
     }
 
     private fun populateData(response: CardModel) {
@@ -207,6 +208,16 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
 
         for (postValue in response.posts) {
             mArrayCards.add(postValue)
+
+            val postData = createPostData(postValue)
+
+            mLandingInstance!!.db!!.addPosts(postData)
+            for (imagesData in postData.images) {
+                mLandingInstance!!.db!!.addPostImages(imagesData, postData.id.toString(), Constants.EVENT)
+            }
+            for (goingUserData in postData.going_list) {
+                mLandingInstance!!.db!!.addPostGoingUsers(goingUserData, postData.id.toString())
+            }
         }
 
         if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTEE) {
@@ -217,6 +228,31 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         }
         mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
         rvCards.adapter = mAdapterCards
+    }
+
+    private fun createPostData(postValue: CardsDisplayModel): PostModel.ResponseBean {
+        val postData = PostModel.ResponseBean()
+        postData.id = postValue.id
+        postData.post_type = postValue.post_type
+        postData.title = postValue.title
+        postData.description = postValue.description
+        postData.profession_id = postValue.profession_id
+        postData.address = postValue.address
+        postData.latitude = postValue.latitude
+        postData.longitude = postValue.longitude
+        postData.date_time = postValue.date_time
+        postData.url = postValue.url
+        postData.is_featured = postValue.is_featured
+        postData.like = postValue.like
+        postData.comment = postValue.comment
+        postData.going = postValue.going
+        postData.interested = postValue.interested
+        postData.liked = postValue.liked
+        postData.is_going = postValue.is_going
+        postData.bookmarked = postValue.bookmarked
+        postData.going_list = postValue.going_list
+        postData.images = postValue.images
+        return postData
     }
 
     private fun initListener() {
@@ -230,7 +266,6 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             imgProfileHome -> {
                 intent = Intent(mContext!!, ViewProfileActivity::class.java)
                 startActivityForResult(intent, VIEWPROFILE)
-//                startActivity(intent)
                 activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
             imgPreferHome -> {
@@ -241,7 +276,6 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             }
         }
     }
-
 
     fun openShortProfile(cardsDisplayModel: CardsDisplayModel) {
         val intent = Intent(mContext, ShortProfileDialog::class.java)
@@ -322,7 +356,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     }
 
     private fun populateData() {
-        var mGson = Gson()
+        val mGson = Gson()
         mLandingInstance!!.userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar)
                 .resize(width, height).into(imgProfileHome)
@@ -372,5 +406,20 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             mAdapterCards = HomeCardsAdapter(mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
             rvCards.adapter = mAdapterCards
         }
+    }
+
+    fun moveToCommunityDetail(postId: Int) {
+
+
+    }
+
+    fun moveToEventDetail(postId: Int) {
+        if (mLandingInstance!!.connectedToInternet()) {
+            val intent = Intent(mContext, EventsDetailActivity::class.java)
+            intent.putExtra("eventId", postId)
+            startActivity(intent)
+            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        } else
+            mLandingInstance!!.showInternetAlert(rvEventsListing)
     }
 }

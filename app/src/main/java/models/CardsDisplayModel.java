@@ -33,14 +33,121 @@ public class CardsDisplayModel implements Parcelable {
 
     /// post parameters
     private int admin_id;
-    private int post_type=0;
+    private int post_type = 0;
     private String title;
     private String description;
     private String date_time;
     private String url;
     private int is_featured;
-    private List<ImageModel> images;
+    private String profession_id;
+    private int like;
+    private int comment;
+    private int going;
+    private int interested;
+    private int liked;
+    private int is_going;
+    private int bookmarked;
+    private String address;
+    private String latitude;
+    private String longitude;
+    private List<PostModel.ResponseBean.GoingUserBean> going_list;
+    private List<PostModel.ResponseBean.ImagesBean> images;
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getProfession_id() {
+        return profession_id;
+    }
+
+    public void setProfession_id(String profession_id) {
+        this.profession_id = profession_id;
+    }
+
+    public int getLike() {
+        return like;
+    }
+
+    public void setLike(int like) {
+        this.like = like;
+    }
+
+    public int getComment() {
+        return comment;
+    }
+
+    public void setComment(int comment) {
+        this.comment = comment;
+    }
+
+    public int getGoing() {
+        return going;
+    }
+
+    public void setGoing(int going) {
+        this.going = going;
+    }
+
+    public int getInterested() {
+        return interested;
+    }
+
+    public void setInterested(int interested) {
+        this.interested = interested;
+    }
+
+    public int getLiked() {
+        return liked;
+    }
+
+    public void setLiked(int liked) {
+        this.liked = liked;
+    }
+
+    public int getIs_going() {
+        return is_going;
+    }
+
+    public void setIs_going(int is_going) {
+        this.is_going = is_going;
+    }
+
+    public int getBookmarked() {
+        return bookmarked;
+    }
+
+    public void setBookmarked(int bookmarked) {
+        this.bookmarked = bookmarked;
+    }
+
+    public List<PostModel.ResponseBean.GoingUserBean> getGoing_list() {
+        return going_list;
+    }
+
+    public void setGoing_list(List<PostModel.ResponseBean.GoingUserBean> going_list) {
+        this.going_list = going_list;
+    }
 
     public int getId() {
         return id;
@@ -268,11 +375,11 @@ public class CardsDisplayModel implements Parcelable {
         this.is_featured = is_featured;
     }
 
-    public List<ImageModel> getImages() {
+    public List<PostModel.ResponseBean.ImagesBean> getImages() {
         return images;
     }
 
-    public void setImages(List<ImageModel> images) {
+    public void setImages(List<PostModel.ResponseBean.ImagesBean> images) {
         this.images = images;
     }
 
@@ -344,7 +451,7 @@ public class CardsDisplayModel implements Parcelable {
         this.date_time = in.readString();
         this.url = in.readString();
         this.is_featured = in.readInt();
-        this.images = new ArrayList<ImageModel>();
+        this.images = new ArrayList<PostModel.ResponseBean.ImagesBean>();
         in.readList(this.images, ImageModel.class.getClassLoader());
     }
 
