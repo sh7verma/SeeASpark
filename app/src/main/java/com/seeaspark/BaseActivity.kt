@@ -1,7 +1,9 @@
 package com.seeaspark
 
 
+import android.app.AlarmManager
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -18,10 +20,13 @@ import android.view.View
 import android.widget.Toast
 import com.google.gson.Gson
 import database.Database
+import services.DayBroadcastReceiver
+import services.NightBroadCastReceiver
 import utils.Connection_Detector
 import utils.Constants
 import utils.CustomLoadingDialog
 import utils.Utils
+import java.util.*
 
 
 abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
@@ -38,8 +43,15 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var broadcaster: LocalBroadcastManager? = null
     var blackColor = 0
     var whiteColor = 0
+    var darkGrey = 0
     var blackRipple = 0
     var whiteRipple = 0
+
+    private var mAlarmManagerDay: AlarmManager? = null
+    private var mPendingIntentDay: PendingIntent? = null
+
+    private var mAlarmManagerNight: AlarmManager? = null
+    private var mPendingIntentNight: PendingIntent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,11 +59,12 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         mContext = getContext()
         broadcaster = LocalBroadcastManager.getInstance(baseContext)
         mUtils = Utils(this)
-        db=Database(mContext!!)
+        db = Database(mContext!!)
         getDefaults()
 
         blackColor = ContextCompat.getColor(this, R.color.black_color)
         whiteColor = ContextCompat.getColor(this, R.color.white_color)
+        darkGrey = ContextCompat.getColor(this, R.color.darkGreyText)
 
         blackRipple = R.drawable.black_ripple
         whiteRipple = R.drawable.white_ripple
@@ -99,7 +112,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-     fun getDefaults() {
+    fun getDefaults() {
         val display = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(display)
         mWidth = display.widthPixels
@@ -108,7 +121,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         mUtils!!.setInt("height", mHeight)
     }
 
-     fun moveToSplash() {
+    fun moveToSplash() {
         val notificationManager = mContext!!
                 .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
@@ -120,7 +133,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         System.exit(2)
     }
 
-     fun alertLogoutDialog() {
+    fun alertLogoutDialog() {
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setTitle("LOG OUT")
         alertDialog.setMessage("Are you sure you want to Log out?")
@@ -151,5 +164,52 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(nightModeReceiver)
         super.onDestroy()
     }
+
+    fun startAutoDayMode() {
+        val intent = Intent(this, DayBroadcastReceiver::class.java)
+        mPendingIntentDay = PendingIntent.getBroadcast(
+                mContext, 43, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val interval = 1000 * 60 * 60 * 24
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.set(Calendar.HOUR_OF_DAY, 6)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        mAlarmManagerDay = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        mAlarmManagerDay!!.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
+                interval.toLong(), mPendingIntentDay)
+    }
+
+    fun startAutoNightMode() {
+        val intent = Intent(this, NightBroadCastReceiver::class.java)
+        mPendingIntentNight = PendingIntent.getBroadcast(
+                mContext, 44, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val interval = 1000 * 60 * 60 * 24
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.set(Calendar.HOUR_OF_DAY, 18)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        mAlarmManagerNight = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        mAlarmManagerNight!!.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
+                interval.toLong(), mPendingIntentNight)
+    }
+
+    fun turnOffAutoNightMode() {
+        if (mAlarmManagerNight != null) {
+            mAlarmManagerNight!!.cancel(mPendingIntentNight)
+        }
+    }
+
+    fun turnOffAutoDayMode() {
+        if (mAlarmManagerDay != null) {
+            mAlarmManagerDay!!.cancel(mPendingIntentDay)
+        }
+    }
+
 
 }

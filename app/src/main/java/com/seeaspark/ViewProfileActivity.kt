@@ -54,10 +54,22 @@ class ViewProfileActivity : BaseActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
+        llMainViewProfile.background = ContextCompat.getDrawable(this, R.drawable.white_short_profile_background)
+        txtRatingViewProfile.setTextColor(blackColor)
+        txtNameViewProfile.setTextColor(blackColor)
+        txtProfessionViewProfile.setTextColor(blackColor)
+        populateData()
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
+        populateData()
+        llMainViewProfile.background = ContextCompat.getDrawable(this, R.drawable.dark_short_profile_background)
+        txtRatingViewProfile.setTextColor(whiteColor)
+        txtNameViewProfile.setTextColor(whiteColor)
+        txtProfessionViewProfile.setTextColor(whiteColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -159,9 +171,17 @@ class ViewProfileActivity : BaseActivity() {
         val interestChip = LayoutInflater.from(this).inflate(R.layout.add_skills, null, false)
         val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         interestChip.llMainAddSkills.layoutParams = innerParms
-        interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
+
+        if (mUtils!!.getInt("nightMode", 0) == 1) {
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.white_default)
+            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+        } else {
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
+            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+        }
+
         interestChip.txtAddSkillChip.text = skillValue
-        interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
         return interestChip
     }
 

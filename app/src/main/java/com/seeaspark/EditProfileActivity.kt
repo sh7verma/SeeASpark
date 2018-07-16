@@ -115,12 +115,32 @@ class EditProfileActivity : BaseActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
-
+        llMainEditProfile.background = ContextCompat.getDrawable(this, R.drawable.white_short_profile_background)
+        txtAgeEditProfile.setBackgroundResource(whiteRipple)
+        txtGenderEditProfile.setBackgroundResource(whiteRipple)
+        txtProfessionEditProfile.setBackgroundResource(whiteRipple)
+        txtExperienceEditProfile.setBackgroundResource(whiteRipple)
+        llLanguageEditProfile.setBackgroundResource(whiteRipple)
+        llSkillEditProfile.setBackgroundResource(whiteRipple)
+        edNameProfile.setBackgroundColor(whiteColor)
+        edBioEditProfile.setBackgroundColor(whiteColor)
+        edDescriptionEditProfile.setBackgroundColor(whiteColor)
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-
+        llMainEditProfile.background = ContextCompat.getDrawable(this, R.drawable.dark_short_profile_background)
+        txtAgeEditProfile.setBackgroundResource(blackRipple)
+        txtGenderEditProfile.setBackgroundResource(blackRipple)
+        txtProfessionEditProfile.setBackgroundResource(blackRipple)
+        txtExperienceEditProfile.setBackgroundResource(blackRipple)
+        llLanguageEditProfile.setBackgroundResource(blackRipple)
+        llSkillEditProfile.setBackgroundResource(blackRipple)
+        edNameProfile.setBackgroundColor(blackColor)
+        edBioEditProfile.setBackgroundColor(blackColor)
+        edDescriptionEditProfile.setBackgroundColor(blackColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -133,7 +153,7 @@ class EditProfileActivity : BaseActivity() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         val dateParts = userData!!.response.age.split("-")
         calDOB!!.set(Calendar.YEAR, dateParts[2].toInt())
-        calDOB!!.set(Calendar.MONTH, dateParts[1].toInt()-1)
+        calDOB!!.set(Calendar.MONTH, dateParts[1].toInt() - 1)
         calDOB!!.set(Calendar.DATE, dateParts[0].toInt())
 
         populateData()
@@ -331,12 +351,18 @@ class EditProfileActivity : BaseActivity() {
         val interestChip = LayoutInflater.from(this).inflate(R.layout.add_skills, null, false)
         val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         interestChip.llMainAddSkills.layoutParams = innerParms
-        if (showBlackBackground) {
-            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
-            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        } else {
-            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.answer_background)
+
+        if (mUtils!!.getInt("nightMode", 0) == 1) {
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.white_default)
             interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+        } else {
+            if (showBlackBackground) {
+                interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
+                interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+            } else {
+                interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.answer_background)
+                interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+            }
         }
         interestChip.txtAddSkillChip.text = skillValue
         return interestChip

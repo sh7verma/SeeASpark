@@ -282,6 +282,27 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
         val txtDateCommunity = itemView.txtDateCommunity!!
         val txtCommunityDesc = itemView.txtCommunityDesc!!
         val txtCenterOption = itemView.txtCenterOption!!
+
+        init {
+            if (mUtils!!.getInt("nightMode", 0) == 1)
+                displayNightMode()
+            else
+                displayDayMode()
+        }
+
+
+        private fun displayDayMode() {
+            cvClick.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+            txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+        }
+
+        private fun displayNightMode() {
+            cvClick.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.cardview_dark_background))
+            txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+        }
+
     }
 
 

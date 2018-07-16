@@ -19,6 +19,7 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
+                android:id="@+id/llMainViewProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_75sdp"
@@ -52,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Male . 25 Years"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_12ssp" />
 
                 <customviews.BoldTextView
@@ -62,7 +63,7 @@
                     android:paddingBottom="@dimen/_3sdp"
                     android:paddingTop="@dimen/_8sdp"
                     android:text="Psychologist"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_13ssp" />
 
                 <customviews.MediumTextView
@@ -71,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/_8sdp"
                     android:text="5.2 Years of Experience"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_12ssp" />
 
                 <View
@@ -133,7 +134,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/_12sdp"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_12ssp" />
 
                 <View
@@ -155,7 +156,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/_46sdp"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_12ssp" />
 
             </LinearLayout>

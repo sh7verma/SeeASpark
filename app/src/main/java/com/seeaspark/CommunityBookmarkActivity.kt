@@ -56,6 +56,7 @@ class CommunityBookmarkActivity : BaseActivity() {
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
         imgOption1Custom.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         rvCommunityBookmark.setBackgroundColor(ContextCompat.getColor(this, R.color.background))
+        txtNoCommunityBookmark.setTextColor(blackColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -66,6 +67,7 @@ class CommunityBookmarkActivity : BaseActivity() {
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         imgOption1Custom.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         rvCommunityBookmark.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+        txtNoCommunityBookmark.setTextColor(whiteColor)
     }
 
     override fun onCreateStuff() {

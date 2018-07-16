@@ -95,8 +95,8 @@ class CommunityDetailActivity : BaseActivity() {
         llMainCommunity.background = ContextCompat.getDrawable(this, R.drawable.white_short_profile_background)
 
         txtTitleCommunity.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        txtTimeCommunity.setTextColor(ContextCompat.getColor(this, R.color.textGrey))
-        txtDescCommunity.setTextColor(ContextCompat.getColor(this, R.color.greyTextColor))
+        txtTimeCommunity.setTextColor(darkGrey)
+        txtDescCommunity.setTextColor(darkGrey)
 
         llBottomCommunity.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
         llLikesCommunity.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
@@ -104,6 +104,8 @@ class CommunityDetailActivity : BaseActivity() {
 
         llCommentsCommunity.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         txtCommentCountCommunity.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llMainCommunityParent.setBackgroundColor(whiteColor)
 
     }
 
@@ -114,7 +116,7 @@ class CommunityDetailActivity : BaseActivity() {
 
         txtTitleCommunity.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         txtTimeCommunity.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        txtDescCommunity.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+        txtDescCommunity.setTextColor(darkGrey)
 
         llBottomCommunity.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
         llLikesCommunity.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
@@ -122,6 +124,8 @@ class CommunityDetailActivity : BaseActivity() {
 
         llCommentsCommunity.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         txtCommentCountCommunity.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llMainCommunityParent.setBackgroundColor(blackColor)
 
     }
 

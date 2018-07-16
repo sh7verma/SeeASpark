@@ -287,7 +287,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         val intent = Intent(mContext, ShortProfileDialog::class.java)
         intent.putExtra("otherProfileData", cardsDisplayModel)
         startActivity(intent)
-        activity.overridePendingTransition(R.anim.slide_in_up, 0)
+        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
     }
 
     fun swipeRightLeft(swiped: Int, id: Int) {

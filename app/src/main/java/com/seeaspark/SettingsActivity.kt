@@ -1,11 +1,16 @@
 package com.seeaspark
 
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.view.View
-import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -15,12 +20,10 @@ import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import services.DayBroadcastReceiver
+import services.NightBroadCastReceiver
 import utils.Constants
-import android.R.attr.versionName
-import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import android.support.annotation.RequiresApi
+import java.util.*
 
 
 class SettingsActivity : BaseActivity() {
@@ -28,13 +31,17 @@ class SettingsActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_settings
     private var userData: SignupModel? = null
 
+
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
         imgBackCustom.setImageResource(R.mipmap.ic_back_org)
         txtTitleCustom.text = getString(R.string.settings)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
-        scNightMode.isChecked = mUtils!!.getInt("nightMode", 0) == 1
+        if (mUtils!!.getInt("nightMode", 0) == 1) {
+            scNightMode.isChecked = true
+            setVisibilityOFF()
+        }
 
         scNightMode.setOnCheckedChangeListener { p0, status ->
             if (status) {
@@ -42,13 +49,48 @@ class SettingsActivity : BaseActivity() {
                 val broadCastIntent = Intent(Constants.NIGHT_MODE)
                 broadCastIntent.putExtra("status", Constants.NIGHT)
                 broadcaster!!.sendBroadcast(broadCastIntent)
+
+                setVisibilityOFF()
+                turnOffAutoDayMode()
+                turnOffAutoNightMode()
             } else {
                 mUtils!!.setInt("nightMode", 0)
                 val broadCastIntent = Intent(Constants.NIGHT_MODE)
                 broadCastIntent.putExtra("status", Constants.DAY)
                 broadcaster!!.sendBroadcast(broadCastIntent)
+
+                setVisibilityON()
+                if (mUtils!!.getInt("nightMode", 0) == 1) {
+                    startAutoDayMode()
+                    startAutoNightMode()
+                }
             }
         }
+
+        if (mUtils!!.getInt("nightMode", 0) == 0 && mUtils!!.getInt("autoNightMode", 0) == 1)
+            scAutoNightMode.isChecked = true
+
+        scAutoNightMode.setOnCheckedChangeListener { p0, status ->
+            if (status) {
+                mUtils!!.setInt("autoNightMode", 1)
+                startAutoDayMode()
+                startAutoNightMode()
+            } else {
+                mUtils!!.setInt("autoNightMode", 0)
+                turnOffAutoDayMode()
+                turnOffAutoNightMode()
+            }
+        }
+    }
+
+    private fun setVisibilityON() {
+        llAutoNightMode.visibility = View.VISIBLE
+        viewAutoNightMode.visibility = View.VISIBLE
+    }
+
+    private fun setVisibilityOFF() {
+        llAutoNightMode.visibility = View.GONE
+        viewAutoNightMode.visibility = View.GONE
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)

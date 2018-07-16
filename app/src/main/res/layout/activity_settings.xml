@@ -283,12 +283,14 @@
                     android:id="@+id/scAutoNightMode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="false"
                     android:gravity="left"
                     android:theme="@style/Color1SwitchStyle" />
 
             </LinearLayout>
 
             <View
+                android:id="@+id/viewAutoNightMode"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="@dimen/_62sdp"

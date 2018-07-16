@@ -109,7 +109,7 @@ class EventsDetailActivity : BaseActivity() {
         txtTimeEvent.setTextColor(ContextCompat.getColor(this, R.color.black_color))
         txtGoingCount.setTextColor(ContextCompat.getColor(this, R.color.black_color))
         txtEventLink.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
-        txtDescEvents.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+        txtDescEvents.setTextColor(darkGrey)
 
         llGoingEvents.setBackgroundResource(whiteRipple)
 
@@ -119,6 +119,8 @@ class EventsDetailActivity : BaseActivity() {
 
         llCommentsEvents.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         txtCommentCountEvents.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llMainEventsParent.setBackgroundColor(whiteColor)
 
     }
 
@@ -132,7 +134,7 @@ class EventsDetailActivity : BaseActivity() {
         txtTimeEvent.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         txtGoingCount.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         txtEventLink.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
-        txtDescEvents.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+        txtDescEvents.setTextColor(darkGrey)
 
         llGoingEvents.setBackgroundResource(blackRipple)
 
@@ -142,6 +144,8 @@ class EventsDetailActivity : BaseActivity() {
 
         llCommentsEvents.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         txtCommentCountEvents.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llMainEventsParent.setBackgroundColor(blackColor)
 
     }
 
@@ -507,6 +511,7 @@ class EventsDetailActivity : BaseActivity() {
                         showAlert(llMainEvents, response.body().error!!.message!!)
                 }
             }
+
             override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
                 showAlert(llMainEvents, t!!.localizedMessage)
             }

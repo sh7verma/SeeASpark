@@ -5,20 +5,21 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/llOuter"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="bottom"
         android:layout_weight="1"
-        android:id="@+id/llOuter"
-        android:orientation="vertical"/>
+        android:gravity="bottom"
+        android:orientation="vertical" />
 
     <LinearLayout
+        android:id="@+id/llMainShortProfileDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_16sdp"
         android:background="@drawable/white_short_profile_background"
         android:gravity="bottom"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/_16sdp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Female . 23 Years"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_12ssp" />
 
             </LinearLayout>
@@ -66,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Engineer"
-            android:textColor="@color/hint_color_dark"
+            android:textColor="@color/black_color"
             android:textSize="@dimen/_14ssp" />
 
         <customviews.MediumTextView
@@ -75,7 +76,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/_8sdp"
             android:text="4.6 Years of Experience"
-            android:textColor="@color/hint_color_dark"
+            android:textColor="@color/darkGreyText"
             android:textSize="@dimen/_12ssp" />
 
         <View
@@ -112,14 +113,14 @@
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/_13ssp" />
 
-        <customviews.LightTextView
+        <customviews.MediumTextView
             android:id="@+id/txtBioShortProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="3"
             android:text="@string/lorem_ipsum"
-            android:textColor="@color/greyTextColor"
+            android:textColor="@color/darkGreyText"
             android:textSize="@dimen/_14ssp" />
 
         <customviews.MediumTextView

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llMainCommunityParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_color"
@@ -51,7 +52,7 @@
                     android:textColor="@color/greyTextColor"
                     android:textSize="@dimen/_12ssp" />
 
-                <customviews.LightTextView
+                <customviews.MediumTextView
                     android:id="@+id/txtDescCommunity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

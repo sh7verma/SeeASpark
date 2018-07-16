@@ -44,12 +44,18 @@ class SearchEventCommunityActivity : BaseActivity() {
     }
 
     override fun displayDayMode() {
+        imgBackSearch.setBackgroundResource(whiteRipple)
+        imgCancelSearch.setBackgroundResource(whiteRipple)
+        edSearchEventCommunity.setBackgroundColor(whiteColor)
         imgBackSearch.setImageResource(R.mipmap.ic_back_black)
         llMainSearchEvents.setBackgroundColor(whiteColor)
         edSearchEventCommunity.setTextColor(blackColor)
     }
 
     override fun displayNightMode() {
+        imgBackSearch.setBackgroundResource(blackRipple)
+        imgCancelSearch.setBackgroundResource(blackRipple)
+        edSearchEventCommunity.setBackgroundColor(blackColor)
         imgBackSearch.setImageResource(R.mipmap.ic_back_org)
         llMainSearchEvents.setBackgroundColor(blackColor)
         edSearchEventCommunity.setTextColor(whiteColor)

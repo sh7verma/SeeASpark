@@ -42,15 +42,17 @@
                 android:textColor="@color/black_color"
                 android:textSize="@dimen/_14sdp" />
 
-            <customviews.LightTextView
+            <customviews.MediumTextView
                 android:id="@+id/txtDateCommunity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/_5sdp"
+                android:paddingTop="@dimen/_5sdp"
                 android:text="Monday, 11.35 AM"
-                android:textColor="@color/greyTextColor"
+                android:textColor="@color/darkGreyText"
                 android:textSize="@dimen/_12ssp" />
 
-            <customviews.LightTextView
+            <customviews.MediumTextView
                 android:id="@+id/txtCommunityDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -140,8 +142,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:padding="@dimen/_5sdp"
-            android:visibility="invisible"
-            android:src="@mipmap/ic_bookmark_border" />
+            android:src="@mipmap/ic_bookmark_border"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 

@@ -73,6 +73,7 @@ class CommentsActivity : BaseActivity() {
         edComments.setBackgroundColor(whiteColor)
         edComments.setTextColor(blackColor)
         imgSendComments.setBackgroundResource(whiteRipple)
+        txtCommentsCount.setBackgroundColor(whiteColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -86,6 +87,7 @@ class CommentsActivity : BaseActivity() {
         edComments.setBackgroundColor(blackColor)
         edComments.setTextColor(whiteColor)
         imgSendComments.setBackgroundResource(blackRipple)
+        txtCommentsCount.setBackgroundColor(blackColor)
     }
 
     override fun onCreateStuff() {
