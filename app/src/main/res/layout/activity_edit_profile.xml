@@ -51,6 +51,7 @@
                     android:inputType="textCapWords|textMultiLine"
                     android:maxLength="@integer/name_max"
                     android:maxLines="2"
+                    android:background="@android:color/transparent"
                     android:paddingBottom="@dimen/_12sdp"
                     android:textColor="@color/darkGreyText"
                     android:textCursorDrawable="@null"

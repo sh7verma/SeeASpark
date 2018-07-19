@@ -34,14 +34,14 @@ class ProfessionListingAdapter(mConetxt: Context, mProfessionArray: ArrayList<Pr
         holder.txtProfessionData.text = mProfessionArray[position].name
         holder.txtProfessionData.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
 
-        if (mProfessionArray[position].id
-                == mProfessionListing!!.mProfession)
+        if (mProfessionArray[position].name
+                == mProfessionListing!!.mProfessionName)
             holder.imgSelectedProfession.visibility = View.VISIBLE
         else
             holder.imgSelectedProfession.visibility = View.INVISIBLE
 
         holder.txtProfessionData.setOnClickListener {
-            mProfessionListing!!.mProfession = mProfessionArray[position].id
+            mProfessionListing!!.mProfessionId = mProfessionArray[position].id
             mProfessionListing!!.mProfessionName = mProfessionArray[position].name
             mProfessionListing!!.setSearchText(mProfessionListing!!.mProfessionName)
             notifyDataSetChanged()

@@ -30,7 +30,7 @@ class CreateProfileActivity : BaseActivity() {
     var mAge = Constants.EMPTY
     var mGender: Int? = 0
     var mGenderText = Constants.EMPTY
-    var mProfession: Int? = -1
+//    var mProfessionId: Int? = -1
     var mProfessionName = Constants.EMPTY
     var mExpeirenceYears = "2"
     var mExpeirenceMonth = "0"

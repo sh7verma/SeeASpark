@@ -15,6 +15,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+import com.seeaspark.BroadcastActivity;
 import com.seeaspark.CreateProfileActivity;
 import com.seeaspark.HandshakeActivity;
 import com.seeaspark.LandingActivity;
@@ -75,7 +76,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ringNotification(intent, message, 0, messageBody.get("body"));
                 if (utils.getInt("inside_profileDialog", 0) == 1) {
-                    utils.setInt("open_questionnaries",1);
+                    utils.setInt("open_questionnaries", 1);
                 }
             } else {
                 /// inside review activity
@@ -102,7 +103,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 intent.putExtra("matchData", matchData);
                 startActivity(intent);
-
+            }
+        } else if (messageBody.get("push_type").equalsIgnoreCase("5")) {
+            if (utils.getInt("Background", 0) == 1) {// background
+                intent = new Intent(this, LandingActivity.class);
+                intent.putExtra("broadcastData", "Yes");
+                intent.putExtra("broadcastTitle", messageBody.get("title"));
+                intent.putExtra("broadcastMessage", message);
+                ringNotification(intent, message, 0, messageBody.get("title"));
+            } else {//in app
+                intent = new Intent(this, BroadcastActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                intent.putExtra("broadcastTitle", messageBody.get("title"));
+                intent.putExtra("broadcastMessage", message);
+                startActivity(intent);
             }
         }
     }

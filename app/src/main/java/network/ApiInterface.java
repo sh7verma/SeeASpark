@@ -56,7 +56,7 @@ public interface ApiInterface {
                                     @Part("age") RequestBody age,
                                     @Part("gender") RequestBody gender,
                                     @Part("languages") RequestBody languages,
-                                    @Part("profession_id") RequestBody profession_id,
+                                    @Part("profession") RequestBody profession,
                                     @Part("experience") RequestBody experience,
                                     @Part("skills") RequestBody skills,
                                     @Part("bio") RequestBody bio,
@@ -128,7 +128,7 @@ public interface ApiInterface {
                                   @Field("age") String age,
                                   @Field("gender") String gender,
                                   @Field("languages") String languages,
-                                  @Field("profession_id") String profession_id,
+                                  @Field("profession") String profession,
                                   @Field("experience") String experience,
                                   @Field("skills") String skills,
                                   @Field("bio") String bio,
@@ -223,5 +223,11 @@ public interface ApiInterface {
 
     @GET("/api/v1/languages")
     Call<LanguageListingModel> getLanguages(@Query("access_token") String access_token);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/professions/search")
+    Call<ProfessionListingModel> searchProfessions(@Field("access_token") String access_token,
+                                      @Field("search") String search);
 
 }

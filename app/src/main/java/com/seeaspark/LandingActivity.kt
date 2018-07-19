@@ -97,6 +97,16 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             startActivity(intent)
         }
 
+        if (intent.hasExtra("broadcastData")) {
+            val title = intent.getStringExtra("broadcastTitle")
+            val message = intent.getStringExtra("broadcastMessage")
+            intent = Intent(this, BroadcastActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            intent.putExtra("broadcastTitle", title)
+            intent.putExtra("broadcastMessage", message)
+            startActivity(intent)
+        }
+
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
         val drawable = ContextCompat.getDrawable(mContext!!, R.mipmap.ic_ava_ob)

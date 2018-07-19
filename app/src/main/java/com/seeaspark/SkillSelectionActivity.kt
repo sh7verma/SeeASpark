@@ -81,7 +81,6 @@ class SkillSelectionActivity : BaseActivity() {
     }
 
     private fun hitAPI() {
-//        showLoader()
         val call = RetrofitClient.getInstance().getUserSkills(mUtils!!.getString("access_token", ""))
         call.enqueue(object : Callback<ServerSkillsModel> {
             override fun onResponse(call: Call<ServerSkillsModel>?, response: Response<ServerSkillsModel>?) {
@@ -91,16 +90,12 @@ class SkillSelectionActivity : BaseActivity() {
                 for (skillValue in userData!!.skills) {
                     flSkillsSelection.addView(inflateView(skillValue))
                 }
-//                dismissLoader()
             }
-
             override fun onFailure(call: Call<ServerSkillsModel>?, t: Throwable?) {
-//                dismissLoader()
                 showAlert(txtDoneSelection, t!!.localizedMessage)
             }
         })
     }
-
 
     private fun inflateView(skillValue: SkillsModel): View {
         val interestChip = LayoutInflater.from(this).inflate(R.layout.layout_skills, null, false)

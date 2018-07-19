@@ -82,7 +82,7 @@
     <string name="error_gender">Please specify Gender</string>
     <string name="error_bio">Please enter Bio</string>
     <string name="error_name">Please enter Name with minimum 2 characters.</string>
-    <string name="error_profession">Please specify Profession</string>
+    <string name="error_profession">Please select or add Occupation</string>
     <string name="error_Language">Please specify Language</string>
     <string name="logout">Log out</string>
     <string name="your_profile_is_now_complete_and_is_under_review_will_let_you_know_know_shortly">Your profile is now complete and is under review. Will let you know shortly.</string>
@@ -216,5 +216,6 @@
     <string name="error_comment">Please enter comment</string>
     <string name="no_community_bookmarked">No Community Bookmarked</string>
     <string name="no_event_bookmarked">No Event Bookmarked</string>
+    <string name="add_occupation">Add Occupation</string>
 
 </resources>

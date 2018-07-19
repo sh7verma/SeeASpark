@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.cocosw.bottomsheet.BottomSheet
@@ -48,7 +47,7 @@ class EditProfileActivity : BaseActivity() {
 
     private var mAvatarName = Constants.EMPTY
     private var mAvatarURL = Constants.EMPTY
-    private var mProfession: Int = 0
+        private var mProfessionId: Int = 0
     private var mYears: Int = 0
     private var mMonths: Int = 0
     private var mSelectedLanguagesArray = ArrayList<LanguageModel>()
@@ -197,7 +196,7 @@ class EditProfileActivity : BaseActivity() {
             }
             txtProfessionEditProfile -> {
                 intent = Intent(mContext, SelectProfessionActivity::class.java)
-                intent.putExtra("professionId", mProfession)
+                intent.putExtra("professionId", mProfessionId)
                 intent.putExtra("professionName", txtProfessionEditProfile.text.toString())
                 startActivityForResult(intent, PROFESSION)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
@@ -260,7 +259,7 @@ class EditProfileActivity : BaseActivity() {
                 mDOB.format(calDOB!!.time),
                 mGender.toString(),
                 tempLanguages,
-                mProfession.toString(),
+                txtProfessionEditProfile.text.toString(),
                 "$mYears,$mMonths",
                 tempSkills,
                 edBioEditProfile.text.toString().trim(),
@@ -302,7 +301,7 @@ class EditProfileActivity : BaseActivity() {
             userData!!.response.gender == "3" -> txtGenderEditProfile.text = getString(R.string.other)
         }
 
-        mProfession = userData!!.response.profession.id
+        mProfessionId = userData!!.response.profession.id
         txtProfessionEditProfile.text = userData!!.response.profession.name
 
         mYears = userData!!.response.experience_year
@@ -460,7 +459,7 @@ class EditProfileActivity : BaseActivity() {
                 }
                 PROFESSION -> {
                     txtProfessionEditProfile.text = data!!.getStringExtra("professionName")
-                    mProfession = data.getIntExtra("professionId", 0)
+                    mProfessionId = data.getIntExtra("professionId", 0)
                 }
                 EXPERIENCE -> {
                     mYears = data!!.getIntExtra("Years", 0)
