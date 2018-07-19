@@ -4,7 +4,9 @@ import android.graphics.Typeface
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
+import android.view.Gravity
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_share_idea.*
 import models.BaseSuccessModel
 import network.RetrofitClient
@@ -58,14 +60,19 @@ class ShareIdeaActivity : BaseActivity() {
     override fun onClick(view: View?) {
         when (view) {
             imgCancelIdea -> {
+                Constants.closeKeyboard(mContext!!,imgCancelIdea)
                 finish()
             }
             imgDoneIdea -> {
-                if (edSubject.text.toString().trim().isEmpty())
-                    showAlert(imgDoneIdea, getString(R.string.error_subject))
-                else if (edContent.text.toString().trim().isEmpty())
-                    showAlert(imgDoneIdea, getString(R.string.error_content))
-                else {
+                if (edSubject.text.toString().trim().isEmpty()) {
+                    val toast = Toast.makeText(this, getString(R.string.error_subject), Toast.LENGTH_LONG)
+                    toast.setGravity(Gravity.CENTER, 0, 0)
+                    toast.show()
+                } else if (edContent.text.toString().trim().isEmpty()) {
+                    val toast = Toast.makeText(this, getString(R.string.error_content), Toast.LENGTH_LONG)
+                    toast.setGravity(Gravity.CENTER, 0, 0)
+                    toast.show()
+                } else {
                     if (connectedToInternet())
                         hitAPI()
                     else

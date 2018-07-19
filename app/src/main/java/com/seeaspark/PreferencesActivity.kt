@@ -14,7 +14,9 @@ import com.cocosw.bottomsheet.BottomSheet
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_preferences.*
 import kotlinx.android.synthetic.main.activity_preferences.view.*
+import kotlinx.android.synthetic.main.activity_profession_listing.*
 import kotlinx.android.synthetic.main.add_skills.view.*
+import models.ProfessionListingModel
 import models.ProfessionModel
 import models.SignupModel
 import network.RetrofitClient
@@ -37,6 +39,7 @@ class PreferencesActivity : BaseActivity() {
     private var moveToHome = false
     private var mPreferActivity: PreferencesActivity? = null
 
+    override fun getContentView() = R.layout.activity_preferences
 
     override fun initUI() {
         mPreferActivity = this
@@ -47,11 +50,43 @@ class PreferencesActivity : BaseActivity() {
     }
 
     override fun displayDayMode() {
+        llMainPreferences.setBackgroundColor(whiteColor)
+        txtTitlePrefer.setTextColor(blackColor)
+        imgForwardPrefer.setBackgroundResource(whiteRipple)
 
+        txtDistanceHint.setTextColor(blackColor)
+        txtDistanceCount.setTextColor(blackColor)
+
+        txtExperienceHint.setTextColor(blackColor)
+        txtExperienceCount.setTextColor(blackColor)
+
+        llGenderPrefer.setBackgroundResource(whiteRipple)
+        txtGenderPrefer.setBackgroundResource(whiteRipple)
+        txtGenderHint.setTextColor(blackColor)
+        txtGenderPrefer.setTextColor(blackColor)
+
+        llSkillSelection.setBackgroundResource(whiteRipple)
+        txtSkillHint.setTextColor(blackColor)
     }
 
     override fun displayNightMode() {
+        llMainPreferences.setBackgroundColor(blackColor)
+        txtTitlePrefer.setTextColor(whiteColor)
+        imgForwardPrefer.setBackgroundResource(blackRipple)
 
+        txtDistanceHint.setTextColor(whiteColor)
+        txtDistanceCount.setTextColor(whiteColor)
+
+        txtExperienceHint.setTextColor(whiteColor)
+        txtExperienceCount.setTextColor(whiteColor)
+
+        llGenderPrefer.setBackgroundResource(blackRipple)
+        txtGenderPrefer.setBackgroundResource(blackRipple)
+        txtGenderHint.setTextColor(whiteColor)
+        txtGenderPrefer.setTextColor(whiteColor)
+
+        llSkillSelection.setBackgroundResource(blackRipple)
+        txtSkillHint.setTextColor(whiteColor)
     }
 
     override fun onCreateStuff() {
@@ -75,7 +110,7 @@ class PreferencesActivity : BaseActivity() {
             if (userData!!.response.preferences.gender == 1) {
                 mGenderValue = 1
                 txtGenderPrefer.text = getString(R.string.male)
-            } else if (userData!!.response.preferences.gender  == 2) {
+            } else if (userData!!.response.preferences.gender == 2) {
                 mGenderValue = 2
                 txtGenderPrefer.text = getString(R.string.female)
             } else {
@@ -106,6 +141,11 @@ class PreferencesActivity : BaseActivity() {
 
         extractProfessionValue()
         extractLanguageValue()
+
+        if (connectedToInternet())
+            hitProfessionAPI()
+        else
+            showInternetAlert(llGenderPrefer)
     }
 
     private fun extractSelectedProfessions() {
@@ -128,6 +168,10 @@ class PreferencesActivity : BaseActivity() {
 
     private fun extractProfessionValue() {
         mProfessionArray.addAll(userData!!.professions)
+        populateData()
+    }
+
+    private fun populateData() {
         mAdapterProfession = PreferProfessionAdapter(mContext!!, mProfessionArray, mPreferActivity)
         rvProfessionPrefer.adapter = mAdapterProfession
     }
@@ -138,8 +182,6 @@ class PreferencesActivity : BaseActivity() {
         llProfessionListing.setOnClickListener(this)
         llSkillSelection.setOnClickListener(this)
     }
-
-    override fun getContentView() = R.layout.activity_preferences
 
     override fun getContext() = this
 
@@ -267,6 +309,10 @@ class PreferencesActivity : BaseActivity() {
         val interestChip = LayoutInflater.from(this).inflate(R.layout.add_skills, null, false)
         val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         interestChip.llMainAddSkills.layoutParams = innerParms
+        if (mUtils!!.getInt("nightMode", 0) == 1)
+            interestChip.txtAddSkillChip.setTextColor(whiteColor)
+        else
+            interestChip.txtAddSkillChip.setTextColor(blackColor)
         interestChip.txtAddSkillChip.text = skillValue
         return interestChip
     }
@@ -337,6 +383,37 @@ class PreferencesActivity : BaseActivity() {
                         }
                     }
                 }.show()
+    }
+
+    private fun hitProfessionAPI() {
+
+        val call = RetrofitClient.getInstance().getProfessions(mUtils!!.getString("access_token", ""))
+        call.enqueue(object : Callback<ProfessionListingModel> {
+
+            override fun onResponse(call: Call<ProfessionListingModel>?, response: Response<ProfessionListingModel>) {
+                if (response.body().response != null) {
+                    mProfessionArray.clear()
+                    mProfessionArray.addAll(response.body().response)
+                    populateData()
+                    upDateData(response.body().response)
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else
+                        showAlert(txtNextProfessionListing, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<ProfessionListingModel>?, t: Throwable?) {
+                showAlert(txtNextProfessionListing, t!!.localizedMessage)
+            }
+        })
+    }
+
+    private fun upDateData(response: MutableList<ProfessionModel>) {
+        userData!!.professions.clear()
+        userData!!.professions.addAll(response)
+        mUtils!!.setString("userDataLocal", mGson.toJson(userData))
     }
 
     override fun onBackPressed() {

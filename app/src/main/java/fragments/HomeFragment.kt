@@ -3,12 +3,15 @@ package fragments
 import adapters.HomeCardsAdapter
 import android.app.Activity.RESULT_OK
 import android.app.Fragment
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -376,10 +379,9 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
 
 
     override fun onResume() {
-        super.onResume()
-
         // register connection status listener
         MainApplication.getInstance().setConnectivityListener(this)
+        super.onResume()
     }
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
@@ -387,7 +389,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             if (mLandingInstance!!.mArrayCards.size == 0) {
                 mOffset = 1
                 isLoading = false
-                hitAPI(true)
+                hitAPI(false)
             } else {
                 mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
                 rvCards.adapter = mAdapterCards
@@ -401,12 +403,6 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     fun resetData() {
         if (mAdapterCards != null) {
-
-            if (mUtils!!.getInt("nightMode", 0) == 1)
-                displayNightMode()
-            else
-                displayDayMode()
-
             isLoading = false
             mOffset = 1
             mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
@@ -432,5 +428,31 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         } else
             mLandingInstance!!.showInternetAlert(rvEventsListing)
+    }
+
+    override fun onStart() {
+        LocalBroadcastManager.getInstance(activity).registerReceiver(nightModeReceiver,
+                IntentFilter(Constants.NIGHT_MODE))
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(nightModeReceiver)
+        super.onDestroy()
+    }
+
+    var nightModeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+        override fun onReceive(context: Context, intent: Intent) {
+                isLoading = false
+                mOffset = 1
+                if (intent.getIntExtra("status", 0) == Constants.DAY) {
+                    resetData()
+                    displayDayMode()
+                } else {
+                    resetData()
+                    displayNightMode()
+                }
+        }
     }
 }

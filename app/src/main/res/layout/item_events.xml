@@ -72,6 +72,8 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@mipmap/ic_location_green"
                 android:drawablePadding="@dimen/_5sdp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:paddingBottom="@dimen/_5sdp"
                 android:text="Southren"
                 android:textColor="@color/black_color"

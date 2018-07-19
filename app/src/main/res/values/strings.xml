@@ -30,6 +30,7 @@
     <string name="select_your_n_avatar">Select your Avatar</string>
     <string name="enter">Enter</string>
     <string name="search_your_occupation">Search your occupation</string>
+    <string name="search_your_language">Search your language</string>
     <string name="name">Name</string>
     <string name="next">NEXT</string>
     <string name="what_is_your_name">What is your Name?</string>
@@ -212,5 +213,8 @@
     <string name="comments">Comments</string>
     <string name="no_events_available">No Events Available</string>
     <string name="no_community_available">No Community Available</string>
+    <string name="error_comment">Please enter comment</string>
+    <string name="no_community_bookmarked">No Community Bookmarked</string>
+    <string name="no_event_bookmarked">No Event Bookmarked</string>
 
 </resources>

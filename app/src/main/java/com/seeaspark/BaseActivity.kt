@@ -16,12 +16,14 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.gson.Gson
 import database.Database
 import services.DayBroadcastReceiver
 import services.NightBroadCastReceiver
+import services.ReceiverFunctions
 import utils.Connection_Detector
 import utils.Constants
 import utils.CustomLoadingDialog
@@ -47,11 +49,8 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var blackRipple = 0
     var whiteRipple = 0
 
-    private var mAlarmManagerDay: AlarmManager? = null
-    private var mPendingIntentDay: PendingIntent? = null
-
-    private var mAlarmManagerNight: AlarmManager? = null
-    private var mPendingIntentNight: PendingIntent? = null
+    var mReceiverFunction: ReceiverFunctions? = null
+    var currentCalendar: Calendar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +59,10 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         broadcaster = LocalBroadcastManager.getInstance(baseContext)
         mUtils = Utils(this)
         db = Database(mContext!!)
+        currentCalendar = Calendar.getInstance()
+        currentCalendar!!.timeInMillis = System.currentTimeMillis()
+
+        mReceiverFunction = ReceiverFunctions()
         getDefaults()
 
         blackColor = ContextCompat.getColor(this, R.color.black_color)
@@ -69,10 +72,21 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         blackRipple = R.drawable.black_ripple
         whiteRipple = R.drawable.white_ripple
         initUI()
-        if (mUtils!!.getInt("nightMode", 0) == 1)
+
+        if (mUtils!!.getInt("switchNightMode", 0) == 1) {
+            mUtils!!.setInt("nightMode", 1)
             displayNightMode()
-        else
-            displayDayMode()
+        } else {
+            if (mUtils!!.getInt("autoNightMode", 0) == 1) {
+                if (currentCalendar!!.get(Calendar.HOUR_OF_DAY) in 6..17) {
+                    mUtils!!.setInt("nightMode", 0)
+                    displayDayMode()
+                } else {
+                    mUtils!!.setInt("nightMode", 1)
+                    displayNightMode()
+                }
+            }
+        }
 
         onCreateStuff()
         initListener()
@@ -126,6 +140,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
                 .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
         mUtils!!.clear_shf()
+        db!!.deleteAllTables()
         val inSplash = Intent(mContext, AfterWalkThroughActivity::class.java)
         inSplash.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         inSplash.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -144,7 +159,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         alertDialog.show()
     }
 
-    internal var nightModeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    var nightModeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.getIntExtra("status", 0) == Constants.DAY) {
                 displayDayMode()
@@ -152,6 +167,12 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
                 displayNightMode()
             }
         }
+    }
+
+    override fun onResume() {
+        currentCalendar = Calendar.getInstance()
+        currentCalendar!!.timeInMillis = System.currentTimeMillis()
+        super.onResume()
     }
 
     override fun onStart() {
@@ -163,52 +184,6 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(nightModeReceiver)
         super.onDestroy()
-    }
-
-    fun startAutoDayMode() {
-        val intent = Intent(this, DayBroadcastReceiver::class.java)
-        mPendingIntentDay = PendingIntent.getBroadcast(
-                mContext, 43, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-        val interval = 1000 * 60 * 60 * 24
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.set(Calendar.HOUR_OF_DAY, 6)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        mAlarmManagerDay = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        mAlarmManagerDay!!.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
-                interval.toLong(), mPendingIntentDay)
-    }
-
-    fun startAutoNightMode() {
-        val intent = Intent(this, NightBroadCastReceiver::class.java)
-        mPendingIntentNight = PendingIntent.getBroadcast(
-                mContext, 44, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-        val interval = 1000 * 60 * 60 * 24
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.set(Calendar.HOUR_OF_DAY, 18)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        mAlarmManagerNight = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        mAlarmManagerNight!!.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
-                interval.toLong(), mPendingIntentNight)
-    }
-
-    fun turnOffAutoNightMode() {
-        if (mAlarmManagerNight != null) {
-            mAlarmManagerNight!!.cancel(mPendingIntentNight)
-        }
-    }
-
-    fun turnOffAutoDayMode() {
-        if (mAlarmManagerDay != null) {
-            mAlarmManagerDay!!.cancel(mPendingIntentDay)
-        }
     }
 
 

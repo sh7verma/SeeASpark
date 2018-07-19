@@ -10,8 +10,13 @@ import android.view.ViewGroup
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_skill_selection.*
 import kotlinx.android.synthetic.main.layout_skills.view.*
+import models.ServerSkillsModel
 import models.SignupModel
 import models.SkillsModel
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import utils.Constants
 
 
@@ -21,6 +26,7 @@ class SkillSelectionActivity : BaseActivity() {
     private var mSkillsSelectedArray = ArrayList<String>()
     private var mSelectedSkillsNameArray = ArrayList<String>()
     private var userData: SignupModel? = null
+
 
     override fun initUI() {
 
@@ -38,6 +44,10 @@ class SkillSelectionActivity : BaseActivity() {
         for (skillValue in userData!!.skills) {
             flSkillsSelection.addView(inflateView(skillValue))
         }
+        if (connectedToInternet())
+            hitAPI()
+        else
+            showInternetAlert(txtDoneSelection)
     }
 
     override fun displayDayMode() {
@@ -69,6 +79,28 @@ class SkillSelectionActivity : BaseActivity() {
             }
         }
     }
+
+    private fun hitAPI() {
+//        showLoader()
+        val call = RetrofitClient.getInstance().getUserSkills(mUtils!!.getString("access_token", ""))
+        call.enqueue(object : Callback<ServerSkillsModel> {
+            override fun onResponse(call: Call<ServerSkillsModel>?, response: Response<ServerSkillsModel>?) {
+                userData!!.skills.clear()
+                userData!!.skills.addAll(response!!.body().response)
+                flSkillsSelection.removeAllViews()
+                for (skillValue in userData!!.skills) {
+                    flSkillsSelection.addView(inflateView(skillValue))
+                }
+//                dismissLoader()
+            }
+
+            override fun onFailure(call: Call<ServerSkillsModel>?, t: Throwable?) {
+//                dismissLoader()
+                showAlert(txtDoneSelection, t!!.localizedMessage)
+            }
+        })
+    }
+
 
     private fun inflateView(skillValue: SkillsModel): View {
         val interestChip = LayoutInflater.from(this).inflate(R.layout.layout_skills, null, false)

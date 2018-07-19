@@ -30,6 +30,36 @@
             android:textColor="@color/black_color"
             android:textSize="@dimen/_24ssp" />
 
+        <EditText
+            android:id="@+id/edLanguageSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:layout_marginRight="@dimen/_16sdp"
+            android:visibility="visible"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@android:color/transparent"
+            android:gravity="left"
+            android:hint="@string/search_your_language"
+            android:inputType="textCapSentences"
+            android:maxLength="@integer/name_max"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="@dimen/_14ssp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:layout_marginRight="@dimen/_16sdp"
+            android:visibility="visible"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:background="@color/colorLine" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvSelectLanguage"
             android:layout_width="match_parent"

@@ -38,7 +38,7 @@ class SettingsActivity : BaseActivity() {
         txtTitleCustom.text = getString(R.string.settings)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
-        if (mUtils!!.getInt("nightMode", 0) == 1) {
+        if (mUtils!!.getInt("switchNightMode", 0) == 1) {
             scNightMode.isChecked = true
             setVisibilityOFF()
         }
@@ -46,39 +46,56 @@ class SettingsActivity : BaseActivity() {
         scNightMode.setOnCheckedChangeListener { p0, status ->
             if (status) {
                 mUtils!!.setInt("nightMode", 1)
+                mUtils!!.setInt("switchNightMode", 1)
                 val broadCastIntent = Intent(Constants.NIGHT_MODE)
                 broadCastIntent.putExtra("status", Constants.NIGHT)
                 broadcaster!!.sendBroadcast(broadCastIntent)
 
                 setVisibilityOFF()
-                turnOffAutoDayMode()
-                turnOffAutoNightMode()
+                mReceiverFunction!!.turnOffAutoDayMode()
+                mReceiverFunction!!.turnOffAutoNightMode()
             } else {
                 mUtils!!.setInt("nightMode", 0)
+                mUtils!!.setInt("switchNightMode", 0)
                 val broadCastIntent = Intent(Constants.NIGHT_MODE)
                 broadCastIntent.putExtra("status", Constants.DAY)
                 broadcaster!!.sendBroadcast(broadCastIntent)
 
                 setVisibilityON()
                 if (mUtils!!.getInt("nightMode", 0) == 1) {
-                    startAutoDayMode()
-                    startAutoNightMode()
+                    mReceiverFunction!!.startAutoDayMode(mContext!!)
+                    mReceiverFunction!!.startAutoNightMode(mContext!!)
                 }
             }
         }
 
-        if (mUtils!!.getInt("nightMode", 0) == 0 && mUtils!!.getInt("autoNightMode", 0) == 1)
+        if (mUtils!!.getInt("autoNightMode", 0) == 1)
             scAutoNightMode.isChecked = true
 
         scAutoNightMode.setOnCheckedChangeListener { p0, status ->
             if (status) {
                 mUtils!!.setInt("autoNightMode", 1)
-                startAutoDayMode()
-                startAutoNightMode()
+                if (currentCalendar!!.get(Calendar.HOUR_OF_DAY) in 6..17) {
+                    mUtils!!.setInt("nightMode", 0)
+                    mReceiverFunction!!.startAutoDayMode(mContext!!)
+                    val broadCastIntent = Intent(Constants.NIGHT_MODE)
+                    broadCastIntent.putExtra("status", Constants.DAY)
+                    broadcaster!!.sendBroadcast(broadCastIntent)
+                } else {
+                    mUtils!!.setInt("nightMode", 1)
+                    mReceiverFunction!!.startAutoNightMode(mContext!!)
+                    val broadCastIntent = Intent(Constants.NIGHT_MODE)
+                    broadCastIntent.putExtra("status", Constants.NIGHT)
+                    broadcaster!!.sendBroadcast(broadCastIntent)
+                }
             } else {
                 mUtils!!.setInt("autoNightMode", 0)
-                turnOffAutoDayMode()
-                turnOffAutoNightMode()
+                mUtils!!.setInt("nightMode", 0)
+                mReceiverFunction!!.turnOffAutoDayMode()
+                mReceiverFunction!!.turnOffAutoNightMode()
+                val broadCastIntent = Intent(Constants.NIGHT_MODE)
+                broadCastIntent.putExtra("status", Constants.DAY)
+                broadcaster!!.sendBroadcast(broadCastIntent)
             }
         }
     }
@@ -197,7 +214,7 @@ class SettingsActivity : BaseActivity() {
         try {
             val pInfo = this.packageManager.getPackageInfo(packageName, 0)
             txtVersion.text = "App Version ${pInfo.versionName}"
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -360,4 +377,5 @@ class SettingsActivity : BaseActivity() {
         finish()
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }
+
 }

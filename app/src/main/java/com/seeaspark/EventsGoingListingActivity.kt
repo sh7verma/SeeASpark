@@ -24,13 +24,13 @@ class EventsGoingListingActivity : BaseActivity() {
 
     override fun displayDayMode() {
         llMainEventsListing.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
-        imgBackCustom.setImageResource(R.mipmap.ic_back_black)
+        imgBackCustom.setImageResource(R.mipmap.ic_back_org)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
     }
 
     override fun displayNightMode() {
         llMainEventsListing.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
-        imgBackCustom.setImageResource(R.mipmap.ic_back_org)
+        imgBackCustom.setImageResource(R.mipmap.ic_back_black)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))
     }
 

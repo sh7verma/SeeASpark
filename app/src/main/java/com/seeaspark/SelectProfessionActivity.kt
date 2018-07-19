@@ -9,8 +9,14 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import kotlinx.android.synthetic.main.activity_profession_listing.*
+import models.LanguageModel
+import models.ProfessionListingModel
 import models.ProfessionModel
 import models.SignupModel
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import utils.Constants
 
 
@@ -27,6 +33,7 @@ class SelectProfessionActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_profession_listing
 
     override fun initUI() {
+
     }
 
     override fun displayDayMode() {
@@ -38,18 +45,20 @@ class SelectProfessionActivity : BaseActivity() {
 
     override fun onCreateStuff() {
 
+        mProfessionListing = this
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+
+        mProfessionArray.addAll(userData!!.professions)
+        populateData()
+
+        if (connectedToInternet())
+            hitAPI()
+        else
+            showInternetAlert(txtNextProfessionListing)
+
         mProfession = intent.getIntExtra("professionId", 0)
         mProfessionName = intent.getStringExtra("professionName")
 
-        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
-
-        mProfessionListing = this
-
-        mProfessionArray.addAll(userData!!.professions)
-
-        rvProfessionListing.layoutManager = LinearLayoutManager(this)
-        mAdapterProfession = ProfessionListingAdapter(this, mProfessionArray, mProfessionListing!!)
-        rvProfessionListing.adapter = mAdapterProfession
 
 
         edProfessionSelect.addTextChangedListener(object : TextWatcher {
@@ -80,8 +89,44 @@ class SelectProfessionActivity : BaseActivity() {
                 }
             }
         })
+    }
 
+    private fun populateData() {
+        rvProfessionListing.layoutManager = LinearLayoutManager(this)
+        mAdapterProfession = ProfessionListingAdapter(this, mProfessionArray, mProfessionListing!!)
+        rvProfessionListing.adapter = mAdapterProfession
+    }
 
+    private fun upDateData(response: MutableList<ProfessionModel>) {
+        userData!!.professions.clear()
+        userData!!.professions.addAll(response)
+        mUtils!!.setString("userDataLocal", mGson.toJson(userData))
+    }
+
+    private fun hitAPI() {
+
+        val call = RetrofitClient.getInstance().getProfessions(mUtils!!.getString("access_token", ""))
+        call.enqueue(object : Callback<ProfessionListingModel> {
+
+            override fun onResponse(call: Call<ProfessionListingModel>?, response: Response<ProfessionListingModel>) {
+                if (response.body().response != null) {
+                    mProfessionArray.clear()
+                    mProfessionArray.addAll(response.body().response)
+                    populateData()
+                    upDateData(response.body().response)
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else
+                        showAlert(txtNextProfessionListing, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<ProfessionListingModel>?, t: Throwable?) {
+                showAlert(txtNextProfessionListing, t!!.localizedMessage)
+            }
+
+        })
     }
 
     override fun initListener() {

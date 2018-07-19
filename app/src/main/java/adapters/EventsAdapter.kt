@@ -3,6 +3,7 @@ package adapters
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,9 +71,10 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
         when (mEventsArray[position].post_type) {
             Constants.EVENT -> {
                 (holder as PostViewHolder)
-                Picasso.with(mContext).load(mEventsArray[position].images[0].thumbnail_url)
-                        .resize(mWidth, mContext!!.resources.getDimension(R.dimen._140sdp).toInt())
-                        .centerCrop().into(holder.imgEventsListing)
+                if (!TextUtils.isEmpty(mEventsArray[position].images[0].thumbnail_url))
+                    Picasso.with(mContext).load(mEventsArray[position].images[0].thumbnail_url)
+                            .resize(mWidth, mContext!!.resources.getDimension(R.dimen._140sdp).toInt())
+                            .centerCrop().into(holder.imgEventsListing)
 
                 holder.txtTitleEventsListing.text = mEventsArray[position].title
                 holder.txtDescEventsListing.text = mEventsArray[position].description

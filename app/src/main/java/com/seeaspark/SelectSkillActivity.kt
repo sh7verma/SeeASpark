@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_select_skill.*
 import kotlinx.android.synthetic.main.layout_skills.view.*
+import models.ProfessionModel
 import models.ServerSkillsModel
 import models.SignupModel
 import models.SkillsModel
@@ -63,7 +64,7 @@ class SelectSkillActivity : BaseActivity() {
     }
 
     private fun hitAPI() {
-        showLoader()
+//        showLoader()
         val call = RetrofitClient.getInstance().getUserSkills(mUtils!!.getString("access_token", ""))
         call.enqueue(object : Callback<ServerSkillsModel> {
             override fun onResponse(call: Call<ServerSkillsModel>?, response: Response<ServerSkillsModel>?) {
@@ -78,15 +79,26 @@ class SelectSkillActivity : BaseActivity() {
                 for (skillValue: SkillsModel in mSkillsArray) {
                     flSkillsSelect.addView(inflateView(skillValue))
                 }
-                dismissLoader()
+
+                upDateData(response.body().response)
+
+
+//                dismissLoader()
             }
 
             override fun onFailure(call: Call<ServerSkillsModel>?, t: Throwable?) {
-                dismissLoader()
+//                dismissLoader()
                 showAlert(flSkillsSelect, t!!.localizedMessage)
             }
         })
     }
+
+    private fun upDateData(response: MutableList<SkillsModel>) {
+        userData!!.skills.clear()
+        userData!!.skills.addAll(response)
+        mUtils!!.setString("userDataLocal", mGson.toJson(userData))
+    }
+
 
     override fun initListener() {
         txtNextSkillsSelect.setOnClickListener(this)

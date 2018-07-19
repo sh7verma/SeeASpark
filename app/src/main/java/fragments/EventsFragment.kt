@@ -108,6 +108,13 @@ class EventsFragment : Fragment(), View.OnClickListener {
             }
         })
 
+        srlEvents.setColorSchemeResources(R.color.colorPrimary)
+        srlEvents.setOnRefreshListener {
+            isLoading = false
+            mOffset = 1
+            hitAPI(false)
+        }
+
         mUtils = Utils(activity)
         if (mUtils!!.getInt("nightMode", 0) == 1)
             displayNightMode()
@@ -178,9 +185,8 @@ class EventsFragment : Fragment(), View.OnClickListener {
     private fun addToLocalDatabase(response: List<PostModel.ResponseBean>) {
         if (mOffset == 1)
             mLandingInstance!!.db!!.deleteEventData(Constants.EVENT)
-        else {
+        else
             isLoading = response.isEmpty()
-        }
 
         for (responseData in response) {
             mLandingInstance!!.db!!.addPosts(responseData)
@@ -196,6 +202,10 @@ class EventsFragment : Fragment(), View.OnClickListener {
 
     private fun populateData() {
         if (llMainEventFrag != null) {
+
+            if (srlEvents.isRefreshing)
+                srlEvents.isRefreshing = false
+
             if (mOffset == 1)
                 mEventsArray.clear()
             else {
@@ -257,11 +267,14 @@ class EventsFragment : Fragment(), View.OnClickListener {
     override fun onStart() {
         LocalBroadcastManager.getInstance(activity).registerReceiver(receiver,
                 IntentFilter(Constants.POST_BROADCAST))
+        LocalBroadcastManager.getInstance(activity).registerReceiver(nightModeReceiver,
+                IntentFilter(Constants.NIGHT_MODE))
         super.onStart()
     }
 
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(receiver)
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(nightModeReceiver)
         super.onDestroy()
     }
 
@@ -408,4 +421,18 @@ class EventsFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    var nightModeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+        override fun onReceive(context: Context, intent: Intent) {
+            isLoading = false
+            mOffset = 1
+            if (intent.getIntExtra("status", 0) == Constants.DAY) {
+                populateData()
+                displayDayMode()
+            } else {
+                populateData()
+                displayNightMode()
+            }
+        }
+    }
 }

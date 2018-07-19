@@ -30,7 +30,6 @@
             android:textColor="@color/black_color"
             android:textSize="@dimen/_24ssp" />
 
-
         <EditText
             android:id="@+id/edProfessionSelect"
             android:layout_width="match_parent"

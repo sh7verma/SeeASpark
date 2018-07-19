@@ -7,20 +7,41 @@
     android:background="@color/white_color"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/imgCommunityDetail"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_240sdp"
-        android:background="@drawable/background_gradient" />
-
     <customviews.ScrollViewX
         android:id="@+id/svViewCommunity"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_240sdp">
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/vpCommunityDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_240sdp"
+                    android:background="@drawable/background_gradient" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_240sdp"
+                    android:alpha=".1"
+                    android:background="@color/black_color" />
+
+                <customviews.CirclePageIndicator
+                    android:id="@+id/cpIndicatorCommunity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="@dimen/_64sdp"
+                    android:padding="@dimen/_10sdp" />
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/llMainCommunity"
@@ -56,8 +77,8 @@
                     android:id="@+id/txtDescCommunity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_8sdp"
-                    android:paddingTop="@dimen/_8sdp"
+                    android:paddingBottom="@dimen/_72sdp"
+                    android:paddingTop="@dimen/_16sdp"
                     android:text="@string/lorem_ipsum"
                     android:textColor="@color/greyTextColor"
                     android:textSize="@dimen/_12ssp" />

@@ -366,7 +366,7 @@ public class Database extends SQLiteOpenHelper {
         return mArrayListGoing;
     }
 
-    public PostModel.ResponseBean getPostDataById(int postId, int postType) {
+        public PostModel.ResponseBean getPostDataById(int postId, int postType) {
         SQLiteDatabase db = this.getReadableDatabase();
         db.beginTransaction();
         Cursor cur = null;
@@ -481,6 +481,23 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public void deleteAllTables() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            String dropEvents = "Delete from  " + POSTS_TABLE ;
+            db.execSQL(dropEvents);
 
+            String dropImages = "Delete from  " + IMAGES_TABLE;
+            db.execSQL(dropImages);
+
+            String dropGoingUsers = "Delete from  " + GOING_TABLE;
+            db.execSQL(dropGoingUsers);
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception = ", e + "");
+        } finally {
+            db.endTransaction();
+        }
     }
 }

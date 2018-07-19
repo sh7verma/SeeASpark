@@ -13,7 +13,7 @@
         android:paddingBottom="@dimen/_16sdp"
         android:gravity="center"
         android:text="What quality do you expect in your mentor?"
-        android:textColor="@color/black_color"
+        android:textColor="@color/white_color"
         android:textSize="@dimen/_14ssp" />
 
     <android.support.v7.widget.RecyclerView

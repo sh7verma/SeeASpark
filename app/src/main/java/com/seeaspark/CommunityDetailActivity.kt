@@ -1,9 +1,11 @@
 package com.seeaspark
 
+import adapters.FullImageAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -12,7 +14,6 @@ import android.support.v4.content.LocalBroadcastManager
 import android.view.View
 import com.like.LikeButton
 import com.like.OnLikeListener
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_community_detail.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import models.BaseSuccessModel
@@ -23,6 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
+import java.util.ArrayList
 
 class CommunityDetailActivity : BaseActivity() {
 
@@ -151,7 +153,7 @@ class CommunityDetailActivity : BaseActivity() {
                 moveBack()
             }
             imgOption1Custom -> {
-
+                showAlert(imgOption1Custom,getString(R.string.work_in_progress))
             }
             imgOption2Custom -> {
                 if (connectedToInternet()) {
@@ -178,12 +180,16 @@ class CommunityDetailActivity : BaseActivity() {
     }
 
     private fun populateData() {
-        Picasso.with(mContext).load(mCommunityData!!.images[0].image_url).centerCrop().resize(mWidth, resources.getDimension(R.dimen._240sdp).toInt())
-                .into(imgCommunityDetail)
+        vpCommunityDetail.adapter = FullImageAdapter(mContext!!, mCommunityData!!.images as ArrayList<PostModel.ResponseBean.ImagesBean>, 1)
+        cpIndicatorCommunity.setViewPager(vpCommunityDetail)
+        cpIndicatorCommunity.fillColor = Color.BLACK
+
         txtTitleCustom.text = mCommunityData!!.title
         txtTitleCommunity.text = mCommunityData!!.title
+
         if (mCommunityData!!.date_time.isNotEmpty())
             txtTimeCommunity.text = Constants.displayDateTime(mCommunityData!!.date_time)
+
         txtDescCommunity.text = mCommunityData!!.description
 
         if (mCommunityData!!.liked == 1) isLiked = 1
@@ -224,7 +230,7 @@ class CommunityDetailActivity : BaseActivity() {
 
     private fun getAlphaforActionBar(scrollY: Int): Int {
         val minDist = 0
-        val maxDist = 300
+        val maxDist = 600
         when {
             scrollY > maxDist -> {
                 txtTitleCustom.alpha = 1.0f

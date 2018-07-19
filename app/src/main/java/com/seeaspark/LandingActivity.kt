@@ -52,8 +52,6 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     private var height = 0
 
     private var homeFragment: HomeFragment? = null
-    private var eventFragment: EventsFragment? = null
-    private var communityFragment: CommunityFragment? = null
 
     var mArrayCards = ArrayList<CardsDisplayModel>()
 
@@ -77,13 +75,6 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         llChat.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         llEvents.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         llCommunity.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
-
-        if (homeFragment != null)
-            homeFragment!!.resetData()
-        if (eventFragment != null)
-            eventFragment!!.resetData()
-        if (communityFragment != null)
-            communityFragment!!.resetData()
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -94,13 +85,6 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         llChat.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         llEvents.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         llCommunity.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
-
-        if (homeFragment != null)
-            homeFragment!!.resetData()
-        if (eventFragment != null)
-            eventFragment!!.resetData()
-        if (communityFragment != null)
-            communityFragment!!.resetData()
     }
 
     override fun onCreateStuff() {
@@ -155,8 +139,6 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     override fun onClick(view: View?) {
         when (view) {
             llHome -> {
-                eventFragment = null
-                communityFragment = null
                 homeFragment = HomeFragment()
                 imgHome.setImageResource(R.mipmap.ic_home_s)
                 imgEvents.setImageResource(R.mipmap.ic_events)
@@ -170,22 +152,22 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 showToast(mContext!!, getString(R.string.work_in_progress))
             }
             llEvents -> {
-                homeFragment = null
-                communityFragment = null
-                eventFragment = EventsFragment()
                 imgHome.setImageResource(R.mipmap.ic_home)
                 imgEvents.setImageResource(R.mipmap.ic_events_s)
                 imgCommunity.setImageResource(R.mipmap.ic_community)
                 replaceFragment(EventsFragment())
             }
             llCommunity -> {
-                eventFragment = null
-                homeFragment = null
-                communityFragment = CommunityFragment()
-                imgHome.setImageResource(R.mipmap.ic_home)
-                imgEvents.setImageResource(R.mipmap.ic_events)
-                imgCommunity.setImageResource(R.mipmap.ic_community_s)
-                replaceFragment(communityFragment!!)
+                if (userData!!.response.user_type == Constants.MENTOR) {
+                    /// user is mentor
+                    imgHome.setImageResource(R.mipmap.ic_home)
+                    imgEvents.setImageResource(R.mipmap.ic_events)
+                    imgCommunity.setImageResource(R.mipmap.ic_community_s)
+                    replaceFragment(CommunityFragment())
+                } else {
+                    /// user is menteee
+                    showToast(mContext!!, getString(R.string.work_in_progress))
+                }
             }
             imgNextTips -> {
                 if (currentPosition < 5) {
@@ -336,6 +318,8 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         if (location != null) {
             mLatitude = location.latitude
             mLongitude = location.longitude
+            mUtils!!.setString("latitude", mLatitude.toString())
+            mUtils!!.setString("longitude", mLongitude.toString())
             if (connectedToInternet()) {
                 if (intent.hasExtra("matchData"))
                     homeFragment!!.hitAPI(false)

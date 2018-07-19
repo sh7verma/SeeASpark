@@ -48,8 +48,10 @@ class SearchEventCommunityActivity : BaseActivity() {
         imgCancelSearch.setBackgroundResource(whiteRipple)
         edSearchEventCommunity.setBackgroundColor(whiteColor)
         imgBackSearch.setImageResource(R.mipmap.ic_back_black)
+
         llMainSearchEvents.setBackgroundColor(whiteColor)
         edSearchEventCommunity.setTextColor(blackColor)
+        txtNoResultFound.setTextColor(blackColor)
     }
 
     override fun displayNightMode() {
@@ -59,6 +61,7 @@ class SearchEventCommunityActivity : BaseActivity() {
         imgBackSearch.setImageResource(R.mipmap.ic_back_org)
         llMainSearchEvents.setBackgroundColor(blackColor)
         edSearchEventCommunity.setTextColor(whiteColor)
+        txtNoResultFound.setTextColor(whiteColor)
     }
 
     override fun onCreateStuff() {
@@ -70,6 +73,8 @@ class SearchEventCommunityActivity : BaseActivity() {
         if (intent.getStringExtra("path") == "community")
             isCommunity = true
 
+        imgCancelSearch.visibility = View.INVISIBLE
+
         edSearchEventCommunity.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
 
@@ -80,19 +85,18 @@ class SearchEventCommunityActivity : BaseActivity() {
             }
 
             override fun onTextChanged(char: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                /* if (connectedToInternet()) {
-                     hitAPI(char.toString())
-                 }*/
+                if (char.toString().isNotEmpty())
+                    imgCancelSearch.visibility = View.VISIBLE
+                else
+                    imgCancelSearch.visibility = View.INVISIBLE
             }
         })
 
         edSearchEventCommunity.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (connectedToInternet()) {
-                    if (edSearchEventCommunity.text.toString().trim({ it <= ' ' }).isNotEmpty()) {
-                        Constants.closeKeyboard(mContext, llMainSearchEvents)
-                        hitAPI(edSearchEventCommunity.text.toString())
-                    }
+                    Constants.closeKeyboard(mContext, llMainSearchEvents)
+                    hitAPI(edSearchEventCommunity.text.toString())
                 } else
                     showInternetAlert(llMainSearchEvents)
                 return@OnEditorActionListener true
@@ -196,11 +200,10 @@ class SearchEventCommunityActivity : BaseActivity() {
         if (mOffset == 1) {
             if (mCommunityArray.size == 0)
                 txtNoResultFound.visibility = View.VISIBLE
-            else {
+            else
                 txtNoResultFound.visibility = View.GONE
-                mCommunityAdapter = CommunityAdapter(mCommunityArray, mContext!!, mSearchInstance!!, null)
-                rvSearchEventCommunity.adapter = mCommunityAdapter
-            }
+            mCommunityAdapter = CommunityAdapter(mCommunityArray, mContext!!, mSearchInstance!!, null)
+            rvSearchEventCommunity.adapter = mCommunityAdapter
         } else {
             mCommunityAdapter!!.notifyDataSetChanged()
         }
@@ -212,11 +215,10 @@ class SearchEventCommunityActivity : BaseActivity() {
         if (mOffset == 1) {
             if (mEventsArray.size == 0)
                 txtNoResultFound.visibility = View.VISIBLE
-            else {
+            else
                 txtNoResultFound.visibility = View.GONE
-                mEventsAdapter = EventsAdapter(mContext!!, mEventsArray, null, mSearchInstance!!)
-                rvSearchEventCommunity.adapter = mEventsAdapter
-            }
+            mEventsAdapter = EventsAdapter(mContext!!, mEventsArray, null, mSearchInstance!!)
+            rvSearchEventCommunity.adapter = mEventsAdapter
         } else {
             mEventsAdapter!!.notifyDataSetChanged()
         }

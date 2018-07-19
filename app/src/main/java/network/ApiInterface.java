@@ -2,10 +2,14 @@ package network;
 
 import models.CardModel;
 import models.CommentModel;
+import models.LanguageListingModel;
+import models.LanguageModel;
 import models.PostModel;
 import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
 import models.NotificationModel;
+import models.ProfessionListingModel;
+import models.ProfessionModel;
 import models.SearchSkillModel;
 import models.ServerSkillsModel;
 import models.SignupModel;
@@ -213,5 +217,11 @@ public interface ApiInterface {
                                        @Field("query") String query,
                                        @Field("page") int page);
 
+
+    @GET("/api/v1/professions")
+    Call<ProfessionListingModel> getProfessions(@Query("access_token") String access_token);
+
+    @GET("/api/v1/languages")
+    Call<LanguageListingModel> getLanguages(@Query("access_token") String access_token);
 
 }

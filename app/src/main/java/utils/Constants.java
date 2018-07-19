@@ -76,6 +76,8 @@ public class Constants {
     public static final Integer COMMENT=3;
     public static final Integer DELETE=4;
 
+    public static final String AUTODAYMODE = "autoDay";
+
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }

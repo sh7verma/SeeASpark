@@ -50,7 +50,7 @@ class CommunityBookmarkActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
-        imgBackCustom.setImageResource(R.mipmap.ic_back_black)
+        imgBackCustom.setImageResource(R.mipmap.ic_back_org)
         llCustomToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
         imgBackCustom.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
@@ -61,7 +61,7 @@ class CommunityBookmarkActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-        imgBackCustom.setImageResource(R.mipmap.ic_back_org)
+        imgBackCustom.setImageResource(R.mipmap.ic_back_black)
         llCustomToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
         imgBackCustom.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))

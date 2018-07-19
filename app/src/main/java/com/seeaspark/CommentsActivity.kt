@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.activity_comments.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
-import kotlinx.android.synthetic.main.fragment_event.*
 import models.BaseSuccessModel
 import models.CommentModel
 import models.SignupModel
@@ -45,26 +44,32 @@ class CommentsActivity : BaseActivity() {
 
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
 
+        imgBackCustom.setImageResource(R.mipmap.ic_back_org)
+
         edComments.typeface = typeface
         edComments.isFocusableInTouchMode = true
         edComments.requestFocus()
 
         txtTitleCustom.text = getString(R.string.comments)
+
         mLayoutManager = LinearLayoutManager(mContext)
         mLayoutManager!!.stackFromEnd = true
         rvComments.layoutManager = mLayoutManager
 
         srlComments.setColorSchemeResources(R.color.colorPrimary)
         srlComments.setOnRefreshListener {
-            mOffset++
-            hitAPI()
+            if (connectedToInternet()) {
+                mOffset++
+                hitAPI()
+            } else
+                showInternetAlert(srlComments)
         }
 
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
-        imgBackCustom.setImageResource(R.mipmap.ic_back_black)
+
         llCustomToolbar.setBackgroundColor(whiteColor)
         imgBackCustom.setBackgroundResource(whiteRipple)
         txtTitleCustom.setTextColor(blackColor)
@@ -78,7 +83,7 @@ class CommentsActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-        imgBackCustom.setImageResource(R.mipmap.ic_back_org)
+
         llCustomToolbar.setBackgroundColor(blackColor)
         imgBackCustom.setBackgroundResource(blackRipple)
         txtTitleCustom.setTextColor(whiteColor)
@@ -122,7 +127,7 @@ class CommentsActivity : BaseActivity() {
                         sendDeleteBroadCast()
                         finish()
                     } else
-                        showAlert(rvEventsListing, response.body().error!!.message!!)
+                        showAlert(llMainComments, response.body().error!!.message!!)
                 }
             }
 
@@ -179,9 +184,12 @@ class CommentsActivity : BaseActivity() {
         when (view) {
             imgSendComments -> {
                 if (connectedToInternet()) {
-                    addOwnComment(edComments.text.toString().trim())
-                    hitCommentAPI(edComments.text.toString().trim())
-                    edComments.setText(Constants.EMPTY)
+                    if (edComments.text.toString().trim().isNotEmpty()) {
+                        addOwnComment(edComments.text.toString().trim())
+                        hitCommentAPI(edComments.text.toString().trim())
+                        edComments.setText(Constants.EMPTY)
+                    } else
+                        showAlert(imgSendComments, getString(R.string.error_comment))
                 } else {
                     showInternetAlert(imgSendComments)
                 }
@@ -222,7 +230,7 @@ class CommentsActivity : BaseActivity() {
                         sendDeleteBroadCast()
                         finish()
                     } else
-                        showAlert(rvEventsListing, response.body().error!!.message!!)
+                        showAlert(llMainComments, response.body().error!!.message!!)
                 }
             }
 
@@ -234,7 +242,8 @@ class CommentsActivity : BaseActivity() {
 
     private fun getRealTimeComments() {
         mRunnable = Runnable {
-            hitBackgroundCommentsAPI()
+            if (mCommentsArray.size > 0)
+                hitBackgroundCommentsAPI()
         }
         mHandler!!.postDelayed(mRunnable, 3000)
     }
@@ -264,7 +273,7 @@ class CommentsActivity : BaseActivity() {
                         sendDeleteBroadCast()
                         finish()
                     } else
-                        showAlert(rvEventsListing, response.body().error!!.message!!)
+                        showAlert(llMainComments, response.body().error!!.message!!)
                 }
             }
 
@@ -276,7 +285,7 @@ class CommentsActivity : BaseActivity() {
 
     private fun updateCommentCountByBroadcast() {
         db!!.updateCommentCount(postId, mCommentCount)
-        txtCommentsCount.text = "$mCommentCount COMMENTS"
+        txtCommentsCount.text = "$mCommentCount COMMENT(S)"
         val broadCastIntent = Intent(Constants.POST_BROADCAST)
         broadCastIntent.putExtra("status", Constants.COMMENT)
         broadCastIntent.putExtra("commentCount", mCommentCount)
@@ -301,6 +310,4 @@ class CommentsActivity : BaseActivity() {
         calendar.timeInMillis = System.currentTimeMillis()
         return formatter.format(calendar.time)
     }
-
-
 }

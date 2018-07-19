@@ -3,7 +3,7 @@
 <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swlCard"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_130sdp"
+    android:layout_height="@dimen/_150sdp"
     android:layout_marginTop="@dimen/_12sdp">
 
     <LinearLayout
@@ -143,6 +143,18 @@
 
             </LinearLayout>
 
+            <customviews.MediumTextView
+                android:id="@+id/txtBioCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingBottom="@dimen/_5sdp"
+                android:paddingLeft="@dimen/_10sdp"
+                android:text="Physician"
+                android:textColor="@color/darkGreyText"
+                android:textSize="@dimen/_12ssp" />
+
             <customviews.BoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -159,7 +171,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/_8sdp"
-                android:paddingLeft="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_10sdp"
                 android:paddingRight="@dimen/_8sdp"
                 android:paddingTop="@dimen/_3sdp">
 

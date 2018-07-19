@@ -94,6 +94,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 (holder as CommunityViewHolder)
                 holder.txtCommunityTitle.text = mCardsArray[position].title
                 holder.txtCommunityDesc.text = mCardsArray[position].description
+                holder.txtCenterOption.text = mCardsArray[position].profession_id
 
                 if (mCardsArray[position].date_time.isNotEmpty())
                     holder.txtDateCommunity.text = Constants.displayDateTime(mCardsArray[position].date_time)
@@ -132,6 +133,8 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 holder.txtNameCard.text = mCardsArray[position].full_name
 
                 holder.txtProfessionCard.text = mCardsArray[position].profession.name
+
+                holder.txtBioCard.text = mCardsArray[position].bio
 
                 holder.txtSkillCard.text = mCardsArray[position].skills[0]
 
@@ -242,6 +245,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
         var llData = itemView.llData!!
         var txtNameCard = itemView.txtNameCard!!
         var txtProfessionCard = itemView.txtProfessionCard!!
+        var txtBioCard = itemView.txtBioCard!!
         var txtSkillCard = itemView.txtSkillCard!!
         var txtSkillCountCard = itemView.txtSkillCountCard!!
         var imgAvatarCard = itemView.imgAvatarCard!!
@@ -307,11 +311,27 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
 
 
     inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cvEventsHome = itemView.cvEventsHome!!
         val imgEventCard = itemView.imgEventCard!!
         val txtEventNameCard = itemView.txtEventNameCard!!
         val txtEventDescCard = itemView.txtEventDescCard!!
         val txtEventTimeCard = itemView.txtEventTimeCard!!
         val txtEventExploreCard = itemView.txtEventExploreCard!!
+
+        init {
+            if (mUtils!!.getInt("nightMode", 0) == 1)
+                displayNightMode()
+            else
+                displayDayMode()
+        }
+
+        private fun displayNightMode() {
+            cvEventsHome.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.cardview_dark_background))
+        }
+
+        private fun displayDayMode() {
+            cvEventsHome.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+        }
     }
 
     inner class OutOfCardsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

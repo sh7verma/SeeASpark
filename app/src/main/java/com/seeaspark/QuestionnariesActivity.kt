@@ -36,6 +36,8 @@ class QuestionnariesActivity : BaseActivity() {
     var mServerQuestion = JSONArray()
     var selectedPos = 0
 
+    override fun getContentView() = R.layout.activity_questionaires
+
     override fun initUI() {
 
     }
@@ -85,7 +87,7 @@ class QuestionnariesActivity : BaseActivity() {
         txtDoneQuestion.setOnClickListener(this)
     }
 
-    override fun getContentView() = R.layout.activity_questionaires
+
 
     override fun getContext() = this
 

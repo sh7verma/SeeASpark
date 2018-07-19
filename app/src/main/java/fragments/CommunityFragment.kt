@@ -57,6 +57,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
         mContext = activity
         mCommunityFragment = this
         mLandingInstance = activity as LandingActivity
+        mUtils = Utils(activity)
         initUI()
         onCreateStuff()
         initListener()
@@ -65,6 +66,10 @@ class CommunityFragment : Fragment(), View.OnClickListener {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun initUI() {
+        if (mUtils!!.getInt("nightMode", 0) == 1)
+            displayNightMode()
+        else
+            displayDayMode()
 
         txtTitleCustom.text = getString(R.string.community)
 
@@ -77,15 +82,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
         imgOption2Custom.visibility = View.VISIBLE
 
         mLayoutManager = LinearLayoutManager(mContext)
-
         rvCommunityListing.layoutManager = mLayoutManager
-
-        mUtils = Utils(activity)
-        if (mUtils!!.getInt("nightMode", 0) == 1)
-            displayNightMode()
-        else
-            displayDayMode()
-
         rvCommunityListing.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -114,6 +111,12 @@ class CommunityFragment : Fragment(), View.OnClickListener {
             }
         })
 
+        srlCommunity.setColorSchemeResources(R.color.colorPrimary)
+        srlCommunity.setOnRefreshListener {
+            isLoading = false
+            mOffset = 1
+            hitAPI(false)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -222,6 +225,10 @@ class CommunityFragment : Fragment(), View.OnClickListener {
 
     private fun populateData() {
         if (llMainCommunityFrag != null) {
+
+            if (srlCommunity.isRefreshing)
+                srlCommunity.isRefreshing = false
+
             if (mOffset == 1)
                 mCommunityArray.clear()
             else {
@@ -231,9 +238,9 @@ class CommunityFragment : Fragment(), View.OnClickListener {
 
             mCommunityArray.addAll(mLandingInstance!!.db!!.getPostsByType(Constants.COMMUNITY))
             if (rvCommunityListing.adapter == null) {
-                if (mCommunityArray.size == 0) {
+                if (mCommunityArray.size == 0)
                     txtNoCommunityListing.visibility = View.VISIBLE
-                } else {
+                else {
                     mCommunityAdapter = CommunityAdapter(mCommunityArray, mContext!!, mCommunityFragment)
                     rvCommunityListing.adapter = mCommunityAdapter
                 }
@@ -246,11 +253,14 @@ class CommunityFragment : Fragment(), View.OnClickListener {
     override fun onStart() {
         LocalBroadcastManager.getInstance(activity).registerReceiver(receiver,
                 IntentFilter(Constants.POST_BROADCAST))
+        LocalBroadcastManager.getInstance(activity).registerReceiver(nightModeReceiver,
+                IntentFilter(Constants.NIGHT_MODE))
         super.onStart()
     }
 
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(receiver)
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(nightModeReceiver)
         super.onDestroy()
     }
 
@@ -397,12 +407,18 @@ class CommunityFragment : Fragment(), View.OnClickListener {
             mLandingInstance!!.showInternetAlert(rvCommunityListing)
     }
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
-    fun resetData() {
-        if (mUtils!!.getInt("nightMode", 0) == 1)
-            displayNightMode()
-        else
-            displayDayMode()
-        populateData()
+    var nightModeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+        override fun onReceive(context: Context, intent: Intent) {
+            isLoading = false
+            mOffset = 1
+            if (intent.getIntExtra("status", 0) == Constants.DAY) {
+                populateData()
+                displayDayMode()
+            } else {
+                populateData()
+                displayNightMode()
+            }
+        }
     }
 }

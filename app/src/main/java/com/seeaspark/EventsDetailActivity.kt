@@ -12,6 +12,7 @@ import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -29,6 +30,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
+import kotlin.math.log
 
 
 class EventsDetailActivity : BaseActivity() {
@@ -120,6 +122,8 @@ class EventsDetailActivity : BaseActivity() {
         llCommentsEvents.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         txtCommentCountEvents.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
+        txtLocationEvents.setBackgroundResource(whiteRipple)
+
         llMainEventsParent.setBackgroundColor(whiteColor)
 
     }
@@ -137,6 +141,8 @@ class EventsDetailActivity : BaseActivity() {
         txtDescEvents.setTextColor(darkGrey)
 
         llGoingEvents.setBackgroundResource(blackRipple)
+
+        txtLocationEvents.setBackgroundResource(blackRipple)
 
         llBottomEvents.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
         llLikesEvents.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
@@ -215,12 +221,21 @@ class EventsDetailActivity : BaseActivity() {
             txtGoingCount.text = "${mEventData!!.going_list.size} GOING"
 
             when {
+                mEventData!!.going_list.size == 0 -> {
+                    imgPeopleEvents1.visibility = View.GONE
+                    imgPeopleEvents2.visibility = View.GONE
+                    imgPeopleEvents3.visibility = View.GONE
+                    txtGoingCount.setPadding(0, 0, 0, 0)
+                }
                 mEventData!!.going_list.size == 1 -> {
                     Picasso.with(mContext).load(mEventData!!.going_list[0].avatar)
                             .placeholder(R.drawable.placeholder_image)
                             .into(imgPeopleEvents1)
-                    imgPeopleEvents2.setImageResource(0)
-                    imgPeopleEvents3.setImageResource(0)
+
+                    imgPeopleEvents1.visibility = View.VISIBLE
+                    imgPeopleEvents2.visibility = View.GONE
+                    imgPeopleEvents3.visibility = View.GONE
+                    txtGoingCount.setPadding(resources.getDimension(R.dimen._16sdp).toInt(), 0, 0, 0)
                 }
                 mEventData!!.going_list.size == 2 -> {
 
@@ -231,7 +246,10 @@ class EventsDetailActivity : BaseActivity() {
                     Picasso.with(mContext).load(mEventData!!.going_list[1].avatar)
                             .placeholder(R.drawable.placeholder_image)
                             .into(imgPeopleEvents2)
-                    imgPeopleEvents3.setImageResource(0)
+                    txtGoingCount.setPadding(resources.getDimension(R.dimen._16sdp).toInt(), 0, 0, 0)
+                    imgPeopleEvents1.visibility = View.VISIBLE
+                    imgPeopleEvents2.visibility = View.VISIBLE
+                    imgPeopleEvents3.visibility = View.GONE
                 }
                 mEventData!!.going_list.size == 3 -> {
 
@@ -246,6 +264,11 @@ class EventsDetailActivity : BaseActivity() {
                     Picasso.with(mContext).load(mEventData!!.going_list[2].avatar)
                             .placeholder(R.drawable.placeholder_image)
                             .into(imgPeopleEvents3)
+
+                    txtGoingCount.setPadding(resources.getDimension(R.dimen._16sdp).toInt(), 0, 0, 0)
+                    imgPeopleEvents1.visibility = View.VISIBLE
+                    imgPeopleEvents2.visibility = View.VISIBLE
+                    imgPeopleEvents3.visibility = View.VISIBLE
                 }
             }
         } else {
@@ -270,6 +293,8 @@ class EventsDetailActivity : BaseActivity() {
         txtEventLink.setOnClickListener(this)
         txtInterestedEvents.setOnClickListener(this)
         llGoingEvents.setOnClickListener(this)
+        txtLocationEvents.setOnClickListener(this)
+        imgEventDetail.setOnClickListener(this)
     }
 
     override fun getContext() = this
@@ -277,11 +302,20 @@ class EventsDetailActivity : BaseActivity() {
     override fun onClick(view: View?) {
         var intent: Intent? = null
         when (view) {
+            imgEventDetail -> {
+                intent = Intent(mContext, FullViewImageActivity::class.java)
+                intent.putParcelableArrayListExtra("images", mEventData!!.images as ArrayList)
+                intent.putExtra("imagePosition", 0)
+               startActivity(intent)
+            }
+            txtLocationEvents -> {
+                navigateTolocation()
+            }
             imgBackCustom -> {
                 moveBack()
             }
             imgOption1Custom -> {
-
+                showAlert(imgOption1Custom, getString(R.string.work_in_progress))
             }
             imgOption2Custom -> {
                 if (connectedToInternet()) {
@@ -570,4 +604,15 @@ class EventsDetailActivity : BaseActivity() {
 
         }
     }
+
+    fun navigateTolocation() {
+        try {
+            val url = "http://maps.google.com/maps?saddr=" + mUtils!!.getString("latitude", "") + "," + mUtils!!.getString("longitude", "") + "&daddr=" + mEventData!!.latitude + "," + mEventData!!.longitude
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
+        } catch (e: Exception) {
+            Log.e("Exce = ", e.localizedMessage)
+        }
+    }
+
 }

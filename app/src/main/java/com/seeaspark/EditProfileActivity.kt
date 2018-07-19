@@ -382,7 +382,7 @@ class EditProfileActivity : BaseActivity() {
     fun setBirthday() {
         Constants.closeKeyboard(this, txtAgeEditProfile)
         val calendar = Calendar.getInstance(TimeZone.getDefault())
-        calendar.add(Calendar.YEAR, -18)
+        calendar.add(Calendar.YEAR, -16)
         val datePickerDOB = DatePickerDialog(this,
                 R.style.DatePickerTheme,
                 dobPickerListener,

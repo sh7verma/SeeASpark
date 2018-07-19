@@ -30,7 +30,7 @@
             android:drawableTop="@mipmap/ill_events"
             android:gravity="center"
             android:visibility="gone"
-            android:text="@string/no_events_available"
+            android:text="@string/no_event_bookmarked"
             android:textColor="@color/black_color"
             android:textSize="@dimen/_14ssp" />
 
