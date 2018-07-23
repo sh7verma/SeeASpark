@@ -29,7 +29,7 @@ class BroadcastActivity : BaseActivity() {
 
     override fun initListener() {
         txtOK.setOnClickListener {
-            finish()
+//            finish()
             overridePendingTransition(0,0)
         }
     }
