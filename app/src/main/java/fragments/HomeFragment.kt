@@ -385,18 +385,20 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     }
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
-        if (isConnected) {
-            if (mLandingInstance!!.mArrayCards.size == 0) {
-                mOffset = 1
-                isLoading = false
-                hitAPI(false)
+        if (rvCards != null) {
+            if (isConnected) {
+                if (mLandingInstance!!.mArrayCards.size == 0) {
+                    mOffset = 1
+                    isLoading = false
+                    hitAPI(false)
+                } else {
+                    mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
+                    rvCards.adapter = mAdapterCards
+                }
             } else {
-                mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
-                rvCards.adapter = mAdapterCards
+                    mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
+                    rvCards.adapter = mAdapterCards
             }
-        } else {
-            mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
-            rvCards.adapter = mAdapterCards
         }
     }
 
@@ -444,15 +446,15 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     var nightModeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
         override fun onReceive(context: Context, intent: Intent) {
-                isLoading = false
-                mOffset = 1
-                if (intent.getIntExtra("status", 0) == Constants.DAY) {
-                    resetData()
-                    displayDayMode()
-                } else {
-                    resetData()
-                    displayNightMode()
-                }
+            isLoading = false
+            mOffset = 1
+            if (intent.getIntExtra("status", 0) == Constants.DAY) {
+                resetData()
+                displayDayMode()
+            } else {
+                resetData()
+                displayNightMode()
+            }
         }
     }
 }

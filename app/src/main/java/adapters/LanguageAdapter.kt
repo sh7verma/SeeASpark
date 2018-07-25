@@ -7,13 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.seeaspark.R
-import com.seeaspark.SearchEventCommunityActivity
 import com.seeaspark.SelectLanguageActivity
-import fragments.EventsFragment
-import fragments.LanguageFragment
 import kotlinx.android.synthetic.main.item_profession.view.*
 import models.LanguageModel
-import models.PostModel
 
 
 class LanguageAdapter(mConetxt: Context, mLanguageArray: ArrayList<LanguageModel>) : RecyclerView.Adapter<LanguageAdapter.ViewHolder>() {

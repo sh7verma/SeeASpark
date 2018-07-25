@@ -45,6 +45,7 @@ dependencies {
     implementation project(':library')
     implementation project(':aFileChooser')
     implementation project(':cropLib')
+    implementation project(':richeditor')
 
     //multidex
     implementation 'com.android.support:multidex:1.0.3'

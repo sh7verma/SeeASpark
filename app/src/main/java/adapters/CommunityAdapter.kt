@@ -10,7 +10,7 @@ import com.like.LikeButton
 import com.like.OnLikeListener
 import com.seeaspark.CommunityBookmarkActivity
 import com.seeaspark.R
-import com.seeaspark.SearchEventCommunityActivity
+import com.seeaspark.SearchActivity
 import com.squareup.picasso.Picasso
 import fragments.CommunityFragment
 import kotlinx.android.synthetic.main.item_community.view.*
@@ -27,7 +27,7 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
     var mContext: Context? = null
     var mUtils: Utils? = null
     private var mCommunityFragment: CommunityFragment? = null
-    private var mSearchInstance: SearchEventCommunityActivity? = null
+    private var mSearchInstance: SearchActivity? = null
     private var mBookmarkInstance: CommunityBookmarkActivity? = null
     private var mWidth = 0
 
@@ -40,7 +40,7 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
         this.mCommunityFragment = mCommunityFragment
     }
 
-    constructor(mCommunityArray: ArrayList<PostModel.ResponseBean>, mContext: Context, mSearchInstance: SearchEventCommunityActivity, mCommunityFragment: CommunityFragment?)
+    constructor(mCommunityArray: ArrayList<PostModel.ResponseBean>, mContext: Context, mSearchInstance: SearchActivity, mCommunityFragment: CommunityFragment?)
             : this(mCommunityArray, mContext, mCommunityFragment) {
         this.mSearchInstance = mSearchInstance
     }

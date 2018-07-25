@@ -167,7 +167,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
                 activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
             }
             imgOption1Custom -> {
-                intent = Intent(mContext, SearchEventCommunityActivity::class.java)
+                intent = Intent(mContext, SearchActivity::class.java)
                 intent.putExtra("path", "community")
                 startActivity(intent)
             }

@@ -328,7 +328,7 @@
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".SearchEventCommunityActivity"
+            android:name=".SearchActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
@@ -340,6 +340,39 @@
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
             android:windowSoftInputMode="stateVisible" />
+
+        <activity
+            android:name=".NotesActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateVisible" />
+
+        <activity
+            android:name=".DeepLinkingActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="192.168.1.26"
+                    android:pathPattern=":3000"
+                    android:pathPrefix="/notes"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ShareActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity" />
 
         <activity
             android:name=".FullViewImageActivity"

@@ -39,7 +39,7 @@ class BookmarkCommunityAdapter (mCommunityArray: ArrayList<CommunityModel>, mCon
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 //        holder.cvCommunityListing.setOnClickListener {
-//            mCommunityBookmark!!.moveToCommunityDetail(mCommunityArray[position].id)
+//            mCommunityBookmark!!.moveToCommunityDetail(mNotesArray[position].id)
 //        }
     }
 

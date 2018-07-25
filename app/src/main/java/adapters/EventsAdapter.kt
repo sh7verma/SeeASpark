@@ -11,7 +11,7 @@ import com.like.LikeButton
 import com.like.OnLikeListener
 import com.seeaspark.EventsBookmarkActivity
 import com.seeaspark.R
-import com.seeaspark.SearchEventCommunityActivity
+import com.seeaspark.SearchActivity
 import com.squareup.picasso.Picasso
 import fragments.EventsFragment
 import kotlinx.android.synthetic.main.item_events.view.*
@@ -29,7 +29,7 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
     var mContext: Context? = null
     var mUtils: Utils? = null
     private var mEventFragment: EventsFragment? = null
-    private var mSearchInstance: SearchEventCommunityActivity? = null
+    private var mSearchInstance: SearchActivity? = null
     private var mBookmarkInstance: EventsBookmarkActivity? = null
     private var mWidth = 0
 
@@ -42,7 +42,7 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
         this.mEventFragment = mEventFragment
     }
 
-    constructor(mContext: Context?, mEventsArray: ArrayList<PostModel.ResponseBean>, mEventFragment: EventsFragment?, mSearchInstance: SearchEventCommunityActivity)
+    constructor(mContext: Context?, mEventsArray: ArrayList<PostModel.ResponseBean>, mEventFragment: EventsFragment?, mSearchInstance: SearchActivity)
             : this(mContext, mEventsArray, mEventFragment) {
         this.mSearchInstance = mSearchInstance
     }

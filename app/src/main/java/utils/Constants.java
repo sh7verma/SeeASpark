@@ -73,10 +73,12 @@ public class Constants {
     public static final String POST_BROADCAST = "event_like";
     public static final String Community_BROADCAST = "community";
     public static final Integer BOOKMARK = 2;
-    public static final Integer COMMENT=3;
-    public static final Integer DELETE=4;
+    public static final Integer COMMENT = 3;
+    public static final Integer DELETE = 4;
 
     public static final String AUTODAYMODE = "autoDay";
+    public static final String MYNOTES = "1";
+    public static final String RECEIVEDNOTES = "2";
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
@@ -268,6 +270,39 @@ public class Constants {
             throws ParseException {
 
         SimpleDateFormat utc_format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault());
+        DateFormat date_gmt = new SimpleDateFormat("Z", Locale.US);
+        String gmt_text = date_gmt.format(calendar.getTime());
+
+        Date utc_date = utc_format.parse(endDate);
+        Calendar utc_create = Calendar.getInstance();
+        utc_create.setTime(utc_date);
+
+        int hh = 0, mm = 0;
+        if (gmt_text.trim().length() == 3) {
+
+        } else {
+            hh = Integer.parseInt(gmt_text.substring(1, 3));
+            mm = Integer.parseInt(gmt_text.substring(3, 5));
+
+            if (gmt_text.substring(0, 1).equals("+")) {
+                utc_create.add(Calendar.HOUR_OF_DAY, hh);
+                utc_create.add(Calendar.MINUTE, mm);
+            } else if (gmt_text.substring(0, 1).equals("-")) {
+                utc_create.add(Calendar.HOUR_OF_DAY, -hh);
+                utc_create.add(Calendar.MINUTE, -mm);
+            }
+        }
+
+        DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy, hh:mm aa");
+        return dateFormat.format(utc_create.getTime());
+    }
+
+
+    public static String displayDateTimeNotes(String endDate)
+            throws ParseException {
+
+        SimpleDateFormat utc_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.getDefault());
         DateFormat date_gmt = new SimpleDateFormat("Z", Locale.US);
         String gmt_text = date_gmt.format(calendar.getTime());

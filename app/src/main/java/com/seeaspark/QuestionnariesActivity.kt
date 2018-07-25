@@ -88,7 +88,6 @@ class QuestionnariesActivity : BaseActivity() {
     }
 
 
-
     override fun getContext() = this
 
     override fun onClick(view: View?) {
@@ -119,6 +118,7 @@ class QuestionnariesActivity : BaseActivity() {
                     userData!!.response = response.body().response
                     mUtils!!.setString("access_token", userData!!.response.access_token)
                     mUtils!!.setInt("profile_status", userData!!.response.profile_status)
+                    mUtils!!.setString("user_id", response.body().response.id.toString())
                     val intent = Intent(mContext!!, PreferencesActivity::class.java)
                     startActivity(intent)
                     finish()

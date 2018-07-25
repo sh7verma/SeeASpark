@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso
 import fragments.CommunityFragment
 import fragments.EventsFragment
 import fragments.HomeFragment
+import fragments.NotesFragment
 import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.activity_verify_id.*
 import models.BaseSuccessModel
@@ -88,7 +89,6 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     }
 
     override fun onCreateStuff() {
-
         if (intent.hasExtra("matchData")) {
             val matchData: String = intent.getStringExtra("matchData")
             intent = Intent(this, HandshakeActivity::class.java)
@@ -105,6 +105,17 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             intent.putExtra("broadcastTitle", title)
             intent.putExtra("broadcastMessage", message)
             startActivity(intent)
+        }
+
+        if (intent.hasExtra("noteId")) {
+            val noteId = intent.getStringExtra("noteId")
+            val noteFileName = intent.getStringExtra("noteFileName")
+
+            val intent = Intent(mContext!!, NotesActivity::class.java)
+            intent.putExtra("noteId", noteId)
+            intent.putExtra("noteFileName", noteFileName)
+            startActivity(intent)
+            overridePendingTransition(0, 0)
         }
 
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
@@ -153,10 +164,15 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 imgHome.setImageResource(R.mipmap.ic_home_s)
                 imgEvents.setImageResource(R.mipmap.ic_events)
                 imgCommunity.setImageResource(R.mipmap.ic_community)
+                imgNotes.setImageResource(R.mipmap.ic_notes)
                 replaceFragment(homeFragment!!)
             }
             llNotes -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                imgHome.setImageResource(R.mipmap.ic_home)
+                imgEvents.setImageResource(R.mipmap.ic_events)
+                imgCommunity.setImageResource(R.mipmap.ic_community)
+                imgNotes.setImageResource(R.mipmap.ic_notes_s)
+                replaceFragment(NotesFragment())
             }
             llChat -> {
                 showToast(mContext!!, getString(R.string.work_in_progress))
@@ -165,6 +181,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 imgHome.setImageResource(R.mipmap.ic_home)
                 imgEvents.setImageResource(R.mipmap.ic_events_s)
                 imgCommunity.setImageResource(R.mipmap.ic_community)
+                imgNotes.setImageResource(R.mipmap.ic_notes)
                 replaceFragment(EventsFragment())
             }
             llCommunity -> {
@@ -173,6 +190,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                     imgHome.setImageResource(R.mipmap.ic_home)
                     imgEvents.setImageResource(R.mipmap.ic_events)
                     imgCommunity.setImageResource(R.mipmap.ic_community_s)
+                    imgNotes.setImageResource(R.mipmap.ic_notes)
                     replaceFragment(CommunityFragment())
                 } else {
                     /// user is menteee
@@ -385,4 +403,10 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
+    override fun onDestroy() {
+
+        super.onDestroy()
+    }
+
 }

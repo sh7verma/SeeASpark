@@ -4,6 +4,8 @@ import models.CardModel;
 import models.CommentModel;
 import models.LanguageListingModel;
 import models.LanguageModel;
+import models.NotesListingModel;
+import models.NotesModel;
 import models.PostModel;
 import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
@@ -211,6 +213,13 @@ public interface ApiInterface {
                                @Field("page") int page);
 
     @FormUrlEncoded
+    @POST("/api/v1/notes/search")
+    Call<NotesListingModel> searchNotes(@Field("access_token") String access_token,
+                                        @Field("note_type") String note_type,
+                                        @Field("search") String search,
+                                        @Field("page") String page);
+
+    @FormUrlEncoded
     @POST("/api/v1/bookmarks/search")
     Call<PostModel> searchBookmarkPost(@Field("access_token") String access_token,
                                        @Field("post_type") int post_type,
@@ -228,6 +237,43 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/api/v1/professions/search")
     Call<ProfessionListingModel> searchProfessions(@Field("access_token") String access_token,
-                                      @Field("search") String search);
+                                                   @Field("search") String search);
+
+    @FormUrlEncoded
+    @POST("/api/v1/notes")
+    Call<NotesModel> addNotes(@Field("access_token") String access_token,
+                              @Field("title") String title,
+                              @Field("description") String description);
+
+    @FormUrlEncoded
+    @POST("/api/v1/notes/update_note")
+    Call<NotesModel> updateNotes(@Field("access_token") String access_token,
+                                 @Field("id") String id,
+                                 @Field("title") String title,
+                                 @Field("description") String description);
+
+    @GET("/api/v1/notes")
+    Call<NotesListingModel> getNotes(@Query("access_token") String access_token,
+                                     @Query("note_type") String note_type,
+                                     @Query("page") String page);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/notes/delete_note")
+    Call<BaseSuccessModel> deleteNote(@Field("access_token") String access_token,
+                                      @Field("id") String id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/shares/shared_note")
+    Call<NotesModel> fetchDetailNotes(@Field("access_token") String access_token,
+                                      @Field("id") String id,
+                                      @Field("name") String file_name);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/shares/external_share")
+    Call<NotesModel> shareNote(@Field("access_token") String access_token,
+                               @Field("id") String id,
+                               @Field("name") String file_name);
 
 }

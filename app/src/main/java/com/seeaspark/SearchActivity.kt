@@ -2,11 +2,14 @@ package com.seeaspark
 
 import adapters.CommunityAdapter
 import adapters.EventsAdapter
+import adapters.MyNotesAdapter
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,7 +18,9 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_search_events.*
+import kotlinx.android.synthetic.main.fragment_notes.*
 import models.BaseSuccessModel
+import models.NotesListingModel
 import models.PostModel
 import network.RetrofitClient
 import retrofit2.Call
@@ -23,18 +28,22 @@ import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
 
-class SearchEventCommunityActivity : BaseActivity() {
+class SearchActivity : BaseActivity() {
 
     private var mCommunityAdapter: CommunityAdapter? = null
+    private var mNotesAdapter: MyNotesAdapter? = null
     private var mEventsAdapter: EventsAdapter? = null
     private var mCommunityArray = ArrayList<PostModel.ResponseBean>()
+    private var mNotesArray = ArrayList<NotesListingModel.ResponseBean>()
     private var mEventsArray = ArrayList<PostModel.ResponseBean>()
-    private var mSearchInstance: SearchEventCommunityActivity? = null
+    private var mSearchInstance: SearchActivity? = null
     private var mLayoutManager: LinearLayoutManager? = null
     private var isCommunity = false
+    private var isNotes = false
     private var isBookmark = false
     private var mCurrentVisible: Int = 1
     private var mOffset: Int = 1
+    private val NOTES = 1
 
     override fun getContentView() = R.layout.activity_search_events
 
@@ -72,6 +81,11 @@ class SearchEventCommunityActivity : BaseActivity() {
 
         if (intent.getStringExtra("path") == "community")
             isCommunity = true
+
+        if (intent.getStringExtra("path") == "notes") {
+            isNotes = true
+            rvSearchEventCommunity.setPadding(resources.getDimension(R.dimen._16sdp).toInt(), 0, resources.getDimension(R.dimen._16sdp).toInt(), 0)
+        }
 
         imgCancelSearch.visibility = View.INVISIBLE
 
@@ -172,26 +186,64 @@ class SearchEventCommunityActivity : BaseActivity() {
                 })
             } else {
                 /// Event section
-                val call = RetrofitClient.getInstance().searchPost(mUtils!!.getString("access_token", ""),
-                        Constants.EVENT, searchText, mOffset)
-                call.enqueue(object : Callback<PostModel> {
-                    override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>) {
-                        if (response.body().response != null) {
-                            populateEventData(response.body().response)
-                        } else {
-                            if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                                moveToSplash()
-                            } else
-                                showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
+                if (!isNotes) {
+                    val call = RetrofitClient.getInstance().searchPost(mUtils!!.getString("access_token", ""),
+                            Constants.EVENT, searchText, mOffset)
+                    call.enqueue(object : Callback<PostModel> {
+                        override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>) {
+                            if (response.body().response != null) {
+                                populateEventData(response.body().response)
+                            } else {
+                                if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                    moveToSplash()
+                                } else
+                                    showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<PostModel>?, t: Throwable?) {
-                        showAlert(llMainSearchEvents, t!!.localizedMessage)
-                    }
-                })
+                        override fun onFailure(call: Call<PostModel>?, t: Throwable?) {
+                            showAlert(llMainSearchEvents, t!!.localizedMessage)
+                        }
+                    })
+                }
             }
         }
+
+        if (isNotes) {
+            val call = RetrofitClient.getInstance().searchNotes(mUtils!!.getString("access_token", ""),
+                    Constants.MYNOTES, searchText, mOffset.toString())
+            call.enqueue(object : Callback<NotesListingModel> {
+                override fun onResponse(call: Call<NotesListingModel>?, response: Response<NotesListingModel>) {
+                    if (response.body().response != null) {
+                        mNotesArray.clear()
+                        mNotesArray.addAll(response.body().response)
+                        populateNotesData()
+                    } else {
+                        if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                            moveToSplash()
+                        } else
+                            showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
+                    }
+                }
+
+                override fun onFailure(call: Call<NotesListingModel>?, t: Throwable?) {
+                    showAlert(llMainSearchEvents, t!!.localizedMessage)
+                }
+            })
+        }
+    }
+
+    private fun populateNotesData() {
+        if (mOffset == 1) {
+            if (mNotesArray.size == 0)
+                txtNoResultFound.visibility = View.VISIBLE
+            else
+                txtNoResultFound.visibility = View.GONE
+            mNotesAdapter = MyNotesAdapter(mNotesArray, mContext!!, null, mSearchInstance!!)
+            rvSearchEventCommunity.adapter = mNotesAdapter
+        } else
+            mCommunityAdapter!!.notifyDataSetChanged()
+
     }
 
     private fun populateCommunityData(response: List<PostModel.ResponseBean>) {
@@ -255,6 +307,11 @@ class SearchEventCommunityActivity : BaseActivity() {
 
     private fun moveBack() {
         Constants.closeKeyboard(mContext!!, imgBackSearch)
+
+        if (isNotes) {
+            val intent = Intent()
+            setResult(Activity.RESULT_OK, intent)
+        }
         finish()
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }
@@ -521,5 +578,65 @@ class SearchEventCommunityActivity : BaseActivity() {
         }
     }
 
+    fun moveToNotesDetail(notesData: NotesListingModel.ResponseBean, position: Int) {
+        val intent = Intent(mContext, NotesActivity::class.java)
+        intent.putExtra("notesData", notesData)
+        intent.putExtra("position", position)
+        startActivityForResult(intent, NOTES)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+    }
 
+    fun deleteNote(notesData: NotesListingModel.ResponseBean) {
+        val alertDialog = AlertDialog.Builder(mContext!!)
+        alertDialog.setTitle("DELETE NOTE")
+        alertDialog.setMessage("Are you sure you want to delete this note?")
+        alertDialog.setPositiveButton("CONFIRM") { dialog, which ->
+            if (connectedToInternet())
+                hitDeleteAPI(notesData)
+            else
+                showToast(mContext!!, getString(R.string.internet))
+        }
+        alertDialog.setNegativeButton("CANCEL") { dialog, which -> dialog.cancel() }
+        alertDialog.show()
+    }
+
+    private fun hitDeleteAPI(notesData: NotesListingModel.ResponseBean) {
+        showLoader()
+        val call = RetrofitClient.getInstance().deleteNote(mUtils!!.getString("access_token", ""),
+                notesData.id.toString())
+        call.enqueue(object : Callback<BaseSuccessModel> {
+            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
+                dismissLoader()
+                if (response!!.body().response != null) {
+                    db!!.deleteNotes(notesData.id)
+                    mNotesArray.remove(notesData)
+                    populateNotesData()
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        moveToSplash()
+                    } else
+                        showAlert(llMainNotes, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
+                dismissLoader()
+                showToast(mContext!!, t!!.localizedMessage)
+            }
+        })
+    }
+
+
+    fun moveToNoteShare(responseBean: NotesListingModel.ResponseBean) {
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == NOTES) {
+                hitAPI(edSearchEventCommunity.text.toString())
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 }

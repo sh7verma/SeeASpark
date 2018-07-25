@@ -74,6 +74,7 @@
     <color name="color_primary_gradient">#FEB374</color>
     <color name="color_secondary_gradient">#FE7973</color>
     <color name="greyTextColor">#727272</color>
+    <color name="blue_color">#798ded</color>
 
 
 </resources>

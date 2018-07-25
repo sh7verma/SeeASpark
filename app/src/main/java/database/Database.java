@@ -10,6 +10,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import models.NotesListingModel;
+import models.NotesModel;
 import models.PostModel;
 import utils.Utils;
 
@@ -51,6 +53,18 @@ public class Database extends SQLiteOpenHelper {
     static final String FULL_NAME = "full_name";
     static final String AVATAR = "avatar";
     static final String USER_ID = "user_id";
+
+    /// NOtes Table
+    static final String NOTES_TABLE = "notes_table";
+    static final String NOTES_ID = "notes_id";
+    static final String NOTES_NAME = "notes_name";
+    static final String NOTES_TITLE = "notes_title";
+    static final String NOTES_DESC = "notes_desc";
+    static final String NOTES_URL = "notes_url";
+    static final String NOTES_TYPE = "notes_type";
+    static final String NOTES_CREATED = "notes_created";
+    static final String NOTES_UPDATED = "notes_updated";
+    static final String NOTES_USER_ID = "note_user_id";
 
     public Database(Context context) {
         super(context, DATABASE, null, dbversion);
@@ -98,11 +112,104 @@ public class Database extends SQLiteOpenHelper {
                 + POST_ID + " TEXT )";
         db.execSQL(goingQuery);
 
+        String notesQuery = "create table if not exists " + NOTES_TABLE
+                + " (" + NOTES_ID + " TEXT ,"
+                + NOTES_NAME + " TEXT ,"
+                + NOTES_TITLE + " TEXT ,"
+                + NOTES_DESC + " TEXT ,"
+                + NOTES_URL + " TEXT ,"
+                + NOTES_TYPE + " TEXT ,"
+                + NOTES_CREATED + " TEXT ,"
+                + NOTES_UPDATED + " TEXT ,"
+                + NOTES_USER_ID + " TEXT )";
+        db.execSQL(notesQuery);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public void addNotes(NotesListingModel.ResponseBean notesData) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        Cursor data = null;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(NOTES_NAME, notesData.getName());
+            values.put(NOTES_TITLE, notesData.getTitle());
+            values.put(NOTES_DESC, notesData.getDescription());
+            values.put(NOTES_URL, notesData.getUrl());
+            values.put(NOTES_TYPE, notesData.getNote_type());
+            values.put(NOTES_CREATED, notesData.getCreated_at());
+            values.put(NOTES_UPDATED, notesData.getUpdated_at());
+            values.put(NOTES_USER_ID, notesData.getUser_id());
+
+            data = getReadableDatabase().rawQuery("Select * from " + NOTES_TABLE + " where "
+                    + NOTES_ID + " = '" + notesData.getId() + "'", null);
+            if (data.getCount() > 0) {
+                db.update(NOTES_TABLE, values, NOTES_ID + " = '" + notesData.getId() + "'", null);
+            } else {
+                values.put(NOTES_ID, notesData.getId());
+                db.insertOrThrow(NOTES_TABLE, null, values);
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception", "is " + e);
+        } finally {
+            db.endTransaction();
+            if (data != null)
+                data.close();
+        }
+    }
+
+    public ArrayList<NotesListingModel.ResponseBean> getNotesByType(String noteType) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
+        Cursor cur = null;
+        ArrayList<NotesListingModel.ResponseBean> mArrayListNotes = new ArrayList<>();
+        try {
+            String qry = "select * from " + NOTES_TABLE + " where " + NOTES_TYPE + " = '" + noteType + "' order by " + NOTES_UPDATED + " DESC";
+            cur = db.rawQuery(qry, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                NotesListingModel.ResponseBean notesModel = new NotesListingModel.ResponseBean();
+                notesModel.setId(Integer.parseInt(cur.getString(0)));
+                notesModel.setName(cur.getString(1));
+                notesModel.setTitle(cur.getString(2));
+                notesModel.setDescription(cur.getString(3));
+                notesModel.setUrl(cur.getString(4));
+                notesModel.setNote_type(cur.getString(5));
+                notesModel.setCreated_at(cur.getString(6));
+                notesModel.setUpdated_at(cur.getString(7));
+                notesModel.setUser_id(Integer.parseInt(cur.getString(8)));
+
+                mArrayListNotes.add(notesModel);
+                cur.moveToNext();
+            }
+        } catch (Exception e) {
+            Log.e("Exception", "is " + e);
+        } finally {
+            db.endTransaction();
+            if (cur != null)
+                cur.close();
+        }
+        return mArrayListNotes;
+    }
+
+    public void deleteNotes(int noteId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            String unShortlist = "Delete from " + NOTES_TABLE + " where " + NOTES_ID + " = '" + noteId + "'";
+            db.execSQL(unShortlist);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception = ", e + "");
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public void addPosts(PostModel.ResponseBean postData) {
@@ -366,7 +473,7 @@ public class Database extends SQLiteOpenHelper {
         return mArrayListGoing;
     }
 
-        public PostModel.ResponseBean getPostDataById(int postId, int postType) {
+    public PostModel.ResponseBean getPostDataById(int postId, int postType) {
         SQLiteDatabase db = this.getReadableDatabase();
         db.beginTransaction();
         Cursor cur = null;
@@ -484,7 +591,7 @@ public class Database extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
-            String dropEvents = "Delete from  " + POSTS_TABLE ;
+            String dropEvents = "Delete from  " + POSTS_TABLE;
             db.execSQL(dropEvents);
 
             String dropImages = "Delete from  " + IMAGES_TABLE;
@@ -492,6 +599,9 @@ public class Database extends SQLiteOpenHelper {
 
             String dropGoingUsers = "Delete from  " + GOING_TABLE;
             db.execSQL(dropGoingUsers);
+
+            String dropNotes = "Delete from  " + NOTES_TABLE;
+            db.execSQL(dropNotes);
 
             db.setTransactionSuccessful();
         } catch (Exception e) {
