@@ -23,7 +23,19 @@
         android:textColor="@color/greyLine"
         android:textSize="@dimen/_14sdp" />
 
+    <customviews.MediumTextView
+        android:id="@+id/txtNoAllNotes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawablePadding="@dimen/_8sdp"
+        android:drawableTop="@mipmap/ill_notes_share"
+        android:gravity="center"
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_14ssp" />
+
     <LinearLayout
+        android:id="@+id/llNotesInner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="-2dp"
@@ -31,7 +43,8 @@
         android:orientation="vertical"
         android:paddingLeft="@dimen/_16sdp"
         android:paddingRight="@dimen/_16sdp"
-        android:paddingTop="@dimen/_16sdp">
+        android:paddingTop="@dimen/_16sdp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -81,45 +94,77 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvMyNotes"
+            <RelativeLayout
+                android:id="@+id/rlMyNotes"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="@dimen/_8sdp" />
+                android:layout_height="match_parent">
 
-            <com.wang.avi.AVLoadingIndicatorView
-                android:id="@+id/pbNotes"
-                style="@style/AVLoadingIndicatorView.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                app:indicatorColor="@color/colorPrimary"
-                app:indicatorName="BallClipRotatePulseIndicator" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvMyNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="@dimen/_8sdp" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvReceivedNotes"
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:id="@+id/pbMyNotes"
+                    style="@style/AVLoadingIndicatorView.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    app:indicatorColor="@color/colorPrimary"
+                    app:indicatorName="BallClipRotatePulseIndicator" />
+
+                <customviews.MediumTextView
+                    android:id="@+id/txtNoMyNotes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:drawableTop="@mipmap/ill_notes_share"
+                    android:gravity="center"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlReceivedNotes"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="@dimen/_8sdp"
-                android:visibility="gone" />
+                android:layout_height="match_parent">
 
-            <customviews.MediumTextView
-                android:id="@+id/txtNoNotes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:drawablePadding="@dimen/_8sdp"
-                android:drawableTop="@mipmap/ill_notes_share"
-                android:gravity="center"
-                android:text="@string/no_notes"
-                android:textColor="@color/black_color"
-                android:textSize="@dimen/_14ssp"
-                android:visibility="gone" />
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvReceivedNotes"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="@dimen/_8sdp" />
 
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:id="@+id/pbReceivedNotes"
+                    style="@style/AVLoadingIndicatorView.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    app:indicatorColor="@color/colorPrimary"
+                    app:indicatorName="BallClipRotatePulseIndicator" />
 
+                <customviews.MediumTextView
+                    android:id="@+id/txtNoReceivedNotes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:drawableTop="@mipmap/ill_notes_share"
+                    android:gravity="center"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
         </RelativeLayout>
 
     </LinearLayout>

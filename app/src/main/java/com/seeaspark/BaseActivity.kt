@@ -52,6 +52,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var mReceiverFunction: ReceiverFunctions? = null
     var currentCalendar: Calendar? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getContentView())

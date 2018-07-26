@@ -14,6 +14,8 @@ public class MainApplication extends MultiDexApplication {
     private static MainApplication instance;
     public static final String TAG = MainApplication.class
             .getSimpleName();
+    public static boolean isLandingAvailable;
+
     @Override
     public void onCreate() {
         super.onCreate();

@@ -1,80 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llMainShare"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
-    android:layout_marginLeft="@dimen/_12sdp"
-    android:layout_marginRight="@dimen/_12sdp"
-    android:background="@drawable/white_short_profile_background"
+    android:layout_height="match_parent"
     android:gravity="bottom"
     android:orientation="vertical">
 
-    <customviews.MediumTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/_8sdp"
-        android:paddingLeft="@dimen/_16sdp"
-        android:paddingTop="@dimen/_16sdp"
-        android:text="@string/share_note"
-        android:textColor="@color/black_color"
-        android:textSize="@dimen/_14ssp" />
-
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/llWasteShare"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1"/>
 
-        <LinearLayout
-            android:id="@+id/llShareOptions"
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/llInnerShare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="@dimen/_12sdp"
+        android:layout_marginRight="@dimen/_12sdp"
+        android:background="@drawable/white_short_profile_background"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <customviews.MediumTextView
+            android:id="@+id/txtShare"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/_16sdp"
+            android:paddingBottom="@dimen/_8sdp"
             android:paddingLeft="@dimen/_16sdp"
-            android:visibility="gone">
+            android:paddingTop="@dimen/_16sdp"
+            android:text="@string/share_note"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp" />
 
-            <ImageView
-                android:id="@+id/imgWhatsapp"
-                android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/llShareOptions"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_whatsapp_share" />
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/_16sdp"
+                android:paddingLeft="@dimen/_16sdp"
+                android:visibility="invisible">
 
-            <android.support.v4.widget.Space
-                android:layout_width="@dimen/_8sdp"
-                android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/imgWhatsapp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_whatsapp_share" />
 
-            <ImageView
-                android:id="@+id/imgFb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_fb_share" />
+                <android.support.v4.widget.Space
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="match_parent" />
 
-            <android.support.v4.widget.Space
-                android:layout_width="@dimen/_8sdp"
-                android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/imgFb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_fb_share" />
 
-            <ImageView
-                android:id="@+id/imgSMS"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_sms_share" />
+                <android.support.v4.widget.Space
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="match_parent" />
 
-            <android.support.v4.widget.Space
-                android:layout_width="@dimen/_8sdp"
-                android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/imgSMS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_sms_share" />
 
-            <ImageView
-                android:id="@+id/imgEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_email_share" />
+                <android.support.v4.widget.Space
+                    android:layout_width="@dimen/_8sdp"
+                    android:layout_height="match_parent" />
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/imgEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_email_share" />
 
-        <ProgressBar
-            android:id="@+id/pbShare"
-            android:layout_width="@dimen/_24sdp"
-            android:layout_height="@dimen/_24sdp"
-            android:layout_centerInParent="true" />
+            </LinearLayout>
 
-    </RelativeLayout>
+            <ProgressBar
+                android:id="@+id/pbShare"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>

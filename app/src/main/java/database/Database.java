@@ -65,6 +65,7 @@ public class Database extends SQLiteOpenHelper {
     static final String NOTES_CREATED = "notes_created";
     static final String NOTES_UPDATED = "notes_updated";
     static final String NOTES_USER_ID = "note_user_id";
+    static final String NOTES_USER_NAME = "note_user_name";
 
     public Database(Context context) {
         super(context, DATABASE, null, dbversion);
@@ -121,7 +122,8 @@ public class Database extends SQLiteOpenHelper {
                 + NOTES_TYPE + " TEXT ,"
                 + NOTES_CREATED + " TEXT ,"
                 + NOTES_UPDATED + " TEXT ,"
-                + NOTES_USER_ID + " TEXT )";
+                + NOTES_USER_ID + " TEXT ,"
+                + NOTES_USER_NAME + " TEXT )";
         db.execSQL(notesQuery);
 
     }
@@ -145,6 +147,7 @@ public class Database extends SQLiteOpenHelper {
             values.put(NOTES_CREATED, notesData.getCreated_at());
             values.put(NOTES_UPDATED, notesData.getUpdated_at());
             values.put(NOTES_USER_ID, notesData.getUser_id());
+            values.put(NOTES_USER_NAME, notesData.getFull_name());
 
             data = getReadableDatabase().rawQuery("Select * from " + NOTES_TABLE + " where "
                     + NOTES_ID + " = '" + notesData.getId() + "'", null);
@@ -184,6 +187,7 @@ public class Database extends SQLiteOpenHelper {
                 notesModel.setCreated_at(cur.getString(6));
                 notesModel.setUpdated_at(cur.getString(7));
                 notesModel.setUser_id(Integer.parseInt(cur.getString(8)));
+                notesModel.setFull_name(cur.getString(9));
 
                 mArrayListNotes.add(notesModel);
                 cur.moveToNext();

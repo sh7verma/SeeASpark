@@ -1,17 +1,17 @@
 package com.seeaspark
 
-import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.support.v4.content.ContextCompat
 import android.view.View
-import kotlinx.android.synthetic.main.activity_share.*
-import models.NotesListingModel
-import com.facebook.share.widget.ShareDialog
 import com.facebook.CallbackManager
 import com.facebook.share.model.ShareLinkContent
+import com.facebook.share.widget.ShareDialog
 import kotlinx.android.synthetic.main.activity_notes.*
-import kotlinx.android.synthetic.main.custom_toolbar.*
+import kotlinx.android.synthetic.main.activity_share.*
+import kotlinx.android.synthetic.main.activity_signup.*
+import models.NotesListingModel
 import models.NotesModel
 import network.RetrofitClient
 import retrofit2.Call
@@ -28,7 +28,7 @@ class ShareActivity : BaseActivity() {
     private var mNotesData: NotesListingModel.ResponseBean? = null
 
     override fun getContentView(): Int {
-        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent));
+        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
         return R.layout.activity_share
     }
 
@@ -36,16 +36,20 @@ class ShareActivity : BaseActivity() {
     }
 
     override fun displayDayMode() {
+        llInnerShare.setBackgroundResource(R.drawable.white_short_profile_background)
+        txtShare.setTextColor(blackColor)
     }
 
     override fun displayNightMode() {
+        llInnerShare.setBackgroundResource(R.drawable.dark_short_profile_background)
+        txtShare.setTextColor(whiteColor)
     }
 
     override fun onCreateStuff() {
         mNotesData = intent.getParcelableExtra("notesData")
 
-        mCallbackManager = CallbackManager.Factory.create();
-        mShareDialog = ShareDialog(this);
+        mCallbackManager = CallbackManager.Factory.create()
+        mShareDialog = ShareDialog(this)
 
         if (connectedToInternet())
             hitAPI()
@@ -55,6 +59,7 @@ class ShareActivity : BaseActivity() {
     }
 
     override fun initListener() {
+        llWasteShare.setOnClickListener(this)
         imgWhatsapp.setOnClickListener(this)
         imgFb.setOnClickListener(this)
         imgSMS.setOnClickListener(this)
@@ -65,12 +70,24 @@ class ShareActivity : BaseActivity() {
 
     override fun onClick(view: View?) {
         when (view) {
+            llWasteShare -> {
+                finish()
+                overridePendingTransition(0, 0)
+            }
             imgWhatsapp -> {
-
+                if (appInstalledOrNot("com.whatsapp")) {
+                    val sendIntent = Intent()
+                    sendIntent.action = Intent.ACTION_SEND
+                    sendIntent.putExtra(Intent.EXTRA_TEXT,"Start Exploring the New Age of Education. Download and Scout on See A Spark ${mNotesData!!.url}")
+                    sendIntent.type = "text/plain"
+                    sendIntent.`package` = "com.whatsapp"
+                    startActivity(sendIntent)
+                } else
+                    showToast(mContext!!, "Please install Whatsapp")
             }
             imgFb -> {
                 val linkContent = ShareLinkContent.Builder()
-                        .setQuote("See A Spark")
+                        .setQuote("Start Exploring the New Age of Education. Download and Scout on See A Spark")
                         .setContentUrl(Uri.parse(mNotesData!!.url))
                         .build()
                 mShareDialog!!.show(linkContent)
@@ -78,11 +95,20 @@ class ShareActivity : BaseActivity() {
             imgSMS -> {
                 val smsUri = Uri.parse("smsto:" + "")
                 val smsIntent = Intent(Intent.ACTION_SENDTO, smsUri)
-                smsIntent.putExtra("sms_body", mNotesData!!.url)
+                smsIntent.putExtra("sms_body","Start Exploring the New Age of Education. Download and Scout on See A Spark ${mNotesData!!.url}")
                 startActivity(smsIntent)
             }
             imgEmail -> {
-
+                try {
+                    val email = Intent(Intent.ACTION_SEND)
+                    email.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.app_name))
+                    email.putExtra(Intent.EXTRA_TEXT,"Start Exploring the New Age of Education. Download and Scout on See A Spark ${mNotesData!!.url}")
+                    email.type = "message/rfc822"
+                    startActivity(email)
+                } catch (e: Exception) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -114,8 +140,19 @@ class ShareActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        mCallbackManager!!.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager!!.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun appInstalledOrNot(uri: String): Boolean {
+        val pm = packageManager
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES)
+            return true
+        } catch (e: PackageManager.NameNotFoundException) {
+        }
+
+        return false
     }
 
     override fun onBackPressed() {

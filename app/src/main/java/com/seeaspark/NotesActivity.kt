@@ -1,6 +1,8 @@
 package com.seeaspark
 
 import android.app.Activity
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -19,6 +21,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
+import utils.MainApplication
 
 class NotesActivity : BaseActivity() {
 
@@ -39,21 +42,29 @@ class NotesActivity : BaseActivity() {
 
         txtOptionCustom.visibility = View.VISIBLE
         txtOptionCustom.text = getString(R.string.done)
+        txtOptionCustom.setTextColor(ContextCompat.getColor(mContext!!, R.color.colorPrimary))
 
         mEditor.setEditorFontSize(16)
         mEditor.setPlaceholder("Write here...")
         mEditor.setPadding(10, 10, 10, 10)
+        mEditor.setEditorWidth(mWidth)
         mEditor.focusEditor()
         mEditor.setTextColor(Color.BLACK)
 
-        if (intent.hasExtra("notesData")) {
+        if (intent.hasExtra("notesData")) {/// getting data from previous activity
             mNotesData = intent.getParcelableExtra("notesData")
-            setEditorData()
-            isEdit = true
-        } else if (intent.hasExtra("noteId")) {
-            txtTitleCustom.text = getString(R.string.note)
+            if (mNotesData!!.user_id.toString() == mUtils!!.getString("user_id", "")) {/// own Note
+                setEditorData()
+                isEdit = true
+                isDoneEnabled = true
+            } else
+                setNonEditableMode()
+        }
+
+        if (intent.hasExtra("noteId")) {/// getting data from deep Linking
             noteId = intent.getStringExtra("noteId")
             noteFileName = intent.getStringExtra("noteFileName")
+
             if (connectedToInternet())
                 hitFetchNotesDetailAPI()
             else
@@ -120,29 +131,29 @@ class NotesActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
-        llMainNotes.setBackgroundColor(whiteColor)
-        imgBackCustom.setImageResource(R.mipmap.ic_back_org)
-        llCustomToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
-        imgBackCustom.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
-        txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        imgOption1Custom.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
-        llBold.setBackgroundResource(whiteRipple)
-        llItalic.setBackgroundResource(whiteRipple)
-        llUnderline.setBackgroundResource(whiteRipple)
+        /* llMainNotes.setBackgroundColor(whiteColor)
+         imgBackCustom.setImageResource(R.mipmap.ic_back_org)
+         llCustomToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
+         imgBackCustom.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+         imgOption1Custom.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+         llBold.setBackgroundResource(whiteRipple)
+         llItalic.setBackgroundResource(whiteRipple)
+         llUnderline.setBackgroundResource(whiteRipple)*/
 
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-        llMainNotes.setBackgroundColor(blackColor)
-        imgBackCustom.setImageResource(R.mipmap.ic_back_black)
-        llCustomToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
-        imgBackCustom.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
-        txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        imgOption1Custom.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
-        llBold.setBackgroundResource(blackRipple)
-        llItalic.setBackgroundResource(blackRipple)
-        llUnderline.setBackgroundResource(blackRipple)
+        /* llMainNotes.setBackgroundColor(blackColor)
+         imgBackCustom.setImageResource(R.mipmap.ic_back_black)
+         llCustomToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+         imgBackCustom.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+         imgOption1Custom.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+         llBold.setBackgroundResource(blackRipple)
+         llItalic.setBackgroundResource(blackRipple)
+         llUnderline.setBackgroundResource(blackRipple)*/
     }
 
     override fun onCreateStuff() {
@@ -235,9 +246,17 @@ class NotesActivity : BaseActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun moveBack() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        if (MainApplication.isLandingAvailable) {
+            finish()
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        } else {
+            val intent = Intent(mContext, LandingActivity::class.java)
+            startActivity(intent)
+            finish()
+            overridePendingTransition(0, 0)
+        }
     }
 
     @Suppress("DEPRECATION")
@@ -328,13 +347,9 @@ class NotesActivity : BaseActivity() {
                         setEditorData()
                         mNotesData!!.note_type = Constants.MYNOTES
                         isEdit = true
+                        isDoneEnabled = true
                     } else {
-                        mNotesData!!.note_type = Constants.RECEIVEDNOTES
-                        Constants.closeKeyboard(mContext!!, llCustomToolbar)
-                        mEditor.html = mNotesData!!.description
-                        mEditor.setInputEnabled(false)
-                        txtOptionCustom.visibility = View.INVISIBLE
-                        llOptions.visibility = View.GONE
+                        setNonEditableMode()
                     }
                     db!!.addNotes(response.body().response)
                 } else {
@@ -351,6 +366,16 @@ class NotesActivity : BaseActivity() {
                 dismissLoader()
             }
         })
+    }
+
+    private fun setNonEditableMode() {
+        txtTitleCustom.text = getString(R.string.note)
+        mNotesData!!.note_type = Constants.RECEIVEDNOTES
+        Constants.closeKeyboard(mContext!!, llCustomToolbar)
+        mEditor.html = mNotesData!!.description
+        mEditor.setInputEnabled(false)
+        txtOptionCustom.visibility = View.INVISIBLE
+        llOptions.visibility = View.GONE
     }
 
     private fun resetEditior() {
@@ -433,5 +458,6 @@ class NotesActivity : BaseActivity() {
         imgSelectedBlue.visibility = View.GONE
         mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
     }
+
 
 }

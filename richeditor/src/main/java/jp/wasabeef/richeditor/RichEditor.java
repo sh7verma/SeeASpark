@@ -128,7 +128,8 @@ public class RichEditor extends WebView {
 
     private void callback(String text) {
         mContents = text.replaceFirst(CALLBACK_SCHEME, "");
-        mContents = mContents.replaceFirst("<br>", "");
+        if (mContents.startsWith("<br>"))
+            mContents = mContents.replaceFirst("<br>", "");
         if (mTextChangeListener != null) {
             mTextChangeListener.onTextChange(mContents);
         }

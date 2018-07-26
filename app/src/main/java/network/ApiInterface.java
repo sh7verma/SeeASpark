@@ -276,4 +276,10 @@ public interface ApiInterface {
                                @Field("id") String id,
                                @Field("name") String file_name);
 
+    @FormUrlEncoded
+    @POST("/api/v1/shares/delete_share")
+    Call<BaseSuccessModel> deleteReceivedNote(@Field("access_token") String access_token,
+                                              @Field("id") String id,
+                                              @Field("name") String name);
+
 }

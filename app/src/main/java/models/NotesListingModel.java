@@ -53,6 +53,7 @@ public class NotesListingModel extends BaseModel {
         private String note_type;
         private String created_at;
         private String updated_at;
+        private String full_name;
 
         public int getId() {
             return id;
@@ -126,6 +127,14 @@ public class NotesListingModel extends BaseModel {
             this.user_id = user_id;
         }
 
+        public String getFull_name() {
+            return full_name;
+        }
+
+        public void setFull_name(String full_name) {
+            this.full_name = full_name;
+        }
+
         public ResponseBean() {
         }
 
@@ -145,6 +154,7 @@ public class NotesListingModel extends BaseModel {
             dest.writeString(this.note_type);
             dest.writeString(this.created_at);
             dest.writeString(this.updated_at);
+            dest.writeString(this.full_name);
         }
 
         protected ResponseBean(Parcel in) {
@@ -157,6 +167,7 @@ public class NotesListingModel extends BaseModel {
             this.note_type = in.readString();
             this.created_at = in.readString();
             this.updated_at = in.readString();
+            this.full_name = in.readString();
         }
 
         public static final Creator<ResponseBean> CREATOR = new Creator<ResponseBean>() {

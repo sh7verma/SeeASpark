@@ -32,12 +32,19 @@ class DeepLinkingActivity : BaseActivity() {
             Log.e("Id = ", id)
             Log.e("filename = ", filename)
 
-            val intent = Intent(mContext!!, NotesActivity::class.java)
-            intent.putExtra("noteId", id)
-            intent.putExtra("noteFileName", filename)
-            startActivity(intent)
-            finish()
-            overridePendingTransition(0, 0)
+            if (mUtils!!.getString("access_token", "").isNotEmpty()) {
+                val intent = Intent(mContext!!, NotesActivity::class.java)
+                intent.putExtra("noteId", id)
+                intent.putExtra("noteFileName", filename)
+                startActivity(intent)
+                finish()
+                overridePendingTransition(0, 0)
+            } else {
+                val intent = Intent(mContext!!, SplashActivity::class.java)
+                startActivity(intent)
+                finish()
+                overridePendingTransition(0, 0)
+            }
         }
     }
 

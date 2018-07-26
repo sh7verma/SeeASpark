@@ -206,7 +206,7 @@
     <string name="send">Send</string>
     <string name="error_subject">Please enter subject</string>
     <string name="error_content">Please enter your idea</string>
-    <string name="no_result_found">No result found</string>
+    <string name="no_result_found">No Result Found</string>
     <string name="not_going">Not Going</string>
     <string name="not_interested">Not Interested</string>
     <string name="write_a_comment">Write a Comment...</string>
@@ -217,7 +217,7 @@
     <string name="no_community_bookmarked">No Community Bookmarked</string>
     <string name="no_event_bookmarked">No Event Bookmarked</string>
     <string name="add_occupation">Add Occupation</string>
-    <string name="you_can_write_your_million_n_dollar_ideas_here">You can write your million\ndollar ideas here</string>
+    <string name="you_can_write_your_million_n_dollar_ideas_here">You can write your million\ndollar idea here</string>
     <string name="my_notes">My Notes</string>
     <string name="write_note">Write Note</string>
     <string name="no_notes">No Notes Available</string>

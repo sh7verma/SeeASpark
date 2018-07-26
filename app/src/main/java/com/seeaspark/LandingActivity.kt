@@ -33,6 +33,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
 import utils.GpsStatusDetector
+import utils.MainApplication
 
 class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         LocationListener, GpsStatusDetector.GpsStatusDetectorCallBack, GoogleApiClient.OnConnectionFailedListener {
@@ -404,8 +405,13 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    override fun onDestroy() {
+    override fun onResume() {
+        MainApplication.isLandingAvailable = true
+        super.onResume()
+    }
 
+    override fun onDestroy() {
+        MainApplication.isLandingAvailable = false
         super.onDestroy()
     }
 
