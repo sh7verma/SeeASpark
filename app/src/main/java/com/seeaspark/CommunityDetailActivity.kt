@@ -17,6 +17,7 @@ import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.activity_community_detail.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import models.BaseSuccessModel
+import models.PostDetailModel
 import models.PostModel
 import models.SignupModel
 import network.RetrofitClient
@@ -31,6 +32,7 @@ class CommunityDetailActivity : BaseActivity() {
     var mCommunityData: PostModel.ResponseBean? = null
     private var isLiked = 0
 
+    private var mPostId: String = Constants.EMPTY
     private var userData: SignupModel? = null
 
     override fun getContentView() = R.layout.activity_community_detail
@@ -133,8 +135,43 @@ class CommunityDetailActivity : BaseActivity() {
 
     override fun onCreateStuff() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
-        mCommunityData = db!!.getPostDataById(intent.getIntExtra("communityId", 0), Constants.COMMUNITY)
-        populateData()
+        if (intent.hasExtra("postId")) {
+            mPostId = intent.getStringExtra("postId")
+            if (connectedToInternet())
+                hitDetailAPI()
+            else
+                showInternetAlert(llCustomToolbar)
+        } else {
+            mCommunityData = db!!.getPostDataById(intent.getIntExtra("communityId", 0), Constants.COMMUNITY)
+            populateData()
+        }
+    }
+
+    private fun hitDetailAPI() {
+        showLoader()
+        val call = RetrofitClient.getInstance().getPostDetail(mUtils!!.getString("access_token", ""),
+                mPostId.toInt())
+        call.enqueue(object : Callback<PostDetailModel> {
+            override fun onResponse(call: Call<PostDetailModel>?, response: Response<PostDetailModel>?) {
+                if (response!!.body().response != null) {
+                    mCommunityData = response.body().response
+                    populateData()
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN)
+                        moveToSplash()
+                    else {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        finish()
+                    }
+                }
+                dismissLoader()
+            }
+
+            override fun onFailure(call: Call<PostDetailModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(llCustomToolbar, t!!.localizedMessage)
+            }
+        })
     }
 
     override fun initListener() {
@@ -153,7 +190,10 @@ class CommunityDetailActivity : BaseActivity() {
                 moveBack()
             }
             imgOption1Custom -> {
-                showAlert(imgOption1Custom,getString(R.string.work_in_progress))
+                intent = Intent(mContext!!, ShareActivity::class.java)
+                intent.putExtra("postUrl", mCommunityData!!.shareable_link)
+                startActivity(intent)
+                overridePendingTransition(0, 0)
             }
             imgOption2Custom -> {
                 if (connectedToInternet()) {
@@ -180,6 +220,7 @@ class CommunityDetailActivity : BaseActivity() {
     }
 
     private fun populateData() {
+        svViewCommunity.visibility = View.VISIBLE
         vpCommunityDetail.adapter = FullImageAdapter(mContext!!, mCommunityData!!.images as ArrayList<PostModel.ResponseBean.ImagesBean>, 1)
         cpIndicatorCommunity.setViewPager(vpCommunityDetail)
         cpIndicatorCommunity.fillColor = Color.BLACK

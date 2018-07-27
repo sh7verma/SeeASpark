@@ -73,7 +73,7 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
                 (holder as PostViewHolder)
                 if (!TextUtils.isEmpty(mEventsArray[position].images[0].thumbnail_url))
                     Picasso.with(mContext).load(mEventsArray[position].images[0].thumbnail_url)
-                            .resize(mWidth, mContext!!.resources.getDimension(R.dimen._140sdp).toInt())
+                            .resize(mWidth, mContext!!.resources.getDimension(R.dimen._160sdp).toInt())
                             .centerCrop().into(holder.imgEventsListing)
 
                 holder.txtTitleEventsListing.text = mEventsArray[position].title

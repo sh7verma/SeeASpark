@@ -26,6 +26,7 @@ class ShareActivity : BaseActivity() {
     private var mShareDialog: ShareDialog? = null
 
     private var mNotesData: NotesListingModel.ResponseBean? = null
+    private var mSharedURL = Constants.EMAIL
 
     override fun getContentView(): Int {
         this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
@@ -46,16 +47,24 @@ class ShareActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
-        mNotesData = intent.getParcelableExtra("notesData")
 
         mCallbackManager = CallbackManager.Factory.create()
         mShareDialog = ShareDialog(this)
 
-        if (connectedToInternet())
-            hitAPI()
-        else
-            showInternetAlert(llShareOptions)
+        if (intent.hasExtra("notesData")) {
+            mNotesData = intent.getParcelableExtra("notesData")
+            mSharedURL = mSharedURL
+            if (connectedToInternet())
+                hitAPI()
+            else
+                showInternetAlert(llShareOptions)
+        }
 
+        if (intent.hasExtra("postUrl")) {
+            mSharedURL = intent.getStringExtra("postUrl")
+            llShareOptions.visibility = View.VISIBLE
+            pbShare.visibility=View.GONE
+        }
     }
 
     override fun initListener() {
@@ -78,7 +87,7 @@ class ShareActivity : BaseActivity() {
                 if (appInstalledOrNot("com.whatsapp")) {
                     val sendIntent = Intent()
                     sendIntent.action = Intent.ACTION_SEND
-                    sendIntent.putExtra(Intent.EXTRA_TEXT,"Start Exploring the New Age of Education. Download and Scout on See A Spark ${mNotesData!!.url}")
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Start Exploring the New Age of Education. Download and Scout on See A Spark $mSharedURL")
                     sendIntent.type = "text/plain"
                     sendIntent.`package` = "com.whatsapp"
                     startActivity(sendIntent)
@@ -88,21 +97,21 @@ class ShareActivity : BaseActivity() {
             imgFb -> {
                 val linkContent = ShareLinkContent.Builder()
                         .setQuote("Start Exploring the New Age of Education. Download and Scout on See A Spark")
-                        .setContentUrl(Uri.parse(mNotesData!!.url))
+                        .setContentUrl(Uri.parse(mSharedURL))
                         .build()
                 mShareDialog!!.show(linkContent)
             }
             imgSMS -> {
                 val smsUri = Uri.parse("smsto:" + "")
                 val smsIntent = Intent(Intent.ACTION_SENDTO, smsUri)
-                smsIntent.putExtra("sms_body","Start Exploring the New Age of Education. Download and Scout on See A Spark ${mNotesData!!.url}")
+                smsIntent.putExtra("sms_body", "Start Exploring the New Age of Education. Download and Scout on See A Spark $mSharedURL")
                 startActivity(smsIntent)
             }
             imgEmail -> {
                 try {
                     val email = Intent(Intent.ACTION_SEND)
                     email.putExtra(Intent.EXTRA_SUBJECT, resources.getString(R.string.app_name))
-                    email.putExtra(Intent.EXTRA_TEXT,"Start Exploring the New Age of Education. Download and Scout on See A Spark ${mNotesData!!.url}")
+                    email.putExtra(Intent.EXTRA_TEXT, "Start Exploring the New Age of Education. Download and Scout on See A Spark $mSharedURL")
                     email.type = "message/rfc822"
                     startActivity(email)
                 } catch (e: Exception) {

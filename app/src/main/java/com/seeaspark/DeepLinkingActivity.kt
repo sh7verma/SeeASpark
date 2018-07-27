@@ -7,6 +7,7 @@ import android.R.attr.data
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import utils.Constants
 
 
 class DeepLinkingActivity : BaseActivity() {
@@ -26,16 +27,23 @@ class DeepLinkingActivity : BaseActivity() {
         if (!TextUtils.isEmpty(data)) {
             val uri = Uri.parse(data)
             val args = uri.queryParameterNames
-            Log.e("Arguments = ", args.toString())
-            val id = uri.getQueryParameter("id")
-            val filename = uri.getQueryParameter("filename")
-            Log.e("Id = ", id)
-            Log.e("filename = ", filename)
+
+            Log.e("Arguments = ", args.toString() + " " + uri.path)
 
             if (mUtils!!.getString("access_token", "").isNotEmpty()) {
-                val intent = Intent(mContext!!, NotesActivity::class.java)
-                intent.putExtra("noteId", id)
-                intent.putExtra("noteFileName", filename)
+                var intent: Intent? = null
+                if (uri.path == "/posts") {
+                    intent = if (uri.getQueryParameter("post_type").toInt() == Constants.EVENT)
+                        Intent(mContext!!, EventsDetailActivity::class.java)
+                    else
+                        Intent(mContext!!, CommunityDetailActivity::class.java)
+
+                    intent.putExtra("postId", uri.getQueryParameter("id"))
+                } else {
+                    intent = Intent(mContext!!, NotesActivity::class.java)
+                    intent.putExtra("noteId", uri.getQueryParameter("id"))
+                    intent.putExtra("noteFileName", uri.getQueryParameter("filename"))
+                }
                 startActivity(intent)
                 finish()
                 overridePendingTransition(0, 0)

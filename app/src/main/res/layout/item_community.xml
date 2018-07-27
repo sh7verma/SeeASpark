@@ -19,8 +19,7 @@
         <ImageView
             android:id="@+id/imgCommunityListing"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_160sdp"
-            android:background="@color/greyTextColor" />
+            android:layout_height="@dimen/_160sdp" />
 
         <LinearLayout
             android:layout_width="match_parent"

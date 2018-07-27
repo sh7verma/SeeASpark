@@ -5,6 +5,12 @@
     android:background="@color/transperent"
     android:orientation="vertical">
 
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifHandshake"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200sdp"
+        android:src="@drawable/new_ani" />
+
     <LinearLayout
         android:id="@+id/llDataHandshake"
         android:layout_width="match_parent"
@@ -122,10 +128,10 @@
                 android:visibility="invisible" />
 
             <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/gifHandshake"
                 android:layout_width="@dimen/_104sdp"
                 android:layout_height="@dimen/_64sdp"
                 android:scaleType="centerInside"
+                android:visibility="invisible"
                 android:src="@drawable/hand" />
 
             <ImageView

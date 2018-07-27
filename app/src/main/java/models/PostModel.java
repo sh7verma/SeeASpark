@@ -64,6 +64,7 @@ public class PostModel extends BaseModel {
         private String longitude;
         private String date_time;
         private String url;
+        private String shareable_link;
         private int is_featured;
         private int like;
         private int comment;
@@ -153,6 +154,14 @@ public class PostModel extends BaseModel {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public String getShareable_link() {
+            return shareable_link;
+        }
+
+        public void setShareable_link(String shareable_link) {
+            this.shareable_link = shareable_link;
         }
 
         public int getIs_featured() {
@@ -388,6 +397,7 @@ public class PostModel extends BaseModel {
             dest.writeString(this.longitude);
             dest.writeString(this.date_time);
             dest.writeString(this.url);
+            dest.writeString(this.shareable_link);
             dest.writeInt(this.is_featured);
             dest.writeInt(this.like);
             dest.writeInt(this.comment);
@@ -411,6 +421,7 @@ public class PostModel extends BaseModel {
             this.longitude = in.readString();
             this.date_time = in.readString();
             this.url = in.readString();
+            this.shareable_link = in.readString();
             this.is_featured = in.readInt();
             this.like = in.readInt();
             this.comment = in.readInt();

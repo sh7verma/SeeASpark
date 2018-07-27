@@ -6,6 +6,7 @@ import models.LanguageListingModel;
 import models.LanguageModel;
 import models.NotesListingModel;
 import models.NotesModel;
+import models.PostDetailModel;
 import models.PostModel;
 import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
@@ -281,5 +282,10 @@ public interface ApiInterface {
     Call<BaseSuccessModel> deleteReceivedNote(@Field("access_token") String access_token,
                                               @Field("id") String id,
                                               @Field("name") String name);
+
+    @FormUrlEncoded
+    @POST("/api/v1/posts/post_by_id")
+    Call<PostDetailModel> getPostDetail(@Field("access_token") String access_token,
+                                        @Field("id") int id);
 
 }

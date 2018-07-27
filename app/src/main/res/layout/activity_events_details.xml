@@ -11,6 +11,7 @@
         android:id="@+id/svViewEvent"
         android:layout_width="match_parent"
         android:scrollbars="none"
+        android:visibility="gone"
         android:layout_height="match_parent">
 
         <RelativeLayout
@@ -209,7 +210,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/_26sdp"
-                android:text="55 LIKES"
+                android:text="0 LIKES"
                 android:textColor="@color/black_color"
                 android:textSize="@dimen/_10ssp" />
         </RelativeLayout>
@@ -232,12 +233,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/_8sdp"
-                android:text="55 COMMENTS"
+                android:text="0 COMMENTS"
                 android:textColor="@color/black_color"
                 android:textSize="@dimen/_10ssp" />
         </LinearLayout>
 
     </LinearLayout>
-
 
 </RelativeLayout>

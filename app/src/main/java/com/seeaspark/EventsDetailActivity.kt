@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_events_details.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.dialog_interested.*
 import models.BaseSuccessModel
+import models.PostDetailModel
 import models.PostModel
 import models.SignupModel
 import network.RetrofitClient
@@ -30,16 +31,16 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
-import kotlin.math.log
 
 
 class EventsDetailActivity : BaseActivity() {
 
     var mEventData: PostModel.ResponseBean? = null
     private var isGoing = 0
-    private var isIntreseted = 0
+    private var isInterested = 0
     private var isLiked = 0
 
+    private var mPostId: String = Constants.EMPTY
     private var userData: SignupModel? = null
 
     override fun getContentView() = R.layout.activity_events_details
@@ -157,12 +158,48 @@ class EventsDetailActivity : BaseActivity() {
 
     override fun onCreateStuff() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
-        mEventData = db!!.getPostDataById(intent.getIntExtra("eventId", 0), Constants.EVENT)
-        populateData()
+        if (intent.hasExtra("postId")) {
+            mPostId = intent.getStringExtra("postId")
+            if (connectedToInternet())
+                hitDetailAPI()
+            else
+                showInternetAlert(llCustomToolbar)
+        } else {
+            mEventData = db!!.getPostDataById(intent.getIntExtra("eventId", 0), Constants.EVENT)
+            populateData()
+        }
+    }
+
+    private fun hitDetailAPI() {
+        showLoader()
+        val call = RetrofitClient.getInstance().getPostDetail(mUtils!!.getString("access_token", ""),
+                mPostId.toInt())
+        call.enqueue(object : Callback<PostDetailModel> {
+            override fun onResponse(call: Call<PostDetailModel>?, response: Response<PostDetailModel>?) {
+                if (response!!.body().response != null) {
+                    mEventData = response.body().response
+                    populateData()
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN)
+                        moveToSplash()
+                    else {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        finish()
+                    }
+                }
+                dismissLoader()
+            }
+
+            override fun onFailure(call: Call<PostDetailModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(llCustomToolbar, t!!.localizedMessage)
+            }
+        })
+
     }
 
     private fun populateData() {
-
+        svViewEvent.visibility = View.VISIBLE
         Picasso.with(mContext).load(mEventData!!.images[0].image_url).centerCrop().resize(mWidth, resources.getDimension(R.dimen._240sdp).toInt()).into(imgEventDetail)
 
         txtTitleCustom.text = mEventData!!.title
@@ -192,7 +229,7 @@ class EventsDetailActivity : BaseActivity() {
             txtInterestedEvents.setBackgroundResource(R.drawable.selected_interesetd)
         } else {
             if (mEventData!!.interested == 1) {
-                isIntreseted = 1
+                isInterested = 1
                 txtInterestedEvents.setTextColor(blackColor)
                 txtInterestedEvents.setBackgroundResource(R.drawable.selected_interesetd)
             }
@@ -306,7 +343,7 @@ class EventsDetailActivity : BaseActivity() {
                 intent = Intent(mContext, FullViewImageActivity::class.java)
                 intent.putParcelableArrayListExtra("images", mEventData!!.images as ArrayList)
                 intent.putExtra("imagePosition", 0)
-               startActivity(intent)
+                startActivity(intent)
             }
             txtLocationEvents -> {
                 navigateTolocation()
@@ -315,7 +352,10 @@ class EventsDetailActivity : BaseActivity() {
                 moveBack()
             }
             imgOption1Custom -> {
-                showAlert(imgOption1Custom, getString(R.string.work_in_progress))
+                intent = Intent(mContext!!, ShareActivity::class.java)
+                intent.putExtra("postUrl", mEventData!!.shareable_link)
+                startActivity(intent)
+                overridePendingTransition(0, 0)
             }
             imgOption2Custom -> {
                 if (connectedToInternet()) {
@@ -412,7 +452,7 @@ class EventsDetailActivity : BaseActivity() {
         if (isGoing == 1)
             txtGoingDialog.text = getString(R.string.not_going)
 
-        if (isIntreseted == 1)
+        if (isInterested == 1)
             txtInterestedDialog.text = getString(R.string.not_interested)
 
         txtInterestedDialog.setOnClickListener {
@@ -443,8 +483,8 @@ class EventsDetailActivity : BaseActivity() {
                 if (status == Constants.GOING) {
                     if (isGoing == 0) {
                         isGoing = 1
-                        isIntreseted = 0
-                        db!!.updateGoingStatusEvents(mEventData!!.id, isGoing, isIntreseted)/// updating going and intresetd status
+                        isInterested = 0
+                        db!!.updateGoingStatusEvents(mEventData!!.id, isGoing, isInterested)/// updating going and intresetd status
                         addOwnToGoingList()/// adding data from local database
                         mEventData!!.going++
                         displayGoingData()
@@ -453,8 +493,8 @@ class EventsDetailActivity : BaseActivity() {
                         txtInterestedEvents.setBackgroundResource(R.drawable.selected_interesetd)
                     } else {
                         isGoing = 0
-                        isIntreseted = 0
-                        db!!.updateGoingStatusEvents(mEventData!!.id, isGoing, isIntreseted)/// updating going and intresetd status
+                        isInterested = 0
+                        db!!.updateGoingStatusEvents(mEventData!!.id, isGoing, isInterested)/// updating going and intresetd status
                         removeGoingList()/// removing data to local database
                         mEventData!!.going--
                         displayGoingData()
@@ -463,13 +503,13 @@ class EventsDetailActivity : BaseActivity() {
                         txtInterestedEvents.setBackgroundResource(R.drawable.default_interested)
                     }
                 } else {
-                    if (isIntreseted == 0) {
-                        isIntreseted = 1
+                    if (isInterested == 0) {
+                        isInterested = 1
                         txtInterestedEvents.setTextColor(blackColor)
                         txtInterestedEvents.text = getString(R.string.interested)
                         txtInterestedEvents.setBackgroundResource(R.drawable.selected_interesetd)
                     } else {
-                        isIntreseted = 0
+                        isInterested = 0
                         txtInterestedEvents.setTextColor(ContextCompat.getColor(this@EventsDetailActivity, R.color.greyTextColor))
                         txtInterestedEvents.text = getString(R.string.interested)
                         txtInterestedEvents.setBackgroundResource(R.drawable.default_interested)
@@ -480,7 +520,7 @@ class EventsDetailActivity : BaseActivity() {
                         mEventData!!.going--
                         displayGoingData()
                     }
-                    db!!.updateGoingStatusEvents(mEventData!!.id, isGoing, isIntreseted)/// updating going and intresetd status
+                    db!!.updateGoingStatusEvents(mEventData!!.id, isGoing, isInterested)/// updating going and intresetd status
                 }
                 dismissLoader()
             }

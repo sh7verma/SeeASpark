@@ -16,6 +16,11 @@ class HandshakeActivity : BaseActivity() {
     var mOtherProfileData: SignupModel.ResponseBean? = null
     var userProfileData: SignupModel? = null
 
+    override fun getContentView(): Int {
+        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent ));
+        return R.layout.activity_handshake
+    }
+
     override fun initUI() {
 
     }
@@ -64,10 +69,7 @@ class HandshakeActivity : BaseActivity() {
         txtExplore.setOnClickListener(this)
     }
 
-    override fun getContentView(): Int {
-        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent ));
-        return R.layout.activity_handshake
-    }
+
 
     override fun getContext() = this
 

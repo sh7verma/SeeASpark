@@ -41,6 +41,7 @@ public class Database extends SQLiteOpenHelper {
     static final String IS_BOOKMARKED = "is_bookmarked";
     static final String LIKED = "liked";
     static final String IS_GOING = "is_going";
+    static final String SHAREABLE_LINK = "shareable_link";
 
     /// Images Table
     static final String IMAGES_TABLE = "images_table";
@@ -95,7 +96,8 @@ public class Database extends SQLiteOpenHelper {
                 + INTRESTED + " TEXT ,"
                 + IS_BOOKMARKED + " TEXT ,"
                 + LIKED + " TEXT ,"
-                + IS_GOING + " TEXT )";
+                + IS_GOING + " TEXT ,"
+                + SHAREABLE_LINK + " TEXT )";
         db.execSQL(postsQuery);
 
         String imagesQuery = "create table if not exists " + IMAGES_TABLE
@@ -239,6 +241,8 @@ public class Database extends SQLiteOpenHelper {
             values.put(IS_BOOKMARKED, postData.getBookmarked());
             values.put(LIKED, postData.getLiked());
             values.put(IS_GOING, postData.getIs_going());
+            values.put(SHAREABLE_LINK, postData.getShareable_link());
+
 
             data = getReadableDatabase().rawQuery("Select * from " + POSTS_TABLE + " where "
                     + POST_ID + " = '" + postData.getId() + "'", null);
@@ -286,6 +290,7 @@ public class Database extends SQLiteOpenHelper {
                 postModel.setBookmarked(Integer.parseInt(cur.getString(14)));
                 postModel.setLiked(Integer.parseInt(cur.getString(15)));
                 postModel.setIs_going(Integer.parseInt(cur.getString(16)));
+                postModel.setShareable_link(cur.getString(17));
                 postModel.setGoing_list(getPostGoingUsers(cur.getString(0)));
                 postModel.setImages(getImageByPostId(cur.getString(0)));
 
@@ -503,6 +508,7 @@ public class Database extends SQLiteOpenHelper {
             postModel.setBookmarked(Integer.parseInt(cur.getString(14)));
             postModel.setLiked(Integer.parseInt(cur.getString(15)));
             postModel.setIs_going(Integer.parseInt(cur.getString(16)));
+            postModel.setShareable_link(cur.getString(17));
             postModel.setGoing_list(getPostGoingUsers(cur.getString(0)));
             postModel.setImages(getImageByPostId(cur.getString(0)));
 
