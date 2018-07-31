@@ -155,6 +155,7 @@ class CommunityDetailActivity : BaseActivity() {
             override fun onResponse(call: Call<PostDetailModel>?, response: Response<PostDetailModel>?) {
                 if (response!!.body().response != null) {
                     mCommunityData = response.body().response
+                    addToLocalDatabase(response.body().response)
                     populateData()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN)
@@ -172,6 +173,13 @@ class CommunityDetailActivity : BaseActivity() {
                 showAlert(llCustomToolbar, t!!.localizedMessage)
             }
         })
+    }
+
+    private fun addToLocalDatabase(response: PostModel.ResponseBean) {
+        db!!.addPosts(response)
+        for (imagesData in response.images) {
+            db!!.addPostImages(imagesData, response.id.toString(), Constants.COMMUNITY)
+        }
     }
 
     override fun initListener() {

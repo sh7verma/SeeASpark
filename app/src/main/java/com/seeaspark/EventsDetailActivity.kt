@@ -177,6 +177,7 @@ class EventsDetailActivity : BaseActivity() {
         call.enqueue(object : Callback<PostDetailModel> {
             override fun onResponse(call: Call<PostDetailModel>?, response: Response<PostDetailModel>?) {
                 if (response!!.body().response != null) {
+                    addToLocalDatabase(response.body().response)
                     mEventData = response.body().response
                     populateData()
                 } else {
@@ -196,6 +197,16 @@ class EventsDetailActivity : BaseActivity() {
             }
         })
 
+    }
+
+    private fun addToLocalDatabase(response: PostModel.ResponseBean) {
+        db!!.addPosts(response)
+        for (imagesData in response.images) {
+            db!!.addPostImages(imagesData, response.id.toString(), Constants.EVENT)
+        }
+        for (goingUserData in response.going_list) {
+            db!!.addPostGoingUsers(goingUserData, response.id.toString())
+        }
     }
 
     private fun populateData() {

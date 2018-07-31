@@ -60,6 +60,8 @@ class LoginSignupActivity : BaseActivity() {
     var mUserType: Int = 0
 
 
+    override fun getContentView() = R.layout.activity_signup
+
     override fun initUI() {
         intialViewPosition = ((mWidth * 0.5 - mWidth / 12).toInt())
         val viewParms = LinearLayout.LayoutParams(Constants.dpToPx(24), Constants.dpToPx(2))
@@ -84,6 +86,11 @@ class LoginSignupActivity : BaseActivity() {
 
         mUserType = intent.getIntExtra("userType", 0)
 
+        if (mUserType == 1)
+            txtUserMode.text = getString(R.string.mentee)
+        else
+            txtUserMode.text = getString(R.string.mentor)
+
         callbackManager = CallbackManager.Factory.create();
 
         swipeleft = TranslateAnimation(-(intialViewPosition).toFloat(), 0f, 0f, 0f)
@@ -99,51 +106,51 @@ class LoginSignupActivity : BaseActivity() {
         else
             setRegister()
 
-            loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
-            loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
-                override fun onSuccess(loginResult: LoginResult) {
-                    // App code
-                    val request = GraphRequest.newMeRequest(
-                            loginResult.accessToken
-                    ) { jsonObject, response ->
-                        // Getting FB User Data
+        loginButton.setReadPermissions(Arrays.asList("email", "public_profile"));
+        loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(loginResult: LoginResult) {
+                // App code
+                val request = GraphRequest.newMeRequest(
+                        loginResult.accessToken
+                ) { jsonObject, response ->
+                    // Getting FB User Data
 
-                        if (jsonObject != null) {
-                            Log.e("Fb data = ", jsonObject.toString())
-                            if (!TextUtils.isEmpty(jsonObject.getString("email"))) {
-                                mEmail = jsonObject.getString("email")
-                                mEmailverified = Constants.EMAIL_VERIFIED
-                            } else {
-                                mEmailverified = Constants.EMAIL_NOTVERIFIED
-                            }
-                            mName = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name")
-                            mPassword = Constants.EMPTY
-                            mFacebookId = jsonObject.getString("id")
-                            mLinkedinId = Constants.EMPTY
-                            mAccountType = Constants.FACEBOOK_LOGIN
-                            LoginManager.getInstance().logOut()
-
-                            if (connectedToInternet())
-                                hitSignupAPI()
-                            else
-                                showInternetAlert(imgFacebook)
+                    if (jsonObject != null) {
+                        Log.e("Fb data = ", jsonObject.toString())
+                        if (!TextUtils.isEmpty(jsonObject.getString("email"))) {
+                            mEmail = jsonObject.getString("email")
+                            mEmailverified = Constants.EMAIL_VERIFIED
+                        } else {
+                            mEmailverified = Constants.EMAIL_NOTVERIFIED
                         }
+                        mName = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name")
+                        mPassword = Constants.EMPTY
+                        mFacebookId = jsonObject.getString("id")
+                        mLinkedinId = Constants.EMPTY
+                        mAccountType = Constants.FACEBOOK_LOGIN
+                        LoginManager.getInstance().logOut()
+
+                        if (connectedToInternet())
+                            hitSignupAPI()
+                        else
+                            showInternetAlert(imgFacebook)
                     }
-                    val parameters = Bundle()
-                    parameters.putString("fields", "id,first_name,last_name,email,gender")
-                    request.parameters = parameters
-                    request.executeAsync()
                 }
+                val parameters = Bundle()
+                parameters.putString("fields", "id,first_name,last_name,email,gender")
+                request.parameters = parameters
+                request.executeAsync()
+            }
 
-                override fun onCancel() {
-                    // App code
-                }
+            override fun onCancel() {
+                // App code
+            }
 
-                override fun onError(exception: FacebookException) {
-                    // App code
-                    Log.e("Result - ", exception.localizedMessage);
-                }
-            })
+            override fun onError(exception: FacebookException) {
+                // App code
+                Log.e("Result - ", exception.localizedMessage);
+            }
+        })
 
         edPassword.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
@@ -162,8 +169,6 @@ class LoginSignupActivity : BaseActivity() {
         txtForgotPassword.setOnClickListener(this)
     }
 
-    override fun getContentView() = R.layout.activity_signup
-
     override fun getContext() = this
 
     override fun onClick(view: View) {
@@ -180,14 +185,14 @@ class LoginSignupActivity : BaseActivity() {
             txtSignin -> {
                 if (modeEnabledSignup) {
                     viewLine.startAnimation(swiperight)
-                    txtSigninOptions.text=getString(R.string.sign_in_with)
+                    txtSigninOptions.text = getString(R.string.sign_in_with)
                     setLogin()
                     modeEnabledSignup = false;
                 }
             }
             txtSignup -> {
                 if (!modeEnabledSignup) {
-                    txtSigninOptions.text=getString(R.string.sign_up_with)
+                    txtSigninOptions.text = getString(R.string.sign_up_with)
                     viewLine.startAnimation(swipeleft)
                     setRegister()
                     modeEnabledSignup = true;

@@ -36,7 +36,7 @@ class HandshakeActivity : BaseActivity() {
 
     override fun onCreateStuff() {
 
-        mOtherProfileData = if (intent.hasExtra("otherProfileData"))
+      /*  mOtherProfileData = if (intent.hasExtra("otherProfileData"))
             intent.getParcelableExtra("otherProfileData")
         else
             Gson().fromJson(intent.getStringExtra("matchData"), SignupModel.ResponseBean::class.java);
@@ -44,7 +44,7 @@ class HandshakeActivity : BaseActivity() {
 
         userProfileData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         populateData()
-
+*/
         val animation1 = AlphaAnimation(0f, 1f)
         animation1.duration = 1500
         animation1.fillAfter = true

@@ -14,7 +14,6 @@ import com.cocosw.bottomsheet.BottomSheet
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_preferences.*
 import kotlinx.android.synthetic.main.activity_preferences.view.*
-import kotlinx.android.synthetic.main.activity_profession_listing.*
 import kotlinx.android.synthetic.main.add_skills.view.*
 import models.ProfessionListingModel
 import models.ProfessionModel
@@ -318,7 +317,7 @@ class PreferencesActivity : BaseActivity() {
     }
 
     private fun initPersistentBottomsheetProfession() {
-        // bottom view of accepted job
+
 
         var behaviorJobDetail = BottomSheetBehavior.from<View>(coordinator.llProfessionListing)
         behaviorJobDetail.peekHeight = mHeight / 6
@@ -400,12 +399,12 @@ class PreferencesActivity : BaseActivity() {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         moveToSplash()
                     } else
-                        showAlert(txtNextProfessionListing, response.body().error!!.message!!)
+                        showAlert(imgForwardPrefer, response.body().error!!.message!!)
                 }
             }
 
             override fun onFailure(call: Call<ProfessionListingModel>?, t: Throwable?) {
-                showAlert(txtNextProfessionListing, t!!.localizedMessage)
+                showAlert(imgForwardPrefer, t!!.localizedMessage)
             }
         })
     }

@@ -198,7 +198,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/TransparentActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
             android:name=".ViewProfileActivity"

@@ -47,7 +47,7 @@ class AvatarAdapter(mAvatarArray: ArrayList<AvatarModel>, mContext: Context, mCr
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.llSelected.layoutParams = layoutParms
         holder.imgAvatar.layoutParams = layoutParms
-
+        
         if (mAvatarArray[position].name == mCreateProfileInstance!!.mAvatarId) {
             holder.llSelected.visibility = View.VISIBLE
             holder.imgTick.visibility = View.VISIBLE
