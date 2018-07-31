@@ -91,6 +91,7 @@ class LoginSignupActivity : BaseActivity() {
         else
             txtUserMode.text = getString(R.string.mentor)
 
+
         callbackManager = CallbackManager.Factory.create();
 
         swipeleft = TranslateAnimation(-(intialViewPosition).toFloat(), 0f, 0f, 0f)
