@@ -73,6 +73,7 @@ dependencies {
     implementation 'com.daimajia.swipelayout:library:1.2.0@aar'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.12'
     implementation 'com.github.jd-alexander:LikeButton:0.2.3'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.0'
 
 }
 

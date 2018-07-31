@@ -56,7 +56,7 @@ class LoginSignupActivity : BaseActivity() {
     var mPassword = Constants.EMPTY
     var mName = Constants.EMPTY
     var mAccountType: Int = 0
-    var mEmailverified: Int = 0
+    var mEmailVerified: Int = 0
     var mUserType: Int = 0
 
 
@@ -120,9 +120,9 @@ class LoginSignupActivity : BaseActivity() {
                         Log.e("Fb data = ", jsonObject.toString())
                         if (!TextUtils.isEmpty(jsonObject.getString("email"))) {
                             mEmail = jsonObject.getString("email")
-                            mEmailverified = Constants.EMAIL_VERIFIED
+                            mEmailVerified = Constants.EMAIL_VERIFIED
                         } else {
-                            mEmailverified = Constants.EMAIL_NOTVERIFIED
+                            mEmailVerified = Constants.EMAIL_NOTVERIFIED
                         }
                         mName = jsonObject.getString("first_name") + " " + jsonObject.getString("last_name")
                         mPassword = Constants.EMPTY
@@ -287,7 +287,7 @@ class LoginSignupActivity : BaseActivity() {
                         mAccountType = Constants.LIKENDIN_LOGIN
                         mPassword = Constants.EMPTY
                         mFacebookId = Constants.EMPTY
-                        mEmailverified = Constants.EMAIL_VERIFIED
+                        mEmailVerified = Constants.EMAIL_VERIFIED
                         hitSignupAPI()
                     } else
                         showInternetAlert(imgLinkedin)
@@ -325,7 +325,7 @@ class LoginSignupActivity : BaseActivity() {
                     mFacebookId = Constants.EMPTY
                     mLinkedinId = Constants.EMPTY
                     mAccountType = Constants.EMAIL_LOGIN
-                    mEmailverified = Constants.EMAIL_NOTVERIFIED
+                    mEmailVerified = Constants.EMAIL_NOTVERIFIED
 
                     hitSignupAPI()
                 } else {
@@ -459,7 +459,7 @@ class LoginSignupActivity : BaseActivity() {
         val call = RetrofitClient.getInstance().userSignup(mFacebookId,
                 mEmail, mPassword, mLinkedinId, mAccountType,
                 mUtils!!.getString("device_token", ""),
-                mPlatformStatus, mEmailverified, mUserType)
+                mPlatformStatus, mEmailVerified, mUserType)
 
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {

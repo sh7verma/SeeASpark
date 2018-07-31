@@ -6,7 +6,10 @@ import android.net.NetworkInfo;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.FirebaseApp;
+import com.seeaspark.R;
 
 
 public class MainApplication extends MultiDexApplication {
@@ -15,6 +18,8 @@ public class MainApplication extends MultiDexApplication {
     public static final String TAG = MainApplication.class
             .getSimpleName();
     public static boolean isLandingAvailable;
+    private static GoogleAnalytics sAnalytics;
+    private static Tracker sTracker;
 
     @Override
     public void onCreate() {
@@ -22,6 +27,7 @@ public class MainApplication extends MultiDexApplication {
         MultiDex.install(this);
         FirebaseApp.initializeApp(this);
         Foreground.init(this);
+        sAnalytics = GoogleAnalytics.getInstance(this);
         instance = this;
     }
 
@@ -43,4 +49,10 @@ public class MainApplication extends MultiDexApplication {
         ConnectivityReceiver.connectivityReceiverListener = listener;
     }
 
+    synchronized public Tracker getDefaultTracker() {
+        if (sTracker == null) {
+            sTracker = sAnalytics.newTracker(R.xml.global_tracker);
+        }
+        return sTracker;
+    }
 }

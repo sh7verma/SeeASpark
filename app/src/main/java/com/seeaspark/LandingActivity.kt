@@ -12,6 +12,8 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.view.View
+import com.google.android.gms.analytics.HitBuilders
+import com.google.android.gms.analytics.Tracker
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
@@ -55,6 +57,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
     private var homeFragment: HomeFragment? = null
 
+    private var mTracker: Tracker? = null
     var mArrayCards = ArrayList<CardsDisplayModel>()
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -141,6 +144,12 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             displayTipsData()
         else
             imgHome.setImageResource(R.mipmap.ic_home_s)
+
+        // Obtain the shared Tracker instance.
+        val application = application as MainApplication
+        mTracker = application.defaultTracker
+        mTracker!!.setScreenName(getString(R.string.home))
+        mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
     }
 
     override fun initListener() {
@@ -167,6 +176,8 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 imgCommunity.setImageResource(R.mipmap.ic_community)
                 imgNotes.setImageResource(R.mipmap.ic_notes)
                 replaceFragment(homeFragment!!)
+                mTracker!!.setScreenName(getString(R.string.home))
+                mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llNotes -> {
                 imgHome.setImageResource(R.mipmap.ic_home)
@@ -174,6 +185,8 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 imgCommunity.setImageResource(R.mipmap.ic_community)
                 imgNotes.setImageResource(R.mipmap.ic_notes_s)
                 replaceFragment(NotesFragment())
+                mTracker!!.setScreenName(getString(R.string.notes))
+                mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llChat -> {
                 showToast(mContext!!, getString(R.string.work_in_progress))
@@ -184,6 +197,8 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 imgCommunity.setImageResource(R.mipmap.ic_community)
                 imgNotes.setImageResource(R.mipmap.ic_notes)
                 replaceFragment(EventsFragment())
+                mTracker!!.setScreenName(getString(R.string.events))
+                mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llCommunity -> {
                 if (userData!!.response.user_type == Constants.MENTOR) {
@@ -193,9 +208,13 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                     imgCommunity.setImageResource(R.mipmap.ic_community_s)
                     imgNotes.setImageResource(R.mipmap.ic_notes)
                     replaceFragment(CommunityFragment())
+                    mTracker!!.setScreenName(getString(R.string.community))
+                    mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
                 } else {
                     /// user is menteee
                     showToast(mContext!!, getString(R.string.work_in_progress))
+                    mTracker!!.setScreenName(getString(R.string.boost))
+                    mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
                 }
             }
             imgNextTips -> {

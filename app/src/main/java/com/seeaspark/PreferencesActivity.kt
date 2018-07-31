@@ -3,18 +3,23 @@ package com.seeaspark
 import adapters.PreferProfessionAdapter
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.LinearLayout
 import com.cocosw.bottomsheet.BottomSheet
 import customviews.FlowLayout
+import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.activity_preferences.*
 import kotlinx.android.synthetic.main.activity_preferences.view.*
 import kotlinx.android.synthetic.main.add_skills.view.*
+import models.LanguageModel
 import models.ProfessionListingModel
 import models.ProfessionModel
 import models.SignupModel
@@ -29,14 +34,18 @@ class PreferencesActivity : BaseActivity() {
     private var mSelectedSkillsArray = ArrayList<String>()
     private var mSelectedSkillsNameArray = ArrayList<String>()
     private val SKILLS: Int = 1
+    private val LANGUAGES: Int = 2
 
     var mAdapterProfession: PreferProfessionAdapter? = null
     private var mProfessionArray = ArrayList<ProfessionModel>()
     var mSelectedProfessionsArray = ArrayList<String>()
     private var userData: SignupModel? = null
-    private var mGenderValue: Int? = 0
+    private var mGenderValue = 0
+    private var mMaxDistanceValue = 0
+    private var mMaxExperienceValue = 3
     private var moveToHome = false
     private var mPreferActivity: PreferencesActivity? = null
+    private var mSelectedLanguagesArray = ArrayList<LanguageModel>()
 
     override fun getContentView() = R.layout.activity_preferences
 
@@ -46,6 +55,17 @@ class PreferencesActivity : BaseActivity() {
         llProfessionText.layoutParams = bottomParms
         initPersistentBottomsheetProfession()
         rvProfessionPrefer.layoutManager = LinearLayoutManager(this)
+        cbNoExperience.setOnCheckedChangeListener { p0, isChecked ->
+            if (isChecked) {
+                llDisableExperience.visibility = View.VISIBLE
+                mMaxExperienceValue = -1
+            } else {
+                llDisableExperience.visibility = View.GONE
+                mMaxExperienceValue = 3
+            }
+            rsbExperience.selectedMaxValue = 3
+            txtExperienceCount.text = "3 Year(s)"
+        }
     }
 
     override fun displayDayMode() {
@@ -88,37 +108,68 @@ class PreferencesActivity : BaseActivity() {
         txtSkillHint.setTextColor(whiteColor)
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreateStuff() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
         rsbDistance.isNotifyWhileDragging = true
-        rsbDistance.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtDistanceCount.text = "$maxValue Mile(s)" }
+        rsbDistance.setOnRangeSeekBarChangeListener { bar, minValue, maxValue ->
+            mMaxDistanceValue = maxValue.toInt()
+            txtDistanceCount.text = "$maxValue Mile(s)"
+            if (maxValue == 100) {
+                mMaxDistanceValue = maxValue.toInt() + 1
+                txtDistanceCount.text = "$maxValue+ Mile(s)"
+            }
+
+        }
 
         rsbExperience.isNotifyWhileDragging = true
-        rsbExperience.setOnRangeSeekBarChangeListener { bar, minValue, maxValue -> txtExperienceCount.text = "$maxValue Year(s)" }
+        rsbExperience.setOnRangeSeekBarChangeListener { bar, minValue, maxValue ->
+            mMaxExperienceValue = maxValue.toInt()
+            txtExperienceCount.text = "$maxValue Year(s)"
+        }
 
         if (intent.hasExtra("showPrefilled")) {
             /// navigating from home section
             moveToHome = true
-            rsbDistance.selectedMaxValue = userData!!.response.preferences.distance
+
+            mMaxDistanceValue = userData!!.response.preferences.distance
             txtDistanceCount.text = "${userData!!.response.preferences.distance} Mile(s)"
+            rsbDistance.selectedMaxValue = mMaxDistanceValue
 
-            rsbExperience.selectedMaxValue = userData!!.response.preferences.experience_year
-            txtExperienceCount.text = "${userData!!.response.preferences.experience_year} Year(s)"
+            if (userData!!.response.preferences.distance == 101)
+                txtDistanceCount.text = "100+ Mile(s)"
 
-            if (userData!!.response.preferences.gender == 1) {
-                mGenderValue = 1
-                txtGenderPrefer.text = getString(R.string.male)
-            } else if (userData!!.response.preferences.gender == 2) {
-                mGenderValue = 2
-                txtGenderPrefer.text = getString(R.string.female)
+
+
+            if (userData!!.response.preferences.experience_year == -1) {
+                mMaxExperienceValue = -1
+                cbNoExperience.isChecked=true
+                llDisableExperience.visibility=View.VISIBLE
+                rsbExperience.selectedMaxValue = 3
+                txtExperienceCount.text = "3 Year(s)"
             } else {
-                mGenderValue = 3
-                txtGenderPrefer.text = getString(R.string.other)
+                cbNoExperience.isChecked=false
+                llDisableExperience.visibility=View.GONE
+                mMaxExperienceValue = userData!!.response.preferences.experience_year
+                rsbExperience.selectedMaxValue = userData!!.response.preferences.experience_year
+                txtExperienceCount.text = "${userData!!.response.preferences.experience_year} Year(s)"
             }
 
-            extractSkills()
-            extractSelectedProfessions()
+            when {
+                userData!!.response.preferences.gender == 1 -> {
+                    mGenderValue = 1
+                    txtGenderPrefer.text = getString(R.string.male)
+                }
+                userData!!.response.preferences.gender == 2 -> {
+                    mGenderValue = 2
+                    txtGenderPrefer.text = getString(R.string.female)
+                }
+                else -> {
+                    mGenderValue = 3
+                    txtGenderPrefer.text = getString(R.string.other)
+                }
+            }
         } else {
             rsbDistance.selectedMaxValue = Constants.DISTANCE
             txtDistanceCount.text = "${Constants.DISTANCE} Mile(s)"
@@ -138,8 +189,10 @@ class PreferencesActivity : BaseActivity() {
             }
         }
 
+        extractSkills()
+        extractSelectedProfessions()
+        extractSelectedLanguages()
         extractProfessionValue()
-        extractLanguageValue()
 
         if (connectedToInternet())
             hitProfessionAPI()
@@ -153,6 +206,12 @@ class PreferencesActivity : BaseActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    private fun extractSelectedLanguages() {
+        mSelectedLanguagesArray.addAll(userData!!.response.preferences.languages)
+        displayLanguageChips()
+    }
+
     private fun extractSkills() {
         for (skillValue in userData!!.response.preferences.skills) {
             mSelectedSkillsNameArray.add(skillValue.name)
@@ -161,13 +220,18 @@ class PreferencesActivity : BaseActivity() {
         displaySkillsChips()
     }
 
-    private fun extractLanguageValue() {
-        /// no operation
-    }
-
     private fun extractProfessionValue() {
+        addNoProfessionData()
         mProfessionArray.addAll(userData!!.professions)
         populateData()
+    }
+
+    private fun addNoProfessionData() {
+        val professionData = ProfessionModel()
+        professionData.name = "No Preferences"
+        professionData.isSelected = true
+        professionData.id = 0
+        mProfessionArray.add(professionData)
     }
 
     private fun populateData() {
@@ -180,6 +244,8 @@ class PreferencesActivity : BaseActivity() {
         llGenderPrefer.setOnClickListener(this)
         llProfessionListing.setOnClickListener(this)
         llSkillSelection.setOnClickListener(this)
+        llLanguageSelection.setOnClickListener(this)
+        llDisableExperience.setOnClickListener(this)
     }
 
     override fun getContext() = this
@@ -187,6 +253,13 @@ class PreferencesActivity : BaseActivity() {
     override fun onClick(view: View?) {
         var intent: Intent? = null
         when (view) {
+            llLanguageSelection -> {
+                intent = Intent(mContext, SelectLanguageActivity::class.java)
+                intent.putExtra("prefer", true)
+                intent.putParcelableArrayListExtra("selectedLanguages", mSelectedLanguagesArray)
+                startActivityForResult(intent, LANGUAGES)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
             llSkillSelection -> {
                 intent = Intent(mContext, SkillSelectionActivity::class.java)
                 intent.putStringArrayListExtra("selectedSkills", mSelectedSkillsArray)
@@ -227,14 +300,24 @@ class PreferencesActivity : BaseActivity() {
             tempSkills = mSelectedSkillsArray.toString()
                     .substring(1, mSelectedSkillsArray.toString().length - 1).trim()
 
+        var tempLanguages = Constants.EMPTY
+        val tempLanguagesArray = ArrayList<Int>()
+        for (languageData in mSelectedLanguagesArray) {
+            tempLanguagesArray.add(languageData.id)
+        }
+
+        if (tempLanguagesArray.size > 0)
+            tempLanguages = tempLanguagesArray.toString()
+                    .substring(1, tempLanguagesArray.toString().length - 1).trim()
+
 
         val call = RetrofitClient.getInstance().updatePreferences(userData!!.response.access_token,
-                rsbDistance.selectedMaxValue as Int,
-                rsbExperience.selectedMaxValue.toString(),
-                mGenderValue!!,
+                mMaxDistanceValue,
+                mMaxExperienceValue.toString(),
+                mGenderValue,
                 tempSkills,
                 tempProfessions,
-                Constants.EMPTY)
+                tempLanguages)
 
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
@@ -272,11 +355,11 @@ class PreferencesActivity : BaseActivity() {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 SKILLS -> {
-
                     flSkillsPrefer.removeAllViews()
                     mSelectedSkillsArray.clear()
                     mSelectedSkillsArray.addAll(data!!.getStringArrayListExtra("selectedSkills"))
@@ -286,21 +369,53 @@ class PreferencesActivity : BaseActivity() {
 
                     displaySkillsChips()
                 }
+                LANGUAGES -> {
+                    flLanguagePrefer.removeAllViews()
+                    mSelectedLanguagesArray.clear()
+                    mSelectedLanguagesArray.addAll(data!!.getParcelableArrayListExtra("selectedLanguages"))
+                    displayLanguageChips()
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun displaySkillsChips() {
-        var count = 0
-        for (skills: String in mSelectedSkillsNameArray) {
-            if (count == 3) {
-                flSkillsPrefer.addView(inflateView("+ ${mSelectedSkillsArray.size - count} More"))
-                break
-            } else {
-                flSkillsPrefer.addView(inflateView(skills))
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    private fun displayLanguageChips() {
+        if (mSelectedLanguagesArray.size > 0) {
+            flLanguagePrefer.visibility = View.VISIBLE
+            txtNoLanguages.visibility = View.GONE
+            for ((index, languages) in mSelectedLanguagesArray.withIndex()) {
+                if (index == 3) {
+                    flLanguagePrefer.addView(inflateView("+ ${mSelectedLanguagesArray.size - index} More"))
+                    break
+                } else {
+                    flLanguagePrefer.addView(inflateView(languages.name))
+                }
             }
-            count++
+        } else {
+            flLanguagePrefer.visibility = View.GONE
+            txtNoLanguages.visibility = View.VISIBLE
+        }
+    }
+
+    private fun displaySkillsChips() {
+        if (mSelectedSkillsNameArray.size > 0) {
+            flSkillsPrefer.visibility = View.VISIBLE
+            txtNoSkills.visibility = View.GONE
+            var count = 0
+            for (skills: String in mSelectedSkillsNameArray) {
+                if (count == 3) {
+                    flSkillsPrefer.addView(inflateView("+ ${mSelectedSkillsArray.size - count} More"))
+                    break
+                } else {
+                    flSkillsPrefer.addView(inflateView(skills))
+                }
+                count++
+            }
+        } else {
+            flSkillsPrefer.visibility = View.GONE
+            txtNoSkills.visibility = View.VISIBLE
         }
     }
 
@@ -318,8 +433,7 @@ class PreferencesActivity : BaseActivity() {
 
     private fun initPersistentBottomsheetProfession() {
 
-
-        var behaviorJobDetail = BottomSheetBehavior.from<View>(coordinator.llProfessionListing)
+        val behaviorJobDetail = BottomSheetBehavior.from<View>(coordinator.llProfessionListing)
         behaviorJobDetail.peekHeight = mHeight / 6
 
         behaviorJobDetail.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -392,6 +506,7 @@ class PreferencesActivity : BaseActivity() {
             override fun onResponse(call: Call<ProfessionListingModel>?, response: Response<ProfessionListingModel>) {
                 if (response.body().response != null) {
                     mProfessionArray.clear()
+                    addNoProfessionData()
                     mProfessionArray.addAll(response.body().response)
                     populateData()
                     upDateData(response.body().response)
@@ -423,5 +538,12 @@ class PreferencesActivity : BaseActivity() {
             super.onBackPressed()
     }
 
+    fun clearProfessionPreferences() {
+        mProfessionArray[0].isSelected = true
+        mSelectedProfessionsArray.clear()
+    }
 
+    fun unSelectedNoPreferences() {
+        mProfessionArray[0].isSelected = false
+    }
 }

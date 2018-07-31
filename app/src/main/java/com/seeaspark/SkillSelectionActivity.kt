@@ -27,6 +27,7 @@ class SkillSelectionActivity : BaseActivity() {
     private var mSelectedSkillsNameArray = ArrayList<String>()
     private var userData: SignupModel? = null
 
+    override fun getContentView() = R.layout.activity_skill_selection
 
     override fun initUI() {
 
@@ -47,7 +48,7 @@ class SkillSelectionActivity : BaseActivity() {
         if (connectedToInternet())
             hitAPI()
         else
-            showInternetAlert(txtDoneSelection)
+            showInternetAlert(txtClearLanguage)
     }
 
     override fun displayDayMode() {
@@ -57,22 +58,29 @@ class SkillSelectionActivity : BaseActivity() {
     }
 
     override fun initListener() {
-        txtDoneSelection.setOnClickListener(this)
+        txtClearLanguage.setOnClickListener(this)
         imgBackSelection.setOnClickListener(this)
+        txtDonePreferLanguage.setOnClickListener(this)
     }
-
-    override fun getContentView() = R.layout.activity_skill_selection
 
     override fun getContext() = this
 
     override fun onClick(view: View?) {
         when (view) {
-            txtDoneSelection -> {
-                var intent = Intent()
+            txtDonePreferLanguage -> {
+                val intent = Intent()
                 intent.putStringArrayListExtra("selectedSkills", mSkillsSelectedArray);
                 intent.putStringArrayListExtra("selectedSkillsName", mSelectedSkillsNameArray);
                 setResult(Activity.RESULT_OK, intent)
                 moveBack()
+            }
+            txtClearLanguage->{
+                mSkillsSelectedArray.clear()
+                mSelectedSkillsNameArray.clear()
+                flSkillsSelection.removeAllViews()
+                for (skillValue in userData!!.skills) {
+                    flSkillsSelection.addView(inflateView(skillValue))
+                }
             }
             imgBackSelection -> {
                 moveBack()
@@ -92,7 +100,7 @@ class SkillSelectionActivity : BaseActivity() {
                 }
             }
             override fun onFailure(call: Call<ServerSkillsModel>?, t: Throwable?) {
-                showAlert(txtDoneSelection, t!!.localizedMessage)
+                showAlert(txtClearLanguage, t!!.localizedMessage)
             }
         })
     }

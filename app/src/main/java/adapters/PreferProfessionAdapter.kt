@@ -37,16 +37,29 @@ class PreferProfessionAdapter(mConetxt: Context,
 
         if (mPreferActivity!!.mSelectedProfessionsArray.contains(mProfessionArray[position].id.toString()))
             holder.imgSelectedProfession.visibility = View.VISIBLE
-        else
-            holder.imgSelectedProfession.visibility = View.INVISIBLE
+        else {
+            if (mProfessionArray[position].isSelected)
+                holder.imgSelectedProfession.visibility = View.VISIBLE
+            else
+                holder.imgSelectedProfession.visibility = View.INVISIBLE
+        }
 
         holder.txtProfessionData.setOnClickListener {
-            if (mPreferActivity!!.mSelectedProfessionsArray.contains(mProfessionArray[position].id.toString())) {
-                holder.imgSelectedProfession.visibility = View.INVISIBLE
-                mPreferActivity!!.mSelectedProfessionsArray.remove(mProfessionArray[position].id.toString())
+            if (holder.adapterPosition == 0) {
+                mPreferActivity!!.clearProfessionPreferences()
             } else {
-                holder.imgSelectedProfession.visibility = View.VISIBLE
-                mPreferActivity!!.mSelectedProfessionsArray.add(mProfessionArray[position].id.toString())
+                if (mPreferActivity!!.mSelectedProfessionsArray.contains(mProfessionArray[position].id.toString())) {
+                    holder.imgSelectedProfession.visibility = View.INVISIBLE
+                    mPreferActivity!!.mSelectedProfessionsArray.remove(mProfessionArray[position].id.toString())
+
+                    if (mPreferActivity!!.mSelectedProfessionsArray.size == 0)
+                        mPreferActivity!!.clearProfessionPreferences()
+
+                } else {
+                    holder.imgSelectedProfession.visibility = View.VISIBLE
+                    mPreferActivity!!.mSelectedProfessionsArray.add(mProfessionArray[position].id.toString())
+                    mPreferActivity!!.unSelectedNoPreferences()
+                }
             }
             notifyDataSetChanged()
         }

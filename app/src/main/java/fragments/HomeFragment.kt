@@ -17,6 +17,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.analytics.HitBuilders
+import com.google.android.gms.analytics.Tracker
 import com.google.gson.Gson
 import com.seeaspark.*
 import com.squareup.picasso.Picasso
@@ -56,6 +58,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     private var width = 0
     private var height = 0
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_home, container, false)
         return itemView
@@ -66,20 +69,17 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         mContext = activity
         mLandingInstance = activity as LandingActivity
         mHomeFragment = this
-
         mUtils = Utils(mContext)
 
-        if (mUtils!!.getInt("nightMode", 0) == 1)
-            displayNightMode()
-        else
-            displayDayMode()
-
-        initListener()
+        if (mUtils!!.getInt("nightMode", 0) != 1) displayDayMode() else displayNightMode()
 
         if (mLandingInstance!!.mLatitude != 0.0 && mLandingInstance!!.mLatitude != 0.0)
             displayCards()
 
+        initListener()
         onCreateStuff()
+
+
         super.onActivityCreated(savedInstanceState)
     }
 
@@ -124,7 +124,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 super.onScrolled(recyclerView, dx, dy)
 
                 visibleThreshold = mLayoutManager!!.childCount
-                totalItemCount = mLayoutManager!!.itemCount;
+                totalItemCount = mLayoutManager!!.itemCount
                 lastVisibleItem = mLayoutManager!!.findLastVisibleItemPosition()
 
                 if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
@@ -142,9 +142,6 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 }
             }
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-            }
         })
 
         srlCards.setColorSchemeResources(R.color.colorPrimary)
@@ -270,7 +267,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     }
 
     override fun onClick(view: View) {
-        var intent: Intent? = null;
+        var intent: Intent? = null
         when (view) {
             imgProfileHome -> {
                 intent = Intent(mContext!!, ViewProfileActivity::class.java)
@@ -396,8 +393,8 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                     rvCards.adapter = mAdapterCards
                 }
             } else {
-                    mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
-                    rvCards.adapter = mAdapterCards
+                mAdapterCards = HomeCardsAdapter(mLandingInstance!!.mArrayCards, mContext!!, mLandingInstance!!.mWidth, mHomeFragment)
+                rvCards.adapter = mAdapterCards
             }
         }
     }

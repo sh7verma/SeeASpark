@@ -25,14 +25,22 @@ class SelectLanguageActivity : BaseActivity() {
     private var userData: SignupModel? = null
     var mLanguageArray = ArrayList<LanguageModel>()
     var tempArray = ArrayList<LanguageModel>()
-    var mSelectedLanguageArray = ArrayList<LanguageModel>()
+    private var mSelectedLanguageArray = ArrayList<LanguageModel>()
+    private var isPreferences = false
 
     override fun getContentView() = R.layout.activity_select_language
 
     override fun initUI() {
+
+        if (intent.hasExtra("prefer")) {
+            isPreferences = true
+            txtClearLanguage.visibility = View.VISIBLE
+        }
+
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
         mSelectedLanguageArray = intent.getParcelableArrayListExtra("selectedLanguages")
+
         mLanguageArray.addAll(userData!!.languages)
         tempArray.addAll(userData!!.languages)
 
@@ -131,6 +139,7 @@ class SelectLanguageActivity : BaseActivity() {
     override fun initListener() {
         imgBackSelectLanguage.setOnClickListener(this)
         txtNextSelectLanguage.setOnClickListener(this)
+        txtClearLanguage.setOnClickListener(this)
     }
 
     override fun getContext() = this
@@ -138,6 +147,13 @@ class SelectLanguageActivity : BaseActivity() {
     override fun onClick(view: View?) {
         when (view) {
 
+            txtClearLanguage -> {
+                mSelectedLanguageArray.clear()
+                for (allLanguage in tempArray) {
+                    allLanguage.isSelected = false
+                }
+                mAdapterLangugae!!.notifyDataSetChanged()
+            }
             imgBackSelectLanguage -> {
                 moveBack()
             }
@@ -149,7 +165,7 @@ class SelectLanguageActivity : BaseActivity() {
                         mSelectedLanguageArray.add(languageValue)
                 }
 
-                if (mSelectedLanguageArray.size == 0)
+                if (mSelectedLanguageArray.size == 0 && !isPreferences)
                     showAlert(txtNextSelectLanguage, getString(R.string.error_Language))
                 else {
                     val intent = Intent()
