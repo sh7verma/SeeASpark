@@ -1,32 +1,47 @@
 package com.seeaspark
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.content.IntentFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import android.os.Parcelable
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.IntentCompat
+import android.support.v4.content.LocalBroadcastManager
+import android.support.v7.app.AlertDialog
+import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import customviews.FlowLayout
-import customviews.ScrollViewX
+import kotlinx.android.synthetic.main.activity_questionaires.*
+import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.activity_view_profile.*
-import kotlinx.android.synthetic.main.activity_view_profile.view.*
 import kotlinx.android.synthetic.main.add_skills.view.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
+import models.ProfileModel
+import models.QuestionAnswerModel
+import models.QuestionListingModel
 import models.SignupModel
+import network.RetrofitClient
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import utils.Constants
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ViewProfileActivity : BaseActivity() {
-
 
     private val EDITPROFILE: Int = 1
 
@@ -75,6 +90,10 @@ class ViewProfileActivity : BaseActivity() {
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreateStuff() {
         populateData()
+        if (connectedToInternet())
+            hitProfileAPI()
+        else
+            showInternetAlert(llMainViewProfile)
     }
 
     override fun initListener() {
@@ -104,9 +123,98 @@ class ViewProfileActivity : BaseActivity() {
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
             txtChangeUserType -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                if (userData!!.response.can_switch == 1) {
+                    if (connectedToInternet())
+                        switchUserTypeDialog()
+                    else
+                        showInternetAlert(txtChangeUserType)
+                } else {
+                    if (connectedToInternet())
+                        changeUserTypeDialog()
+                    else
+                        showInternetAlert(txtChangeUserType)
+                }
             }
         }
+    }
+
+    private fun switchUserTypeDialog() {
+        var userType = 0
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("SWITCH ACCOUNT")
+        if (userData!!.response.user_type == Constants.MENTOR) {
+            alertDialog.setMessage(getString(R.string.switch_to_mentee_msg))
+            userType = Constants.MENTEE
+        } else {
+            alertDialog.setMessage(getString(R.string.switch_to_mentor_msg))
+            userType = Constants.MENTOR
+        }
+        alertDialog.setPositiveButton(getString(R.string.confirm)) { dialog, which ->
+            if (connectedToInternet())
+                hitSwitchAccountAPI(userType)
+            else
+                showToast(mContext!!, mErrorInternet)
+        }
+        alertDialog.setNegativeButton(getString(R.string.cancel)) { dialog, which -> dialog.cancel() }
+        alertDialog.show()
+    }
+
+    private fun hitProfileAPI() {
+        val call = RetrofitClient.getInstance().getProfile(mUtils!!.getString("access_token", ""),
+                userData!!.response.id.toString())
+        call.enqueue(object : Callback<ProfileModel> {
+
+            override fun onResponse(call: Call<ProfileModel>?, response: Response<ProfileModel>) {
+                if (response.body().response != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        updateProfileDatabase(response.body().response)
+                        populateData()
+                    }
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                        moveToSplash()
+                    } else
+                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<ProfileModel>?, t: Throwable?) {
+                showAlert(llMainViewProfile, t!!.localizedMessage)
+            }
+        })
+    }
+
+    private fun hitSwitchAccountAPI(userType: Int) {
+        showLoader()
+        val call = RetrofitClient.getInstance().switchUser(mUtils!!.getString("access_token", ""),
+                userType)
+        call.enqueue(object : Callback<SignupModel> {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+            override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
+                dismissLoader()
+                if (response.body().response != null) {
+                    updateProfileDatabase(response.body().response)
+                    populateData()
+                    sendSwitchUserTypeBroadCast()
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                        moveToSplash()
+                    } else
+                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {
+                dismissLoader()
+            }
+        })
+    }
+
+    private fun updateProfileDatabase(response: SignupModel.ResponseBean?) {
+        userData!!.response = response
+        mUtils!!.setString("userDataLocal", mGson.toJson(userData))
     }
 
     @SuppressLint("SetTextI18n")
@@ -147,11 +255,17 @@ class ViewProfileActivity : BaseActivity() {
             flSkillsViewProfile.addView(inflateView(skills))
         }
 
-        if (userData!!.response.user_type == Constants.MENTEE)
-            txtChangeUserType.text = getString(R.string.become_mentor)
-        else
-            txtChangeUserType.text = getString(R.string.become_mentee)
-
+        if (userData!!.response.can_switch == 1) {
+            if (userData!!.response.user_type == Constants.MENTEE)
+                txtChangeUserType.text = getString(R.string.switch_to_mentor)
+            else
+                txtChangeUserType.text = getString(R.string.switch_to_mentee)
+        } else {
+            if (userData!!.response.user_type == Constants.MENTEE)
+                txtChangeUserType.text = getString(R.string.become_mentor)
+            else
+                txtChangeUserType.text = getString(R.string.become_mentee)
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -164,6 +278,11 @@ class ViewProfileActivity : BaseActivity() {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun sendSwitchUserTypeBroadCast() {
+        val broadCastIntent = Intent(Constants.SWITCH_USER_TYPE)
+        broadcaster!!.sendBroadcast(broadCastIntent)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -221,6 +340,58 @@ class ViewProfileActivity : BaseActivity() {
         }
     }
 
+    private fun changeUserTypeDialog() {
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("SWITCH ACCOUNT")
+        if (userData!!.response.user_type == Constants.MENTOR)
+            alertDialog.setMessage(getString(R.string.want_to_mentee))
+        else
+            alertDialog.setMessage(getString(R.string.want_to_mentor))
+        alertDialog.setPositiveButton(getString(R.string.confirm)) { dialog, which ->
+            if (userData!!.response.user_type == Constants.MENTOR) {
+                if (connectedToInternet())
+                    moveToQuestionarrie(Constants.MENTEE)
+                else
+                    showToast(mContext!!, mErrorInternet)
+            } else {
+                /// user is mentee
+                if (userData!!.response.mentor_profile_status == 0) {
+                    /// move to Document verification
+                    moveToVerifyId()
+                } else {
+                    if (userData!!.response.mentor_profile_status == 1 && userData!!.response.mentor_verified == 0) {
+                        /// profile Under Review
+                        moveToProfileReview()
+                    } else if (userData!!.response.mentor_profile_status == 1 && userData!!.response.mentor_verified == 1) {
+                        /// Move to Questionnaire
+                        moveToQuestionarrie(Constants.MENTOR)
+                    }
+                }
+            }
+        }
+        alertDialog.setNegativeButton(getString(R.string.cancel)) { dialog, which -> dialog.cancel() }
+        alertDialog.show()
+    }
+
+    private fun moveToProfileReview() {
+        val intent = Intent(mContext!!, ReviewActivity::class.java)
+        intent.putExtra("isSwitched", true)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+    }
+
+    private fun moveToVerifyId() {
+        val intent = Intent(mContext!!, VerifyIdActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+    }
+
+    private fun moveToQuestionarrie(userType: Int) {
+        val intent = Intent(mContext!!, QuestionnariesActivity::class.java)
+        intent.putExtra("newUserType", userType)
+        startActivity(intent)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+    }
 
     override fun onBackPressed() {
         val intent = Intent()
@@ -231,5 +402,39 @@ class ViewProfileActivity : BaseActivity() {
     private fun moveBack() {
         finish()
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+    }
+
+    override fun onStart() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
+                IntentFilter(Constants.PROFILE_UPDATE))
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiverChangeStatus,
+                IntentFilter(Constants.REVIEW))
+        super.onStart()
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverChangeStatus)
+        super.onDestroy()
+    }
+
+    internal var receiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+        override fun onReceive(context: Context, intent: Intent) {
+            populateData()
+            if (intent.hasExtra("updateHomeScreen"))
+                sendSwitchUserTypeBroadCast()
+            if (intent.hasExtra("updateAPI"))
+                hitProfileAPI()
+        }
+    }
+
+    var receiverChangeStatus: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (connectedToInternet())
+                hitProfileAPI()
+            else
+                showInternetAlert(llMainViewProfile)
+        }
     }
 }

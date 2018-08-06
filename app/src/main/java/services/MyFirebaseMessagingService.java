@@ -118,6 +118,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.putExtra("broadcastMessage", message);
                 startActivity(intent);
             }
+        } else if (messageBody.get("push_type").equalsIgnoreCase("6")) {
+            if (utils.getInt("inside_review", 0) == 0 && utils.getInt("inside_reviewFull", 0) == 0) {
+                /// outside review activity
+                intent = new Intent();
+                ringNotification(intent, message, 0, messageBody.get("body"));
+            } else {
+                /// inside review activity
+                Intent notificationIntent = new Intent(Constants.UNVERIFIED);
+                broadcaster.sendBroadcast(notificationIntent);
+            }
         }
     }
 

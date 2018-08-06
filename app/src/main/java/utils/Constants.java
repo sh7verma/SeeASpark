@@ -50,7 +50,9 @@ public class Constants {
     public static int PROFILE_UNDER_REVIEW = 3001;
     public static final String EMAIL_VERIFY = "email_verify";
     public static final String REVIEW = "review";
+    public static final String UNVERIFIED = "unverified";
     public static final String QUESTIONS = "questions";
+    public static final String PROFILE_UPDATE = "profile_update";
     public static final int INVALID_ACCESS_TOKEN = 301;
     public static final int POST_DELETED = 1111;
     public static final int DELETE_ACCOUNT = 6001;
@@ -63,6 +65,7 @@ public class Constants {
     public static final int EXPERIENCE = 3;
     public static ArrayList<SkillsModel> OWNSKILLS_ARRAY = new ArrayList<>();
     public static final String NIGHT_MODE = "NightMode";
+    public static final String SWITCH_USER_TYPE = "switch_user_type";
     public static final Integer DAY = 1;
     public static final Integer NIGHT = 2;
     public static final int INTERESTED = 2;

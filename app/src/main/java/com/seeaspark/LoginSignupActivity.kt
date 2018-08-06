@@ -41,7 +41,6 @@ import java.util.*
 
 class LoginSignupActivity : BaseActivity() {
 
-
     private val VERIFY: Int = 1
 
     private var swipeleft: TranslateAnimation? = null
@@ -465,103 +464,111 @@ class LoginSignupActivity : BaseActivity() {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
                 dismissLoader()
 
-                if (response.body().code == Constants.PROCEED_AS_OTHER
-                        && response.body().response != null) {
-                    /// user enter as different user Type as comapred to signup
-                    // but didn't setuped profile yet
-
-                    val signupModel = response.body()
-
-                    if (signupModel.response.user_type == Constants.MENTOR)
-                        signupModel.response.user_type = Constants.MENTEE
-                    else if (signupModel.response.user_type == Constants.MENTEE)
-                        signupModel.response.user_type = Constants.MENTOR
-
-                    signupModel.response.full_name = mName
-
-                    /// add data to shared preference
-                    addDataToSharedPreferences(signupModel)
-
-                    alertContinueDialog(response.body().message, signupModel)
-
-                } else if (response.body().code == Constants.PROFILE_UNDER_REVIEW
-                        && response.body().response != null) {
-                    /// add data to shared preference
-                    addDataToSharedPreferences(response.body())
-                    /// navigate to review screen
-                    moveToReview(response.body())
-                } else if (response.body().code == Constants.PROCEED_NORMAL
-                        && response.body().response != null) {
-                    if (response.body().response.email_verified == 0 &&
-                            response.body().response.profile_status == 0 &&
-                            (response.body().response.account_type == Constants.EMAIL_LOGIN)) {
-
+                if (response.body().response != null) {
+                    if (response.body().response.user_type != mUserType) {
                         addDataToSharedPreferences(response.body())
-                        /// navigate to email verification screen
-                        moveToEmailVerification(response.body())
+                        mUtils!!.setInt("switchMode", 1)
+                        switchAccounts(response.body())
+                    } else {
+                        mUtils!!.setInt("switchMode", 0)
+                        if (response.body().code == Constants.PROCEED_AS_OTHER
+                                && response.body().response != null) {
+                            /// user enter as different user Type as comapred to signup
+                            // but didn't setuped profile yet
 
-                    } else if (response.body().response.email_verified == 0 &&
-                            response.body().response.profile_status == 0 &&
-                            response.body().response.document_verified == 0 &&
-                            (response.body().response.account_type == Constants.FACEBOOK_LOGIN ||
-                                    response.body().response.account_type == Constants.LIKENDIN_LOGIN)) {
+                            val signupModel = response.body()
 
-                        response.body().response.full_name = mName
-                        addDataToSharedPreferences(response.body())
+                            if (signupModel.response.user_type == Constants.MENTOR)
+                                signupModel.response.user_type = Constants.MENTEE
+                            else if (signupModel.response.user_type == Constants.MENTEE)
+                                signupModel.response.user_type = Constants.MENTOR
 
-                        if (!TextUtils.isEmpty(response.body().response.email)) {
-                            mUtils!!.setBoolean("addEmailFragment", false)
+                            signupModel.response.full_name = mName
 
-                            moveToEmailVerification(response.body())
-                        } else {
-                            mUtils!!.setBoolean("addEmailFragment", true)
-                            /// navigate to create profile screen
-                            moveToCreateProfile(response.body())
+                            /// add data to shared preference
+                            addDataToSharedPreferences(signupModel)
+
+                            alertContinueDialog(response.body().message, signupModel)
+
+                        } else if (response.body().code == Constants.PROFILE_UNDER_REVIEW
+                                && response.body().response != null) {
+                            /// add data to shared preference
+                            addDataToSharedPreferences(response.body())
+                            /// navigate to review screen
+                            moveToReview(response.body())
+                        } else if (response.body().code == Constants.PROCEED_NORMAL
+                                && response.body().response != null) {
+                            if (response.body().response.email_verified == 0 &&
+                                    response.body().response.profile_status == 0 &&
+                                    (response.body().response.account_type == Constants.EMAIL_LOGIN)) {
+
+                                addDataToSharedPreferences(response.body())
+                                /// navigate to email verification screen
+                                moveToEmailVerification(response.body())
+
+                            } else if (response.body().response.email_verified == 0 &&
+                                    response.body().response.profile_status == 0 &&
+                                    response.body().response.document_verified == 0 &&
+                                    (response.body().response.account_type == Constants.FACEBOOK_LOGIN ||
+                                            response.body().response.account_type == Constants.LIKENDIN_LOGIN)) {
+
+                                response.body().response.full_name = mName
+                                addDataToSharedPreferences(response.body())
+
+                                if (!TextUtils.isEmpty(response.body().response.email)) {
+                                    mUtils!!.setBoolean("addEmailFragment", false)
+
+                                    moveToEmailVerification(response.body())
+                                } else {
+                                    mUtils!!.setBoolean("addEmailFragment", true)
+                                    /// navigate to create profile screen
+                                    moveToCreateProfile(response.body())
+                                }
+                            } else if (response.body().response.email_verified == 1 &&
+                                    response.body().response.document_verified == 0 &&
+                                    response.body().response.profile_status == 0) {
+
+                                mUtils!!.setBoolean("addEmailFragment", false)
+                                response.body().response.full_name = mName
+                                addDataToSharedPreferences(response.body())
+                                /// navigate to create profile screen
+                                moveToCreateProfile(response.body())
+
+                            } else if (response.body().response.email_verified == 1 &&
+                                    response.body().response.document_verified == 1 &&
+                                    response.body().response.profile_status == 0) {
+
+                                mUtils!!.setBoolean("addEmailFragment", false)
+                                response.body().response.full_name = mName
+                                addDataToSharedPreferences(response.body())
+                                /// navigate to create profile screen
+                                moveToCreateProfile(response.body())
+
+                            } else if (response.body().response.email_verified == 1 &&
+                                    response.body().response.document_verified == 1 &&
+                                    response.body().response.profile_status == 1) {
+
+                                mUtils!!.setString("access_token", response.body().response.access_token)
+                                mUtils!!.setInt("profile_status", response.body().response.profile_status)
+                                mUtils!!.setString("user_id", response.body().response.id.toString())
+                                addDataToSharedPreferences(response.body())
+                                /// navigate to questionarrie
+                                moveToQuestionnaire()
+
+                            } else if (response.body().response.email_verified == 1 &&
+                                    response.body().response.document_verified == 1 &&
+                                    response.body().response.profile_status == 2) {
+
+                                mUtils!!.setString("access_token", response.body().response.access_token)
+                                mUtils!!.setInt("profile_status", response.body().response.profile_status)
+                                mUtils!!.setString("user_id", response.body().response.id.toString())
+
+                                addDataToSharedPreferences(response.body())
+                                /// navigate to landing Screen
+                                moveToLanding()
+                            }
                         }
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 0 &&
-                            response.body().response.profile_status == 0) {
-
-                        mUtils!!.setBoolean("addEmailFragment", false)
-                        response.body().response.full_name = mName
-                        addDataToSharedPreferences(response.body())
-                        /// navigate to create profile screen
-                        moveToCreateProfile(response.body())
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 1 &&
-                            response.body().response.profile_status == 0) {
-
-                        mUtils!!.setBoolean("addEmailFragment", false)
-                        response.body().response.full_name = mName
-                        addDataToSharedPreferences(response.body())
-                        /// navigate to create profile screen
-                        moveToCreateProfile(response.body())
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 1 &&
-                            response.body().response.profile_status == 1) {
-
-                        mUtils!!.setString("access_token", response.body().response.access_token)
-                        mUtils!!.setInt("profile_status", response.body().response.profile_status)
-                        mUtils!!.setString("user_id", response.body().response.id.toString())
-                        addDataToSharedPreferences(response.body())
-                        /// navigate to questionarrie
-                        moveToQuestionnaire()
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 1 &&
-                            response.body().response.profile_status == 2) {
-
-                        mUtils!!.setString("access_token", response.body().response.access_token)
-                        mUtils!!.setInt("profile_status", response.body().response.profile_status)
-                        mUtils!!.setString("user_id", response.body().response.id.toString())
-
-                        addDataToSharedPreferences(response.body())
-                        /// navigate to landing Screen
-                        moveToLanding()
                     }
-
                 } else {
                     if (response.body().error!!.code == Constants.PROCEED_AS_OTHER_UNDER_REVIEW)
                         alertProfileSubmittedDialog(response.body().error!!.message!!)
@@ -575,6 +582,29 @@ class LoginSignupActivity : BaseActivity() {
                 showAlert(txtDone, t!!.getLocalizedMessage())
             }
         })
+    }
+
+    private fun switchAccounts(response: SignupModel) {
+        var docVerified = 0
+        var profileStatus = 1
+        if (mUserType == Constants.MENTOR) {
+            docVerified = response.response.mentor_verified
+            profileStatus = response.response.mentor_profile_status
+        } else if (mUserType == Constants.MENTEE) {
+            docVerified = response.response.document_verified
+            profileStatus = response.response.mentee_profile_status
+        }
+        if (docVerified == 0 && profileStatus == 1) {
+            /// Review Screen
+            moveToReview(response)
+        } else if (docVerified == 1 && profileStatus == 1) {
+            /// Questionarrie Screen
+
+            moveToQuestionnaire()
+        } else if (docVerified == 0 && profileStatus == 1) {
+            /// Landing Screen
+            moveToLanding()
+        }
     }
 
     private fun moveToReview(body: SignupModel?) {
@@ -667,11 +697,6 @@ class LoginSignupActivity : BaseActivity() {
     fun addDataToSharedPreferences(signupModel: SignupModel) {
         mUtils!!.setString("tipsVisible", signupModel.response.tip)
         mUtils!!.setString("userDataLocal", mGson.toJson(signupModel))
-
-        /*mUtils!!.setString("professionData", mGson.toJson(signupModel.professions))
-       mUtils!!.setString("skillsData", mGson.toJson(signupModel.skills))
-       mUtils!!.setString("avatarData", mGson.toJson(signupModel.avatars))
-       mUtils!!.setString("profileDataLocal", mGson.toJson(signupModel.response))*/
     }
 
 }

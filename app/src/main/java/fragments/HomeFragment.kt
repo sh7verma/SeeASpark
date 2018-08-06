@@ -157,7 +157,9 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         if (visibleLoader)
             mLandingInstance!!.showLoader()
         val call = RetrofitClient.getInstance().getCards(mUtils!!.getString("access_token", ""),
-                mLandingInstance!!.mLatitude.toString(), mLandingInstance!!.mLongitude.toString(), mOffset.toString())
+                mLandingInstance!!.mLatitude.toString(),
+                mLandingInstance!!.mLongitude.toString(),
+                mOffset.toString())
         call.enqueue(object : Callback<CardModel> {
 
             override fun onResponse(call: Call<CardModel>?, response: Response<CardModel>) {
@@ -432,11 +434,14 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     override fun onStart() {
         LocalBroadcastManager.getInstance(activity).registerReceiver(nightModeReceiver,
                 IntentFilter(Constants.NIGHT_MODE))
+        LocalBroadcastManager.getInstance(activity).registerReceiver(switchUserTypeReceiver,
+                IntentFilter(Constants.SWITCH_USER_TYPE))
         super.onStart()
     }
 
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(nightModeReceiver)
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(switchUserTypeReceiver)
         super.onDestroy()
     }
 
@@ -452,6 +457,17 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 resetData()
                 displayNightMode()
             }
+        }
+    }
+
+    var switchUserTypeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            hitAPI(false)
+            mLandingInstance!!.checkUserType()
+            if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTEE)
+                txtTitleHome.text = getString(R.string.mentors)
+            else
+                txtTitleHome.text = getString(R.string.mentees)
         }
     }
 }

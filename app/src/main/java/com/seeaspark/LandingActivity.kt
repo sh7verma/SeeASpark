@@ -132,10 +132,8 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         Picasso.with(mContext).load(userData!!.response.avatar)
                 .resize(width, height).into(imgProfileTip)
 
-        if (userData!!.response.user_type == Constants.MENTEE) {
-            imgCommunity.setImageResource(R.mipmap.ic_boost)
-            imgCommunityTips.setImageResource(R.mipmap.ic_boost_s)
-        }
+        checkUserType()
+
         homeFragment = HomeFragment()
         /// adding home fragment
         addHomeFragment(homeFragment!!)
@@ -150,6 +148,24 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         mTracker = application.defaultTracker
         mTracker!!.setScreenName(getString(R.string.home))
         mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
+    }
+
+    fun checkUserType() {
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        if (userData!!.response.user_type == Constants.MENTEE)
+            switchToMentee()
+        else
+            switchToMentor()
+    }
+
+    private fun switchToMentee() {
+        imgCommunity.setImageResource(R.mipmap.ic_boost)
+        imgCommunityTips.setImageResource(R.mipmap.ic_boost_s)
+    }
+
+    private fun switchToMentor() {
+        imgCommunity.setImageResource(R.mipmap.ic_community)
+        imgCommunityTips.setImageResource(R.mipmap.ic_community_s)
     }
 
     override fun initListener() {

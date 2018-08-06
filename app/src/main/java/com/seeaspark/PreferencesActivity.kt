@@ -65,7 +65,6 @@ class PreferencesActivity : BaseActivity() {
             }
             rsbExperience.selectedMaxValue = 3
             txtExperienceCount.text = "3 Year(s)"
-
         }
     }
 

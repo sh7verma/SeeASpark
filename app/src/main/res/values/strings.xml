@@ -227,5 +227,12 @@
     <string name="no_skills_prefered">No Skills Prefered</string>
     <string name="no_language_prefered">No Language Prefered</string>
     <string name="no_experience_prefered">No Experience Prefered</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="want_to_mentee">Are you sure you want to become Mentee?</string>
+    <string name="want_to_mentor">Are you sure you want to become Mentor?</string>
+    <string name="switch_to_mentee_msg">Are you sure you want to switch to Mentee?</string>
+    <string name="switch_to_mentor_msg">Are you sure you want to switch to Mentor?</string>
+    <string name="switch_to_mentee">Switch To Mentee</string>
+    <string name="switch_to_mentor">Switch To Mentor</string>
 
 </resources>

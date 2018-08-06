@@ -135,6 +135,15 @@ public class SignupModel extends BaseModel implements Parcelable {
         private List<LanguageModel> languages;
         private List<AnswerModel> answers;
 
+        private int submitted_document;
+        private int mentee_profile_status;
+        private int mentee_question_status;
+        private int mentor_profile_status;
+        private int mentor_question_status;
+        private int can_switch;
+        private int switch_status;
+        private int mentor_verified;
+
         public int getId() {
             return id;
         }
@@ -325,6 +334,70 @@ public class SignupModel extends BaseModel implements Parcelable {
 
         public void setAnswers(List<AnswerModel> answers) {
             this.answers = answers;
+        }
+
+        public int getSubmitted_document() {
+            return submitted_document;
+        }
+
+        public void setSubmitted_document(int submitted_document) {
+            this.submitted_document = submitted_document;
+        }
+
+        public int getMentee_profile_status() {
+            return mentee_profile_status;
+        }
+
+        public void setMentee_profile_status(int mentee_profile_status) {
+            this.mentee_profile_status = mentee_profile_status;
+        }
+
+        public int getMentee_question_status() {
+            return mentee_question_status;
+        }
+
+        public void setMentee_question_status(int mentee_question_status) {
+            this.mentee_question_status = mentee_question_status;
+        }
+
+        public int getMentor_profile_status() {
+            return mentor_profile_status;
+        }
+
+        public void setMentor_profile_status(int mentor_profile_status) {
+            this.mentor_profile_status = mentor_profile_status;
+        }
+
+        public int getMentor_question_status() {
+            return mentor_question_status;
+        }
+
+        public void setMentor_question_status(int mentor_question_status) {
+            this.mentor_question_status = mentor_question_status;
+        }
+
+        public int getCan_switch() {
+            return can_switch;
+        }
+
+        public void setCan_switch(int can_switch) {
+            this.can_switch = can_switch;
+        }
+
+        public int getSwitch_status() {
+            return switch_status;
+        }
+
+        public void setSwitch_status(int switch_status) {
+            this.switch_status = switch_status;
+        }
+
+        public int getMentor_verified() {
+            return mentor_verified;
+        }
+
+        public void setMentor_verified(int mentor_verified) {
+            this.mentor_verified = mentor_verified;
         }
 
         public static class ProfessionBean implements Parcelable {
@@ -553,6 +626,14 @@ public class SignupModel extends BaseModel implements Parcelable {
             dest.writeStringList(this.skills);
             dest.writeTypedList(this.languages);
             dest.writeList(this.answers);
+            dest.writeInt(this.submitted_document);
+            dest.writeInt(this.mentee_profile_status);
+            dest.writeInt(this.mentee_question_status);
+            dest.writeInt(this.mentor_profile_status);
+            dest.writeInt(this.mentor_question_status);
+            dest.writeInt(this.can_switch);
+            dest.writeInt(this.switch_status);
+            dest.writeInt(this.mentor_verified);
         }
 
         protected ResponseBean(Parcel in) {
@@ -581,6 +662,14 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.languages = in.createTypedArrayList(LanguageModel.CREATOR);
             this.answers = new ArrayList<AnswerModel>();
             in.readList(this.answers, AnswerModel.class.getClassLoader());
+            this.submitted_document = in.readInt();
+            this.mentee_profile_status = in.readInt();
+            this.mentee_question_status = in.readInt();
+            this.mentor_profile_status = in.readInt();
+            this.mentor_question_status = in.readInt();
+            this.can_switch = in.readInt();
+            this.switch_status = in.readInt();
+            this.mentor_verified = in.readInt();
         }
 
         public static final Creator<ResponseBean> CREATOR = new Creator<ResponseBean>() {

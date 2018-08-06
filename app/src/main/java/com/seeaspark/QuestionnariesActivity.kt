@@ -13,7 +13,9 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import kotlinx.android.synthetic.main.activity_questionaires.*
+import kotlinx.android.synthetic.main.activity_view_profile.*
 import models.QuestionAnswerModel
+import models.QuestionListingModel
 import models.SignupModel
 import network.RetrofitClient
 import org.json.JSONArray
@@ -35,6 +37,8 @@ class QuestionnariesActivity : BaseActivity() {
     var mQuestionarieInstance: QuestionnariesActivity? = null
     var mServerQuestion = JSONArray()
     var selectedPos = 0
+    var isSwitchAccount = false
+    var mNewUserType = 0
 
     override fun getContentView() = R.layout.activity_questionaires
 
@@ -55,7 +59,31 @@ class QuestionnariesActivity : BaseActivity() {
 
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         mArrayQuestions.clear()
-        mArrayQuestions.addAll(userData!!.answers)
+        mUtils!!.setString("profileReview", "no")
+
+        if (intent.hasExtra("newUserType")) {
+            mNewUserType = intent.getIntExtra("newUserType", 0)
+            isSwitchAccount = true
+            hitFetchSwitchQuestionAPI(mNewUserType)
+        } else {
+            if (mUtils!!.getInt("switchMode", 0) == 1) {
+                isSwitchAccount = true
+                mNewUserType = Constants.MENTOR
+                hitFetchSwitchQuestionAPI(mNewUserType)
+            } else {
+                if (userData!!.response.profile_status != 2) {
+                    mArrayQuestions.addAll(userData!!.answers)
+                    populateData()
+                } else {
+                    isSwitchAccount = true
+                    mNewUserType = Constants.MENTOR
+                    hitFetchSwitchQuestionAPI(mNewUserType)
+                }
+            }
+        }
+    }
+
+    private fun populateData() {
 
         mAdapterQuestions = QuestionAdapter(mArrayQuestions, mContext!!, mQuestionarieInstance)
         vpQuestion.adapter = mAdapterQuestions
@@ -78,8 +106,6 @@ class QuestionnariesActivity : BaseActivity() {
 
             }
         })
-
-
     }
 
     override fun initListener() {
@@ -98,7 +124,10 @@ class QuestionnariesActivity : BaseActivity() {
             txtDoneQuestion -> {
                 if (connectedToInternet()) {
                     if (mAnswerCount == mArrayQuestions.size) {
-                        hitAPI()
+                        if (isSwitchAccount)
+                            hitSwitchAccountAPI()
+                        else
+                            hitAPI()
                     }
                 } else
                     showInternetAlert(txtDoneQuestion)
@@ -106,25 +135,24 @@ class QuestionnariesActivity : BaseActivity() {
         }
     }
 
-    private fun hitAPI() {
+    private fun hitSwitchAccountAPI() {
         showLoader()
-        val call = RetrofitClient.getInstance().postAnswers(userData!!.response.access_token, mServerQuestion.toString())
+        val call = RetrofitClient.getInstance().postSwitchAnswers(userData!!.response.access_token, mNewUserType, mServerQuestion.toString())
         call.enqueue(object : Callback<SignupModel> {
 
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
                 dismissLoader()
                 if (response.body().response != null) {
-                    mUtils!!.setString("profileReview", "")
-                    userData!!.response = response.body().response
-                    mUtils!!.setString("access_token", userData!!.response.access_token)
-                    mUtils!!.setInt("profile_status", userData!!.response.profile_status)
-                    mUtils!!.setString("user_id", response.body().response.id.toString())
-                    val intent = Intent(mContext!!, PreferencesActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                    if (mUtils!!.getInt("switchMode", 0) == 1) {
+                        moveToPreferences(response.body().response)
+                    } else {
+                        updateProfileDatabase(response.body().response)
+                        finish()
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+                    }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
                         moveToSplash()
                     } else
                         showAlert(txtDoneQuestion, response.body().error!!.message!!)
@@ -136,6 +164,79 @@ class QuestionnariesActivity : BaseActivity() {
                 showAlert(txtDoneQuestion, t!!.localizedMessage)
             }
         })
+    }
+
+    private fun updateProfileDatabase(response: SignupModel.ResponseBean?) {
+        userData!!.response = response
+        mUtils!!.setString("userDataLocal", mGson.toJson(userData))
+        val broadCastIntent = Intent(Constants.PROFILE_UPDATE)
+        broadCastIntent.putExtra("updateHomeScreen", true)
+        broadcaster!!.sendBroadcast(broadCastIntent)
+    }
+
+    private fun hitFetchSwitchQuestionAPI(userType: Int) {
+        showLoader()
+        val call = RetrofitClient.getInstance().getSwitchQuestions(userData!!.response.access_token,
+                userType)
+        call.enqueue(object : Callback<QuestionListingModel> {
+            override fun onResponse(call: Call<QuestionListingModel>?, response: Response<QuestionListingModel>) {
+                if (response.body().response != null) {
+                    mArrayQuestions.clear()
+                    mArrayQuestions.addAll(response.body().response)
+                    populateData()
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        showToast(mContext!!, response.body().error!!.message!!)
+                        moveToSplash()
+                    } else
+                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                }
+                dismissLoader()
+            }
+
+            override fun onFailure(call: Call<QuestionListingModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(txtChangeUserType, t!!.localizedMessage)
+            }
+        })
+    }
+
+    private fun hitAPI() {
+        showLoader()
+        val call = RetrofitClient.getInstance().postAnswers(userData!!.response.access_token, mServerQuestion.toString())
+        call.enqueue(object : Callback<SignupModel> {
+
+            override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
+                dismissLoader()
+                if (response.body().response != null) {
+                    moveToPreferences(response.body().response)
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                        moveToSplash()
+                    } else
+                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(txtDoneQuestion, t!!.localizedMessage)
+            }
+        })
+    }
+
+    private fun moveToPreferences(response: SignupModel.ResponseBean) {
+        mUtils!!.setString("profileReview", "")
+        userData!!.response = response
+        mUtils!!.setString("access_token", userData!!.response.access_token)
+        mUtils!!.setInt("profile_status", userData!!.response.profile_status)
+        mUtils!!.setString("user_id", response.id.toString())
+        val intent = Intent(mContext!!, PreferencesActivity::class.java)
+        startActivity(intent)
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+
     }
 
     internal var receiver: BroadcastReceiver = object : BroadcastReceiver() {
