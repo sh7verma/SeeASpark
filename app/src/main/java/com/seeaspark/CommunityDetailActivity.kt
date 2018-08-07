@@ -25,6 +25,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
+import utils.MainApplication
 import java.util.ArrayList
 
 class CommunityDetailActivity : BaseActivity() {
@@ -137,6 +138,7 @@ class CommunityDetailActivity : BaseActivity() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         if (intent.hasExtra("postId")) {
             mPostId = intent.getStringExtra("postId")
+            svViewCommunity.visibility = View.GONE
             if (connectedToInternet())
                 hitDetailAPI()
             else
@@ -156,6 +158,7 @@ class CommunityDetailActivity : BaseActivity() {
                 if (response!!.body().response != null) {
                     mCommunityData = response.body().response
                     addToLocalDatabase(response.body().response)
+                    svViewCommunity.visibility = View.VISIBLE
                     populateData()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN)
@@ -192,13 +195,14 @@ class CommunityDetailActivity : BaseActivity() {
     override fun getContext() = this
 
     override fun onClick(view: View?) {
-        var intent: Intent? = null
+        val intent: Intent?
         when (view) {
             imgBackCustom -> {
                 moveBack()
             }
             imgOption1Custom -> {
                 intent = Intent(mContext!!, ShareActivity::class.java)
+                intent.putExtra("path", 4)
                 intent.putExtra("postUrl", mCommunityData!!.shareable_link)
                 startActivity(intent)
                 overridePendingTransition(0, 0)
@@ -397,8 +401,19 @@ class CommunityDetailActivity : BaseActivity() {
     }
 
     private fun moveBack() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        if (MainApplication.isLandingAvailable) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                supportFinishAfterTransition()
+            else {
+                finish()
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+            }
+        } else {
+            val intent = Intent(mContext, LandingActivity::class.java)
+            startActivity(intent)
+            finish()
+            overridePendingTransition(0, 0)
+        }
     }
 
 }

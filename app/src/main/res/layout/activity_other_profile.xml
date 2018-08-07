@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/llUpperProfile"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_100sdp"
-        android:background="@drawable/background_gradient" />
+        android:background="@drawable/background_gradient"
+        android:orientation="vertical" />
 
     <customviews.ScrollViewX
         android:id="@+id/svViewProfile"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:visibility="visible">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -36,7 +41,8 @@
                     android:paddingTop="@dimen/_8sdp"
                     android:text="Not Rated"
                     android:textColor="@color/black_color"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textSize="@dimen/_12ssp"
+                    android:visibility="invisible" />
 
                 <customviews.BoldTextView
                     android:id="@+id/txtNameViewProfile"
@@ -163,14 +169,25 @@
 
             <ImageView
                 android:id="@+id/imgViewProfile"
-                android:layout_width="@dimen/_60sdp"
-                android:layout_height="@dimen/_60sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_24sdp"
                 android:layout_marginStart="@dimen/_24sdp"
                 android:layout_marginTop="@dimen/_50sdp"
-                android:transitionName="@string/transition_image"
                 android:elevation="@dimen/_5sdp"
-                android:src="@drawable/placeholder_image" />
+                android:src="@drawable/placeholder_image"
+                android:transitionName="@string/transition_image" />
+
+            <ImageView
+                android:id="@+id/imgShareProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="@dimen/_24sdp"
+                android:layout_marginRight="@dimen/_24sdp"
+                android:layout_marginTop="@dimen/_50sdp"
+                android:elevation="@dimen/_5sdp"
+                android:src="@mipmap/ic_share" />
 
         </RelativeLayout>
 
@@ -187,6 +204,17 @@
         android:gravity="center"
         android:textAllCaps="true"
         android:textColor="@color/black_color"
-        android:textSize="@dimen/_14ssp" />
+        android:textSize="@dimen/_14ssp"
+        android:visibility="gone" />
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/aviProfile"
+        style="@style/AVLoadingIndicatorView.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:indicatorColor="@color/colorPrimary"
+        app:indicatorName="BallClipRotatePulseIndicator" />
 
 </RelativeLayout>

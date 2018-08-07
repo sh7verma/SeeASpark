@@ -1,6 +1,7 @@
 package com.seeaspark
 
 import adapters.FullImageAdapter
+import android.os.Build
 import android.view.View
 import kotlinx.android.synthetic.main.activity_fullviewimage.*
 import models.PostModel
@@ -37,7 +38,10 @@ class FullViewImageActivity : BaseActivity() {
     override fun onClick(view: View?) {
         when (view) {
             txtDone -> {
-                finish()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    supportFinishAfterTransition()
+                else
+                    finish()
             }
         }
     }

@@ -45,7 +45,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
 
     var mTimer: CountDownTimer? = null
     var mTimerTime: Long = 0
-    var localFormat = SimpleDateFormat("HH:mm:ss")
+    var localFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
 
     init {
         this.mCardsArray = mCardsArray
@@ -55,7 +55,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
         mScreenCalculated = mScreenWidth / 100
         this.mHomeFragment = mHomeFragment
 
-        var drawable = ContextCompat.getDrawable(mContext, R.mipmap.ic_avatar_1)
+        val drawable = ContextCompat.getDrawable(mContext, R.mipmap.ic_avatar_1)
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
     }
@@ -138,7 +138,10 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
 
                 holder.txtSkillCard.text = mCardsArray[position].skills[0]
 
-                Picasso.with(mContext).load(mCardsArray[position].avatar).resize(width, width).placeholder(R.mipmap.ic_avatar_1).into(holder.imgAvatarCard)
+                Picasso.with(mContext).load(mCardsArray[position].avatar)
+                        .resize(width, width)
+                        .placeholder(R.mipmap.ic_avatar_1)
+                        .into(holder.imgAvatarCard)
 
                 if (mCardsArray[position].skills.size == 1) {
                     holder.txtSkillCountCard.visibility = View.GONE
@@ -148,7 +151,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 }
 
                 holder.llData.setOnClickListener {
-                    mHomeFragment!!.openShortProfile(mCardsArray[position])
+                    mHomeFragment!!.openProfile(mCardsArray[position], holder.imgAvatarCard)
                 }
 
                 holder.swlCard.addSwipeListener(object : SwipeLayout.SwipeListener {

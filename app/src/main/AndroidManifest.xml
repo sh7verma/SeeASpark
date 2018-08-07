@@ -198,7 +198,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/TransparentActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".ViewProfileActivity"
@@ -359,7 +359,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="192.168.1.51"
+                    android:host="192.168.1.63"
                     android:pathPattern=":3000"
                     android:pathPrefix="/notes"
                     android:scheme="http" />
@@ -372,9 +372,22 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="192.168.1.51"
+                    android:host="192.168.1.63"
                     android:pathPattern=":3000"
                     android:pathPrefix="/posts"
+                    android:scheme="http" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="192.168.1.63"
+                    android:pathPattern=":3000"
+                    android:pathPrefix="/share_user"
                     android:scheme="http" />
             </intent-filter>
 
@@ -389,6 +402,12 @@
 
         <activity
             android:name=".FullViewImageActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".OtherProfileActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme" />

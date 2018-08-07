@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
@@ -17,8 +18,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.analytics.HitBuilders
-import com.google.android.gms.analytics.Tracker
+import android.widget.ImageView
 import com.google.gson.Gson
 import com.seeaspark.*
 import com.squareup.picasso.Picasso
@@ -273,8 +273,14 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         when (view) {
             imgProfileHome -> {
                 intent = Intent(mContext!!, ViewProfileActivity::class.java)
-                startActivityForResult(intent, VIEWPROFILE)
-                activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                            imgProfileHome, getString(R.string.transition_image))
+                    activity.startActivity(intent, option.toBundle())
+                } else {
+                    startActivityForResult(intent, VIEWPROFILE)
+                    activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                }
             }
             imgPreferHome -> {
                 intent = Intent(mContext!!, PreferencesActivity::class.java)
@@ -285,11 +291,18 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         }
     }
 
-    fun openShortProfile(cardsDisplayModel: CardsDisplayModel) {
-        val intent = Intent(mContext, ShortProfileDialog::class.java)
+    fun openProfile(cardsDisplayModel: CardsDisplayModel, imgAvatarCard: ImageView) {
+        val intent = Intent(mContext, OtherProfileActivity::class.java)
         intent.putExtra("otherProfileData", cardsDisplayModel)
-        startActivity(intent)
-        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                    imgAvatarCard, getString(R.string.transition_image))
+            activity.startActivity(intent, option.toBundle())
+        } else {
+            startActivity(intent)
+            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        }
+
     }
 
     fun swipeRightLeft(swiped: Int, id: Int) {
@@ -298,20 +311,6 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 rvCards.visibility = View.GONE
                 llOutOfCards.visibility = View.VISIBLE
             }
-        } else {
-            /* var count = 0
-             for (cardsData in mArrayCards) {
-                 if (cardsData.post_type == 0) {
-                     count++
-                 }
-             }
-             /// adding out of cards data in list
-             if (count == 0) {
-                 val cardsDisplayModel = CardsDisplayModel()
-                 cardsDisplayModel.post_type = 3
-                 mArrayCards.add(cardsDisplayModel)
-                 mAdapterCards!!.notifyDataSetChanged()
-             }*/
         }
         isLoading = false
         hitSwipeAPI(swiped, id)

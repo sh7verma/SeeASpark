@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
@@ -17,9 +18,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.seeaspark.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_event.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import models.BaseSuccessModel
 import models.PostModel
 import network.RetrofitClient
@@ -254,12 +257,18 @@ class EventsFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    fun moveToEventDetail(id: Int) {
+    fun moveToEventDetail(id: Int, imgEventsListing: ImageView) {
         if (mLandingInstance!!.connectedToInternet()) {
             val intent = Intent(mContext, EventsDetailActivity::class.java)
             intent.putExtra("eventId", id)
-            startActivity(intent)
-            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                        imgEventsListing, getString(R.string.transition_image))
+                activity.startActivity(intent, option.toBundle())
+            } else {
+                startActivity(intent)
+                activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         } else
             mLandingInstance!!.showInternetAlert(rvEventsListing)
     }

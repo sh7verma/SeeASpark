@@ -425,6 +425,7 @@ class NotesFragment : Fragment(), View.OnClickListener {
 
     fun moveToShare(responseBean: NotesListingModel.ResponseBean) {
         val intent = Intent(mContext!!, ShareActivity::class.java)
+        intent.putExtra("path",2)
         intent.putExtra("notesData", responseBean)
         startActivity(intent)
         activity.overridePendingTransition(0, 0)

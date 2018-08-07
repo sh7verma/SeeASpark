@@ -23,6 +23,7 @@
             <ImageView
                 android:id="@+id/imgEventsListing"
                 android:layout_width="match_parent"
+                android:transitionName="@string/transition_image"
                 android:layout_height="@dimen/_160sdp" />
 
             <ImageView

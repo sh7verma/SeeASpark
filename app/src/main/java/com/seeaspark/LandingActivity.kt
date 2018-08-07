@@ -189,8 +189,11 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 homeFragment = HomeFragment()
                 imgHome.setImageResource(R.mipmap.ic_home_s)
                 imgEvents.setImageResource(R.mipmap.ic_events)
-                imgCommunity.setImageResource(R.mipmap.ic_community)
                 imgNotes.setImageResource(R.mipmap.ic_notes)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
                 replaceFragment(homeFragment!!)
                 mTracker!!.setScreenName(getString(R.string.home))
                 mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
@@ -198,8 +201,11 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             llNotes -> {
                 imgHome.setImageResource(R.mipmap.ic_home)
                 imgEvents.setImageResource(R.mipmap.ic_events)
-                imgCommunity.setImageResource(R.mipmap.ic_community)
                 imgNotes.setImageResource(R.mipmap.ic_notes_s)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
                 replaceFragment(NotesFragment())
                 mTracker!!.setScreenName(getString(R.string.notes))
                 mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
@@ -210,8 +216,11 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             llEvents -> {
                 imgHome.setImageResource(R.mipmap.ic_home)
                 imgEvents.setImageResource(R.mipmap.ic_events_s)
-                imgCommunity.setImageResource(R.mipmap.ic_community)
                 imgNotes.setImageResource(R.mipmap.ic_notes)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
                 replaceFragment(EventsFragment())
                 mTracker!!.setScreenName(getString(R.string.events))
                 mTracker!!.send(HitBuilders.ScreenViewBuilder().build())

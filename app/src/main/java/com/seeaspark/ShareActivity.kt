@@ -27,6 +27,7 @@ class ShareActivity : BaseActivity() {
 
     private var mNotesData: NotesListingModel.ResponseBean? = null
     private var mSharedURL = Constants.EMAIL
+    private var mPath = 0
 
     override fun getContentView(): Int {
         this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
@@ -51,6 +52,14 @@ class ShareActivity : BaseActivity() {
         mCallbackManager = CallbackManager.Factory.create()
         mShareDialog = ShareDialog(this)
 
+        mPath = intent.getIntExtra("path", 0)
+        when (mPath) {
+            1 -> txtShare.text = getString(R.string.share_profile)
+            2 -> txtShare.text = getString(R.string.share_note)
+            3 -> txtShare.text = getString(R.string.share_event)
+            4 -> txtShare.text = getString(R.string.share_community)
+        }
+
         if (intent.hasExtra("notesData")) {
             mNotesData = intent.getParcelableExtra("notesData")
             mSharedURL = mSharedURL
@@ -63,7 +72,7 @@ class ShareActivity : BaseActivity() {
         if (intent.hasExtra("postUrl")) {
             mSharedURL = intent.getStringExtra("postUrl")
             llShareOptions.visibility = View.VISIBLE
-            pbShare.visibility=View.GONE
+            pbShare.visibility = View.GONE
         }
     }
 

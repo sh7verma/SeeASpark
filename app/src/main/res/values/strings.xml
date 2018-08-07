@@ -50,6 +50,7 @@
     <string name="select_your_experience">Select duration of experience</string>
     <string name="select_your_nskills">Select your Skills</string>
     <string name="transition">transition</string>
+    <string name="transition_image">transitionImage</string>
     <string name="add_skills">Add Skills</string>
     <string name="enter_skill">Enter Skill</string>
     <string name="write_your_short_bio">Write a short biography</string>
@@ -221,7 +222,6 @@
     <string name="my_notes">My Notes</string>
     <string name="write_note">Write Note</string>
     <string name="no_notes">No Notes Available</string>
-    <string name="share_note">Share Note</string>
     <string name="note">Note</string>
     <string name="clear_all">CLEAR ALL</string>
     <string name="no_skills_prefered">No Skills Prefered</string>
@@ -234,5 +234,9 @@
     <string name="switch_to_mentor_msg">Are you sure you want to switch to Mentor?</string>
     <string name="switch_to_mentee">Switch To Mentee</string>
     <string name="switch_to_mentor">Switch To Mentor</string>
+    <string name="share_profile">Share Profile</string>
+    <string name="share_note">Share Note</string>
+    <string name="share_event">Share Event</string>
+    <string name="share_community">Share Community</string>
 
 </resources>

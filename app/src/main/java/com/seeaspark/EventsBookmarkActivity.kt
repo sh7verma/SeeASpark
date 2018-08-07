@@ -8,11 +8,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import kotlinx.android.synthetic.main.activity_events_bookmark.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import models.BaseSuccessModel
@@ -141,12 +143,18 @@ class EventsBookmarkActivity : BaseActivity() {
         }
     }
 
-    fun moveToEventDetail(id: Int) {
+    fun moveToEventDetail(id: Int, imgEventsListing: ImageView) {
         if (connectedToInternet()) {
             val intent = Intent(mContext, EventsDetailActivity::class.java)
             intent.putExtra("eventId", id)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val option = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                        imgEventsListing, getString(R.string.transition_image))
+                startActivity(intent, option.toBundle())
+            } else {
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         } else
             showInternetAlert(rvEventsBookmark)
     }

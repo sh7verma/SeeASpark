@@ -6,6 +6,7 @@ import models.LanguageListingModel;
 import models.LanguageModel;
 import models.NotesListingModel;
 import models.NotesModel;
+import models.OtherProfileModel;
 import models.PostDetailModel;
 import models.PostModel;
 import models.ForgotPasswordModel;
@@ -317,6 +318,10 @@ public interface ApiInterface {
     @GET("/api/v1/users")
     Call<ProfileModel> getProfile(@Query("access_token") String access_token,
                                   @Query("id") String id);
+
+    @GET("/api/v1/users")
+    Call<OtherProfileModel> getOtherProfile(@Query("access_token") String access_token,
+                                            @Query("id") String id);
 
     @FormUrlEncoded
     @POST("/api/v1/switches/submit_profile")

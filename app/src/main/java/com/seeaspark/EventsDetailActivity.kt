@@ -31,6 +31,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
+import utils.MainApplication
 
 
 class EventsDetailActivity : BaseActivity() {
@@ -160,6 +161,7 @@ class EventsDetailActivity : BaseActivity() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         if (intent.hasExtra("postId")) {
             mPostId = intent.getStringExtra("postId")
+            svViewEvent.visibility = View.GONE
             if (connectedToInternet())
                 hitDetailAPI()
             else
@@ -179,6 +181,7 @@ class EventsDetailActivity : BaseActivity() {
                 if (response!!.body().response != null) {
                     addToLocalDatabase(response.body().response)
                     mEventData = response.body().response
+                    svViewEvent.visibility = View.VISIBLE
                     populateData()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN)
@@ -211,7 +214,7 @@ class EventsDetailActivity : BaseActivity() {
 
     private fun populateData() {
         svViewEvent.visibility = View.VISIBLE
-        Picasso.with(mContext).load(mEventData!!.images[0].image_url).centerCrop().resize(mWidth, resources.getDimension(R.dimen._240sdp).toInt()).into(imgEventDetail)
+        Picasso.with(mContext).load(mEventData!!.images[0].image_url).centerCrop().resize(mWidth, resources.getDimension(R.dimen._190sdp).toInt()).into(imgEventDetail)
 
         txtTitleCustom.text = mEventData!!.title
         txtTitleEvents.text = mEventData!!.title
@@ -364,6 +367,7 @@ class EventsDetailActivity : BaseActivity() {
             }
             imgOption1Custom -> {
                 intent = Intent(mContext!!, ShareActivity::class.java)
+                intent.putExtra("path", 3)
                 intent.putExtra("postUrl", mEventData!!.shareable_link)
                 startActivity(intent)
                 overridePendingTransition(0, 0)
@@ -421,8 +425,19 @@ class EventsDetailActivity : BaseActivity() {
     }
 
     private fun moveBack() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        if (MainApplication.isLandingAvailable) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                supportFinishAfterTransition()
+            else {
+                finish()
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+            }
+        } else {
+            val intent = Intent(mContext, LandingActivity::class.java)
+            startActivity(intent)
+            finish()
+            overridePendingTransition(0, 0)
+        }
     }
 
     private fun getAlphaforActionBar(scrollY: Int): Int {

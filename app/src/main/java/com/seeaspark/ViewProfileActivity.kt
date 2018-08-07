@@ -172,10 +172,10 @@ class ViewProfileActivity : BaseActivity() {
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                        showAlert(llMainViewProfile, response.body().error!!.message!!)
                         moveToSplash()
                     } else
-                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                        showAlert(llMainViewProfile, response.body().error!!.message!!)
                 }
             }
 
@@ -311,9 +311,6 @@ class ViewProfileActivity : BaseActivity() {
         val cal = Calendar.getInstance()
         val today = cal.time
         val diff = today.time - birthDate.time
-        val diffSeconds = diff / 1000 % 60
-        val diffMinutes = diff / (60 * 1000) % 60
-        val diffHours = diff / (60 * 60 * 1000) % 24
         val diffDays = diff / (24 * 60 * 60 * 1000)
         val diffyears = (diffDays / 365).toInt()
         return diffyears
@@ -349,12 +346,15 @@ class ViewProfileActivity : BaseActivity() {
             alertDialog.setMessage(getString(R.string.want_to_mentor))
         alertDialog.setPositiveButton(getString(R.string.confirm)) { dialog, which ->
             if (userData!!.response.user_type == Constants.MENTOR) {
+                /// user is mentor
+                /// turning user to mentee
                 if (connectedToInternet())
                     moveToQuestionarrie(Constants.MENTEE)
                 else
                     showToast(mContext!!, mErrorInternet)
             } else {
-                /// user is mentee
+                /// user is mentee ...
+                /// turning user to mentor
                 if (userData!!.response.mentor_profile_status == 0) {
                     /// move to Document verification
                     moveToVerifyId()
@@ -400,8 +400,12 @@ class ViewProfileActivity : BaseActivity() {
     }
 
     private fun moveBack() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            supportFinishAfterTransition()
+        } else {
+            finish()
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        }
     }
 
     override fun onStart() {
