@@ -65,20 +65,18 @@
 
         <RelativeLayout
             android:id="@+id/rlSkinImages"
-            android:layout_width="@dimen/_230sdp"
+            android:layout_width="@dimen/_225sdp"
             android:layout_height="@dimen/_60sdp"
             android:layout_centerHorizontal="true"
             android:alpha="0"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/_8sdp"
-            android:paddingRight="@dimen/_8sdp">
+            android:paddingLeft="@dimen/_12sdp">
 
             <ImageView
                 android:id="@+id/imgSkin1"
                 android:layout_width="@dimen/_35sdp"
                 android:layout_height="@dimen/_35sdp"
-                android:layout_marginRight="@dimen/_5sdp"
                 android:src="@drawable/placeholder_image" />
 
             <ImageView

@@ -117,6 +117,17 @@ class AvatarFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun selectSkinToneImage(position: Int) {
+        Picasso.with(mContext).load(mSkinsArray[position].avtar_url)
+                .placeholder(R.drawable.placeholder_image)
+                .resize(resources.getDimension(R.dimen._35sdp).toInt(), resources.getDimension(R.dimen._35sdp).toInt())
+                .into(imgPopup)
+        mCreateProfileInstance!!.mAvatarId = mSkinsArray[position].name
+        mAvatarArray[mPosition].avtar_url = mSkinsArray[position].avtar_url
+        mAvatarArray[mPosition].id = mSkinsArray[position].id
+        mAvatarArray[mPosition].name = mSkinsArray[position].name
+    }
+
 
     fun showAnimation(xImages: Int, yImages: Int, skins: List<AvatarModel.SkinsBean>, position: Int, imgAvatar: ImageView) {
         isPopupOpened = true
@@ -131,195 +142,13 @@ class AvatarFragment : Fragment(), View.OnClickListener {
         mPosition = position
     }
 
-    private fun selectSkinToneImage(position: Int) {
-        Picasso.with(mContext).load(mSkinsArray[position].avtar_url)
-                .placeholder(R.drawable.placeholder_image)
-                .resize(resources.getDimension(R.dimen._35sdp).toInt(), resources.getDimension(R.dimen._35sdp).toInt())
-                .into(imgPopup)
-        mCreateProfileInstance!!.mAvatarId = mSkinsArray[position].name
-        mAvatarArray[mPosition].avtar_url = mSkinsArray[position].avtar_url
-        mAvatarArray[mPosition].id = mSkinsArray[position].id
-        mAvatarArray[mPosition].name = mSkinsArray[position].name
-    }
-
-    private fun beginAlphaAnimation() {
-        rlBackgroundImages.animate().alpha(1f).setStartDelay(300).duration = 500
-    }
-
-    private fun closeAnimation() {
-        when (finalPosition) {
-            0 -> {
-                closeAlphaAnimation()
-                closeRightToLeft()
-                closePopupAnimation()
-            }
-            1 -> {
-                closeAlphaAnimation()
-                closeCenter()
-                closePopupAnimation()
-            }
-            2 -> {
-                closeAlphaAnimation()
-                closeLeftToRight()
-                closePopupAnimation()
-            }
-        }
-    }
-
-    private fun closePopupAnimation() {
-        val fromY = imgPopup.y
-        val toY = imgPopup.y + 290f
-
-        imgPopup.alpha = 1f
-        val anim = ObjectAnimator.ofFloat(imgPopup, "translationY", fromY, toY)
-        anim.startDelay = 500
-        anim.duration = 300
-        anim.start()
-
-        anim.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(p0: Animator?) {
-            }
-
-            override fun onAnimationEnd(p0: Animator?) {
-                imgPopup.alpha = 0f
-                rlAnimate.visibility = View.GONE
-                mAvatarAdapter!!.notifyDataSetChanged()
-                Handler().postDelayed({
-                    mCreateProfileInstance!!.moveToNext()
-                }, 500)
-            }
-
-            override fun onAnimationCancel(p0: Animator?) {
-            }
-
-            override fun onAnimationStart(p0: Animator?) {
-            }
-        })
-    }
-
-
-    private fun closeAlphaAnimation() {
-        rlBackgroundImages.animate().alpha(0f).duration = 300
-        rlSkinImages.animate().alpha(0f).setStartDelay(300).duration = 0
-    }
-
-    private fun clickedOutSide() {
-        rlBackgroundImages.animate().alpha(0f).duration = 300
-        rlSkinImages.animate().alpha(0f).setStartDelay(300).duration = 0
-        mAvatarAdapter!!.notifyDataSetChanged()
-        rlAnimate.visibility = View.GONE
-    }
-
-    private fun closeCenter() {
-        translateRightCloseAnimate(imgSkin1, 0, 2, 160f * 2)
-        translateRightCloseAnimate(imgSkin2, 1, 1, 160f * 2)
-        translateLeftCloseAnimate(imgSkin4, 2, 1, 160f * 2)
-        translateLeftCloseAnimate(imgSkin5, 3, 2, 160f * 2)
-    }
-
-    private fun closeRightToLeft() {
-        translateLeftCloseAnimate(imgSkin5, 4, 4, 0f)
-        translateLeftCloseAnimate(imgSkin4, 3, 3, 0f)
-        translateLeftCloseAnimate(imgSkin3, 2, 2, 0f)
-        translateLeftCloseAnimate(imgSkin2, 1, 1, 0f)
-    }
-
-    private fun closeLeftToRight() {
-        translateRightCloseAnimate(imgSkin1, 0, 4, 160f * 4)
-        translateRightCloseAnimate(imgSkin2, 1, 3, 160f * 4)
-        translateRightCloseAnimate(imgSkin3, 2, 2, 160f * 4)
-        translateRightCloseAnimate(imgSkin4, 3, 1, 160f * 4)
-    }
-
-    private fun translateRightCloseAnimate(imgSkin: ImageView, position: Int, durationAnim: Int, finalX: Float) {
-        val fromX = 160f * position
-        val duration = 100 * durationAnim
-        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, finalX)
-        anim.duration = duration.toLong()
-        anim.start()
-    }
-
-    private fun translateLeftCloseAnimate(imgSkin: ImageView, position: Int, durationTime: Int, finalX: Float) {
-        val fromX = 160f * position
-        val duration = 100 * durationTime
-        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, finalX)
-        anim.duration = duration.toLong()
-        anim.start()
-    }
-
-    private fun translateRightAnimate(imgSkin: ImageView, position: Int) {
-        val finalX = 160f * position
-        val duration = 100 * position
-        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", 0f, finalX)
-        anim.duration = duration.toLong()
-        anim.start()
-    }
-
-    private fun translateCenterToRightAnimate(imgSkin: ImageView, position: Int, durationTime: Int) {
-        /// 3 and 4
-        val fromX = 160f * 2
-        val toX = 160f * position
-        val duration = 100 * durationTime
-        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
-        anim.duration = duration.toLong()
-        anim.start()
-    }
-
-    private fun translateCenterToLeftAnimate(imgSkin: ImageView, position: Int, durationTime: Int) {
-        /// 0 and 1
-        val fromX = 160f * 2
-        val toX = fromX - 160f * position
-        val duration = 100 * durationTime
-        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
-        anim.duration = duration.toLong()
-        anim.start()
-    }
-
-    private fun translateLeftAnimate(imgSkin: ImageView, position: Int) {
-        val fromX = 160f * 4
-        val toX = fromX - 160f * position
-        val duration = 100 * position
-        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
-        anim.duration = duration.toLong()
-        anim.start()
-    }
-
-    private fun clickedAnimation(imgAvatar: ImageView, xImages: Int, yImages: Int, finalPosition: Int) {
-        val animationZoomOut = AnimationUtils.loadAnimation(mContext, R.anim.zoom_out)
-        imgAvatar.startAnimation(animationZoomOut)
-        val animationZoomIn = AnimationUtils.loadAnimation(mContext, R.anim.zoom_in)
-
-        animationZoomOut.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(p0: Animation?) {
-            }
-
-            override fun onAnimationEnd(p0: Animation?) {
-                imgAvatar.startAnimation(animationZoomIn)
-            }
-
-            override fun onAnimationStart(p0: Animation?) {
-            }
-        })
-
-        animationZoomIn.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(p0: Animation?) {
-            }
-
-            override fun onAnimationEnd(p0: Animation?) {
-                beginPopupAnimation(xImages, yImages)
-            }
-
-            override fun onAnimationStart(p0: Animation?) {
-            }
-        })
-    }
-
     private fun beginPopupAnimation(xImages: Int, yImages: Int) {
-        imgPopup.x = xImages + 30f
-        imgPopup.y = yImages - 35f
+        imgPopup.x = xImages + (mCreateProfileInstance!!.mWidth / 32).toFloat()
+        imgPopup.y = yImages - (mCreateProfileInstance!!.mHeight / 64).toFloat()
 
-        val fromY = yImages - 35f
-        val toY = yImages - 290f
+        val fromY = yImages - (mCreateProfileInstance!!.mHeight / 64).toFloat()
+        val toY = yImages - (mCreateProfileInstance!!.mHeight / 6).toFloat()
+
 
         imgPopup.alpha = 1f
         val anim = ObjectAnimator.ofFloat(imgPopup, "translationY", fromY, toY)
@@ -368,9 +197,40 @@ class AvatarFragment : Fragment(), View.OnClickListener {
                 .into(imgSkin5)
     }
 
+    private fun closePopupAnimation() {
+        val fromY = imgPopup.y
+        val toY = imgPopup.y + (mCreateProfileInstance!!.mHeight/6) .toFloat()
+
+        imgPopup.alpha = 1f
+        val anim = ObjectAnimator.ofFloat(imgPopup, "translationY", fromY, toY)
+        anim.startDelay = 500
+        anim.duration = 300
+        anim.start()
+
+        anim.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(p0: Animator?) {
+            }
+
+            override fun onAnimationEnd(p0: Animator?) {
+                imgPopup.alpha = 0f
+                rlAnimate.visibility = View.GONE
+                mAvatarAdapter!!.notifyDataSetChanged()
+                Handler().postDelayed({
+                    mCreateProfileInstance!!.moveToNext()
+                }, 500)
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {
+            }
+
+            override fun onAnimationStart(p0: Animator?) {
+            }
+        })
+    }
+
     private fun imagesAnimation(xImages: Int, yImages: Int) {
         var xFinal = xImages
-        val yFinal = yImages - 330
+        val yFinal = yImages - (mCreateProfileInstance!!.mHeight / 5)
 
         when (finalPosition) {
             0 -> {
@@ -378,7 +238,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
             }
             1 -> {
                 xFinal -= (xFinal * .73).toInt()
-                ObjectAnimator.ofFloat(imgSkin3, "translationX", 0f, 160f * 2).setDuration(0).start()
+                ObjectAnimator.ofFloat(imgSkin3, "translationX", 0f, ((mCreateProfileInstance!!.mWidth/7) * 2).toFloat()).setDuration(0).start()
                 animateCenterImages()
             }
             2 -> {
@@ -418,6 +278,146 @@ class AvatarFragment : Fragment(), View.OnClickListener {
         translateLeftAnimate(imgSkin3, 2)
         translateLeftAnimate(imgSkin2, 3)
         translateLeftAnimate(imgSkin1, 4)
+    }
+
+    private fun closeAnimation() {
+        when (finalPosition) {
+            0 -> {
+                closeAlphaAnimation()
+                closeRightToLeft()
+                closePopupAnimation()
+            }
+            1 -> {
+                closeAlphaAnimation()
+                closeCenter()
+                closePopupAnimation()
+            }
+            2 -> {
+                closeAlphaAnimation()
+                closeLeftToRight()
+                closePopupAnimation()
+            }
+        }
+    }
+
+    private fun beginAlphaAnimation() {
+        rlBackgroundImages.animate().alpha(1f).setStartDelay(300).duration = 500
+    }
+
+    private fun closeAlphaAnimation() {
+        rlBackgroundImages.animate().alpha(0f).duration = 300
+        rlSkinImages.animate().alpha(0f).setStartDelay(300).duration = 0
+    }
+
+    private fun clickedOutSide() {
+        rlBackgroundImages.animate().alpha(0f).duration = 300
+        rlSkinImages.animate().alpha(0f).setStartDelay(300).duration = 0
+        mAvatarAdapter!!.notifyDataSetChanged()
+        rlAnimate.visibility = View.GONE
+    }
+
+    private fun closeCenter() {
+        translateRightCloseAnimate(imgSkin1, 0, 2, ((mCreateProfileInstance!!.mWidth/7) * 2).toFloat())
+        translateRightCloseAnimate(imgSkin2, 1, 1, ((mCreateProfileInstance!!.mWidth/7) * 2).toFloat())
+        translateLeftCloseAnimate(imgSkin4, 2, 1, ((mCreateProfileInstance!!.mWidth/7) * 2).toFloat())
+        translateLeftCloseAnimate(imgSkin5, 3, 2, ((mCreateProfileInstance!!.mWidth/7) * 2).toFloat())
+    }
+
+    private fun closeRightToLeft() {
+        translateLeftCloseAnimate(imgSkin5, 4, 4, 0f)
+        translateLeftCloseAnimate(imgSkin4, 3, 3, 0f)
+        translateLeftCloseAnimate(imgSkin3, 2, 2, 0f)
+        translateLeftCloseAnimate(imgSkin2, 1, 1, 0f)
+    }
+
+    private fun closeLeftToRight() {
+        translateRightCloseAnimate(imgSkin1, 0, 4, ((mCreateProfileInstance!!.mWidth / 7) * 4).toFloat())
+        translateRightCloseAnimate(imgSkin2, 1, 3, ((mCreateProfileInstance!!.mWidth / 7) * 4).toFloat())
+        translateRightCloseAnimate(imgSkin3, 2, 2, ((mCreateProfileInstance!!.mWidth / 7) * 4).toFloat())
+        translateRightCloseAnimate(imgSkin4, 3, 1, ((mCreateProfileInstance!!.mWidth / 7) * 4).toFloat())
+    }
+
+    private fun translateRightCloseAnimate(imgSkin: ImageView, position: Int, durationAnim: Int, finalX: Float) {
+        val fromX = ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
+        val duration = 100 * durationAnim
+        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, finalX)
+        anim.duration = duration.toLong()
+        anim.start()
+    }
+
+    private fun translateLeftCloseAnimate(imgSkin: ImageView, position: Int, durationTime: Int, finalX: Float) {
+        val fromX = ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
+        val duration = 100 * durationTime
+        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, finalX)
+        anim.duration = duration.toLong()
+        anim.start()
+    }
+
+    private fun translateRightAnimate(imgSkin: ImageView, position: Int) {
+        val finalX = ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
+        val duration = 100 * position
+        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", 0f, finalX)
+        anim.duration = duration.toLong()
+        anim.start()
+    }
+
+    private fun translateCenterToRightAnimate(imgSkin: ImageView, position: Int, durationTime: Int) {
+        /// 3 and 4
+        val fromX = ((mCreateProfileInstance!!.mWidth / 7) * 2).toFloat()
+        val toX = ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
+        val duration = 100 * durationTime
+        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
+        anim.duration = duration.toLong()
+        anim.start()
+    }
+
+    private fun translateCenterToLeftAnimate(imgSkin: ImageView, position: Int, durationTime: Int) {
+        /// 0 and 1
+        val fromX = ((mCreateProfileInstance!!.mWidth / 7) * 2).toFloat()
+        val toX = fromX - ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
+        val duration = 100 * durationTime
+        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
+        anim.duration = duration.toLong()
+        anim.start()
+    }
+
+    private fun translateLeftAnimate(imgSkin: ImageView, position: Int) {
+        val fromX = ((mCreateProfileInstance!!.mWidth / 7) * 4).toFloat()
+        val toX = fromX - ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
+        val duration = 100 * position
+        val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
+        anim.duration = duration.toLong()
+        anim.start()
+    }
+
+    private fun clickedAnimation(imgAvatar: ImageView, xImages: Int, yImages: Int, finalPosition: Int) {
+        val animationZoomOut = AnimationUtils.loadAnimation(mContext, R.anim.zoom_out)
+        imgAvatar.startAnimation(animationZoomOut)
+        val animationZoomIn = AnimationUtils.loadAnimation(mContext, R.anim.zoom_in)
+
+        animationZoomOut.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(p0: Animation?) {
+            }
+
+            override fun onAnimationEnd(p0: Animation?) {
+                imgAvatar.startAnimation(animationZoomIn)
+            }
+
+            override fun onAnimationStart(p0: Animation?) {
+            }
+        })
+
+        animationZoomIn.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(p0: Animation?) {
+            }
+
+            override fun onAnimationEnd(p0: Animation?) {
+                beginPopupAnimation(xImages, yImages)
+            }
+
+            override fun onAnimationStart(p0: Animation?) {
+            }
+        })
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {

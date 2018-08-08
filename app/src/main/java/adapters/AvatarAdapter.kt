@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import com.seeaspark.AnimationDemo
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import com.squareup.picasso.Picasso

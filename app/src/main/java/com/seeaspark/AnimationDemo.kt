@@ -39,8 +39,8 @@ class AnimationDemo : BaseActivity() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         mAvatarArray.addAll(userData!!.avatars)
         rvAvatar.layoutManager = GridLayoutManager(this, 3)
-//        mAvatarAdapter = AvatarAdapter(mAvatarArray,
-//                this, null)
+        mAvatarAdapter = AvatarAdapter(mAvatarArray,
+                this, null, null)
         rvAvatar.adapter = mAvatarAdapter
     }
 
@@ -58,9 +58,9 @@ class AnimationDemo : BaseActivity() {
     override fun onClick(view: View?) {
         when (view) {
             rlAnimate -> {
-            clickedOutSide()
-            isPopupOpened = false
-        }
+                clickedOutSide()
+                isPopupOpened = false
+            }
             imgSkin1 -> {
                 Log.e("CLicked = ", "Skin1")
                 if (isPopupOpened) {
@@ -129,11 +129,11 @@ class AnimationDemo : BaseActivity() {
     }
 
     private fun beginPopupAnimation(xImages: Int, yImages: Int) {
-        imgPopup.x = xImages + 30f
-        imgPopup.y = yImages - 35f
+        imgPopup.x = xImages + (mWidth / 32).toFloat()
+        imgPopup.y = yImages - (mHeight / 64).toFloat()
 
-        val fromY = yImages - 35f
-        val toY = yImages - 290f
+        val fromY = yImages - (mHeight / 64).toFloat()
+        val toY = yImages - (mHeight / 6).toFloat()
 
         imgPopup.alpha = 1f
         val anim = ObjectAnimator.ofFloat(imgPopup, "translationY", fromY, toY)
@@ -184,7 +184,7 @@ class AnimationDemo : BaseActivity() {
 
     private fun closePopupAnimation() {
         val fromY = imgPopup.y
-        val toY = imgPopup.y + 290f
+        val toY = imgPopup.y + (mHeight/6) .toFloat()
 
         imgPopup.alpha = 1f
         val anim = ObjectAnimator.ofFloat(imgPopup, "translationY", fromY, toY)
@@ -212,7 +212,7 @@ class AnimationDemo : BaseActivity() {
 
     private fun imagesAnimation(xImages: Int, yImages: Int) {
         var xFinal = xImages
-        val yFinal = yImages - 330
+        val yFinal = yImages - (mHeight / 5)
 
         when (finalPosition) {
             0 -> {
@@ -220,7 +220,7 @@ class AnimationDemo : BaseActivity() {
             }
             1 -> {
                 xFinal -= (xFinal * .73).toInt()
-                ObjectAnimator.ofFloat(imgSkin3, "translationX", 0f, 160f * 2).setDuration(0).start()
+                ObjectAnimator.ofFloat(imgSkin3, "translationX", 0f, ((mWidth/7) * 2).toFloat()).setDuration(0).start()
                 animateCenterImages()
             }
             2 -> {
@@ -299,10 +299,10 @@ class AnimationDemo : BaseActivity() {
     }
 
     private fun closeCenter() {
-        translateRightCloseAnimate(imgSkin1, 0, 2, 160f * 2)
-        translateRightCloseAnimate(imgSkin2, 1, 1, 160f * 2)
-        translateLeftCloseAnimate(imgSkin4, 2, 1, 160f * 2)
-        translateLeftCloseAnimate(imgSkin5, 3, 2, 160f * 2)
+        translateRightCloseAnimate(imgSkin1, 0, 2, ((mWidth/7) * 2).toFloat())
+        translateRightCloseAnimate(imgSkin2, 1, 1, ((mWidth/7) * 2).toFloat())
+        translateLeftCloseAnimate(imgSkin4, 2, 1, ((mWidth/7) * 2).toFloat())
+        translateLeftCloseAnimate(imgSkin5, 3, 2, ((mWidth/7) * 2).toFloat())
     }
 
     private fun closeRightToLeft() {
@@ -313,14 +313,14 @@ class AnimationDemo : BaseActivity() {
     }
 
     private fun closeLeftToRight() {
-        translateRightCloseAnimate(imgSkin1, 0, 4, 160f * 4)
-        translateRightCloseAnimate(imgSkin2, 1, 3, 160f * 4)
-        translateRightCloseAnimate(imgSkin3, 2, 2, 160f * 4)
-        translateRightCloseAnimate(imgSkin4, 3, 1, 160f * 4)
+        translateRightCloseAnimate(imgSkin1, 0, 4, ((mWidth / 7) * 4).toFloat())
+        translateRightCloseAnimate(imgSkin2, 1, 3, ((mWidth / 7) * 4).toFloat())
+        translateRightCloseAnimate(imgSkin3, 2, 2, ((mWidth / 7) * 4).toFloat())
+        translateRightCloseAnimate(imgSkin4, 3, 1, ((mWidth / 7) * 4).toFloat())
     }
 
     private fun translateRightCloseAnimate(imgSkin: ImageView, position: Int, durationAnim: Int, finalX: Float) {
-        val fromX = 160f * position
+        val fromX = ((mWidth / 7) * position).toFloat()
         val duration = 100 * durationAnim
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, finalX)
         anim.duration = duration.toLong()
@@ -328,7 +328,7 @@ class AnimationDemo : BaseActivity() {
     }
 
     private fun translateLeftCloseAnimate(imgSkin: ImageView, position: Int, durationTime: Int, finalX: Float) {
-        val fromX = 160f * position
+        val fromX = ((mWidth / 7) * position).toFloat()
         val duration = 100 * durationTime
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, finalX)
         anim.duration = duration.toLong()
@@ -336,7 +336,7 @@ class AnimationDemo : BaseActivity() {
     }
 
     private fun translateRightAnimate(imgSkin: ImageView, position: Int) {
-        val finalX = 160f * position
+        val finalX = ((mWidth / 7) * position).toFloat()
         val duration = 100 * position
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", 0f, finalX)
         anim.duration = duration.toLong()
@@ -345,8 +345,8 @@ class AnimationDemo : BaseActivity() {
 
     private fun translateCenterToRightAnimate(imgSkin: ImageView, position: Int, durationTime: Int) {
         /// 3 and 4
-        val fromX = 160f * 2
-        val toX = 160f * position
+        val fromX = ((mWidth / 7) * 2).toFloat()
+        val toX = ((mWidth / 7) * position).toFloat()
         val duration = 100 * durationTime
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
         anim.duration = duration.toLong()
@@ -355,8 +355,8 @@ class AnimationDemo : BaseActivity() {
 
     private fun translateCenterToLeftAnimate(imgSkin: ImageView, position: Int, durationTime: Int) {
         /// 0 and 1
-        val fromX = 160f * 2
-        val toX = fromX - 160f * position
+        val fromX = ((mWidth / 7) * 2).toFloat()
+        val toX = fromX - ((mWidth / 7) * position).toFloat()
         val duration = 100 * durationTime
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
         anim.duration = duration.toLong()
@@ -364,8 +364,8 @@ class AnimationDemo : BaseActivity() {
     }
 
     private fun translateLeftAnimate(imgSkin: ImageView, position: Int) {
-        val fromX = 160f * 4
-        val toX = fromX - 160f * position
+        val fromX = ((mWidth / 7) * 4).toFloat()
+        val toX = fromX - ((mWidth / 7) * position).toFloat()
         val duration = 100 * position
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
         anim.duration = duration.toLong()
