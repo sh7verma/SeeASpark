@@ -88,7 +88,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             SignupModel.ResponseBean mMatchModel = new SignupModel.ResponseBean();
             mMatchModel.setAccess_token(messageBody.get("access_token"));
             mMatchModel.setFull_name(messageBody.get("full_name"));
-            mMatchModel.setAvatar(messageBody.get("avatar"));
+            SignupModel.ResponseBean.AvatarBean avatarBean = new SignupModel.ResponseBean.AvatarBean();
+            avatarBean.setAvtar_url(messageBody.get("avatar"));
+            mMatchModel.setAvatar(avatarBean);
             mMatchModel.setId(Integer.parseInt(messageBody.get("user_id")));
 
             String matchData = new Gson().toJson(mMatchModel);

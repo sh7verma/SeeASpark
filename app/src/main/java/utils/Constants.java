@@ -78,6 +78,7 @@ public class Constants {
     public static final Integer BOOKMARK = 2;
     public static final Integer COMMENT = 3;
     public static final Integer DELETE = 4;
+    public static final Integer CHANGE_POSITION = 5;
 
     public static final String AUTODAYMODE = "autoDay";
     public static final String MYNOTES = "1";

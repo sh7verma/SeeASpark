@@ -47,7 +47,8 @@ class EditProfileActivity : BaseActivity() {
 
     private var mAvatarName = Constants.EMPTY
     private var mAvatarURL = Constants.EMPTY
-        private var mProfessionId: Int = 0
+    private var mAvatarParentId = 0
+    private var mProfessionId: Int = 0
     private var mYears: Int = 0
     private var mMonths: Int = 0
     private var mSelectedLanguagesArray = ArrayList<LanguageModel>()
@@ -190,6 +191,7 @@ class EditProfileActivity : BaseActivity() {
             imgEditProfile -> {
                 intent = Intent(mContext, SelectAvatarActivity::class.java)
                 intent.putExtra("avatarURL", mAvatarURL)
+                intent.putExtra("avatarParentId", mAvatarParentId)
                 intent.putExtra("gender", mGender)
                 startActivityForResult(intent, AVATAR)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
@@ -285,7 +287,8 @@ class EditProfileActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun populateData() {
-        mAvatarURL = userData!!.response.avatar
+        mAvatarURL = userData!!.response.avatar.avtar_url
+        mAvatarParentId = userData!!.response.avatar.parent_id
         Picasso.with(this).load(mAvatarURL).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
 
         edNameProfile.setText(userData!!.response.full_name)
@@ -422,6 +425,7 @@ class EditProfileActivity : BaseActivity() {
                             if (mGender != 1) {
                                 mGender = 1
                                 mAvatarURL = Constants.EMPTY
+                                mAvatarParentId = 0
                                 showToast(mContext!!, getString(R.string.gender_changed))
                                 Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
                             }
@@ -431,6 +435,7 @@ class EditProfileActivity : BaseActivity() {
                             if (mGender != 2) {
                                 mGender = 2
                                 mAvatarURL = Constants.EMPTY
+                                mAvatarParentId = 0
                                 showToast(mContext!!, getString(R.string.gender_changed))
                                 Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
                             }
@@ -440,6 +445,7 @@ class EditProfileActivity : BaseActivity() {
                             if (mGender != 3) {
                                 mGender = 3
                                 mAvatarURL = Constants.EMPTY
+                                mAvatarParentId = 0
                                 showToast(mContext!!, getString(R.string.gender_changed))
                                 Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
                             }
@@ -455,6 +461,7 @@ class EditProfileActivity : BaseActivity() {
                 AVATAR -> {
                     mAvatarURL = data!!.getStringExtra("avatarURL")
                     mAvatarName = data.getStringExtra("avatarName")
+                    mAvatarParentId = data.getIntExtra("avatarParentId", 0)
                     Picasso.with(this).load(mAvatarURL).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
                 }
                 PROFESSION -> {

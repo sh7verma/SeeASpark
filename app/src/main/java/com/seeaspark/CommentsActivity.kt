@@ -204,7 +204,7 @@ class CommentsActivity : BaseActivity() {
         val commentModel = CommentModel.ResponseBean()
         commentModel.id = 0
         commentModel.full_name = userData!!.response.full_name
-        commentModel.avatar = userData!!.response.avatar
+        commentModel.avatar = userData!!.response.avatar.avtar_url
         commentModel.user_id = userData!!.response.id
         commentModel.description = commentText
         commentModel.date_time = getDate()

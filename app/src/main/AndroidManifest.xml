@@ -412,6 +412,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme" />
 
+        <activity
+            android:name=".AnimationDemo"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme">
+
+        </activity>
+
         <receiver
             android:name="services.DayBroadcastReceiver"
             android:exported="false" />

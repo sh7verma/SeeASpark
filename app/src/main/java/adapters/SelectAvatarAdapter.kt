@@ -26,7 +26,7 @@ class SelectAvatarAdapter(mAvatarArray: ArrayList<AvatarModel>, mContext: Contex
         this.mAvatarArray = mAvatarArray
         this.mContext = mContext
         this.mSelectAvatar = mSelectAvatar
-        var drawable = ContextCompat.getDrawable(mContext, R.mipmap.ic_avatar_1)
+        val drawable = ContextCompat.getDrawable(mContext, R.mipmap.ic_avatar_1)
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
 
@@ -62,8 +62,20 @@ class SelectAvatarAdapter(mAvatarArray: ArrayList<AvatarModel>, mContext: Contex
         holder.imgAvatar.setOnClickListener {
             mSelectAvatar!!.mAvatarURL = mAvatarArray[position].avtar_url
             mSelectAvatar!!.mAvatarName = mAvatarArray[position].name
+            mSelectAvatar!!.mAvatarParentId = 0
             mSelectAvatar!!.moveToNext()
             notifyDataSetChanged()
+        }
+
+        holder.imgAvatar.setOnLongClickListener {
+            val location = IntArray(2)
+            holder.imgAvatar.getLocationOnScreen(location);
+            mSelectAvatar!!.showAnimation(location[0], location[1], mAvatarArray[position].skins, position, holder.imgAvatar)
+
+            if (!mAvatarArray[position].getIsSelected()) {
+                mAvatarArray[position].setIsSelected(true)
+            }
+            true
         }
     }
 

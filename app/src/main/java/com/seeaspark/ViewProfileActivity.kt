@@ -223,7 +223,7 @@ class ViewProfileActivity : BaseActivity() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         txtTitleCustom.text = userData!!.response.full_name
 
-        Picasso.with(this).load(userData!!.response.avatar).placeholder(R.drawable.placeholder_image).into(imgViewProfile)
+        Picasso.with(this).load(userData!!.response.avatar.avtar_url).placeholder(R.drawable.placeholder_image).into(imgViewProfile)
 
         txtNameViewProfile.text = userData!!.response.full_name
 

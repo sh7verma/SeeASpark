@@ -42,6 +42,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
     var width: Int = 0
     var height: Int = 0
     var mUtils: Utils? = null
+    private var mWidthCommunity = 0
 
     var mTimer: CountDownTimer? = null
     var mTimerTime: Long = 0
@@ -52,6 +53,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
         this.mContext = mContext
         mUtils = Utils(mContext)
         mScreenWidth = mWidth / 2
+        mWidthCommunity = mWidth - mWidth / 9
         mScreenCalculated = mScreenWidth / 100
         this.mHomeFragment = mHomeFragment
 
@@ -99,7 +101,9 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 if (mCardsArray[position].date_time.isNotEmpty())
                     holder.txtDateCommunity.text = Constants.displayDateTime(mCardsArray[position].date_time)
 
-                Picasso.with(mContext).load(mCardsArray[position].images[0].image_url).fit().into(holder.imgCommunityListing)
+                Picasso.with(mContext).load(mCardsArray[position].images[0].image_url)
+                        .resize(mWidthCommunity, mContext!!.resources.getDimension(R.dimen._161sdp).toInt())
+                        .centerCrop().into(holder.imgCommunityListing)
 
                 holder.cvClick.setOnClickListener {
                     mHomeFragment!!.moveToCommunityDetail(mCardsArray[position].id)

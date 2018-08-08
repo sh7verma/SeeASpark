@@ -112,7 +112,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
 
-        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar)
+        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar.avtar_url)
                 .resize(width, height).into(imgProfileHome)
 
         mLayoutManager = LinearLayoutManager(mContext)
@@ -365,7 +365,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     private fun populateData() {
         val mGson = Gson()
         mLandingInstance!!.userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
-        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar)
+        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar.avtar_url)
                 .resize(width, height).into(imgProfileHome)
     }
 

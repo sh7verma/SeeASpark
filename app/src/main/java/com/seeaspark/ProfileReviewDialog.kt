@@ -56,7 +56,7 @@ class ProfileReviewDialog : Activity() {
 
         var drawable = ContextCompat.getDrawable(this, R.mipmap.ic_avatar_1)
 
-        Picasso.with(this).load(userProfileData!!.avatar).resize(drawable!!.intrinsicWidth, drawable!!.intrinsicHeight).into(imgAvatarProfileReview)
+        Picasso.with(this).load(userProfileData!!.avatar.avtar_url).resize(drawable!!.intrinsicWidth, drawable!!.intrinsicHeight).into(imgAvatarProfileReview)
 
         if (userProfileData!!.user_type == Constants.MENTEE) {
             txtMsgReview.text = getString(R.string.mentee_msg)

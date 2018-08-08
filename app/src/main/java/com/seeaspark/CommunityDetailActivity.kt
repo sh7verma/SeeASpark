@@ -1,6 +1,8 @@
 package com.seeaspark
 
 import adapters.FullImageAdapter
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,9 +11,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.view.View
+import android.widget.ImageView
 import com.like.LikeButton
 import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.activity_community_detail.*
@@ -389,6 +393,8 @@ class CommunityDetailActivity : BaseActivity() {
                     txtCommentCountCommunity.text = "${intent.getIntExtra("commentCount", 0)} COMMENT(S)"
                 } else if (intent.getIntExtra("status", 0) == Constants.DELETE) {
                     finish()
+                } else if (intent.getIntExtra("status", 0) == Constants.CHANGE_POSITION) {
+                    vpCommunityDetail.currentItem = intent.getIntExtra("position", 0)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -416,4 +422,17 @@ class CommunityDetailActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("RestrictedApi")
+    fun moveToFullView(imgPic: ImageView, position: Int, mData: ArrayList<PostModel.ResponseBean.ImagesBean>) {
+        val intent = Intent(mContext, FullViewImageActivity::class.java)
+        intent.putParcelableArrayListExtra("images", mData)
+        intent.putExtra("imagePosition", position)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val option = ActivityOptionsCompat.makeSceneTransitionAnimation(mContext as Activity,
+                    imgPic, getString(R.string.transition_image))
+            startActivity(intent, option.toBundle())
+        } else {
+            startActivity(intent)
+        }
+    }
 }

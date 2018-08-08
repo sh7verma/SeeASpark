@@ -60,8 +60,8 @@ class HandshakeActivity : BaseActivity() {
     }
 
     private fun populateData() {
-        Picasso.with(this).load(userProfileData!!.response.avatar).into(imgUserMatch1)
-        Picasso.with(this).load(mOtherProfileData!!.avatar).into(imgUserMatch2)
+        Picasso.with(this).load(userProfileData!!.response.avatar.avtar_url).into(imgUserMatch1)
+        Picasso.with(this).load(mOtherProfileData!!.avatar.avtar_url).into(imgUserMatch2)
     }
 
     override fun initListener() {

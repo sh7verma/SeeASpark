@@ -46,7 +46,7 @@ class ReviewActivity : BaseActivity() {
         if (!isSwitched && mUtils!!.getString("profileReview", "").isEmpty())
             mUtils!!.setString("profileReview", "yes")
 
-        Picasso.with(mContext).load(userData!!.response.avatar).into(imgAvatarReview)
+        Picasso.with(mContext).load(userData!!.response.avatar.avtar_url).into(imgAvatarReview)
 
         if (connectedToInternet()) {
             if (userData!!.response.switch_status == 0)

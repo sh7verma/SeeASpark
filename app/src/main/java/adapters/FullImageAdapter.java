@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 
+import com.seeaspark.CommunityDetailActivity;
 import com.seeaspark.FullViewImageActivity;
 import com.seeaspark.R;
 import com.squareup.picasso.Picasso;
@@ -84,10 +85,8 @@ public class FullImageAdapter extends PagerAdapter {
             @Override
             public void onClick(View view) {
                 if (mPath == 1) {
-                    Intent intent = new Intent(mContext, FullViewImageActivity.class);
-                    intent.putParcelableArrayListExtra("images", mData);
-                    intent.putExtra("imagePosition", position);
-                    mContext.startActivity(intent);
+                    ((CommunityDetailActivity) mContext).moveToFullView(imgPic,position,mData);
+
                 }
             }
         });

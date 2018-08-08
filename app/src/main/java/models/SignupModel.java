@@ -122,7 +122,7 @@ public class SignupModel extends BaseModel implements Parcelable {
         private String linkedin_id;
         private int user_type;
         private int email_verified;
-        private String avatar;
+        private AvatarBean avatar;
         private ProfessionBean profession;
         private String bio;
         private String pro_description;
@@ -240,11 +240,11 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.email_verified = email_verified;
         }
 
-        public String getAvatar() {
+        public AvatarBean getAvatar() {
             return avatar;
         }
 
-        public void setAvatar(String avatar) {
+        public void setAvatar(AvatarBean avatar) {
             this.avatar = avatar;
         }
 
@@ -475,6 +475,92 @@ public class SignupModel extends BaseModel implements Parcelable {
             };
         }
 
+        public static class AvatarBean implements Parcelable {
+            private String avtar_url;
+            private int gender;
+            private int id;
+            private String name;
+            private int parent_id;
+
+            public String getAvtar_url() {
+                return avtar_url;
+            }
+
+            public void setAvtar_url(String avtar_url) {
+                this.avtar_url = avtar_url;
+            }
+
+            public int getGender() {
+                return gender;
+            }
+
+            public void setGender(int gender) {
+                this.gender = gender;
+            }
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public int getParent_id() {
+                return parent_id;
+            }
+
+            public void setParent_id(int parent_id) {
+                this.parent_id = parent_id;
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(this.avtar_url);
+                dest.writeInt(this.gender);
+                dest.writeInt(this.id);
+                dest.writeString(this.name);
+                dest.writeInt(this.parent_id);
+            }
+
+            public AvatarBean() {
+            }
+
+            protected AvatarBean(Parcel in) {
+                this.avtar_url = in.readString();
+                this.gender = in.readInt();
+                this.id = in.readInt();
+                this.name = in.readString();
+                this.parent_id = in.readInt();
+            }
+
+            public static final Creator<AvatarBean> CREATOR = new Creator<AvatarBean>() {
+                @Override
+                public AvatarBean createFromParcel(Parcel source) {
+                    return new AvatarBean(source);
+                }
+
+                @Override
+                public AvatarBean[] newArray(int size) {
+                    return new AvatarBean[size];
+                }
+            };
+        }
+
+
         public static class PreferencesBean implements Parcelable {
             /**
              * gender : 0
@@ -614,7 +700,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             dest.writeString(this.linkedin_id);
             dest.writeInt(this.user_type);
             dest.writeInt(this.email_verified);
-            dest.writeString(this.avatar);
+            dest.writeParcelable(this.avatar, flags);
             dest.writeParcelable(this.profession, flags);
             dest.writeString(this.bio);
             dest.writeString(this.pro_description);
@@ -649,7 +735,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.linkedin_id = in.readString();
             this.user_type = in.readInt();
             this.email_verified = in.readInt();
-            this.avatar = in.readString();
+            this.avatar = in.readParcelable(AvatarBean.class.getClassLoader());
             this.profession = in.readParcelable(ProfessionBean.class.getClassLoader());
             this.bio = in.readString();
             this.pro_description = in.readString();

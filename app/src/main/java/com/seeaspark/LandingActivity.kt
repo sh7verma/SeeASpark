@@ -129,7 +129,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
 
-        Picasso.with(mContext).load(userData!!.response.avatar)
+        Picasso.with(mContext).load(userData!!.response.avatar.avtar_url)
                 .resize(width, height).into(imgProfileTip)
 
         checkUserType()
@@ -351,9 +351,9 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 getString(R.string.tips_boost))
 
         if (userData!!.response.user_type == Constants.MENTOR)
-            vpTips.adapter = TipsAdapter(iconArray, titleArray, descArray, mContext!!, userData!!.response.avatar)
+            vpTips.adapter = TipsAdapter(iconArray, titleArray, descArray, mContext!!, userData!!.response.avatar.avtar_url)
         else
-            vpTips.adapter = TipsAdapter(iconArrayMentee, titleArrayMentee, descArrayMentee, mContext!!, userData!!.response.avatar)
+            vpTips.adapter = TipsAdapter(iconArrayMentee, titleArrayMentee, descArrayMentee, mContext!!, userData!!.response.avatar.avtar_url)
 
         cpIndicatorTips.setViewPager(vpTips)
         cpIndicatorTips.radius = 10f

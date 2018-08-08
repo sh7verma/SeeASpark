@@ -628,7 +628,7 @@ class EventsDetailActivity : BaseActivity() {
 
     private fun addOwnToGoingList() {
         val goingUserData = PostModel.ResponseBean.GoingUserBean()
-        goingUserData.avatar = userData!!.response.avatar
+        goingUserData.avatar = userData!!.response.avatar.avtar_url
         goingUserData.full_name = userData!!.response.full_name
         goingUserData.id = userData!!.response.id
         mEventData!!.going_list!!.add(0, goingUserData)
