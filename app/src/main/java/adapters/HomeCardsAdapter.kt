@@ -106,7 +106,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                         .centerCrop().into(holder.imgCommunityListing)
 
                 holder.cvClick.setOnClickListener {
-                    mHomeFragment!!.moveToCommunityDetail(mCardsArray[position].id)
+                    mHomeFragment!!.moveToCommunityDetail(mCardsArray[position].id,holder.imgCommunityListing)
                 }
             }
             Constants.EVENT -> {
@@ -118,7 +118,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 Picasso.with(mContext).load(mCardsArray[position].images[0].image_url).fit().into(holder.imgEventCard)
 
                 holder.txtEventExploreCard.setOnClickListener {
-                    mHomeFragment!!.moveToEventDetail(mCardsArray[position].id)
+                    mHomeFragment!!.moveToEventDetail(mCardsArray[position].id,holder.imgEventCard)
                 }
             }
             Constants.OUT_OF_CARD -> {
@@ -142,7 +142,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
 
                 holder.txtSkillCard.text = mCardsArray[position].skills[0]
 
-                Picasso.with(mContext).load(mCardsArray[position].avatar)
+                Picasso.with(mContext).load(mCardsArray[position].avatar.avtar_url)
                         .resize(width, width)
                         .placeholder(R.mipmap.ic_avatar_1)
                         .into(holder.imgAvatarCard)

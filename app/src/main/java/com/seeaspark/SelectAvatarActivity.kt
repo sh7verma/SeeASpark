@@ -184,7 +184,7 @@ class SelectAvatarActivity : BaseActivity() {
 
         imgPopup.alpha = 1f
         val anim = ObjectAnimator.ofFloat(imgPopup, "translationY", fromY, toY)
-        anim.duration = 300
+        anim.duration = 200
         anim.start()
         rlAnimate.visibility = View.VISIBLE
 
@@ -235,8 +235,8 @@ class SelectAvatarActivity : BaseActivity() {
 
         imgPopup.alpha = 1f
         val anim = ObjectAnimator.ofFloat(imgPopup, "translationY", fromY, toY)
-        anim.startDelay = 500
-        anim.duration = 300
+        anim.startDelay = 400
+        anim.duration = 200
         anim.start()
 
         anim.addListener(object : Animator.AnimatorListener {
@@ -249,7 +249,7 @@ class SelectAvatarActivity : BaseActivity() {
                 mAvatarAdapter!!.notifyDataSetChanged()
                 Handler().postDelayed({
                     moveToNext()
-                }, 1000)
+                }, 500)
             }
 
             override fun onAnimationCancel(p0: Animator?) {
@@ -333,17 +333,17 @@ class SelectAvatarActivity : BaseActivity() {
     }
 
     private fun beginAlphaAnimation() {
-        rlBackgroundImages.animate().alpha(1f).setStartDelay(300).duration = 500
+        rlBackgroundImages.animate().alpha(1f).setStartDelay(200).duration = 300
     }
 
     private fun closeAlphaAnimation() {
-        rlBackgroundImages.animate().alpha(0f).duration = 300
-        rlSkinImages.animate().alpha(0f).setStartDelay(300).duration = 0
+        rlBackgroundImages.animate().alpha(0f).duration = 200
+        rlSkinImages.animate().alpha(0f).setStartDelay(200).duration = 0
     }
 
     private fun clickedOutSide() {
-        rlBackgroundImages.animate().alpha(0f).duration = 300
-        rlSkinImages.animate().alpha(0f).setStartDelay(300).duration = 0
+        rlBackgroundImages.animate().alpha(0f).duration = 200
+        rlSkinImages.animate().alpha(0f).setStartDelay(200).duration = 0
         mAvatarAdapter!!.notifyDataSetChanged()
         rlAnimate.visibility = View.GONE
     }
@@ -371,7 +371,7 @@ class SelectAvatarActivity : BaseActivity() {
 
     private fun translateRightCloseAnimate(imgSkin: ImageView, position: Int, durationAnim: Int, finalX: Float) {
         val fromX = ((mWidth / 7) * position).toFloat()
-        val duration = 100 * durationAnim
+        val duration = 80 * durationAnim
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, finalX)
         anim.duration = duration.toLong()
         anim.start()
@@ -379,7 +379,7 @@ class SelectAvatarActivity : BaseActivity() {
 
     private fun translateLeftCloseAnimate(imgSkin: ImageView, position: Int, durationTime: Int, finalX: Float) {
         val fromX = ((mWidth / 7) * position).toFloat()
-        val duration = 100 * durationTime
+        val duration = 80 * durationTime
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, finalX)
         anim.duration = duration.toLong()
         anim.start()
@@ -387,7 +387,7 @@ class SelectAvatarActivity : BaseActivity() {
 
     private fun translateRightAnimate(imgSkin: ImageView, position: Int) {
         val finalX = ((mWidth / 7) * position).toFloat()
-        val duration = 100 * position
+        val duration = 80 * position
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", 0f, finalX)
         anim.duration = duration.toLong()
         anim.start()
@@ -397,7 +397,7 @@ class SelectAvatarActivity : BaseActivity() {
         /// 3 and 4
         val fromX = ((mWidth / 7) * 2).toFloat()
         val toX = ((mWidth / 7) * position).toFloat()
-        val duration = 100 * durationTime
+        val duration = 80 * durationTime
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
         anim.duration = duration.toLong()
         anim.start()
@@ -407,7 +407,7 @@ class SelectAvatarActivity : BaseActivity() {
         /// 0 and 1
         val fromX = ((mWidth / 7) * 2).toFloat()
         val toX = fromX - ((mWidth / 7) * position).toFloat()
-        val duration = 100 * durationTime
+        val duration = 80 * durationTime
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
         anim.duration = duration.toLong()
         anim.start()
@@ -416,7 +416,7 @@ class SelectAvatarActivity : BaseActivity() {
     private fun translateLeftAnimate(imgSkin: ImageView, position: Int) {
         val fromX = ((mWidth / 7) * 4).toFloat()
         val toX = fromX - ((mWidth / 7) * position).toFloat()
-        val duration = 100 * position
+        val duration = 80 * position
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
         anim.duration = duration.toLong()
         anim.start()

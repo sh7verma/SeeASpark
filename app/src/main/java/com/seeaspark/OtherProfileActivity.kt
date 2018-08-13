@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.squareup.picasso.Picasso
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_other_profile.*
@@ -121,7 +122,7 @@ class OtherProfileActivity : BaseActivity() {
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        showAlert(llMainViewProfile, response.body().error!!.message!!)
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llMainViewProfile, response.body().error!!.message!!)
@@ -140,7 +141,7 @@ class OtherProfileActivity : BaseActivity() {
         svViewProfile.visibility = View.VISIBLE
         txtTitleCustom.text = userData!!.full_name
 
-        Picasso.with(this).load(userData!!.avatar).resize(width, width)
+        Picasso.with(this).load(userData!!.avatar.avtar_url).resize(width, width)
                 .placeholder(R.drawable.placeholder_image).into(imgViewProfile)
 
         txtNameViewProfile.text = userData!!.full_name

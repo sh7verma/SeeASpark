@@ -226,7 +226,7 @@
     <string name="clear_all">CLEAR ALL</string>
     <string name="no_skills_prefered">No Skills Prefered</string>
     <string name="no_language_prefered">No Language Prefered</string>
-    <string name="no_experience_prefered">No Experience Prefered</string>
+    <string name="no_experience_prefered">Don\'t Mind</string>
     <string name="confirm">CONFIRM</string>
     <string name="want_to_mentee">Are you sure you want to become Mentee?</string>
     <string name="want_to_mentor">Are you sure you want to become Mentor?</string>
@@ -238,5 +238,6 @@
     <string name="share_note">Share Note</string>
     <string name="share_event">Share Event</string>
     <string name="share_community">Share Community</string>
+    <string name="invalid_access_token_message">Someone else login on another device with your credentials.</string>
 
 </resources>

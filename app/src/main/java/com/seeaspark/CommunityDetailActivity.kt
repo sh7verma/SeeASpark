@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import com.like.LikeButton
 import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.activity_community_detail.*
@@ -165,8 +166,10 @@ class CommunityDetailActivity : BaseActivity() {
                     svViewCommunity.visibility = View.VISIBLE
                     populateData()
                 } else {
-                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
+                    }
                     else {
                         showToast(mContext!!, response.body().error!!.message!!)
                         finish()
@@ -316,6 +319,7 @@ class CommunityDetailActivity : BaseActivity() {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -342,6 +346,7 @@ class CommunityDetailActivity : BaseActivity() {
                     setPreviousDBStatus(status)
 
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)

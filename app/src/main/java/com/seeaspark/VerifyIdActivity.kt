@@ -195,7 +195,7 @@ class VerifyIdActivity : BaseActivity() {
                     overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(txtDoneQuestion, response.body().error!!.message!!)
@@ -272,6 +272,7 @@ class VerifyIdActivity : BaseActivity() {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        showToast(mContext!!, response.body().error!!.message!!)
                         moveToSplash()
                     } else
                         showAlert(llCancelDone, response.body().error!!.message!!)

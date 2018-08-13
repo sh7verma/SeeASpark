@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.widget.Toast
 import com.facebook.CallbackManager
 import com.facebook.share.model.ShareLinkContent
 import com.facebook.share.widget.ShareDialog
@@ -141,6 +142,7 @@ class ShareActivity : BaseActivity() {
                     pbShare.visibility = View.GONE
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else {
                         showToast(mContext!!, response.body().error!!.message!!)

@@ -5,6 +5,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.CompoundButton
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_notifications.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import models.BaseSuccessModel
@@ -105,6 +106,7 @@ class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListe
                     setStatuses(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(imgBackCustom, response.body().error!!.message!!)
@@ -167,6 +169,7 @@ class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListe
                     moveBack()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(imgBackCustom, response.body().error!!.message!!)

@@ -152,7 +152,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
 
         imgPopup.alpha = 1f
         val anim = ObjectAnimator.ofFloat(imgPopup, "translationY", fromY, toY)
-        anim.duration = 300
+        anim.duration = 200
         anim.start()
         rlAnimate.visibility = View.VISIBLE
 
@@ -203,8 +203,8 @@ class AvatarFragment : Fragment(), View.OnClickListener {
 
         imgPopup.alpha = 1f
         val anim = ObjectAnimator.ofFloat(imgPopup, "translationY", fromY, toY)
-        anim.startDelay = 500
-        anim.duration = 300
+        anim.startDelay = 400
+        anim.duration = 200
         anim.start()
 
         anim.addListener(object : Animator.AnimatorListener {
@@ -301,17 +301,17 @@ class AvatarFragment : Fragment(), View.OnClickListener {
     }
 
     private fun beginAlphaAnimation() {
-        rlBackgroundImages.animate().alpha(1f).setStartDelay(300).duration = 500
+        rlBackgroundImages.animate().alpha(1f).setStartDelay(200).duration = 300
     }
 
     private fun closeAlphaAnimation() {
-        rlBackgroundImages.animate().alpha(0f).duration = 300
-        rlSkinImages.animate().alpha(0f).setStartDelay(300).duration = 0
+        rlBackgroundImages.animate().alpha(0f).duration = 200
+        rlSkinImages.animate().alpha(0f).setStartDelay(200).duration = 0
     }
 
     private fun clickedOutSide() {
-        rlBackgroundImages.animate().alpha(0f).duration = 300
-        rlSkinImages.animate().alpha(0f).setStartDelay(300).duration = 0
+        rlBackgroundImages.animate().alpha(0f).duration = 200
+        rlSkinImages.animate().alpha(0f).setStartDelay(200).duration = 0
         mAvatarAdapter!!.notifyDataSetChanged()
         rlAnimate.visibility = View.GONE
     }
@@ -339,7 +339,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
 
     private fun translateRightCloseAnimate(imgSkin: ImageView, position: Int, durationAnim: Int, finalX: Float) {
         val fromX = ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
-        val duration = 100 * durationAnim
+        val duration = 80 * durationAnim
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, finalX)
         anim.duration = duration.toLong()
         anim.start()
@@ -347,7 +347,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
 
     private fun translateLeftCloseAnimate(imgSkin: ImageView, position: Int, durationTime: Int, finalX: Float) {
         val fromX = ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
-        val duration = 100 * durationTime
+        val duration = 80 * durationTime
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, finalX)
         anim.duration = duration.toLong()
         anim.start()
@@ -355,7 +355,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
 
     private fun translateRightAnimate(imgSkin: ImageView, position: Int) {
         val finalX = ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
-        val duration = 100 * position
+        val duration = 80 * position
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", 0f, finalX)
         anim.duration = duration.toLong()
         anim.start()
@@ -365,7 +365,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
         /// 3 and 4
         val fromX = ((mCreateProfileInstance!!.mWidth / 7) * 2).toFloat()
         val toX = ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
-        val duration = 100 * durationTime
+        val duration = 80 * durationTime
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
         anim.duration = duration.toLong()
         anim.start()
@@ -375,7 +375,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
         /// 0 and 1
         val fromX = ((mCreateProfileInstance!!.mWidth / 7) * 2).toFloat()
         val toX = fromX - ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
-        val duration = 100 * durationTime
+        val duration = 80 * durationTime
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
         anim.duration = duration.toLong()
         anim.start()
@@ -384,7 +384,7 @@ class AvatarFragment : Fragment(), View.OnClickListener {
     private fun translateLeftAnimate(imgSkin: ImageView, position: Int) {
         val fromX = ((mCreateProfileInstance!!.mWidth / 7) * 4).toFloat()
         val toX = fromX - ((mCreateProfileInstance!!.mWidth / 7) * position).toFloat()
-        val duration = 100 * position
+        val duration = 80 * position
         val anim = ObjectAnimator.ofFloat(imgSkin, "translationX", fromX, toX)
         anim.duration = duration.toLong()
         anim.start()

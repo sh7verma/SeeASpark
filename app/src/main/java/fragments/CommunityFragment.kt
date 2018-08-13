@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import com.seeaspark.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_community.*
@@ -193,6 +194,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
                     addToLocalDatabase(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         mLandingInstance!!.moveToSplash()
                     } else
                         mLandingInstance!!.showAlert(rvCommunityListing, response.body().error!!.message!!)
@@ -280,6 +282,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
                     /// change db status to previous
                     setPreviousDBStatus(postId)
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         mLandingInstance!!.moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         mLandingInstance!!.showToast(mContext!!, response.body().error!!.message!!)
@@ -315,6 +318,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         mLandingInstance!!.moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         mLandingInstance!!.showToast(mContext!!, response.body().error!!.message!!)

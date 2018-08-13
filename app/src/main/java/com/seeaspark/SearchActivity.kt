@@ -21,6 +21,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_search_events.*
 import kotlinx.android.synthetic.main.fragment_notes.*
 import models.BaseSuccessModel
@@ -139,6 +140,7 @@ class SearchActivity : BaseActivity() {
                             populateCommunityData(response.body().response)
                         } else {
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                 moveToSplash()
                             } else
                                 showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -159,6 +161,7 @@ class SearchActivity : BaseActivity() {
                             populateEventData(response.body().response)
                         } else {
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                 moveToSplash()
                             } else
                                 showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -181,6 +184,7 @@ class SearchActivity : BaseActivity() {
                             populateCommunityData(response.body().response)
                         } else {
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                 moveToSplash()
                             } else
                                 showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -202,6 +206,7 @@ class SearchActivity : BaseActivity() {
                                 populateEventData(response.body().response)
                             } else {
                                 if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                    Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                     moveToSplash()
                                 } else
                                     showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -232,6 +237,7 @@ class SearchActivity : BaseActivity() {
                         } else {
                             dismissLoader()
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                 moveToSplash()
                             } else
                                 showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -257,6 +263,7 @@ class SearchActivity : BaseActivity() {
                         } else {
                             dismissLoader()
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                 moveToSplash()
                             } else
                                 showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -410,6 +417,7 @@ class SearchActivity : BaseActivity() {
                     /// change db status to previous
                     setPreviousDBStatus(postId)
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -439,6 +447,7 @@ class SearchActivity : BaseActivity() {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -666,6 +675,7 @@ class SearchActivity : BaseActivity() {
                     populateNotesData()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llMainNotes, response.body().error!!.message!!)
@@ -730,6 +740,7 @@ class SearchActivity : BaseActivity() {
                     populateReceivedNotesData()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llMainNotes, response.body().error!!.message!!)

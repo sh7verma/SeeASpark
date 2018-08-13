@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat
 import android.text.Html
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import jp.wasabeef.richeditor.RichEditor
 import kotlinx.android.synthetic.main.activity_notes.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
@@ -281,6 +282,7 @@ class NotesActivity : BaseActivity() {
                     moveBack()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llCustomToolbar, response.body().error!!.message!!)
@@ -317,6 +319,7 @@ class NotesActivity : BaseActivity() {
                     moveBack()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llCustomToolbar, response.body().error!!.message!!)
@@ -354,6 +357,7 @@ class NotesActivity : BaseActivity() {
                     db!!.addNotes(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llCustomToolbar, response.body().error!!.message!!)

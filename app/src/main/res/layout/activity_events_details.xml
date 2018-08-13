@@ -142,7 +142,7 @@
                     android:layout_height="1dp"
                     android:background="@color/greyLine" />
 
-                <customviews.LightTextView
+                <customviews.MediumTextView
                     android:id="@+id/txtDescEvents"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -162,6 +162,10 @@
                     android:text="www.google.com"
                     android:textColor="@color/link_color"
                     android:textSize="@dimen/_14ssp" />
+
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_64sdp" />
 
             </LinearLayout>
 

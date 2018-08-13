@@ -11,6 +11,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -331,6 +332,7 @@ class SettingsActivity : BaseActivity() {
                     moveToSplash()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(rvCards, response.body().error!!.message!!)
@@ -355,6 +357,7 @@ class SettingsActivity : BaseActivity() {
                     moveToSplash()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(rvCards, response.body().error!!.message!!)

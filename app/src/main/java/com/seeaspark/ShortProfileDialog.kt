@@ -76,7 +76,7 @@ class ShortProfileDialog : BaseActivity() {
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun populateData() {
 
-        Picasso.with(this).load(mOtherProfileData!!.avatar).into(imgShortProfile)
+        Picasso.with(this).load(mOtherProfileData!!.avatar.avtar_url).into(imgShortProfile)
 
         txtNameShortProfile.text = mOtherProfileData!!.full_name
 

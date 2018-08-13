@@ -20,7 +20,7 @@ public class CardsDisplayModel implements Parcelable {
     private String linkedin_id;
     private int user_type;
     private int email_verified;
-    private String avatar;
+    private SignupModel.ResponseBean.AvatarBean avatar;
     private ProfessionModel profession;
     private String bio;
     private String pro_description;
@@ -50,6 +50,7 @@ public class CardsDisplayModel implements Parcelable {
     private String address;
     private String latitude;
     private String longitude;
+    private String shareable_link;
     private List<PostModel.ResponseBean.GoingUserBean> going_list;
     private List<PostModel.ResponseBean.ImagesBean> images;
 
@@ -245,11 +246,11 @@ public class CardsDisplayModel implements Parcelable {
         this.email_verified = email_verified;
     }
 
-    public String getAvatar() {
+    public SignupModel.ResponseBean.AvatarBean getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar) {
+    public void setAvatar(SignupModel.ResponseBean.AvatarBean avatar) {
         this.avatar = avatar;
     }
 
@@ -275,6 +276,14 @@ public class CardsDisplayModel implements Parcelable {
 
     public void setPro_description(String pro_description) {
         this.pro_description = pro_description;
+    }
+
+    public String getShareable_link() {
+        return shareable_link;
+    }
+
+    public void setShareable_link(String shareable_link) {
+        this.shareable_link = shareable_link;
     }
 
     public String getTime_left() {
@@ -383,6 +392,9 @@ public class CardsDisplayModel implements Parcelable {
         this.images = images;
     }
 
+    public CardsDisplayModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -402,12 +414,14 @@ public class CardsDisplayModel implements Parcelable {
         dest.writeString(this.linkedin_id);
         dest.writeInt(this.user_type);
         dest.writeInt(this.email_verified);
-        dest.writeString(this.avatar);
+        dest.writeParcelable(this.avatar, flags);
         dest.writeParcelable(this.profession, flags);
         dest.writeString(this.bio);
         dest.writeString(this.pro_description);
+        dest.writeString(this.time_left);
         dest.writeInt(this.experience_year);
         dest.writeInt(this.experience_month);
+        dest.writeString(this.shareable_link);
         dest.writeStringList(this.skills);
         dest.writeTypedList(this.languages);
         dest.writeInt(this.admin_id);
@@ -417,10 +431,19 @@ public class CardsDisplayModel implements Parcelable {
         dest.writeString(this.date_time);
         dest.writeString(this.url);
         dest.writeInt(this.is_featured);
-        dest.writeList(this.images);
-    }
-
-    public CardsDisplayModel() {
+        dest.writeString(this.profession_id);
+        dest.writeInt(this.like);
+        dest.writeInt(this.comment);
+        dest.writeInt(this.going);
+        dest.writeInt(this.interested);
+        dest.writeInt(this.liked);
+        dest.writeInt(this.is_going);
+        dest.writeInt(this.bookmarked);
+        dest.writeString(this.address);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
+        dest.writeTypedList(this.going_list);
+        dest.writeTypedList(this.images);
     }
 
     protected CardsDisplayModel(Parcel in) {
@@ -436,12 +459,14 @@ public class CardsDisplayModel implements Parcelable {
         this.linkedin_id = in.readString();
         this.user_type = in.readInt();
         this.email_verified = in.readInt();
-        this.avatar = in.readString();
+        this.avatar = in.readParcelable(SignupModel.ResponseBean.AvatarBean.class.getClassLoader());
         this.profession = in.readParcelable(ProfessionModel.class.getClassLoader());
         this.bio = in.readString();
         this.pro_description = in.readString();
+        this.time_left = in.readString();
         this.experience_year = in.readInt();
         this.experience_month = in.readInt();
+        this.shareable_link = in.readString();
         this.skills = in.createStringArrayList();
         this.languages = in.createTypedArrayList(LanguageModel.CREATOR);
         this.admin_id = in.readInt();
@@ -451,8 +476,19 @@ public class CardsDisplayModel implements Parcelable {
         this.date_time = in.readString();
         this.url = in.readString();
         this.is_featured = in.readInt();
-        this.images = new ArrayList<PostModel.ResponseBean.ImagesBean>();
-        in.readList(this.images, ImageModel.class.getClassLoader());
+        this.profession_id = in.readString();
+        this.like = in.readInt();
+        this.comment = in.readInt();
+        this.going = in.readInt();
+        this.interested = in.readInt();
+        this.liked = in.readInt();
+        this.is_going = in.readInt();
+        this.bookmarked = in.readInt();
+        this.address = in.readString();
+        this.latitude = in.readString();
+        this.longitude = in.readString();
+        this.going_list = in.createTypedArrayList(PostModel.ResponseBean.GoingUserBean.CREATOR);
+        this.images = in.createTypedArrayList(PostModel.ResponseBean.ImagesBean.CREATOR);
     }
 
     public static final Creator<CardsDisplayModel> CREATOR = new Creator<CardsDisplayModel>() {

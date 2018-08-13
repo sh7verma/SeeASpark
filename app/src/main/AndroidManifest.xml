@@ -359,7 +359,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="192.168.1.63"
+                    android:host="34.247.115.251"
                     android:pathPattern=":3000"
                     android:pathPrefix="/notes"
                     android:scheme="http" />
@@ -372,7 +372,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="192.168.1.63"
+                    android:host="34.247.115.251"
                     android:pathPattern=":3000"
                     android:pathPrefix="/posts"
                     android:scheme="http" />
@@ -385,7 +385,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="192.168.1.63"
+                    android:host="34.247.115.251"
                     android:pathPattern=":3000"
                     android:pathPrefix="/share_user"
                     android:scheme="http" />

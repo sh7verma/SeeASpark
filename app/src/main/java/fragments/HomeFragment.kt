@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import com.google.gson.Gson
 import com.seeaspark.*
 import com.squareup.picasso.Picasso
@@ -182,6 +183,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         mLandingInstance!!.moveToSplash()
                     } else
                         mLandingInstance!!.showAlert(rvCards, response.body().error!!.message!!)
@@ -191,6 +193,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             override fun onFailure(call: Call<CardModel>?, t: Throwable?) {
                 if (visibleLoader)
                     mLandingInstance!!.dismissLoader()
+                mLandingInstance!!.showAlert(rvCards, t!!.localizedMessage)
             }
         })
     }
@@ -212,6 +215,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 val postData = createPostData(postValue)
 
                 mLandingInstance!!.db!!.addPosts(postData)
+
                 for (imagesData in postData.images) {
                     if (postValue.post_type == Constants.EVENT)
                         mLandingInstance!!.db!!.addPostImages(imagesData, postData.id.toString(), Constants.EVENT)
@@ -229,7 +233,12 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 cardsDisplayModel.time_left = response.time_left
                 mLandingInstance!!.mArrayCards.add(cardsDisplayModel)
             }
-            displayCards()
+            if (mLandingInstance!!.mArrayCards.size == 0) {
+                llOutOfCards.visibility = View.VISIBLE
+            } else {
+                llOutOfCards.visibility = View.GONE
+                displayCards()
+            }
         }
     }
 
@@ -260,6 +269,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         postData.bookmarked = postValue.bookmarked
         postData.going_list = postValue.going_list
         postData.images = postValue.images
+        postData.shareable_link = postValue.shareable_link
         return postData
     }
 
@@ -276,7 +286,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
                             imgProfileHome, getString(R.string.transition_image))
-                    activity.startActivity(intent, option.toBundle())
+                    activity.startActivityForResult(intent, VIEWPROFILE, option.toBundle())
                 } else {
                     startActivityForResult(intent, VIEWPROFILE)
                     activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
@@ -331,6 +341,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        mLandingInstance!!.showToast(mContext!!, response.body().error!!.message!!)
                         mLandingInstance!!.moveToSplash()
                     } else if (response.body().error!!.code == Constants.DELETE_ACCOUNT) {
                         /// no operation
@@ -410,22 +421,34 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         }
     }
 
-    fun moveToCommunityDetail(postId: Int) {
+    fun moveToCommunityDetail(postId: Int, imgCommunityListing: ImageView) {
         if (mLandingInstance!!.connectedToInternet()) {
             val intent = Intent(mContext, CommunityDetailActivity::class.java)
             intent.putExtra("communityId", postId)
-            startActivity(intent)
-            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                        imgCommunityListing, getString(R.string.transition_image))
+                activity.startActivity(intent, option.toBundle())
+            } else {
+                startActivity(intent)
+                activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         } else
             mLandingInstance!!.showInternetAlert(rvEventsListing)
     }
 
-    fun moveToEventDetail(postId: Int) {
+    fun moveToEventDetail(postId: Int, imgEventCard: ImageView) {
         if (mLandingInstance!!.connectedToInternet()) {
             val intent = Intent(mContext, EventsDetailActivity::class.java)
             intent.putExtra("eventId", postId)
-            startActivity(intent)
-            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                        imgEventCard, getString(R.string.transition_image))
+                activity.startActivity(intent, option.toBundle())
+            } else {
+                startActivity(intent)
+                activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         } else
             mLandingInstance!!.showInternetAlert(rvEventsListing)
     }

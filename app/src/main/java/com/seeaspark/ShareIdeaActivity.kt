@@ -94,6 +94,7 @@ class ShareIdeaActivity : BaseActivity() {
                     finish()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llMainIdea, response.body().error!!.message!!)

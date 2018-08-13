@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.like.LikeButton
 import com.like.OnLikeListener
 import com.squareup.picasso.Picasso
@@ -184,8 +185,10 @@ class EventsDetailActivity : BaseActivity() {
                     svViewEvent.visibility = View.VISIBLE
                     populateData()
                 } else {
-                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
+                    }
                     else {
                         showToast(mContext!!, response.body().error!!.message!!)
                         finish()
@@ -567,6 +570,7 @@ class EventsDetailActivity : BaseActivity() {
                     /// change db status to previous
                     setPreviousDBStatus(status)
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -602,6 +606,7 @@ class EventsDetailActivity : BaseActivity() {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)

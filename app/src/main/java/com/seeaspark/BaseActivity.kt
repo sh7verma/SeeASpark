@@ -146,7 +146,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         inSplash.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         inSplash.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         mContext!!.startActivity(inSplash)
-        System.exit(2)
+//        System.exit(2)
     }
 
     fun alertLogoutDialog() {

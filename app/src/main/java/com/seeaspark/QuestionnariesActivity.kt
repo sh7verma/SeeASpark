@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_questionaires.*
 import kotlinx.android.synthetic.main.activity_view_profile.*
 import models.QuestionAnswerModel
@@ -63,10 +64,12 @@ class QuestionnariesActivity : BaseActivity() {
 
         if (intent.hasExtra("newUserType")) {
             mNewUserType = intent.getIntExtra("newUserType", 0)
+            imgBackQuestion.visibility=View.VISIBLE
             isSwitchAccount = true
             hitFetchSwitchQuestionAPI(mNewUserType)
         } else {
             if (mUtils!!.getInt("switchMode", 0) == 1) {
+                imgBackQuestion.visibility=View.VISIBLE
                 isSwitchAccount = true
                 mNewUserType = Constants.MENTOR
                 hitFetchSwitchQuestionAPI(mNewUserType)
@@ -75,6 +78,7 @@ class QuestionnariesActivity : BaseActivity() {
                     mArrayQuestions.addAll(userData!!.answers)
                     populateData()
                 } else {
+                    imgBackQuestion.visibility=View.VISIBLE
                     isSwitchAccount = true
                     mNewUserType = Constants.MENTOR
                     hitFetchSwitchQuestionAPI(mNewUserType)
@@ -152,7 +156,7 @@ class QuestionnariesActivity : BaseActivity() {
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(txtDoneQuestion, response.body().error!!.message!!)
@@ -186,7 +190,7 @@ class QuestionnariesActivity : BaseActivity() {
                     populateData()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        showToast(mContext!!, response.body().error!!.message!!)
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(txtDoneQuestion, response.body().error!!.message!!)
@@ -212,7 +216,7 @@ class QuestionnariesActivity : BaseActivity() {
                     moveToPreferences(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(txtDoneQuestion, response.body().error!!.message!!)

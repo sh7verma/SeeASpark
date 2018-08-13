@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_review.*
 import models.SignupModel
@@ -93,7 +94,7 @@ class ReviewActivity : BaseActivity() {
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        showToast(mContext!!, response.body().error!!.message!!)
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(imgBackReview, response.body().error!!.message!!)
