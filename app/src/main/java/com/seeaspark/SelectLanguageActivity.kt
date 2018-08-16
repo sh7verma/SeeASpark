@@ -4,49 +4,144 @@ import adapters.LanguageAdapter
 import android.app.Activity
 import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_select_language.*
-import kotlinx.android.synthetic.main.activity_signup.*
+import models.LanguageListingModel
 import models.LanguageModel
 import models.SignupModel
-import java.util.ArrayList
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import utils.Constants
+import java.util.*
 
 class SelectLanguageActivity : BaseActivity() {
+
 
     var mAdapterLangugae: LanguageAdapter? = null
     private var userData: SignupModel? = null
     var mLanguageArray = ArrayList<LanguageModel>()
-    var mSelectedLanguageArray = ArrayList<LanguageModel>()
+    var tempArray = ArrayList<LanguageModel>()
+    private var mSelectedLanguageArray = ArrayList<LanguageModel>()
+    private var isPreferences = false
 
     override fun getContentView() = R.layout.activity_select_language
 
     override fun initUI() {
+
+        if (intent.hasExtra("prefer")) {
+            isPreferences = true
+            txtClearLanguage.visibility = View.VISIBLE
+        }
+
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
         mSelectedLanguageArray = intent.getParcelableArrayListExtra("selectedLanguages")
+
         mLanguageArray.addAll(userData!!.languages)
+        tempArray.addAll(userData!!.languages)
+
+        rvSelectLanguage.layoutManager = LinearLayoutManager(this)
+
+        edLanguageSelect.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val searString = s.toString().toLowerCase()
+
+                if (searString.trim().isEmpty()) {
+                    tempArray.clear()
+                    tempArray.addAll(mLanguageArray)
+                } else {
+                    tempArray.clear()
+                    for (language in mLanguageArray) {
+                        if ((language.name).toLowerCase().contains(searString)) {
+                            tempArray.add(language);
+                        }
+                    }
+                }
+                populateData()
+            }
+        })
+
+        populateData()
+    }
+
+    private fun populateData() {
 
         for (selectedLanguage in mSelectedLanguageArray) {
-            for (allLanguage in userData!!.languages) {
+            for (allLanguage in tempArray) {
                 if (selectedLanguage.id == allLanguage.id) {
                     allLanguage.isSelected = true
                     break
                 }
             }
         }
-
-        rvSelectLanguage.layoutManager = LinearLayoutManager(this)
-        mAdapterLangugae = LanguageAdapter(this, mLanguageArray)
+        mAdapterLangugae = LanguageAdapter(this, tempArray)
         rvSelectLanguage.adapter = mAdapterLangugae
     }
 
-    override fun onCreateStuff() {
+    override fun displayDayMode() {
 
+    }
+
+    override fun displayNightMode() {
+
+    }
+
+    override fun onCreateStuff() {
+        if (connectedToInternet())
+            hitAPI()
+        else
+            showInternetAlert(txtNextSelectLanguage)
+    }
+
+    private fun hitAPI() {
+        val call = RetrofitClient.getInstance().getLanguages(mUtils!!.getString("access_token", ""))
+        call.enqueue(object : Callback<LanguageListingModel> {
+
+            override fun onResponse(call: Call<LanguageListingModel>?, response: Response<LanguageListingModel>) {
+                if (response.body().response != null) {
+                    mLanguageArray.clear()
+                    tempArray.clear()
+                    mLanguageArray.addAll(response.body().response)
+                    tempArray.addAll(response.body().response)
+
+                    populateData()
+                    upDateData(response.body().response)
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+                        moveToSplash()
+                    } else
+                        showAlert(txtNextSelectLanguage, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<LanguageListingModel>?, t: Throwable?) {
+                showAlert(txtNextSelectLanguage, t!!.localizedMessage)
+            }
+        })
+    }
+
+    private fun upDateData(response: MutableList<LanguageModel>) {
+        userData!!.languages.clear()
+        userData!!.languages.addAll(response)
+        mUtils!!.setString("userDataLocal", mGson.toJson(userData))
     }
 
     override fun initListener() {
         imgBackSelectLanguage.setOnClickListener(this)
         txtNextSelectLanguage.setOnClickListener(this)
+        txtClearLanguage.setOnClickListener(this)
     }
 
     override fun getContext() = this
@@ -54,6 +149,13 @@ class SelectLanguageActivity : BaseActivity() {
     override fun onClick(view: View?) {
         when (view) {
 
+            txtClearLanguage -> {
+                mSelectedLanguageArray.clear()
+                for (allLanguage in tempArray) {
+                    allLanguage.isSelected = false
+                }
+                mAdapterLangugae!!.notifyDataSetChanged()
+            }
             imgBackSelectLanguage -> {
                 moveBack()
             }
@@ -65,7 +167,7 @@ class SelectLanguageActivity : BaseActivity() {
                         mSelectedLanguageArray.add(languageValue)
                 }
 
-                if (mSelectedLanguageArray.size == 0)
+                if (mSelectedLanguageArray.size == 0 && !isPreferences)
                     showAlert(txtNextSelectLanguage, getString(R.string.error_Language))
                 else {
                     val intent = Intent()

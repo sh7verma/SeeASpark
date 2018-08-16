@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llClickNotes"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/_8sdp"
+    android:background="@drawable/notes_background"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/_16sdp"
+    android:paddingRight="@dimen/_16sdp"
+    android:paddingTop="@dimen/_8sdp"
+    android:paddingBottom="@dimen/_16sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_36sdp"
+        android:orientation="horizontal">
+
+        <customviews.LightTextView
+            android:id="@+id/txtTimeNotes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="bottom"
+            android:paddingBottom="@dimen/_8sdp"
+            android:text="Today"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/_12ssp" />
+
+        <ImageView
+            android:id="@+id/imgShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
+            android:padding="@dimen/_5sdp"
+            android:src="@mipmap/ic_share_white" />
+
+    </LinearLayout>
+
+    <customviews.MediumTextView
+        android:id="@+id/txtTileNotes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingBottom="@dimen/_8sdp"
+        android:text="@string/lorem_ipsum"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/_14ssp" />
+
+
+    <LinearLayout
+        android:id="@+id/llSent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="horizontal">
+
+        <customviews.LightTextView
+            android:id="@+id/txtSentHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_8sdp"
+            android:text="Sent By "
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_12ssp" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtSentBY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_8sdp"
+            android:text="Today"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp" />
+
+    </LinearLayout>
+
+</LinearLayout>

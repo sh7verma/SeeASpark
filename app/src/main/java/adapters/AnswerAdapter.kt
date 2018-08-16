@@ -58,8 +58,8 @@ class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQues
             holder.txtAnswerQuestion.setBackgroundResource(R.drawable.answer_selected)
             holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
         } else {
-            holder.txtAnswerQuestion.setBackgroundResource(R.drawable.answer_background)
-            holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.hint_color_light))
+            holder.txtAnswerQuestion.setBackgroundResource(R.drawable.new_answer_background)
+            holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
         }
 
         holder.txtAnswerQuestion.text = mAnswersArray[position]

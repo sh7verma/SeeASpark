@@ -10,10 +10,18 @@ class AfterWalkThroughActivity : BaseActivity() {
 
     override fun initUI() {
 
+
+    }
+
+    override fun displayDayMode() {
+        /// no operation
+    }
+
+    override fun displayNightMode() {
+        /// no operation
     }
 
     override fun onCreateStuff() {
-
 
     }
 

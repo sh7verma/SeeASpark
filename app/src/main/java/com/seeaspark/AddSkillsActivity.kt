@@ -34,10 +34,17 @@ class AddSkillsActivity : BaseActivity() {
 
     override fun initUI() {
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
-        edSkill.setTypeface(typeface)
+        edSkill.typeface = typeface
 
         rvSkillSuggestions.layoutManager = LinearLayoutManager(this)
+    }
 
+    override fun displayDayMode() {
+        /// no operation
+    }
+
+    override fun displayNightMode() {
+        /// no operation
     }
 
     override fun onCreateStuff() {

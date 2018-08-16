@@ -12,13 +12,42 @@
         android:background="@drawable/signup_gradient"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/imgBackSelectLanguage"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/transparent_ripple"
-            android:padding="@dimen/_12sdp"
-            android:src="@mipmap/ic_back_black" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imgBackSelectLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/transparent_ripple"
+                android:padding="@dimen/_12sdp"
+                android:src="@mipmap/ic_back_black" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+            <customviews.MediumTextView
+                android:id="@+id/txtClearLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/transparent_ripple"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_gravity="right"
+                android:paddingLeft="@dimen/_12sdp"
+                android:paddingRight="@dimen/_12sdp"
+                android:text="@string/clear_all"
+                android:textAllCaps="true"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
 
         <customviews.BoldTextView
             android:layout_width="wrap_content"
@@ -29,6 +58,36 @@
             android:text="@string/what_language_speak"
             android:textColor="@color/black_color"
             android:textSize="@dimen/_24ssp" />
+
+        <EditText
+            android:id="@+id/edLanguageSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:layout_marginRight="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:background="@android:color/transparent"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:hint="@string/search_your_language"
+            android:inputType="textCapSentences"
+            android:maxLength="@integer/name_max"
+            android:maxLines="1"
+            android:paddingBottom="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="@dimen/_14ssp"
+            android:visibility="visible" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:layout_marginRight="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:background="@color/colorLine"
+            android:visibility="visible" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvSelectLanguage"

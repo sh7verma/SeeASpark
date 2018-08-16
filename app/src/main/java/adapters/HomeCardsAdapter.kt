@@ -1,7 +1,9 @@
 package adapters
 
 import android.content.Context
+import android.os.Build
 import android.os.CountDownTimer
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -22,6 +24,7 @@ import kotlinx.android.synthetic.main.item_progress.view.*
 import models.CardsDisplayModel
 import utils.Connection_Detector
 import utils.Constants
+import utils.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,23 +41,28 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
     private var mHomeFragment: HomeFragment? = null
     var width: Int = 0
     var height: Int = 0
+    var mUtils: Utils? = null
+    private var mWidthCommunity = 0
 
     var mTimer: CountDownTimer? = null
     var mTimerTime: Long = 0
-    var localFormat = SimpleDateFormat("HH:mm:ss")
+    var localFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
 
     init {
         this.mCardsArray = mCardsArray
         this.mContext = mContext
+        mUtils = Utils(mContext)
         mScreenWidth = mWidth / 2
+        mWidthCommunity = mWidth - mWidth / 9
         mScreenCalculated = mScreenWidth / 100
         this.mHomeFragment = mHomeFragment
 
-        var drawable = ContextCompat.getDrawable(mContext, R.mipmap.ic_avatar_1)
+        val drawable = ContextCompat.getDrawable(mContext, R.mipmap.ic_avatar_1)
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view: View
         when (viewType) {
@@ -88,12 +96,17 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 (holder as CommunityViewHolder)
                 holder.txtCommunityTitle.text = mCardsArray[position].title
                 holder.txtCommunityDesc.text = mCardsArray[position].description
-                holder.txtDateCommunity.text = Constants.displayDateTime(mCardsArray[position].date_time)
+                holder.txtCenterOption.text = mCardsArray[position].profession_id
 
-                Picasso.with(mContext).load(mCardsArray[position].images[0].image_url).fit().into(holder.imgCommunityHome)
+                if (mCardsArray[position].date_time.isNotEmpty())
+                    holder.txtDateCommunity.text = Constants.displayDateTime(mCardsArray[position].date_time)
+
+                Picasso.with(mContext).load(mCardsArray[position].images[0].image_url)
+                        .resize(mWidthCommunity, mContext!!.resources.getDimension(R.dimen._161sdp).toInt())
+                        .centerCrop().into(holder.imgCommunityListing)
 
                 holder.cvClick.setOnClickListener {
-                    Toast.makeText(mContext, mContext!!.getString(R.string.work_in_progress), Toast.LENGTH_LONG).show()
+                    mHomeFragment!!.moveToCommunityDetail(mCardsArray[position].id,holder.imgCommunityListing)
                 }
             }
             Constants.EVENT -> {
@@ -105,7 +118,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 Picasso.with(mContext).load(mCardsArray[position].images[0].image_url).fit().into(holder.imgEventCard)
 
                 holder.txtEventExploreCard.setOnClickListener {
-                    Toast.makeText(mContext, mContext!!.getString(R.string.work_in_progress), Toast.LENGTH_LONG).show()
+                    mHomeFragment!!.moveToEventDetail(mCardsArray[position].id,holder.imgEventCard)
                 }
             }
             Constants.OUT_OF_CARD -> {
@@ -125,9 +138,14 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
 
                 holder.txtProfessionCard.text = mCardsArray[position].profession.name
 
+                holder.txtBioCard.text = mCardsArray[position].bio
+
                 holder.txtSkillCard.text = mCardsArray[position].skills[0]
 
-                Picasso.with(mContext).load(mCardsArray[position].avatar).resize(width, width).placeholder(R.mipmap.ic_avatar_1).into(holder.imgAvatarCard)
+                Picasso.with(mContext).load(mCardsArray[position].avatar.avtar_url)
+                        .resize(width, width)
+                        .placeholder(R.mipmap.ic_avatar_1)
+                        .into(holder.imgAvatarCard)
 
                 if (mCardsArray[position].skills.size == 1) {
                     holder.txtSkillCountCard.visibility = View.GONE
@@ -137,7 +155,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 }
 
                 holder.llData.setOnClickListener {
-                    mHomeFragment!!.openShortProfile(mCardsArray[position])
+                    mHomeFragment!!.openProfile(mCardsArray[position], holder.imgAvatarCard)
                 }
 
                 holder.swlCard.addSwipeListener(object : SwipeLayout.SwipeListener {
@@ -225,13 +243,16 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
         return 0
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var swlCard = itemView.swlCard!!
+        var llCard = itemView.llCard!!
         var llHandshake = itemView.swlCard.llHandshake!!
         var llPass = itemView.swlCard.llPass!!
         var llData = itemView.llData!!
         var txtNameCard = itemView.txtNameCard!!
         var txtProfessionCard = itemView.txtProfessionCard!!
+        var txtBioCard = itemView.txtBioCard!!
         var txtSkillCard = itemView.txtSkillCard!!
         var txtSkillCountCard = itemView.txtSkillCountCard!!
         var imgAvatarCard = itemView.imgAvatarCard!!
@@ -240,25 +261,84 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
             swlCard.showMode = SwipeLayout.ShowMode.LayDown
             swlCard.addDrag(SwipeLayout.DragEdge.Right, swlCard.findViewWithTag(mContext!!.getString(R.string.handshake)))
             swlCard.addDrag(SwipeLayout.DragEdge.Left, swlCard.findViewWithTag(mContext!!.getString(R.string.pass)))
+            if (mUtils!!.getInt("nightMode", 0) == 1)
+                displayNightMode()
+            else
+                displayDayMode()
+        }
+
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+        private fun displayNightMode() {
+            llCard.background = ContextCompat.getDrawable(mContext!!, R.drawable.night_card_background)
+            txtNameCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            txtProfessionCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.greyTextColor))
+            txtSkillCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            txtSkillCountCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+        }
+
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+        private fun displayDayMode() {
+            llCard.background = ContextCompat.getDrawable(mContext!!, R.drawable.card_background)
+            txtNameCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+            txtProfessionCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.greyTextColor))
+            txtSkillCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+            txtSkillCountCard.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
         }
     }
 
     inner class CommunityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val cvClick = itemView.cvClick!!
-        val imgCommunityHome = itemView.imgCommunityHome!!
+        val cvClick = itemView.cvCommunityListing!!
+        val imgCommunityListing = itemView.imgCommunityListing!!
         val txtCommunityTitle = itemView.txtCommunityTitle!!
         val txtDateCommunity = itemView.txtDateCommunity!!
         val txtCommunityDesc = itemView.txtCommunityDesc!!
         val txtCenterOption = itemView.txtCenterOption!!
+
+        init {
+            if (mUtils!!.getInt("nightMode", 0) == 1)
+                displayNightMode()
+            else
+                displayDayMode()
+        }
+
+
+        private fun displayDayMode() {
+            cvClick.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+            txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+        }
+
+        private fun displayNightMode() {
+            cvClick.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.cardview_dark_background))
+            txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+        }
+
     }
 
 
     inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cvEventsHome = itemView.cvEventsHome!!
         val imgEventCard = itemView.imgEventCard!!
         val txtEventNameCard = itemView.txtEventNameCard!!
         val txtEventDescCard = itemView.txtEventDescCard!!
         val txtEventTimeCard = itemView.txtEventTimeCard!!
         val txtEventExploreCard = itemView.txtEventExploreCard!!
+
+        init {
+            if (mUtils!!.getInt("nightMode", 0) == 1)
+                displayNightMode()
+            else
+                displayDayMode()
+        }
+
+        private fun displayNightMode() {
+            cvEventsHome.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.cardview_dark_background))
+        }
+
+        private fun displayDayMode() {
+            cvEventsHome.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+        }
     }
 
     inner class OutOfCardsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

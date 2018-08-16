@@ -15,6 +15,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
+import com.seeaspark.BroadcastActivity;
 import com.seeaspark.CreateProfileActivity;
 import com.seeaspark.HandshakeActivity;
 import com.seeaspark.LandingActivity;
@@ -75,7 +76,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 ringNotification(intent, message, 0, messageBody.get("body"));
                 if (utils.getInt("inside_profileDialog", 0) == 1) {
-                    utils.setInt("open_questionnaries",1);
+                    utils.setInt("open_questionnaries", 1);
                 }
             } else {
                 /// inside review activity
@@ -87,7 +88,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             SignupModel.ResponseBean mMatchModel = new SignupModel.ResponseBean();
             mMatchModel.setAccess_token(messageBody.get("access_token"));
             mMatchModel.setFull_name(messageBody.get("full_name"));
-            mMatchModel.setAvatar(messageBody.get("avatar"));
+            SignupModel.ResponseBean.AvatarBean avatarBean = new SignupModel.ResponseBean.AvatarBean();
+            avatarBean.setAvtar_url(messageBody.get("avatar"));
+            mMatchModel.setAvatar(avatarBean);
             mMatchModel.setId(Integer.parseInt(messageBody.get("user_id")));
 
             String matchData = new Gson().toJson(mMatchModel);
@@ -102,7 +105,30 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 intent.putExtra("matchData", matchData);
                 startActivity(intent);
-
+            }
+        } else if (messageBody.get("push_type").equalsIgnoreCase("5")) {
+            if (utils.getInt("Background", 0) == 1) {// background
+                intent = new Intent(this, LandingActivity.class);
+                intent.putExtra("broadcastData", "Yes");
+                intent.putExtra("broadcastTitle", messageBody.get("title"));
+                intent.putExtra("broadcastMessage", message);
+                ringNotification(intent, message, 0, messageBody.get("title"));
+            } else {//in app
+                intent = new Intent(this, BroadcastActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                intent.putExtra("broadcastTitle", messageBody.get("title"));
+                intent.putExtra("broadcastMessage", message);
+                startActivity(intent);
+            }
+        } else if (messageBody.get("push_type").equalsIgnoreCase("6")) {
+            if (utils.getInt("inside_review", 0) == 0 && utils.getInt("inside_reviewFull", 0) == 0) {
+                /// outside review activity
+                intent = new Intent();
+                ringNotification(intent, message, 0, messageBody.get("body"));
+            } else {
+                /// inside review activity
+                Intent notificationIntent = new Intent(Constants.UNVERIFIED);
+                broadcaster.sendBroadcast(notificationIntent);
             }
         }
     }

@@ -7,6 +7,7 @@ import kotlinx.android.synthetic.main.activity_select_experience.*
 
 class SelectExperienceActivity : BaseActivity() {
 
+
     override fun getContentView() = R.layout.activity_select_experience
 
     var mYears: Int = -1
@@ -14,6 +15,12 @@ class SelectExperienceActivity : BaseActivity() {
 
     override fun initUI() {
 
+    }
+
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
     }
 
     override fun onCreateStuff() {

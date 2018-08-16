@@ -125,9 +125,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".QuestionnariesActivity"
@@ -173,7 +171,7 @@
             android:name=".ShortProfileDialog"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@style/TransparentActivity" />
 
         <activity
             android:name=".BoostDialog"
@@ -214,7 +212,13 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustNothing" />
+
+        <activity
+            android:name=".BroadcastActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity" />
 
         <activity
             android:name=".SelectExperienceActivity"
@@ -228,7 +232,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustNothing" />
 
         <activity
             android:name=".SelectSkillActivity"
@@ -278,6 +282,158 @@
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
             android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".EventsBookmarkActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".EventsDetailActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".EventsGoingListingActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".ShareIdeaActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".CommunityBookmarkActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".CommunityDetailActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".SearchActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateVisible" />
+
+        <activity
+            android:name=".CommentsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateVisible" />
+
+        <activity
+            android:name=".NotesActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateVisible" />
+
+        <activity
+            android:name=".DeepLinkingActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="34.247.115.251"
+                    android:pathPattern=":3000"
+                    android:pathPrefix="/notes"
+                    android:scheme="http" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="34.247.115.251"
+                    android:pathPattern=":3000"
+                    android:pathPrefix="/posts"
+                    android:scheme="http" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="34.247.115.251"
+                    android:pathPattern=":3000"
+                    android:pathPrefix="/share_user"
+                    android:scheme="http" />
+            </intent-filter>
+
+
+        </activity>
+
+        <activity
+            android:name=".ShareActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity" />
+
+        <activity
+            android:name=".FullViewImageActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".OtherProfileActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".AnimationDemo"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme">
+
+        </activity>
+
+        <receiver
+            android:name="services.DayBroadcastReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name="services.NightBroadCastReceiver"
+            android:exported="false" />
+
+        <receiver android:name="services.TimeChangedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
         <service android:name="services.MyFirebaseMessagingService">
             <intent-filter>

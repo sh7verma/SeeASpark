@@ -1,9 +1,21 @@
 package network;
 
 import models.CardModel;
+import models.CommentModel;
+import models.LanguageListingModel;
+import models.LanguageModel;
+import models.NotesListingModel;
+import models.NotesModel;
+import models.OtherProfileModel;
+import models.PostDetailModel;
+import models.PostModel;
 import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
 import models.NotificationModel;
+import models.ProfessionListingModel;
+import models.ProfessionModel;
+import models.ProfileModel;
+import models.QuestionListingModel;
 import models.SearchSkillModel;
 import models.ServerSkillsModel;
 import models.SignupModel;
@@ -50,12 +62,18 @@ public interface ApiInterface {
                                     @Part("age") RequestBody age,
                                     @Part("gender") RequestBody gender,
                                     @Part("languages") RequestBody languages,
-                                    @Part("profession_id") RequestBody profession_id,
+                                    @Part("profession") RequestBody profession,
                                     @Part("experience") RequestBody experience,
                                     @Part("skills") RequestBody skills,
                                     @Part("bio") RequestBody bio,
                                     @Part("pro_description") RequestBody pro_description,
                                     @Part MultipartBody.Part document);
+
+
+    @Multipart
+    @POST("/api/v1/switches/upload_document")
+    Call<SignupModel> switchUploadDocument(@Part("access_token") RequestBody access_token,
+                                           @Part MultipartBody.Part document);
 
     @FormUrlEncoded
     @POST("/api/v1/verifications/resend_email")
@@ -122,7 +140,7 @@ public interface ApiInterface {
                                   @Field("age") String age,
                                   @Field("gender") String gender,
                                   @Field("languages") String languages,
-                                  @Field("profession_id") String profession_id,
+                                  @Field("profession") String profession,
                                   @Field("experience") String experience,
                                   @Field("skills") String skills,
                                   @Field("bio") String bio,
@@ -137,10 +155,10 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/api/v1/settings/update_notifications")
     Call<BaseSuccessModel> updateNotifications(@Field("access_token") String access_token,
-                                                @Field("messages_notification") Integer messages_notification,
-                                                @Field("posts_notification") Integer posts_notification,
-                                                @Field("qoutes_notification") Integer qoutes_notification,
-                                                @Field("notes_notification") Integer notes_notification);
+                                               @Field("messages_notification") Integer messages_notification,
+                                               @Field("posts_notification") Integer posts_notification,
+                                               @Field("qoutes_notification") Integer qoutes_notification,
+                                               @Field("notes_notification") Integer notes_notification);
 
     @GET("/api/v1/notification_settings")
     Call<NotificationModel> notificationSettings(@Query("access_token") String access_token);
@@ -149,5 +167,164 @@ public interface ApiInterface {
     @GET("/api/v1/user_skills")
     Call<ServerSkillsModel> getUserSkills(@Query("access_token") String access_token);
 
+
+    @GET("/api/v1/posts")
+    Call<PostModel> getPosts(@Query("access_token") String access_token,
+                             @Query("post_type") String post_type,
+                             @Query("page") int page);
+
+    @FormUrlEncoded
+    @POST("/api/v1/activities")
+    Call<BaseSuccessModel> postActivity(@Field("access_token") String access_token,
+                                        @Field("post_id") int post_id,
+                                        @Field("activity_type") int activity_type);
+
+    @FormUrlEncoded
+    @POST("/api/v1/bookmarks")
+    Call<BaseSuccessModel> markBookmark(@Field("access_token") String access_token,
+                                        @Field("post_id") int post_id);
+
+    @GET("/api/v1/comments")
+    Call<CommentModel> getComments(@Query("access_token") String access_token,
+                                   @Query("post_id") int post_id,
+                                   @Query("page") int page);
+
+    @FormUrlEncoded
+    @POST("/api/v1/comments")
+    Call<BaseSuccessModel> postComments(@Field("access_token") String access_token,
+                                        @Field("post_id") int post_id,
+                                        @Field("description") String description);
+
+    @FormUrlEncoded
+    @POST("/api/v1/comments/latest_comments")
+    Call<CommentModel> getLatestCommnets(@Field("access_token") String access_token,
+                                         @Field("post_id") int post_id,
+                                         @Field("last_id") int last_id);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/suggestions")
+    Call<BaseSuccessModel> shareAnIdea(@Field("access_token") String access_token,
+                                       @Field("title") String title,
+                                       @Field("description") String description,
+                                       @Field("post_type") int post_type);
+
+
+    @GET("/api/v1/bookmarks")
+    Call<PostModel> getBookmarkPosts(@Query("access_token") String access_token,
+                                     @Query("page") int page,
+                                     @Query("post_type") int post_type);
+
+    @FormUrlEncoded
+    @POST("/api/v1/posts/search_post")
+    Call<PostModel> searchPost(@Field("access_token") String access_token,
+                               @Field("post_type") int post_type,
+                               @Field("query") String query,
+                               @Field("page") int page);
+
+    @FormUrlEncoded
+    @POST("/api/v1/notes/search")
+    Call<NotesListingModel> searchNotes(@Field("access_token") String access_token,
+                                        @Field("note_type") String note_type,
+                                        @Field("search") String search,
+                                        @Field("page") String page);
+
+    @FormUrlEncoded
+    @POST("/api/v1/bookmarks/search")
+    Call<PostModel> searchBookmarkPost(@Field("access_token") String access_token,
+                                       @Field("post_type") int post_type,
+                                       @Field("query") String query,
+                                       @Field("page") int page);
+
+
+    @GET("/api/v1/professions")
+    Call<ProfessionListingModel> getProfessions(@Query("access_token") String access_token);
+
+    @GET("/api/v1/languages")
+    Call<LanguageListingModel> getLanguages(@Query("access_token") String access_token);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/professions/search")
+    Call<ProfessionListingModel> searchProfessions(@Field("access_token") String access_token,
+                                                   @Field("search") String search);
+
+    @FormUrlEncoded
+    @POST("/api/v1/notes")
+    Call<NotesModel> addNotes(@Field("access_token") String access_token,
+                              @Field("title") String title,
+                              @Field("description") String description);
+
+    @FormUrlEncoded
+    @POST("/api/v1/notes/update_note")
+    Call<NotesModel> updateNotes(@Field("access_token") String access_token,
+                                 @Field("id") String id,
+                                 @Field("title") String title,
+                                 @Field("description") String description);
+
+    @GET("/api/v1/notes")
+    Call<NotesListingModel> getNotes(@Query("access_token") String access_token,
+                                     @Query("note_type") String note_type,
+                                     @Query("page") String page);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/notes/delete_note")
+    Call<BaseSuccessModel> deleteNote(@Field("access_token") String access_token,
+                                      @Field("id") String id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/shares/shared_note")
+    Call<NotesModel> fetchDetailNotes(@Field("access_token") String access_token,
+                                      @Field("id") String id,
+                                      @Field("name") String file_name);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/shares/external_share")
+    Call<NotesModel> shareNote(@Field("access_token") String access_token,
+                               @Field("id") String id,
+                               @Field("name") String file_name);
+
+    @FormUrlEncoded
+    @POST("/api/v1/shares/delete_share")
+    Call<BaseSuccessModel> deleteReceivedNote(@Field("access_token") String access_token,
+                                              @Field("id") String id,
+                                              @Field("name") String name);
+
+    @FormUrlEncoded
+    @POST("/api/v1/posts/post_by_id")
+    Call<PostDetailModel> getPostDetail(@Field("access_token") String access_token,
+                                        @Field("id") int id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/switches/questions")
+    Call<QuestionListingModel> getSwitchQuestions(@Field("access_token") String access_token,
+                                                  @Field("user_type") int user_type);
+
+    @FormUrlEncoded
+    @POST("/api/v1/switches/post_answers")
+    Call<SignupModel> postSwitchAnswers(@Field("access_token") String access_token,
+                                        @Field("user_type") int user_type,
+                                        @Field("questions") String questions);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/switches/switch")
+    Call<SignupModel> switchUser(@Field("access_token") String access_token,
+                                 @Field("user_type") int user_type);
+
+
+    @GET("/api/v1/users")
+    Call<ProfileModel> getProfile(@Query("access_token") String access_token,
+                                  @Query("id") String id);
+
+    @GET("/api/v1/users")
+    Call<OtherProfileModel> getOtherProfile(@Query("access_token") String access_token,
+                                            @Query("id") String id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/switches/submit_profile")
+    Call<SignupModel> submitProfile(@Field("access_token") String access_token);
 
 }

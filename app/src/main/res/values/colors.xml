@@ -17,6 +17,10 @@
     <color name="textGrey">#9a9a9c</color>
     <color name="hintColorText">#b75a51</color>
     <color name="pagerColorCode">#383838</color>
+    <color name="cardColorDark">#23251F</color>
+
+    <color name="darkGreyText">#8F919E</color>
+
 
     <color name="navigationBarColor">#202851</color>
     <color name="textColorPrimary">#f77a52</color>
@@ -48,7 +52,7 @@
     <color name="white_color">#FFFFFF</color>
     <color name="white_color_light">#e6e6e6</color>
     <color name="transperent">#90ffffff</color>
-
+    <color name="disabled">#90f9f9f9</color>
 
     <color name="confett1">#f26644</color>
     <color name="confett2">#ffc75c</color>
@@ -70,6 +74,7 @@
     <color name="color_primary_gradient">#FEB374</color>
     <color name="color_secondary_gradient">#FE7973</color>
     <color name="greyTextColor">#727272</color>
+    <color name="blue_color">#798ded</color>
 
 
 </resources>

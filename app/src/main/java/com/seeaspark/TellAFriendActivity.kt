@@ -13,6 +13,12 @@ class TellAFriendActivity : BaseActivity() {
     override fun initUI() {
     }
 
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
+    }
+
     override fun onCreateStuff() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 

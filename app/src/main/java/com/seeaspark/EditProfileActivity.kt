@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.cocosw.bottomsheet.BottomSheet
@@ -48,7 +47,8 @@ class EditProfileActivity : BaseActivity() {
 
     private var mAvatarName = Constants.EMPTY
     private var mAvatarURL = Constants.EMPTY
-    private var mProfession: Int = 0
+    private var mAvatarParentId = 0
+    private var mProfessionId: Int = 0
     private var mYears: Int = 0
     private var mMonths: Int = 0
     private var mSelectedLanguagesArray = ArrayList<LanguageModel>()
@@ -116,6 +116,34 @@ class EditProfileActivity : BaseActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayDayMode() {
+        llMainEditProfile.background = ContextCompat.getDrawable(this, R.drawable.white_short_profile_background)
+        txtAgeEditProfile.setBackgroundResource(whiteRipple)
+        txtGenderEditProfile.setBackgroundResource(whiteRipple)
+        txtProfessionEditProfile.setBackgroundResource(whiteRipple)
+        txtExperienceEditProfile.setBackgroundResource(whiteRipple)
+        llLanguageEditProfile.setBackgroundResource(whiteRipple)
+        llSkillEditProfile.setBackgroundResource(whiteRipple)
+        edNameProfile.setBackgroundColor(whiteColor)
+        edBioEditProfile.setBackgroundColor(whiteColor)
+        edDescriptionEditProfile.setBackgroundColor(whiteColor)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayNightMode() {
+        llMainEditProfile.background = ContextCompat.getDrawable(this, R.drawable.dark_short_profile_background)
+        txtAgeEditProfile.setBackgroundResource(blackRipple)
+        txtGenderEditProfile.setBackgroundResource(blackRipple)
+        txtProfessionEditProfile.setBackgroundResource(blackRipple)
+        txtExperienceEditProfile.setBackgroundResource(blackRipple)
+        llLanguageEditProfile.setBackgroundResource(blackRipple)
+        llSkillEditProfile.setBackgroundResource(blackRipple)
+        edNameProfile.setBackgroundColor(blackColor)
+        edBioEditProfile.setBackgroundColor(blackColor)
+        edDescriptionEditProfile.setBackgroundColor(blackColor)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreateStuff() {
 
         /// intialize calendar
@@ -125,7 +153,7 @@ class EditProfileActivity : BaseActivity() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         val dateParts = userData!!.response.age.split("-")
         calDOB!!.set(Calendar.YEAR, dateParts[2].toInt())
-        calDOB!!.set(Calendar.MONTH, dateParts[1].toInt()-1)
+        calDOB!!.set(Calendar.MONTH, dateParts[1].toInt() - 1)
         calDOB!!.set(Calendar.DATE, dateParts[0].toInt())
 
         populateData()
@@ -163,13 +191,14 @@ class EditProfileActivity : BaseActivity() {
             imgEditProfile -> {
                 intent = Intent(mContext, SelectAvatarActivity::class.java)
                 intent.putExtra("avatarURL", mAvatarURL)
+                intent.putExtra("avatarParentId", mAvatarParentId)
                 intent.putExtra("gender", mGender)
                 startActivityForResult(intent, AVATAR)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
             txtProfessionEditProfile -> {
                 intent = Intent(mContext, SelectProfessionActivity::class.java)
-                intent.putExtra("professionId", mProfession)
+                intent.putExtra("professionId", mProfessionId)
                 intent.putExtra("professionName", txtProfessionEditProfile.text.toString())
                 startActivityForResult(intent, PROFESSION)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
@@ -232,7 +261,7 @@ class EditProfileActivity : BaseActivity() {
                 mDOB.format(calDOB!!.time),
                 mGender.toString(),
                 tempLanguages,
-                mProfession.toString(),
+                txtProfessionEditProfile.text.toString(),
                 "$mYears,$mMonths",
                 tempSkills,
                 edBioEditProfile.text.toString().trim(),
@@ -258,7 +287,8 @@ class EditProfileActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun populateData() {
-        mAvatarURL = userData!!.response.avatar
+        mAvatarURL = userData!!.response.avatar.avtar_url
+        mAvatarParentId = userData!!.response.avatar.parent_id
         Picasso.with(this).load(mAvatarURL).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
 
         edNameProfile.setText(userData!!.response.full_name)
@@ -274,7 +304,7 @@ class EditProfileActivity : BaseActivity() {
             userData!!.response.gender == "3" -> txtGenderEditProfile.text = getString(R.string.other)
         }
 
-        mProfession = userData!!.response.profession.id
+        mProfessionId = userData!!.response.profession.id
         txtProfessionEditProfile.text = userData!!.response.profession.name
 
         mYears = userData!!.response.experience_year
@@ -323,12 +353,18 @@ class EditProfileActivity : BaseActivity() {
         val interestChip = LayoutInflater.from(this).inflate(R.layout.add_skills, null, false)
         val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         interestChip.llMainAddSkills.layoutParams = innerParms
-        if (showBlackBackground) {
-            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
-            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        } else {
-            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.answer_background)
+
+        if (mUtils!!.getInt("nightMode", 0) == 1) {
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.white_default)
             interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+        } else {
+            if (showBlackBackground) {
+                interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
+                interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+            } else {
+                interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.answer_background)
+                interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+            }
         }
         interestChip.txtAddSkillChip.text = skillValue
         return interestChip
@@ -348,7 +384,7 @@ class EditProfileActivity : BaseActivity() {
     fun setBirthday() {
         Constants.closeKeyboard(this, txtAgeEditProfile)
         val calendar = Calendar.getInstance(TimeZone.getDefault())
-        calendar.add(Calendar.YEAR, -18)
+        calendar.add(Calendar.YEAR, -16)
         val datePickerDOB = DatePickerDialog(this,
                 R.style.DatePickerTheme,
                 dobPickerListener,
@@ -389,6 +425,7 @@ class EditProfileActivity : BaseActivity() {
                             if (mGender != 1) {
                                 mGender = 1
                                 mAvatarURL = Constants.EMPTY
+                                mAvatarParentId = 0
                                 showToast(mContext!!, getString(R.string.gender_changed))
                                 Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
                             }
@@ -398,6 +435,7 @@ class EditProfileActivity : BaseActivity() {
                             if (mGender != 2) {
                                 mGender = 2
                                 mAvatarURL = Constants.EMPTY
+                                mAvatarParentId = 0
                                 showToast(mContext!!, getString(R.string.gender_changed))
                                 Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
                             }
@@ -407,6 +445,7 @@ class EditProfileActivity : BaseActivity() {
                             if (mGender != 3) {
                                 mGender = 3
                                 mAvatarURL = Constants.EMPTY
+                                mAvatarParentId = 0
                                 showToast(mContext!!, getString(R.string.gender_changed))
                                 Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
                             }
@@ -422,11 +461,12 @@ class EditProfileActivity : BaseActivity() {
                 AVATAR -> {
                     mAvatarURL = data!!.getStringExtra("avatarURL")
                     mAvatarName = data.getStringExtra("avatarName")
+                    mAvatarParentId = data.getIntExtra("avatarParentId", 0)
                     Picasso.with(this).load(mAvatarURL).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
                 }
                 PROFESSION -> {
                     txtProfessionEditProfile.text = data!!.getStringExtra("professionName")
-                    mProfession = data.getIntExtra("professionId", 0)
+                    mProfessionId = data.getIntExtra("professionId", 0)
                 }
                 EXPERIENCE -> {
                     mYears = data!!.getIntExtra("Years", 0)

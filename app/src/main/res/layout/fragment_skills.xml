@@ -34,13 +34,16 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_24sdp">
+            >
 
             <customviews.FlowLayout
                 android:id="@+id/flSkills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_16sdp"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:paddingBottom="@dimen/_36sdp"
                 android:gravity="left" />
         </ScrollView>
 

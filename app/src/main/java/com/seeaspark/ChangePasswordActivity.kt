@@ -1,6 +1,10 @@
 package com.seeaspark
 
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.Toast
@@ -13,10 +17,12 @@ import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
 
+
 class ChangePasswordActivity : BaseActivity() {
 
     override fun getContentView() = R.layout.activity_change_password
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
         txtTitleCustom.text = getString(R.string.change_password)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
@@ -26,6 +32,19 @@ class ChangePasswordActivity : BaseActivity() {
         edCurrentPassword.typeface = typeface
         edNewPassword.typeface = typeface
         edConfirmPassword.typeface = typeface
+
+
+        displayDayMode()
+        displayNightMode()
+
+    }
+
+    override fun displayNightMode() {
+        llMainPassword.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+    }
+
+    override fun displayDayMode() {
+        llMainPassword.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
     }
 
     override fun onCreateStuff() {
@@ -53,7 +72,6 @@ class ChangePasswordActivity : BaseActivity() {
     override fun onBackPressed() {
         moveBack()
     }
-
 
     private fun moveBack() {
         Constants.closeKeyboard(this, txtChangePassword)
@@ -99,6 +117,7 @@ class ChangePasswordActivity : BaseActivity() {
                     moveBack()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(txtChangePassword, response.body().error!!.message!!)

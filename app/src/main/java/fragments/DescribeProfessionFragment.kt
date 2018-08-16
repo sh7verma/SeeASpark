@@ -90,7 +90,7 @@ class DescribeProfessionFragment : Fragment(), View.OnClickListener {
         intent.putExtra("name", mCreateProfileInstance!!.mName)
         intent.putExtra("dob", mDOB.format(mCreateProfileInstance!!.calDOB!!.time))
         intent.putExtra("gender", mCreateProfileInstance!!.mGender.toString())
-        intent.putExtra("profession", mCreateProfileInstance!!.mProfession.toString())
+        intent.putExtra("profession", mCreateProfileInstance!!.mProfessionName.toString())
         intent.putIntegerArrayListExtra("languages", mCreateProfileInstance!!.mSelectedLanguageArray)
         intent.putExtra("experience", "${mCreateProfileInstance!!.mExpeirenceYears},${mCreateProfileInstance!!.mExpeirenceMonth}")
         intent.putStringArrayListExtra("skills", mCreateProfileInstance!!.mSkillsServerArray)

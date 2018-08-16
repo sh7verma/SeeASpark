@@ -1,11 +1,17 @@
 package com.seeaspark
 
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.view.View
-import android.widget.CompoundButton
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -15,9 +21,10 @@ import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import services.DayBroadcastReceiver
+import services.NightBroadCastReceiver
 import utils.Constants
-import android.R.attr.versionName
-import android.content.pm.PackageManager
+import java.util.*
 
 
 class SettingsActivity : BaseActivity() {
@@ -25,19 +32,175 @@ class SettingsActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_settings
     private var userData: SignupModel? = null
 
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
         imgBackCustom.setImageResource(R.mipmap.ic_back_org)
         txtTitleCustom.text = getString(R.string.settings)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
-        scNightMode.setOnCheckedChangeListener { p0, status ->
-
-            if (status)
-                mUtils!!.setInt("nightMode", 1)
-            else
-                mUtils!!.setInt("nightMode", 0)
-
+        if (mUtils!!.getInt("switchNightMode", 0) == 1) {
+            scNightMode.isChecked = true
+            setVisibilityOFF()
         }
+
+        scNightMode.setOnCheckedChangeListener { p0, status ->
+            if (status) {
+                mUtils!!.setInt("nightMode", 1)
+                mUtils!!.setInt("switchNightMode", 1)
+                val broadCastIntent = Intent(Constants.NIGHT_MODE)
+                broadCastIntent.putExtra("status", Constants.NIGHT)
+                broadcaster!!.sendBroadcast(broadCastIntent)
+
+                setVisibilityOFF()
+                mReceiverFunction!!.turnOffAutoDayMode()
+                mReceiverFunction!!.turnOffAutoNightMode()
+            } else {
+                mUtils!!.setInt("nightMode", 0)
+                mUtils!!.setInt("switchNightMode", 0)
+                val broadCastIntent = Intent(Constants.NIGHT_MODE)
+                broadCastIntent.putExtra("status", Constants.DAY)
+                broadcaster!!.sendBroadcast(broadCastIntent)
+
+                setVisibilityON()
+                if (mUtils!!.getInt("nightMode", 0) == 1) {
+                    mReceiverFunction!!.startAutoDayMode(mContext!!)
+                    mReceiverFunction!!.startAutoNightMode(mContext!!)
+                }
+            }
+        }
+
+        if (mUtils!!.getInt("autoNightMode", 0) == 1)
+            scAutoNightMode.isChecked = true
+
+        scAutoNightMode.setOnCheckedChangeListener { p0, status ->
+            if (status) {
+                mUtils!!.setInt("autoNightMode", 1)
+                if (currentCalendar!!.get(Calendar.HOUR_OF_DAY) in 6..17) {
+                    mUtils!!.setInt("nightMode", 0)
+                    mReceiverFunction!!.startAutoDayMode(mContext!!)
+                    val broadCastIntent = Intent(Constants.NIGHT_MODE)
+                    broadCastIntent.putExtra("status", Constants.DAY)
+                    broadcaster!!.sendBroadcast(broadCastIntent)
+                } else {
+                    mUtils!!.setInt("nightMode", 1)
+                    mReceiverFunction!!.startAutoNightMode(mContext!!)
+                    val broadCastIntent = Intent(Constants.NIGHT_MODE)
+                    broadCastIntent.putExtra("status", Constants.NIGHT)
+                    broadcaster!!.sendBroadcast(broadCastIntent)
+                }
+            } else {
+                mUtils!!.setInt("autoNightMode", 0)
+                mUtils!!.setInt("nightMode", 0)
+                mReceiverFunction!!.turnOffAutoDayMode()
+                mReceiverFunction!!.turnOffAutoNightMode()
+                val broadCastIntent = Intent(Constants.NIGHT_MODE)
+                broadCastIntent.putExtra("status", Constants.DAY)
+                broadcaster!!.sendBroadcast(broadCastIntent)
+            }
+        }
+    }
+
+    private fun setVisibilityON() {
+        llAutoNightMode.visibility = View.VISIBLE
+        viewAutoNightMode.visibility = View.VISIBLE
+    }
+
+    private fun setVisibilityOFF() {
+        llAutoNightMode.visibility = View.GONE
+        viewAutoNightMode.visibility = View.GONE
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayDayMode() {
+
+        txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llMainSettings.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llTellFriend.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtTellFriend.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llRateUS.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtRateUs.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llBlockedUser.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtBlockedUsers.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llPrivacyPolicy.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtPrivacyPolicy.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llTerms.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtTerms.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llNotifications.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtNotification.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llNightMode.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtNightMode.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llAutoNightMode.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtAutoNightMode.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llChangePassword.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtChangePassword.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llLogout.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtLogout.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llDeactivate.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtDeactivate.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llDeleteAccount.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtDeleteAccount.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
+        txtVersion.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayNightMode() {
+
+        txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llMainSettings.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+
+        llTellFriend.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtTellFriend.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llRateUS.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtRateUs.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llBlockedUser.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtBlockedUsers.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llPrivacyPolicy.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtPrivacyPolicy.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llTerms.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtTerms.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llNotifications.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtNotification.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llNightMode.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtNightMode.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llAutoNightMode.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtAutoNightMode.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llChangePassword.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtChangePassword.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llLogout.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtLogout.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llDeactivate.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtDeactivate.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llDeleteAccount.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtDeleteAccount.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        txtVersion.setTextColor(ContextCompat.getColor(this, R.color.white_color))
     }
 
     override fun onCreateStuff() {
@@ -52,7 +215,7 @@ class SettingsActivity : BaseActivity() {
         try {
             val pInfo = this.packageManager.getPackageInfo(packageName, 0)
             txtVersion.text = "App Version ${pInfo.versionName}"
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -169,6 +332,7 @@ class SettingsActivity : BaseActivity() {
                     moveToSplash()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(rvCards, response.body().error!!.message!!)
@@ -193,6 +357,7 @@ class SettingsActivity : BaseActivity() {
                     moveToSplash()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(rvCards, response.body().error!!.message!!)
@@ -215,4 +380,5 @@ class SettingsActivity : BaseActivity() {
         finish()
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }
+
 }

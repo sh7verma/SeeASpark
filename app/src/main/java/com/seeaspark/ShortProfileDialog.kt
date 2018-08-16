@@ -1,6 +1,7 @@
 package com.seeaspark
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -20,40 +21,54 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ShortProfileDialog : Activity() {
-    private var mScreenwidth: Int = 0
-    private var mScreenheight: Int = 0
-    var mUtils: Utils? = null
+class ShortProfileDialog : BaseActivity() {
+
     var mOtherProfileData: CardsDisplayModel? = null
 
+
+    override fun getContentView(): Int {
+        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent));
+        return R.layout.dialog_short_profile
+    }
+
+    override fun initUI() {
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        this.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        val wmlp = this.window.attributes
+    override fun displayDayMode() {
+        llMainShortProfileDialog.background = ContextCompat.getDrawable(this, R.drawable.white_short_profile_background)
+        txtNameShortProfile.setTextColor(blackColor)
+        txtProfessionShortProfile.setTextColor(blackColor)
+        txtViewFullProfile.setTextColor(blackColor)
+    }
 
-        wmlp.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-        this.setFinishOnTouchOutside(true)
-        setContentView(R.layout.dialog_short_profile)
-        getDefaults()
-        window.setLayout(mScreenwidth, (mScreenheight))
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayNightMode() {
+        llMainShortProfileDialog.background = ContextCompat.getDrawable(this, R.drawable.dark_short_profile_background)
+        txtNameShortProfile.setTextColor(whiteColor)
+        txtProfessionShortProfile.setTextColor(whiteColor)
+        txtViewFullProfile.setTextColor(whiteColor)
+    }
 
-        mUtils = Utils(this)
-
-        txtViewFullProfile.setOnClickListener {
-            /// navigate to Full Profile
-            Toast.makeText(this, R.string.work_in_progress, Toast.LENGTH_LONG).show()
-        }
-
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun onCreateStuff() {
         mOtherProfileData = intent.getParcelableExtra("otherProfileData")
-
-        /// display Data
         populateData()
+    }
 
-        llOuter.setOnClickListener {
-            finish()
-            overridePendingTransition(0, R.anim.slidedown_out)
+    override fun initListener() {
+        llOuter.setOnClickListener(this)
+    }
+
+    override fun getContext() = this
+
+    override fun onClick(view: View?) {
+        when (llOuter) {
+            llOuter -> {
+                finish()
+                overridePendingTransition(R.anim.slidedown_in, R.anim.slidedown_out)
+            }
         }
 
     }
@@ -61,7 +76,7 @@ class ShortProfileDialog : Activity() {
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun populateData() {
 
-        Picasso.with(this).load(mOtherProfileData!!.avatar).into(imgShortProfile)
+        Picasso.with(this).load(mOtherProfileData!!.avatar.avtar_url).into(imgShortProfile)
 
         txtNameShortProfile.text = mOtherProfileData!!.full_name
 
@@ -94,21 +109,20 @@ class ShortProfileDialog : Activity() {
         }
     }
 
-    private fun getDefaults() {
-        val dm = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(dm)
-        mScreenwidth = dm.widthPixels
-        mScreenheight = dm.heightPixels
-    }
-
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun inflateView(skillValue: String): View {
         val interestChip = LayoutInflater.from(this).inflate(R.layout.add_skills, null, false)
         val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         interestChip.llMainAddSkills.layoutParams = innerParms
-        interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
+        if (mUtils!!.getInt("nightMode", 0) == 1) {
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.white_default)
+            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+        } else {
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
+            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+        }
         interestChip.txtAddSkillChip.text = skillValue
-        interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
         return interestChip
     }
 
@@ -130,7 +144,7 @@ class ShortProfileDialog : Activity() {
 
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(0, R.anim.slidedown_out)
+        overridePendingTransition(R.anim.slidedown_in, R.anim.slidedown_out)
     }
 
 }

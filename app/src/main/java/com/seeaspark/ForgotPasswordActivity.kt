@@ -18,6 +18,14 @@ class ForgotPasswordActivity : BaseActivity() {
         edEmailForgot.setTypeface(typeface)
     }
 
+    override fun displayDayMode() {
+
+    }
+
+    override fun displayNightMode() {
+
+    }
+
     override fun onCreateStuff() {
 
     }

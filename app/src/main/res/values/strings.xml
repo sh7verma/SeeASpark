@@ -30,6 +30,7 @@
     <string name="select_your_n_avatar">Select your Avatar</string>
     <string name="enter">Enter</string>
     <string name="search_your_occupation">Search your occupation</string>
+    <string name="search_your_language">Search your language</string>
     <string name="name">Name</string>
     <string name="next">NEXT</string>
     <string name="what_is_your_name">What is your Name?</string>
@@ -49,6 +50,7 @@
     <string name="select_your_experience">Select duration of experience</string>
     <string name="select_your_nskills">Select your Skills</string>
     <string name="transition">transition</string>
+    <string name="transition_image">transitionImage</string>
     <string name="add_skills">Add Skills</string>
     <string name="enter_skill">Enter Skill</string>
     <string name="write_your_short_bio">Write a short biography</string>
@@ -69,7 +71,7 @@
     <string name="gender">Gender</string>
     <string name="experience">Experience</string>
     <string name="select_preferred_skills">Select Preferred\nSkills</string>
-    <string name="professions">Professions</string>
+    <string name="professions">Occupations</string>
 
 
     <string name="enter_email">Please enter email</string>
@@ -81,7 +83,7 @@
     <string name="error_gender">Please specify Gender</string>
     <string name="error_bio">Please enter Bio</string>
     <string name="error_name">Please enter Name with minimum 2 characters.</string>
-    <string name="error_profession">Please specify Profession</string>
+    <string name="error_profession">Please select or add Occupation</string>
     <string name="error_Language">Please specify Language</string>
     <string name="logout">Log out</string>
     <string name="your_profile_is_now_complete_and_is_under_review_will_let_you_know_know_shortly">Your profile is now complete and is under review. Will let you know shortly.</string>
@@ -169,6 +171,7 @@
     <string name="terms_of_services">Terms of Services</string>
     <string name="notifications">Notifications</string>
     <string name="night_mode">Night Mode</string>
+    <string name="auto_night_mode">Auto Night Mode</string>
     <string name="change_password">Change Password</string>
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
@@ -194,5 +197,47 @@
     <string name="handshakes">Handshakes</string>
     <string name="sign_up_with">Sign up with</string>
     <string name="sign_in_with">Sign in with</string>
+    <string name="Events">Events</string>
+    <string name="Bookmarks">Bookmarks</string>
+    <string name="interested">Interested</string>
+    <string name="going">Going</string>
+    <string name="share_your_idea">Share An Idea</string>
+    <string name="subject">Subject</string>
+    <string name="enter_your_idea">Enter Your Idea:</string>
+    <string name="send">Send</string>
+    <string name="error_subject">Please enter subject</string>
+    <string name="error_content">Please enter your idea</string>
+    <string name="no_result_found">No Result Found</string>
+    <string name="not_going">Not Going</string>
+    <string name="not_interested">Not Interested</string>
+    <string name="write_a_comment">Write a Comment...</string>
+    <string name="comments">Comments</string>
+    <string name="no_events_available">No Events Available</string>
+    <string name="no_community_available">No Community Available</string>
+    <string name="error_comment">Please enter comment</string>
+    <string name="no_community_bookmarked">No Community Bookmarked</string>
+    <string name="no_event_bookmarked">No Event Bookmarked</string>
+    <string name="add_occupation">Add Occupation</string>
+    <string name="you_can_write_your_million_n_dollar_ideas_here">You can write your million\ndollar idea here</string>
+    <string name="my_notes">My Notes</string>
+    <string name="write_note">Write Note</string>
+    <string name="no_notes">No Notes Available</string>
+    <string name="note">Note</string>
+    <string name="clear_all">CLEAR ALL</string>
+    <string name="no_skills_prefered">No Skills Prefered</string>
+    <string name="no_language_prefered">No Language Prefered</string>
+    <string name="no_experience_prefered">Don\'t Mind</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="want_to_mentee">Are you sure you want to become Mentee?</string>
+    <string name="want_to_mentor">Are you sure you want to become Mentor?</string>
+    <string name="switch_to_mentee_msg">Are you sure you want to switch to Mentee?</string>
+    <string name="switch_to_mentor_msg">Are you sure you want to switch to Mentor?</string>
+    <string name="switch_to_mentee">Switch To Mentee</string>
+    <string name="switch_to_mentor">Switch To Mentor</string>
+    <string name="share_profile">Share Profile</string>
+    <string name="share_note">Share Note</string>
+    <string name="share_event">Share Event</string>
+    <string name="share_community">Share Community</string>
+    <string name="invalid_access_token_message">Someone else login on another device with your credentials.</string>
 
 </resources>

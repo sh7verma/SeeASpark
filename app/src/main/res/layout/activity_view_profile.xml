@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layerType="software"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,17 +13,18 @@
     <customviews.ScrollViewX
         android:id="@+id/svViewProfile"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <LinearLayout
+                android:id="@+id/llMainViewProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_75sdp"
-                android:background="@drawable/short_profile_background"
+                android:background="@drawable/white_short_profile_background"
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/_24sdp"
                 android:paddingRight="@dimen/_24sdp">
@@ -52,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Male . 25 Years"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_12ssp" />
 
                 <customviews.BoldTextView
@@ -62,7 +64,7 @@
                     android:paddingBottom="@dimen/_3sdp"
                     android:paddingTop="@dimen/_8sdp"
                     android:text="Psychologist"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_13ssp" />
 
                 <customviews.MediumTextView
@@ -71,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/_8sdp"
                     android:text="5.2 Years of Experience"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_12ssp" />
 
                 <View
@@ -133,7 +135,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/_12sdp"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_12ssp" />
 
                 <View
@@ -155,7 +157,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/_46sdp"
-                    android:textColor="@color/greyTextColor"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_12ssp" />
 
             </LinearLayout>
@@ -167,6 +169,7 @@
                 android:layout_marginLeft="@dimen/_24sdp"
                 android:layout_marginStart="@dimen/_24sdp"
                 android:layout_marginTop="@dimen/_50sdp"
+                android:transitionName="@string/transition_image"
                 android:elevation="@dimen/_5sdp"
                 android:src="@drawable/placeholder_image" />
 

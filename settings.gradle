@@ -1,1 +1,1 @@
-include ':app', ':linkedin-sdk', ':rangeseekbar', ':library', ':aFileChooser', ':cropLib'
+include ':app', ':linkedin-sdk', ':rangeseekbar', ':library', ':aFileChooser', ':cropLib', 'richeditor'

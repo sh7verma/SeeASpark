@@ -10,16 +10,24 @@ import android.view.ViewGroup
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_skill_selection.*
 import kotlinx.android.synthetic.main.layout_skills.view.*
+import models.ServerSkillsModel
 import models.SignupModel
 import models.SkillsModel
+import network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import utils.Constants
 
 
 class SkillSelectionActivity : BaseActivity() {
 
+
     private var mSkillsSelectedArray = ArrayList<String>()
     private var mSelectedSkillsNameArray = ArrayList<String>()
     private var userData: SignupModel? = null
+
+    override fun getContentView() = R.layout.activity_skill_selection
 
     override fun initUI() {
 
@@ -37,30 +45,64 @@ class SkillSelectionActivity : BaseActivity() {
         for (skillValue in userData!!.skills) {
             flSkillsSelection.addView(inflateView(skillValue))
         }
+        if (connectedToInternet())
+            hitAPI()
+        else
+            showInternetAlert(txtClearLanguage)
+    }
+
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
     }
 
     override fun initListener() {
-        txtDoneSelection.setOnClickListener(this)
+        txtClearLanguage.setOnClickListener(this)
         imgBackSelection.setOnClickListener(this)
+        txtDonePreferLanguage.setOnClickListener(this)
     }
-
-    override fun getContentView() = R.layout.activity_skill_selection
 
     override fun getContext() = this
 
     override fun onClick(view: View?) {
         when (view) {
-            txtDoneSelection -> {
-                var intent = Intent()
+            txtDonePreferLanguage -> {
+                val intent = Intent()
                 intent.putStringArrayListExtra("selectedSkills", mSkillsSelectedArray);
                 intent.putStringArrayListExtra("selectedSkillsName", mSelectedSkillsNameArray);
                 setResult(Activity.RESULT_OK, intent)
                 moveBack()
             }
+            txtClearLanguage->{
+                mSkillsSelectedArray.clear()
+                mSelectedSkillsNameArray.clear()
+                flSkillsSelection.removeAllViews()
+                for (skillValue in userData!!.skills) {
+                    flSkillsSelection.addView(inflateView(skillValue))
+                }
+            }
             imgBackSelection -> {
                 moveBack()
             }
         }
+    }
+
+    private fun hitAPI() {
+        val call = RetrofitClient.getInstance().getUserSkills(mUtils!!.getString("access_token", ""))
+        call.enqueue(object : Callback<ServerSkillsModel> {
+            override fun onResponse(call: Call<ServerSkillsModel>?, response: Response<ServerSkillsModel>?) {
+                userData!!.skills.clear()
+                userData!!.skills.addAll(response!!.body().response)
+                flSkillsSelection.removeAllViews()
+                for (skillValue in userData!!.skills) {
+                    flSkillsSelection.addView(inflateView(skillValue))
+                }
+            }
+            override fun onFailure(call: Call<ServerSkillsModel>?, t: Throwable?) {
+                showAlert(txtClearLanguage, t!!.localizedMessage)
+            }
+        })
     }
 
     private fun inflateView(skillValue: SkillsModel): View {

@@ -17,13 +17,10 @@ import utils.MainApplication;
 
 public class RetrofitClient {
 
-//    private static final String BASE_URL = "http://13.228.223.105:3032/";// Client
-//    private static final String BASE_URL = "http://13.228.223.105:3030/";// Development
 
     private static final String BASE_URL = "http://34.247.115.251:3000/";/// Applify Development
-//  private static final String BASE_URL = "http://www.thetulapp.com/";// Live
-
-    private static final String REGISTER_USER = "api/v1/registers";
+//    private static final String BASE_URL = "http://seeaspark.com/";/// Applify Development
+//    private static final String BASE_URL = "http://192.168.1.51:3000/";/// Local Development
 
     private static Retrofit retrofit = null;
     private static final String CACHE_CONTROL = "Cache-Control";

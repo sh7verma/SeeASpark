@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_color"
     android:layout_marginLeft="@dimen/_8sdp"
     android:layout_marginRight="@dimen/_8sdp"
+    android:background="@color/white_color"
     android:orientation="vertical">
 
     <LinearLayout
@@ -30,26 +30,25 @@
             android:textColor="@color/black_color"
             android:textSize="@dimen/_24ssp" />
 
-
         <EditText
             android:id="@+id/edProfessionSelect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_16sdp"
             android:layout_marginRight="@dimen/_16sdp"
-            android:visibility="visible"
             android:layout_marginTop="@dimen/_12sdp"
             android:background="@android:color/transparent"
+            android:ellipsize="end"
             android:gravity="left"
             android:hint="@string/search_your_occupation"
             android:inputType="textCapSentences"
             android:maxLength="@integer/name_max"
             android:maxLines="1"
-            android:ellipsize="end"
             android:paddingBottom="@dimen/_8sdp"
             android:paddingTop="@dimen/_8sdp"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/_14ssp" />
+            android:textSize="@dimen/_14ssp"
+            android:visibility="visible" />
 
         <View
             android:layout_width="match_parent"
@@ -57,17 +56,56 @@
             android:layout_marginBottom="@dimen/_8sdp"
             android:layout_marginLeft="@dimen/_16sdp"
             android:layout_marginRight="@dimen/_16sdp"
-            android:visibility="visible"
             android:layout_marginTop="@dimen/_3sdp"
-            android:background="@color/colorLine" />
+            android:background="@color/colorLine"
+            android:visibility="visible" />
 
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvProfessionListing"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/_8sdp"
-            android:paddingRight="@dimen/_8sdp" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvProfessionListing"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/_8sdp"
+                android:paddingRight="@dimen/_8sdp" />
+
+            <LinearLayout
+                android:id="@+id/llNoResultFoundSelectProfessions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <customviews.MediumTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/_5sdp"
+                    android:text="No Result Found"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <customviews.MediumTextView
+                    android:id="@+id/txtAddProfessionSelect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/profession_background"
+                    android:drawableLeft="@mipmap/ic_add_no_bg"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:gravity="center"
+                    android:padding="@dimen/_8sdp"
+                    android:text="@string/add_occupation"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
     </LinearLayout>
 
     <customviews.MediumTextView

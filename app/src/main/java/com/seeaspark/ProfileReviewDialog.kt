@@ -14,10 +14,7 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.ContextThemeWrapper
-import android.view.Gravity
-import android.view.View
-import android.view.Window
+import android.view.*
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_profile_review.*
@@ -59,7 +56,7 @@ class ProfileReviewDialog : Activity() {
 
         var drawable = ContextCompat.getDrawable(this, R.mipmap.ic_avatar_1)
 
-        Picasso.with(this).load(userProfileData!!.avatar).resize(drawable!!.intrinsicWidth, drawable!!.intrinsicHeight).into(imgAvatarProfileReview)
+        Picasso.with(this).load(userProfileData!!.avatar.avtar_url).resize(drawable!!.intrinsicWidth, drawable!!.intrinsicHeight).into(imgAvatarProfileReview)
 
         if (userProfileData!!.user_type == Constants.MENTEE) {
             txtMsgReview.text = getString(R.string.mentee_msg)

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.seeaspark.R
+import com.seeaspark.SelectLanguageActivity
 import kotlinx.android.synthetic.main.item_profession.view.*
 import models.LanguageModel
 
@@ -15,11 +16,12 @@ class LanguageAdapter(mConetxt: Context, mLanguageArray: ArrayList<LanguageModel
 
     var mLanguageArray = ArrayList<LanguageModel>()
     var mContext: Context? = null
-
+    var mSelectLanguage:SelectLanguageActivity?=null
     init {
         this.mLanguageArray = mLanguageArray
         this.mContext = mConetxt
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val vhItem: ViewHolder

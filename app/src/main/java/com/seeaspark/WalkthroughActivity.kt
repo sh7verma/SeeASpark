@@ -20,7 +20,7 @@ class WalkthroughActivity : BaseActivity() {
 
     override fun onCreateStuff() {
 
-        mAdapterWalk = NewFragmentPagerAdapter(supportFragmentManager,mContext!!)
+        mAdapterWalk = NewFragmentPagerAdapter(supportFragmentManager, mContext!!)
         vpWalk.adapter = mAdapterWalk
         cpIndicatorWalk.setViewPager(vpWalk)
         cpIndicatorWalk.fillColor = Color.BLACK
@@ -34,6 +34,7 @@ class WalkthroughActivity : BaseActivity() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
             }
+
             override fun onPageSelected(position: Int) {
                 if (position == 0) {
                     delay = 9000
@@ -47,6 +48,13 @@ class WalkthroughActivity : BaseActivity() {
             }
         })
     }
+
+    override fun displayDayMode() {
+    }
+
+    override fun displayNightMode() {
+    }
+
 
     override fun initListener() {
         txtGotIt.setOnClickListener(this)

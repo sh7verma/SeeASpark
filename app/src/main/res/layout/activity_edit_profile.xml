@@ -19,10 +19,11 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
+                android:id="@+id/llMainEditProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_75sdp"
-                android:background="@drawable/short_profile_background"
+                android:background="@drawable/white_short_profile_background"
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/_24sdp"
                 android:paddingRight="@dimen/_24sdp">
@@ -44,7 +45,7 @@
                     android:id="@+id/edNameProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white_color"
+                    android:background="@android:color/transparent"
                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
                     android:gravity="left"
                     android:hint="@string/enter"
@@ -52,6 +53,7 @@
                     android:maxLength="@integer/name_max"
                     android:maxLines="2"
                     android:paddingBottom="@dimen/_12sdp"
+                    android:textColor="@color/darkGreyText"
                     android:textCursorDrawable="@null"
                     android:textSize="@dimen/_13ssp" />
 
@@ -78,7 +80,7 @@
                     android:paddingBottom="@dimen/_12sdp"
                     android:paddingTop="@dimen/_12sdp"
                     android:text="25 Years"
-                    android:textColor="@color/black_color"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_13ssp" />
 
                 <View
@@ -105,7 +107,7 @@
                     android:paddingBottom="@dimen/_12sdp"
                     android:paddingTop="@dimen/_12sdp"
                     android:text="Male"
-                    android:textColor="@color/black_color"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_13ssp" />
 
                 <View
@@ -131,7 +133,7 @@
                     android:paddingBottom="@dimen/_12sdp"
                     android:paddingTop="@dimen/_12sdp"
                     android:text="25 Years"
-                    android:textColor="@color/black_color"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_13ssp" />
 
                 <View
@@ -157,7 +159,7 @@
                     android:paddingBottom="@dimen/_12sdp"
                     android:paddingTop="@dimen/_12sdp"
                     android:text="25 Years"
-                    android:textColor="@color/black_color"
+                    android:textColor="@color/darkGreyText"
                     android:textSize="@dimen/_13ssp" />
 
                 <View
@@ -259,7 +261,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
                         android:text="@string/_320_characters"
-                        android:textColor="@color/greyTextColor"
+                        android:textColor="@color/darkGreyText"
                         android:textSize="@dimen/_12ssp" />
 
                 </LinearLayout>
@@ -268,12 +270,13 @@
                     android:id="@+id/edBioEditProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white_color"
+                    android:background="@android:color/transparent"
                     android:gravity="left"
                     android:hint="@string/enter"
                     android:inputType="textCapSentences|textMultiLine"
                     android:maxLength="320"
                     android:paddingBottom="@dimen/_12sdp"
+                    android:textColor="@color/darkGreyText"
                     android:textCursorDrawable="@null"
                     android:textSize="@dimen/_13ssp" />
 
@@ -304,7 +307,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
                         android:text="@string/_1024_characters"
-                        android:textColor="@color/greyTextColor"
+                        android:textColor="@color/darkGreyText"
                         android:textSize="@dimen/_12ssp" />
 
                 </LinearLayout>
@@ -313,15 +316,14 @@
                     android:id="@+id/edDescriptionEditProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white_color"
                     android:gravity="left"
                     android:hint="@string/enter"
                     android:inputType="textCapSentences|textMultiLine"
                     android:maxLength="1024"
                     android:paddingBottom="@dimen/_72sdp"
+                    android:textColor="@color/darkGreyText"
                     android:textCursorDrawable="@null"
                     android:textSize="@dimen/_13ssp" />
-
 
             </LinearLayout>
 

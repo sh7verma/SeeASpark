@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llMainSettings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_color"
@@ -37,6 +38,7 @@
                     android:src="@mipmap/ic_tell_a_friend" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtTellFriend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableRight="@mipmap/ic_arrow_r"
@@ -68,6 +70,7 @@
                     android:src="@mipmap/ic_rate_us" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtRateUs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/_16sdp"
@@ -99,6 +102,7 @@
                     android:src="@mipmap/ic_blocked_users" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtBlockedUsers"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableRight="@mipmap/ic_arrow_r"
@@ -131,6 +135,7 @@
                     android:src="@mipmap/ic_privacy_policy" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtPrivacyPolicy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/_16sdp"
@@ -162,6 +167,7 @@
                     android:src="@mipmap/ic_terms_of_services" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtTerms"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/_16sdp"
@@ -193,6 +199,7 @@
                     android:src="@mipmap/ic_notification" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtNotification"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableRight="@mipmap/ic_arrow_r"
@@ -210,6 +217,7 @@
 
 
             <LinearLayout
+                android:id="@+id/llNightMode"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_52sdp"
                 android:gravity="center_vertical"
@@ -223,6 +231,7 @@
                     android:src="@mipmap/ic_tell_a_friend" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtNightMode"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -246,6 +255,46 @@
                 android:layout_marginLeft="@dimen/_62sdp"
                 android:background="@color/greyLine" />
 
+            <LinearLayout
+                android:id="@+id/llAutoNightMode"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_52sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_tell_a_friend" />
+
+                <customviews.MediumTextView
+                    android:id="@+id/txtAutoNightMode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingLeft="@dimen/_16sdp"
+                    android:text="@string/auto_night_mode"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/scAutoNightMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:gravity="left"
+                    android:theme="@style/Color1SwitchStyle" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/viewAutoNightMode"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/_62sdp"
+                android:background="@color/greyLine" />
 
             <LinearLayout
                 android:id="@+id/llChangePassword"
@@ -263,6 +312,7 @@
                     android:src="@mipmap/ic_change_password" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtChangePassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableRight="@mipmap/ic_arrow_r"
@@ -296,6 +346,7 @@
                     android:src="@mipmap/ic_logout" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtLogout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/_16sdp"
@@ -326,6 +377,7 @@
                     android:src="@mipmap/ic_deactivate" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtDeactivate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/_16sdp"
@@ -339,7 +391,6 @@
                 android:layout_height="1dp"
                 android:layout_marginLeft="@dimen/_62sdp"
                 android:background="@color/greyLine" />
-
 
             <LinearLayout
                 android:id="@+id/llDeleteAccount"
@@ -357,6 +408,7 @@
                     android:src="@mipmap/ic_activate" />
 
                 <customviews.MediumTextView
+                    android:id="@+id/txtDeleteAccount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/_16sdp"

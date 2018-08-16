@@ -2,24 +2,33 @@ package com.seeaspark
 
 import adapters.TipsAdapter
 import android.Manifest
+import android.app.Fragment
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.widget.Toast
+import com.google.android.gms.analytics.HitBuilders
+import com.google.android.gms.analytics.Tracker
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.squareup.picasso.Picasso
+import fragments.CommunityFragment
+import fragments.EventsFragment
 import fragments.HomeFragment
+import fragments.NotesFragment
 import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.activity_verify_id.*
 import models.BaseSuccessModel
+import models.CardsDisplayModel
 import models.SignupModel
 import network.RetrofitClient
 import retrofit2.Call
@@ -27,6 +36,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
 import utils.GpsStatusDetector
+import utils.MainApplication
 
 class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         LocationListener, GpsStatusDetector.GpsStatusDetectorCallBack, GoogleApiClient.OnConnectionFailedListener {
@@ -46,8 +56,12 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     private var width = 0
     private var height = 0
 
-    val homeFragment = HomeFragment()
+    private var homeFragment: HomeFragment? = null
 
+    private var mTracker: Tracker? = null
+    var mArrayCards = ArrayList<CardsDisplayModel>()
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
         if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -57,15 +71,29 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             mGpsStatusDetector = GpsStatusDetector(this)
             mGpsStatusDetector!!.checkGpsStatus()
         }
-        displayLightModeUI()
     }
 
-    private fun displayLightModeUI() {
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayDayMode() {
         llBottomNavigation.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
+        llHome.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        llNotes.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        llChat.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        llEvents.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        llCommunity.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    override fun displayNightMode() {
+        llBottomNavigation.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+        llHome.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        llNotes.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        llChat.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        llEvents.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        llCommunity.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
     }
 
     override fun onCreateStuff() {
-
         if (intent.hasExtra("matchData")) {
             val matchData: String = intent.getStringExtra("matchData")
             intent = Intent(this, HandshakeActivity::class.java)
@@ -74,27 +102,71 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             startActivity(intent)
         }
 
+        if (intent.hasExtra("broadcastData")) {
+            val title = intent.getStringExtra("broadcastTitle")
+            val message = intent.getStringExtra("broadcastMessage")
+            intent = Intent(this, BroadcastActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            intent.putExtra("broadcastTitle", title)
+            intent.putExtra("broadcastMessage", message)
+            startActivity(intent)
+        }
+
+        if (intent.hasExtra("noteId")) {
+            val noteId = intent.getStringExtra("noteId")
+            val noteFileName = intent.getStringExtra("noteFileName")
+
+            val intent = Intent(mContext!!, NotesActivity::class.java)
+            intent.putExtra("noteId", noteId)
+            intent.putExtra("noteFileName", noteFileName)
+            startActivity(intent)
+            overridePendingTransition(0, 0)
+        }
+
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
-        var drawable = ContextCompat.getDrawable(mContext!!, R.mipmap.ic_ava_ob)
+        val drawable = ContextCompat.getDrawable(mContext!!, R.mipmap.ic_ava_ob)
 
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
 
-        Picasso.with(mContext).load(userData!!.response.avatar)
+        Picasso.with(mContext).load(userData!!.response.avatar.avtar_url)
                 .resize(width, height).into(imgProfileTip)
 
-        if (userData!!.response.user_type == Constants.MENTEE) {
-            imgCommunity.setImageResource(R.mipmap.ic_boost)
-            imgCommunityTips.setImageResource(R.mipmap.ic_boost_s)
-        }
+        checkUserType()
+
+        homeFragment = HomeFragment()
         /// adding home fragment
-        replaceFragment(homeFragment)
+        addHomeFragment(homeFragment!!)
 
         if (mUtils!!.getString("tipsVisible", "") == "0")
             displayTipsData()
         else
             imgHome.setImageResource(R.mipmap.ic_home_s)
+
+        // Obtain the shared Tracker instance.
+        val application = application as MainApplication
+        mTracker = application.defaultTracker
+        mTracker!!.setScreenName(getString(R.string.home))
+        mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
+    }
+
+    fun checkUserType() {
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        if (userData!!.response.user_type == Constants.MENTEE)
+            switchToMentee()
+        else
+            switchToMentor()
+    }
+
+    private fun switchToMentee() {
+        imgCommunity.setImageResource(R.mipmap.ic_boost)
+        imgCommunityTips.setImageResource(R.mipmap.ic_boost_s)
+    }
+
+    private fun switchToMentor() {
+        imgCommunity.setImageResource(R.mipmap.ic_community)
+        imgCommunityTips.setImageResource(R.mipmap.ic_community_s)
     }
 
     override fun initListener() {
@@ -115,19 +187,61 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     override fun onClick(view: View?) {
         when (view) {
             llHome -> {
-
+                homeFragment = HomeFragment()
+                imgHome.setImageResource(R.mipmap.ic_home_s)
+                imgEvents.setImageResource(R.mipmap.ic_events)
+                imgNotes.setImageResource(R.mipmap.ic_notes)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
+                replaceFragment(homeFragment!!)
+                mTracker!!.setScreenName(getString(R.string.home))
+                mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llNotes -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                imgHome.setImageResource(R.mipmap.ic_home)
+                imgEvents.setImageResource(R.mipmap.ic_events)
+                imgNotes.setImageResource(R.mipmap.ic_notes_s)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
+                replaceFragment(NotesFragment())
+                mTracker!!.setScreenName(getString(R.string.notes))
+                mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llChat -> {
                 showToast(mContext!!, getString(R.string.work_in_progress))
             }
             llEvents -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                imgHome.setImageResource(R.mipmap.ic_home)
+                imgEvents.setImageResource(R.mipmap.ic_events_s)
+                imgNotes.setImageResource(R.mipmap.ic_notes)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
+                replaceFragment(EventsFragment())
+                mTracker!!.setScreenName(getString(R.string.events))
+                mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llCommunity -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                if (userData!!.response.user_type == Constants.MENTOR) {
+                    /// user is mentor
+                    imgHome.setImageResource(R.mipmap.ic_home)
+                    imgEvents.setImageResource(R.mipmap.ic_events)
+                    imgCommunity.setImageResource(R.mipmap.ic_community_s)
+                    imgNotes.setImageResource(R.mipmap.ic_notes)
+                    replaceFragment(CommunityFragment())
+                    mTracker!!.setScreenName(getString(R.string.community))
+                    mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
+                } else {
+                    /// user is menteee
+                    showToast(mContext!!, getString(R.string.work_in_progress))
+                    mTracker!!.setScreenName(getString(R.string.boost))
+                    mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
+                }
             }
             imgNextTips -> {
                 if (currentPosition < 5) {
@@ -170,6 +284,10 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         }
     }
 
+    private fun replaceFragment(eventsFragment: Fragment) {
+        fragmentManager.beginTransaction().replace(R.id.llFragment, eventsFragment, null).commit()
+    }
+
     private fun hitTipsAPI() {
         val call = RetrofitClient.getInstance().skipTip(mUtils!!.getString("access_token", ""))
         call.enqueue(object : Callback<BaseSuccessModel> {
@@ -179,6 +297,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llCancelDone, response.body().error!!.message!!)
@@ -191,8 +310,8 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         })
     }
 
-    private fun replaceFragment(fragment: HomeFragment) {
-        fragmentManager.beginTransaction().replace(R.id.llFragment, fragment, null).commit()
+    private fun addHomeFragment(fragment: HomeFragment) {
+        fragmentManager.beginTransaction().add(R.id.llFragment, fragment, null).commit()
     }
 
     private fun displayTipsData() {
@@ -234,9 +353,9 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 getString(R.string.tips_boost))
 
         if (userData!!.response.user_type == Constants.MENTOR)
-            vpTips.adapter = TipsAdapter(iconArray, titleArray, descArray, mContext!!,userData!!.response.avatar)
+            vpTips.adapter = TipsAdapter(iconArray, titleArray, descArray, mContext!!, userData!!.response.avatar.avtar_url)
         else
-            vpTips.adapter = TipsAdapter(iconArrayMentee, titleArrayMentee, descArrayMentee, mContext!!,userData!!.response.avatar)
+            vpTips.adapter = TipsAdapter(iconArrayMentee, titleArrayMentee, descArrayMentee, mContext!!, userData!!.response.avatar.avtar_url)
 
         cpIndicatorTips.setViewPager(vpTips)
         cpIndicatorTips.radius = 10f
@@ -274,11 +393,13 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         if (location != null) {
             mLatitude = location.latitude
             mLongitude = location.longitude
+            mUtils!!.setString("latitude", mLatitude.toString())
+            mUtils!!.setString("longitude", mLongitude.toString())
             if (connectedToInternet()) {
                 if (intent.hasExtra("matchData"))
-                    homeFragment.hitAPI(false)
+                    homeFragment!!.hitAPI(false)
                 else
-                    homeFragment.hitAPI(true)
+                    homeFragment!!.hitAPI(true)
             } else {
                 showInternetAlert(llCommunity)
             }
@@ -329,4 +450,15 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
+    override fun onResume() {
+        MainApplication.isLandingAvailable = true
+        super.onResume()
+    }
+
+    override fun onDestroy() {
+        MainApplication.isLandingAvailable = false
+        super.onDestroy()
+    }
+
 }

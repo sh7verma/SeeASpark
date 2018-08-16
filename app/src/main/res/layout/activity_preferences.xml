@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llMainPreferences"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_color"
@@ -13,6 +14,7 @@
         android:orientation="horizontal">
 
         <customviews.BoldTextView
+            android:id="@+id/txtTitlePrefer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -49,108 +51,167 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/_16sdp"
-                android:paddingBottom="@dimen/_160sdp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/_160sdp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/_8sdp"
-                    android:paddingLeft="@dimen/_16sdp"
-                    android:paddingRight="@dimen/_16sdp">
+                    android:layout_height="@dimen/_58sdp">
 
-                    <customviews.BoldTextView
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/distance"
-                        android:textColor="@color/black_color"
-                        android:textSize="@dimen/_14ssp" />
+                        android:orientation="vertical">
 
-                    <customviews.MediumTextView
-                        android:id="@+id/txtDistanceCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="15 Mile(s)"
-                        android:textColor="@color/black_color"
-                        android:textSize="@dimen/_12ssp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingBottom="@dimen/_8sdp"
+                            android:paddingLeft="@dimen/_16sdp"
+                            android:paddingRight="@dimen/_16sdp">
 
-                </LinearLayout>
+                            <customviews.BoldTextView
+                                android:id="@+id/txtDistanceHint"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/distance"
+                                android:textColor="@color/black_color"
+                                android:textSize="@dimen/_14ssp" />
 
-                <org.florescu.android.rangeseekbar.RangeSeekBar
-                    android:id="@+id/rsbDistance"
+                            <customviews.MediumTextView
+                                android:id="@+id/txtDistanceCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="15 Mile(s)"
+                                android:textColor="@color/black_color"
+                                android:textSize="@dimen/_12ssp" />
+
+                        </LinearLayout>
+
+                        <org.florescu.android.rangeseekbar.RangeSeekBar
+                            android:id="@+id/rsbDistance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_8sdp"
+                            android:layout_marginRight="@dimen/_8sdp"
+                            app:absoluteMaxValue="100"
+                            app:absoluteMinValue="0"
+                            app:activateOnDefaultValues="true"
+                            app:activeColor="@color/colorMentee"
+                            app:barHeight="@dimen/_2sdp"
+                            app:defaultColor="@color/greyLine"
+                            app:showLabels="false"
+                            app:singleThumb="true"
+                            app:textAboveThumbsColor="@color/black_color"
+                            app:thumbDisabled="@mipmap/ic_slider_btn"
+                            app:thumbNormal="@mipmap/ic_slider_btn"
+                            app:thumbPressed="@mipmap/ic_slider_btn"
+                            app:thumbShadowColor="@color/colorLine"
+                            app:valuesAboveThumbs="false" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llDisableDistance"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/disabled"
+                        android:orientation="vertical"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+                <CheckBox
+                    android:id="@+id/cbNoDistance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_8sdp"
-                    android:layout_marginRight="@dimen/_8sdp"
-                    app:absoluteMaxValue="100"
-                    app:absoluteMinValue="0"
-                    app:activateOnDefaultValues="true"
-                    app:activeColor="@color/colorMentee"
-                    app:barHeight="@dimen/_2sdp"
-                    app:defaultColor="@color/greyLine"
-                    app:showLabels="false"
-                    app:singleThumb="true"
-                    app:textAboveThumbsColor="@color/black_color"
-                    app:thumbDisabled="@mipmap/ic_slider_btn"
-                    app:thumbNormal="@mipmap/ic_slider_btn"
-                    app:thumbPressed="@mipmap/ic_slider_btn"
-                    app:thumbShadowColor="@color/colorLine"
-                    app:valuesAboveThumbs="false" />
+                    android:layout_marginLeft="@dimen/_16sdp"
+                    android:text="@string/no_experience_prefered"
+                    android:textSize="@dimen/_12ssp" />
+
 
                 <android.support.v4.widget.Space
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_24sdp" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingLeft="@dimen/_16sdp"
-                    android:paddingRight="@dimen/_16sdp">
+                    android:layout_height="@dimen/_58sdp">
 
-                    <customviews.BoldTextView
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/experience"
-                        android:textColor="@color/black_color"
-                        android:textSize="@dimen/_14ssp" />
+                        android:orientation="vertical">
 
-                    <customviews.MediumTextView
-                        android:id="@+id/txtExperienceCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="3 Year(s)"
-                        android:textColor="@color/black_color"
-                        android:textSize="@dimen/_12ssp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingLeft="@dimen/_16sdp"
+                            android:paddingRight="@dimen/_16sdp">
 
-                </LinearLayout>
+                            <customviews.BoldTextView
+                                android:id="@+id/txtExperienceHint"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/experience"
+                                android:textColor="@color/black_color"
+                                android:textSize="@dimen/_14ssp" />
 
-                <org.florescu.android.rangeseekbar.RangeSeekBar
-                    android:id="@+id/rsbExperience"
+                            <customviews.MediumTextView
+                                android:id="@+id/txtExperienceCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="3 Year(s)"
+                                android:textColor="@color/black_color"
+                                android:textSize="@dimen/_12ssp" />
+
+                        </LinearLayout>
+
+                        <org.florescu.android.rangeseekbar.RangeSeekBar
+                            android:id="@+id/rsbExperience"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_8sdp"
+                            android:layout_marginRight="@dimen/_8sdp"
+                            app:absoluteMaxValue="20"
+                            app:absoluteMinValue="0"
+                            app:activateOnDefaultValues="true"
+                            app:activeColor="@color/colorMentee"
+                            app:barHeight="@dimen/_2sdp"
+                            app:defaultColor="@color/greyLine"
+                            app:showLabels="false"
+                            app:singleThumb="true"
+                            app:textAboveThumbsColor="@color/black_color"
+                            app:thumbDisabled="@mipmap/ic_slider_btn"
+                            app:thumbNormal="@mipmap/ic_slider_btn"
+                            app:thumbPressed="@mipmap/ic_slider_btn"
+                            app:thumbShadowColor="@color/colorLine"
+                            app:valuesAboveThumbs="false" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llDisableExperience"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/disabled"
+                        android:orientation="vertical"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+                <CheckBox
+                    android:id="@+id/cbNoExperience"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_8sdp"
-                    android:layout_marginRight="@dimen/_8sdp"
-                    app:absoluteMaxValue="20"
-                    app:absoluteMinValue="0"
-                    app:activateOnDefaultValues="true"
-                    app:activeColor="@color/colorMentee"
-                    app:barHeight="@dimen/_2sdp"
-                    app:defaultColor="@color/greyLine"
-                    app:showLabels="false"
-                    app:singleThumb="true"
-                    app:textAboveThumbsColor="@color/black_color"
-                    app:thumbDisabled="@mipmap/ic_slider_btn"
-                    app:thumbNormal="@mipmap/ic_slider_btn"
-                    app:thumbPressed="@mipmap/ic_slider_btn"
-                    app:thumbShadowColor="@color/colorLine"
-                    app:valuesAboveThumbs="false" />
-
+                    android:layout_marginLeft="@dimen/_16sdp"
+                    android:text="@string/no_experience_prefered"
+                    android:textSize="@dimen/_12ssp" />
 
                 <LinearLayout
                     android:id="@+id/llGenderPrefer"
@@ -164,6 +225,7 @@
                     android:paddingTop="@dimen/_16sdp">
 
                     <customviews.BoldTextView
+                        android:id="@+id/txtGenderHint"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -204,6 +266,7 @@
                     android:paddingTop="@dimen/_16sdp">
 
                     <customviews.BoldTextView
+                        android:id="@+id/txtSkillHint"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -218,8 +281,67 @@
 
                 </LinearLayout>
 
+                <customviews.LightTextView
+                    android:id="@+id/txtNoSkills"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_16sdp"
+                    android:text="@string/no_skills_prefered"
+                    android:textColor="@color/greyTextColor"
+                    android:textSize="@dimen/_14ssp" />
+
                 <customviews.FlowLayout
                     android:id="@+id/flSkillsPrefer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_16sdp"
+                    android:gravity="left" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/_16sdp"
+                    android:layout_marginRight="@dimen/_16sdp"
+                    android:background="@color/greyLine" />
+
+                <LinearLayout
+                    android:id="@+id/llLanguageSelection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/_16sdp"
+                    android:paddingLeft="@dimen/_16sdp"
+                    android:paddingRight="@dimen/_16sdp"
+                    android:paddingTop="@dimen/_16sdp">
+
+                    <customviews.BoldTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/languages"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_14ssp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/ic_arrow_r" />
+
+                </LinearLayout>
+
+                <customviews.LightTextView
+                    android:id="@+id/txtNoLanguages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_16sdp"
+                    android:text="@string/no_language_prefered"
+                    android:textColor="@color/greyTextColor"
+                    android:textSize="@dimen/_14ssp" />
+
+                <customviews.FlowLayout
+                    android:id="@+id/flLanguagePrefer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_16sdp"
@@ -244,6 +366,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/primary_upper_round_corner"
                 android:orientation="vertical"
+                android:visibility="visible"
                 app:behavior_hideable="false"
                 app:layout_behavior="utils.UserLockBottomSheetBehavior">
 

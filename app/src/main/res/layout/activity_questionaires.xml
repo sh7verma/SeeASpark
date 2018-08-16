@@ -69,6 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:elevation="@dimen/_3sdp"
+            app:cardBackgroundColor="@color/black_color"
             app:cardCornerRadius="@dimen/_16sdp">
 
             <android.support.v4.view.ViewPager
