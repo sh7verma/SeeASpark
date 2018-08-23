@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_handshake.*
 import kotlinx.android.synthetic.main.dialog_short_profile.*
 import models.SignupModel
 import pl.droidsonroids.gif.GifDrawable
+import utils.Constants
 
 class HandshakeActivity : BaseActivity() {
 
@@ -17,7 +18,7 @@ class HandshakeActivity : BaseActivity() {
     var userProfileData: SignupModel? = null
 
     override fun getContentView(): Int {
-        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent ));
+        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent));
         return R.layout.activity_handshake
     }
 
@@ -33,10 +34,8 @@ class HandshakeActivity : BaseActivity() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-
     override fun onCreateStuff() {
-
-       mOtherProfileData = if (intent.hasExtra("otherProfileData"))
+        mOtherProfileData = if (intent.hasExtra("otherProfileData"))
             intent.getParcelableExtra("otherProfileData")
         else
             Gson().fromJson(intent.getStringExtra("matchData"), SignupModel.ResponseBean::class.java);
@@ -59,6 +58,27 @@ class HandshakeActivity : BaseActivity() {
     }
 
     private fun populateData() {
+        if ((userProfileData!!.response.gender.toInt() == Constants.MALE ||
+                        userProfileData!!.response.gender.toInt() == Constants.OTHER) &&
+                (mOtherProfileData!!.gender.toInt() == Constants.MALE ||
+                        mOtherProfileData!!.gender.toInt() == Constants.OTHER)) {
+            /// Male + Male
+            gifHandshake.setImageResource(R.drawable.guy_guy)
+        } else if ((userProfileData!!.response.gender.toInt() == Constants.MALE ||
+                        userProfileData!!.response.gender.toInt() == Constants.OTHER) &&
+                mOtherProfileData!!.gender.toInt() == Constants.FEMALE) {
+            /// Male + Female
+            gifHandshake.setImageResource(R.drawable.guy_girl)
+        } else if (userProfileData!!.response.gender.toInt() == Constants.FEMALE &&
+                (mOtherProfileData!!.gender.toInt() == Constants.MALE ||
+                        mOtherProfileData!!.gender.toInt() == Constants.OTHER)) {
+            /// Female + Male
+            gifHandshake.setImageResource(R.drawable.girl_guy)
+        } else if (userProfileData!!.response.gender.toInt() == Constants.FEMALE &&
+                mOtherProfileData!!.gender.toInt() == Constants.FEMALE) {
+            /// Female + Female
+            gifHandshake.setImageResource(R.drawable.girl_girl)
+        }
         Picasso.with(this).load(userProfileData!!.response.avatar.avtar_url).into(imgUserMatch1)
         Picasso.with(this).load(mOtherProfileData!!.avatar.avtar_url).into(imgUserMatch2)
     }
@@ -67,7 +87,6 @@ class HandshakeActivity : BaseActivity() {
         txtStartChat.setOnClickListener(this)
         txtExplore.setOnClickListener(this)
     }
-
 
 
     override fun getContext() = this

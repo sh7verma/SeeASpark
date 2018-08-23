@@ -9,8 +9,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/transparent_ripple"
         android:padding="@dimen/_12ssp"
-        android:visibility="gone"
-        android:src="@mipmap/ic_back_org" />
+        android:src="@mipmap/ic_back_org"
+        android:visibility="gone" />
 
     <customviews.BoldTextView
         android:layout_width="wrap_content"
@@ -23,22 +23,60 @@
         android:textSize="@dimen/_16ssp" />
 
     <ImageView
+        android:id="@+id/imgLogoutReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/transparent_ripple"
+        android:src="@mipmap/ic_logout_new" />
+
+    <ImageView
         android:id="@+id/imgAvatarReview"
         android:layout_width="@dimen/_120sdp"
-        android:layout_height="@dimen/_120sdp"
-        android:layout_centerInParent="true"
+        android:layout_height="@dimen/_150sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_120sdp"
         android:src="@mipmap/ic_avatar_1" />
 
     <customviews.MediumTextView
+        android:id="@+id/txtUnderReview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/imgAvatarReview"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/_102sdp"
         android:gravity="center"
         android:paddingLeft="@dimen/_16sdp"
         android:paddingRight="@dimen/_16sdp"
+        android:paddingTop="@dimen/_16sdp"
         android:text="@string/your_profile_is_under_review_for_the_admin_approval_thnaks_for_your_patience"
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_14ssp" />
+
+
+    <customviews.SecretTextView
+        android:id="@+id/txtQuote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtQuoteAuthor"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:paddingEnd="@dimen/_16sdp"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingTop="@dimen/_16sdp"
+        android:textColor="@color/greyTextColor"
+        android:textSize="@dimen/_14ssp" />
+
+    <customviews.SecretTextView
+        android:id="@+id/txtQuoteAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:paddingBottom="@dimen/_32sdp"
+        android:paddingEnd="@dimen/_16sdp"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingTop="@dimen/_8sdp"
         android:textColor="@color/black_color"
         android:textSize="@dimen/_14ssp" />
 
@@ -58,7 +96,7 @@
         android:text="@string/logout"
         android:textAllCaps="true"
         android:textColor="@color/black_color"
-        android:textSize="@dimen/_14ssp" />
-
+        android:textSize="@dimen/_14ssp"
+        android:visibility="gone" />
 
 </RelativeLayout>

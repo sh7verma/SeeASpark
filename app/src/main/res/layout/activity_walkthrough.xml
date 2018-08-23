@@ -23,7 +23,7 @@
         android:id="@+id/txtGotIt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_12sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginRight="@dimen/_8sdp"
         android:background="@drawable/white_ripple"
         android:gravity="center"
@@ -31,7 +31,7 @@
         android:text="@string/ok_ngot_it"
         android:textAllCaps="true"
         android:textColor="@color/black_color"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
 

@@ -9,31 +9,23 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.os.Parcelable
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
-import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_questionaires.*
-import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.activity_view_profile.*
 import kotlinx.android.synthetic.main.add_skills.view.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import models.ProfileModel
-import models.QuestionAnswerModel
-import models.QuestionListingModel
 import models.SignupModel
 import network.RetrofitClient
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -75,7 +67,12 @@ class ViewProfileActivity : BaseActivity() {
         llMainViewProfile.background = ContextCompat.getDrawable(this, R.drawable.white_short_profile_background)
         txtRatingViewProfile.setTextColor(blackColor)
         txtNameViewProfile.setTextColor(blackColor)
-        txtProfessionViewProfile.setTextColor(blackColor)
+        txtGenderViewProfile.setTextColor(darkGrey)
+        txtProfessionViewProfile.setTextColor(darkGrey)
+        txtExperienceViewProfile.setTextColor(darkGrey)
+        txtBioViewProfile.setTextColor(darkGrey)
+        txtDescriptionViewProfile.setTextColor(darkGrey)
+
         populateData()
     }
 
@@ -85,7 +82,11 @@ class ViewProfileActivity : BaseActivity() {
         llMainViewProfile.background = ContextCompat.getDrawable(this, R.drawable.dark_short_profile_background)
         txtRatingViewProfile.setTextColor(whiteColor)
         txtNameViewProfile.setTextColor(whiteColor)
+        txtGenderViewProfile.setTextColor(whiteColor)
         txtProfessionViewProfile.setTextColor(whiteColor)
+        txtExperienceViewProfile.setTextColor(whiteColor)
+        txtBioViewProfile.setTextColor(whiteColor)
+        txtDescriptionViewProfile.setTextColor(whiteColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -293,11 +294,11 @@ class ViewProfileActivity : BaseActivity() {
         interestChip.llMainAddSkills.layoutParams = innerParms
 
         if (mUtils!!.getInt("nightMode", 0) == 1) {
-            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.white_default)
-            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        } else {
-            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.skill_card_outer)
             interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+        } else {
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.skill_card_outer)
+            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
         }
 
         interestChip.txtAddSkillChip.text = skillValue

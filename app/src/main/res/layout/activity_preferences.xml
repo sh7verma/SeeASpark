@@ -131,7 +131,6 @@
                     android:text="@string/no_experience_prefered"
                     android:textSize="@dimen/_12ssp" />
 
-
                 <android.support.v4.widget.Space
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_24sdp" />
@@ -317,6 +316,7 @@
                     android:paddingTop="@dimen/_16sdp">
 
                     <customviews.BoldTextView
+                        android:id="@+id/txtLanguageHint"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

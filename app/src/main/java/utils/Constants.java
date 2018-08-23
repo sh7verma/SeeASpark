@@ -83,6 +83,9 @@ public class Constants {
     public static final String AUTODAYMODE = "autoDay";
     public static final String MYNOTES = "1";
     public static final String RECEIVEDNOTES = "2";
+    public static final int MALE=1;
+    public static final int FEMALE=2;
+    public static final int OTHER=3;
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

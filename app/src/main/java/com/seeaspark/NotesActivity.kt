@@ -1,8 +1,6 @@
 package com.seeaspark
 
 import android.app.Activity
-import android.app.ActivityManager
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -12,7 +10,6 @@ import android.text.Html
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import jp.wasabeef.richeditor.RichEditor
 import kotlinx.android.synthetic.main.activity_notes.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import models.NotesListingModel
@@ -30,6 +27,7 @@ class NotesActivity : BaseActivity() {
     var isItalic = false
     var isUnderLine = false
     var isDoneEnabled = false
+    var isStriked = false
     var mNotesData: NotesListingModel.ResponseBean? = null
     var isEdit = false
     var noteId = Constants.EMPTY!!
@@ -72,53 +70,45 @@ class NotesActivity : BaseActivity() {
                 showInternetAlert(llUnderline)
         }
 
-        mEditor.setOnDecorationChangeListener(object : RichEditor.OnDecorationStateListener {
-            override fun onStateChangeListener(text: String?, types: MutableList<RichEditor.Type>?) {
-
-                for (type in types!!) {
-                    Log.e("Type = ", type.name)
-                    if (type.name == "BOLD") {
-                        isBold = true
-                        imgBold.setImageResource(R.mipmap.ic_sel_b)
-                    } else {
-                        isBold = false
-                        imgBold.setImageResource(R.mipmap.ic_b)
-                    }
-                    if (type.name == "ITALIC") {
-                        isItalic = true
-                        imgItalic.setImageResource(R.mipmap.ic_sel_i)
-                    } else {
-                        isItalic = false
-                        imgItalic.setImageResource(R.mipmap.ic_i)
-                    }
-                    if (type.name == "UNDERLINE") {
-                        isUnderLine = true
-                        imgUnderline.setImageResource(R.mipmap.ic_sel_u)
-                    } else {
-                        isUnderLine = false
-                        imgUnderline.setImageResource(R.mipmap.ic_u)
-                    }
-
-                    when {
-                        type.name == "BLACK" -> {
-                            selectBlack()
-                        }
-                        type.name == "RED" -> {
-                            selectRed()
-                        }
-                        type.name == "GREEN" -> {
-                            selectGreen()
-                        }
-                        type.name == "BLUE" -> {
-                            selectBlue()
-                        }
-                    }
-
+        mEditor.setOnDecorationChangeListener { text, types ->
+            unSelectItalic()
+            unSelectBold()
+            unSelectStrikeThrough()
+            unSelectUnderLine()
+            for (type in types!!) {
+                Log.e("Type = ", type.name)
+                if (type.name == "BOLD") {
+                    selectBold()
                 }
-            }
-        })
+                if (type.name == "ITALIC") {
+                    setItalic()
+                }
+                if (type.name == "UNDERLINE") {
+                    selectUnderLine()
+                }
+                if (type.name == "STRIKETHROUGH") {
+                    selectStrikeThrough()
+                }
 
-        mEditor.setOnTextChangeListener(RichEditor.OnTextChangeListener {
+                when {
+                    type.name == "BLACK" -> {
+                        selectBlack()
+                    }
+                    type.name == "RED" -> {
+                        selectRed()
+                    }
+                    type.name == "GREEN" -> {
+                        selectGreen()
+                    }
+                    type.name == "BLUE" -> {
+                        selectBlue()
+                    }
+                }
+
+            }
+        }
+
+        mEditor.setOnTextChangeListener({
             if (it.isEmpty()) {
                 isDoneEnabled = false
                 mEditor.removeFormat()
@@ -132,39 +122,24 @@ class NotesActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
-        /* llMainNotes.setBackgroundColor(whiteColor)
-         imgBackCustom.setImageResource(R.mipmap.ic_back_org)
-         llCustomToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
-         imgBackCustom.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
-         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-         imgOption1Custom.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
-         llBold.setBackgroundResource(whiteRipple)
-         llItalic.setBackgroundResource(whiteRipple)
-         llUnderline.setBackgroundResource(whiteRipple)*/
+
 
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-        /* llMainNotes.setBackgroundColor(blackColor)
-         imgBackCustom.setImageResource(R.mipmap.ic_back_black)
-         llCustomToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
-         imgBackCustom.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
-         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-         imgOption1Custom.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
-         llBold.setBackgroundResource(blackRipple)
-         llItalic.setBackgroundResource(blackRipple)
-         llUnderline.setBackgroundResource(blackRipple)*/
+        // no op
     }
 
     override fun onCreateStuff() {
-
+        // no op
     }
 
     override fun initListener() {
         llBold.setOnClickListener(this)
         llItalic.setOnClickListener(this)
         llUnderline.setOnClickListener(this)
+        llStrike.setOnClickListener(this)
         rlBlack.setOnClickListener(this)
         rlRed.setOnClickListener(this)
         rlGreen.setOnClickListener(this)
@@ -189,7 +164,7 @@ class NotesActivity : BaseActivity() {
                         else
                             hitAPI()
                     } else
-                        showAlert(txtOptionCustom, "Please add text in your note")
+                        showAlert(txtOptionCustom, getString(R.string.error_note))
                 } else
                     showInternetAlert(txtOptionCustom)
             }
@@ -200,6 +175,14 @@ class NotesActivity : BaseActivity() {
                     unSelectBold()
                 }
                 mEditor.setBold()
+            }
+            llStrike -> {
+                if (!isStriked) {
+                    selectStrikeThrough()
+                } else {
+                    unSelectStrikeThrough()
+                }
+                mEditor.setStrikeThrough()
             }
             llItalic -> {
                 if (!isItalic) {
@@ -244,6 +227,8 @@ class NotesActivity : BaseActivity() {
                 mEditor.setItalic()
             if (isUnderLine)
                 mEditor.setUnderline()
+            if (isStriked)
+                mEditor.setStrikeThrough()
         }
     }
 
@@ -429,6 +414,16 @@ class NotesActivity : BaseActivity() {
     private fun selectBold() {
         imgBold.setImageResource(R.mipmap.ic_sel_b)
         isBold = true
+    }
+
+    private fun unSelectStrikeThrough() {
+        isStriked = false
+        imgStrike.setImageResource(R.mipmap.ic_strike)
+    }
+
+    private fun selectStrikeThrough() {
+        imgStrike.setImageResource(R.mipmap.ic_strike_s)
+        isStriked = true
     }
 
     private fun selectBlue() {

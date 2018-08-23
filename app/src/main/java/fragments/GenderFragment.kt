@@ -10,6 +10,7 @@ import com.cocosw.bottomsheet.BottomSheet
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import kotlinx.android.synthetic.main.fragment_gender.*
+import utils.Constants
 
 
 class GenderFragment : Fragment(), View.OnClickListener {
@@ -65,17 +66,17 @@ class GenderFragment : Fragment(), View.OnClickListener {
                 R.id.item_male -> {
                     txtSelectGender.setText(R.string.male)
                     mCreateProfileInstance!!.mGenderText = txtSelectGender.text.toString()
-                    mCreateProfileInstance!!.mGender = 1
+                    mCreateProfileInstance!!.mGender = Constants.MALE
                 }
                 R.id.item_female -> {
                     txtSelectGender.setText(R.string.female)
                     mCreateProfileInstance!!.mGenderText = txtSelectGender.text.toString()
-                    mCreateProfileInstance!!.mGender = 2
+                    mCreateProfileInstance!!.mGender = Constants.FEMALE
                 }
                 R.id.item_other -> {
                     txtSelectGender.setText(R.string.other)
                     mCreateProfileInstance!!.mGenderText = txtSelectGender.text.toString()
-                    mCreateProfileInstance!!.mGender = 3
+                    mCreateProfileInstance!!.mGender = Constants.OTHER
                 }
             }
         }.show()

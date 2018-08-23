@@ -8,8 +8,7 @@
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifHandshake"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_180sdp"
-        android:src="@drawable/new_ani" />
+        android:layout_height="@dimen/_180sdp" />
 
     <LinearLayout
         android:id="@+id/llDataHandshake"

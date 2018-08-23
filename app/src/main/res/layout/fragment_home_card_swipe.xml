@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llMainHomeFrag"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llHomeToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_48sdp"
+        android:background="@color/white_color"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imgPreferHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_ripple"
+            android:contentDescription="@string/preferences"
+            android:padding="@dimen/_12sdp"
+            android:src="@mipmap/ic_filter" />
+
+        <customviews.BoldTextView
+            android:id="@+id/txtTitleHome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/mentor"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_16ssp" />
+
+        <ImageView
+            android:id="@+id/imgProfileHome"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/white_ripple"
+            android:contentDescription="@string/avatar"
+            android:padding="@dimen/_12sdp"
+            android:src="@mipmap/ic_ava_ob" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/viewAbove"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/greyLine" />
+
+    <RelativeLayout
+        android:id="@+id/rlCardBase"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background">
+
+        <LinearLayout
+            android:id="@+id/llOutOfCards"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="@dimen/_240sdp"
+                android:layout_height="@dimen/_240sdp"
+                android:layout_marginBottom="@dimen/_24sdp"
+                android:background="@drawable/background_out_of_card"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgCenterAvatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_avatar_1" />
+
+            </LinearLayout>
+
+            <customviews.BoldTextView
+                android:id="@+id/txtOutOfCards"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/_8sdp"
+                android:text="@string/out_of_cards"
+                android:textAllCaps="true"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_16ssp" />
+
+            <customviews.LightTextView
+                android:id="@+id/txtOutOfCardsHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLength="40"
+                android:text="@string/lorem_ipsum"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_13ssp" />
+
+            <customviews.MediumTextView
+                android:id="@+id/txtGetCards"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:background="@drawable/black_border_solid_white_round_corner"
+                android:gravity="center"
+                android:text="@string/get_cards"
+                android:textAllCaps="true"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_14ssp" />
+
+        </LinearLayout>
+
+        <com.yuyakaido.android.cardstackview.CardStackView
+            android:id="@+id/csvUsers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/_32sdp"
+            android:paddingLeft="@dimen/_16sdp"
+            android:paddingRight="@dimen/_16sdp"
+            android:paddingTop="@dimen/_90sdp"
+            app:elevationEnabled="true"
+            app:leftOverlay="@layout/layout_left_overlay"
+            app:rightOverlay="@layout/layout_right_overlay"
+            app:scaleDiff="0.06"
+            app:stackFrom="top"
+            app:swipeDirection="horizontal"
+            app:swipeEnabled="true"
+            app:swipeThreshold="0.75"
+            app:translationDiff="26"
+            app:visibleCount="5" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

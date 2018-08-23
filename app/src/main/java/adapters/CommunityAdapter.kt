@@ -157,9 +157,9 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
 
                 holder.cvCommunityListing.setOnClickListener {
                     when {
-                        mCommunityFragment != null -> mCommunityFragment!!.moveToCommunityDetail(mCommunityArray[position].id,holder.imgCommunityListing)
-                        mSearchInstance != null -> mSearchInstance!!.moveToCommunityDetail(mCommunityArray[position].id,holder.imgCommunityListing)
-                        mBookmarkInstance != null -> mBookmarkInstance!!.moveToCommunityDetail(mCommunityArray[position].id,holder.imgCommunityListing)
+                        mCommunityFragment != null -> mCommunityFragment!!.moveToCommunityDetail(mCommunityArray[position].id, holder.imgCommunityListing)
+                        mSearchInstance != null -> mSearchInstance!!.moveToCommunityDetail(mCommunityArray[position].id, holder.imgCommunityListing)
+                        mBookmarkInstance != null -> mBookmarkInstance!!.moveToCommunityDetail(mCommunityArray[position].id, holder.imgCommunityListing)
                     }
                 }
             }
@@ -187,6 +187,7 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cvCommunityListing = itemView.cvCommunityListing!!
+        val rlCommunityListing = itemView.rlCommunityListing!!
         val imgCommunityListingBookmark = itemView.imgCommunityListingBookmark!!
         val imgCommunityListing = itemView.imgCommunityListing!!
         val txtCommunityTitle = itemView.txtCommunityTitle!!
@@ -197,7 +198,6 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
         var txtLikeCountCommunityListing = itemView.txtLikeCountCommunityListing!!
         var txtCommentCountCommunityListing = itemView.txtCommentCountCommunityListing!!
         var llCommunityLikesComments = itemView.llCommunityLikesComments!!
-
 
         init {
             llCommunityLikesComments.visibility = View.VISIBLE
@@ -210,6 +210,7 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
 
         private fun displayDayMode() {
             cvCommunityListing.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            rlCommunityListing.setBackgroundResource(0)
             txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
             txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
             txtLikeCountCommunityListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
@@ -218,6 +219,7 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
 
         private fun displayNightMode() {
             cvCommunityListing.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.cardview_dark_background))
+            rlCommunityListing.setBackgroundResource(R.drawable.night_card_background)
             txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
             txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
             txtLikeCountCommunityListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))

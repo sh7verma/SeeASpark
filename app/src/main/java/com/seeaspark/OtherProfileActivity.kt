@@ -57,16 +57,30 @@ class OtherProfileActivity : BaseActivity() {
         txtRatingViewProfile.setTextColor(blackColor)
         txtNameViewProfile.setTextColor(blackColor)
         txtProfessionViewProfile.setTextColor(blackColor)
-        populateData()
+        txtGenderViewProfile.setTextColor(darkGrey)
+        txtExperienceViewProfile.setTextColor(darkGrey)
+        txtBioViewProfile.setTextColor(darkGrey)
+        txtDescriptionViewProfile.setTextColor(darkGrey)
+
+        if (userData != null) {
+            populateData()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-        populateData()
         llMainViewProfile.background = ContextCompat.getDrawable(this, R.drawable.dark_short_profile_background)
         txtRatingViewProfile.setTextColor(whiteColor)
         txtNameViewProfile.setTextColor(whiteColor)
         txtProfessionViewProfile.setTextColor(whiteColor)
+        txtGenderViewProfile.setTextColor(whiteColor)
+        txtExperienceViewProfile.setTextColor(whiteColor)
+        txtBioViewProfile.setTextColor(whiteColor)
+        txtDescriptionViewProfile.setTextColor(whiteColor)
+
+        if (userData != null) {
+            populateData()
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -202,11 +216,11 @@ class OtherProfileActivity : BaseActivity() {
         interestChip.llMainAddSkills.layoutParams = innerParms
 
         if (mUtils!!.getInt("nightMode", 0) == 1) {
-            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.white_default)
-            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        } else {
-            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.skill_card_outer)
             interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+        } else {
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.skill_card_outer)
+            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
         }
 
         interestChip.txtAddSkillChip.text = skillValue

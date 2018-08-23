@@ -239,5 +239,24 @@
     <string name="share_event">Share Event</string>
     <string name="share_community">Share Community</string>
     <string name="invalid_access_token_message">Someone else login on another device with your credentials.</string>
+    <string name="preferences">preferences</string>
+    <string name="avatar">avatar</string>
+    <string name="get_cards">Get Cards</string>
+    <string name="error_note">Please add text in your note</string>
+    <string name="quote_1">“Rivers know this: there is no hurry. We shall get there some day.”</string>
+    <string name="quote_owner1">― A.A. Milne, Winnie-the-Pooh</string>
+    <string name="quote_2">“Why is patience so important?\n"Because it makes us pay attention.”</string>
+    <string name="quote_owner2">― Paulo Coelho</string>
+    <string name="quote_3">“Well, we must wait for the future to show.”</string>
+    <string name="quote_owner3">― Virginia Woolf, To the Lighthouse</string>
+    <string name="quote_4">“Some people can never understand that you have to wait, even for the best of things, until the right time comes.”</string>
+    <string name="quote_owner4">― Franklin D. Roosevelt</string>
+    <string name="quote_5">"Someone is sitting in the shade today because someone planted a tree a long time ago.”</string>
+    <string name="quote_owner5">― Warren Buffett</string>
+    <string name="quote_6">“Have patience. All things are difficult before they become easy.” </string>
+    <string name="quote_owner6">― Saadi</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="show_password">Show Password</string>
+    <string name="book_now">Book Now</string>
 
 </resources>

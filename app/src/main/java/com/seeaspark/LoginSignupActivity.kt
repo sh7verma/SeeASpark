@@ -6,6 +6,8 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.util.Patterns
 import android.view.KeyEvent
@@ -28,6 +30,7 @@ import com.linkedin.platform.listeners.ApiListener
 import com.linkedin.platform.listeners.ApiResponse
 import com.linkedin.platform.listeners.AuthListener
 import com.linkedin.platform.utils.Scope
+import kotlinx.android.synthetic.main.activity_preferences.*
 import kotlinx.android.synthetic.main.activity_signup.*
 import models.SignupModel
 import network.RetrofitClient
@@ -152,12 +155,22 @@ class LoginSignupActivity : BaseActivity() {
             }
         })
 
-        edPassword.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+        edPassword.setOnEditorActionListener({ v, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
                 verifyDetails()
             }
             true
         })
+
+        cbShowPassword.setOnCheckedChangeListener { p0, isChecked ->
+            if (!isChecked) {
+                edPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                edPassword.setSelection(edPassword.text.toString().length)
+            } else {
+                edPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                edPassword.setSelection(edPassword.text.toString().length)
+            }
+        }
     }
 
     override fun initListener() {
@@ -413,7 +426,7 @@ class LoginSignupActivity : BaseActivity() {
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 1) {
-
+                        mUtils!!.setString("user_type", response.body().response.user_type.toString())
                         mUtils!!.setString("access_token", response.body().response.access_token)
                         mUtils!!.setString("user_id", response.body().response.id.toString())
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
@@ -426,7 +439,7 @@ class LoginSignupActivity : BaseActivity() {
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 2) {
-
+                        mUtils!!.setString("user_type", response.body().response.user_type.toString())
                         mUtils!!.setString("access_token", response.body().response.access_token)
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
                         mUtils!!.setString("user_id", response.body().response.id.toString())
@@ -547,7 +560,7 @@ class LoginSignupActivity : BaseActivity() {
                             } else if (response.body().response.email_verified == 1 &&
                                     response.body().response.document_verified == 1 &&
                                     response.body().response.profile_status == 1) {
-
+                                mUtils!!.setString("user_type", response.body().response.user_type.toString())
                                 mUtils!!.setString("access_token", response.body().response.access_token)
                                 mUtils!!.setInt("profile_status", response.body().response.profile_status)
                                 mUtils!!.setString("user_id", response.body().response.id.toString())
@@ -558,7 +571,7 @@ class LoginSignupActivity : BaseActivity() {
                             } else if (response.body().response.email_verified == 1 &&
                                     response.body().response.document_verified == 1 &&
                                     response.body().response.profile_status == 2) {
-
+                                mUtils!!.setString("user_type", response.body().response.user_type.toString())
                                 mUtils!!.setString("access_token", response.body().response.access_token)
                                 mUtils!!.setInt("profile_status", response.body().response.profile_status)
                                 mUtils!!.setString("user_id", response.body().response.id.toString())

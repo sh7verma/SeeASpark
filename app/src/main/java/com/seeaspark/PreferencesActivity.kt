@@ -11,12 +11,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.cocosw.bottomsheet.BottomSheet
 import customviews.FlowLayout
-import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.activity_preferences.*
 import kotlinx.android.synthetic.main.activity_preferences.view.*
 import kotlinx.android.synthetic.main.add_skills.view.*
@@ -76,9 +74,7 @@ class PreferencesActivity : BaseActivity() {
                 txtDistanceCount.text = "100+ Mile(s)"
             } else {
                 llDisableDistance.visibility = View.GONE
-              /*  mMaxDistanceValue = 15
-                rsbDistance.selectedMaxValue = 15
-                txtDistanceCount.text = "15 Mile(s)"*/
+                mMaxDistanceValue = 101
             }
         }
     }
@@ -99,6 +95,9 @@ class PreferencesActivity : BaseActivity() {
         txtGenderHint.setTextColor(blackColor)
         txtGenderPrefer.setTextColor(blackColor)
 
+        llLanguageSelection.setBackgroundResource(whiteRipple)
+        txtLanguageHint.setTextColor(blackColor)
+
         llSkillSelection.setBackgroundResource(whiteRipple)
         txtSkillHint.setTextColor(blackColor)
     }
@@ -118,6 +117,9 @@ class PreferencesActivity : BaseActivity() {
         txtGenderPrefer.setBackgroundResource(blackRipple)
         txtGenderHint.setTextColor(whiteColor)
         txtGenderPrefer.setTextColor(whiteColor)
+
+        llLanguageSelection.setBackgroundResource(blackRipple)
+        txtLanguageHint.setTextColor(whiteColor)
 
         llSkillSelection.setBackgroundResource(blackRipple)
         txtSkillHint.setTextColor(whiteColor)
@@ -247,7 +249,8 @@ class PreferencesActivity : BaseActivity() {
     private fun addNoProfessionData() {
         val professionData = ProfessionModel()
         professionData.name = "No Preferences"
-        professionData.isSelected = true
+        if (mSelectedProfessionsArray.isEmpty())
+            professionData.isSelected = true
         professionData.id = 0
         mProfessionArray.add(professionData)
     }

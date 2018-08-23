@@ -23,7 +23,7 @@ import com.google.android.gms.location.LocationServices
 import com.squareup.picasso.Picasso
 import fragments.CommunityFragment
 import fragments.EventsFragment
-import fragments.HomeFragment
+import fragments.HomeCardSwipeFragment
 import fragments.NotesFragment
 import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.activity_verify_id.*
@@ -56,10 +56,11 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     private var width = 0
     private var height = 0
 
-    private var homeFragment: HomeFragment? = null
+    private var homeFragment: HomeCardSwipeFragment?= null
 
     private var mTracker: Tracker? = null
     var mArrayCards = ArrayList<CardsDisplayModel>()
+    var mArrayTempCards = ArrayList<CardsDisplayModel>()
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
@@ -135,7 +136,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
         checkUserType()
 
-        homeFragment = HomeFragment()
+        homeFragment = HomeCardSwipeFragment()
         /// adding home fragment
         addHomeFragment(homeFragment!!)
 
@@ -187,10 +188,11 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     override fun onClick(view: View?) {
         when (view) {
             llHome -> {
-                homeFragment = HomeFragment()
+                homeFragment = HomeCardSwipeFragment()
                 imgHome.setImageResource(R.mipmap.ic_home_s)
                 imgEvents.setImageResource(R.mipmap.ic_events)
                 imgNotes.setImageResource(R.mipmap.ic_notes)
+                imgChat.setImageResource(R.mipmap.ic_speach)
                 if (userData!!.response.user_type == Constants.MENTEE)
                     imgCommunity.setImageResource(R.mipmap.ic_boost)
                 else
@@ -203,6 +205,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 imgHome.setImageResource(R.mipmap.ic_home)
                 imgEvents.setImageResource(R.mipmap.ic_events)
                 imgNotes.setImageResource(R.mipmap.ic_notes_s)
+                imgChat.setImageResource(R.mipmap.ic_speach)
                 if (userData!!.response.user_type == Constants.MENTEE)
                     imgCommunity.setImageResource(R.mipmap.ic_boost)
                 else
@@ -218,6 +221,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 imgHome.setImageResource(R.mipmap.ic_home)
                 imgEvents.setImageResource(R.mipmap.ic_events_s)
                 imgNotes.setImageResource(R.mipmap.ic_notes)
+                imgChat.setImageResource(R.mipmap.ic_speach)
                 if (userData!!.response.user_type == Constants.MENTEE)
                     imgCommunity.setImageResource(R.mipmap.ic_boost)
                 else
@@ -233,6 +237,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                     imgEvents.setImageResource(R.mipmap.ic_events)
                     imgCommunity.setImageResource(R.mipmap.ic_community_s)
                     imgNotes.setImageResource(R.mipmap.ic_notes)
+                    imgChat.setImageResource(R.mipmap.ic_speach)
                     replaceFragment(CommunityFragment())
                     mTracker!!.setScreenName(getString(R.string.community))
                     mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
@@ -310,7 +315,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         })
     }
 
-    private fun addHomeFragment(fragment: HomeFragment) {
+    private fun addHomeFragment(fragment: HomeCardSwipeFragment) {
         fragmentManager.beginTransaction().add(R.id.llFragment, fragment, null).commit()
     }
 

@@ -50,10 +50,6 @@
             android:layout_height="@dimen/_42sdp"
             android:gravity="center_vertical">
 
-            <android.support.v4.widget.Space
-                android:layout_width="@dimen/_16sdp"
-                android:layout_height="match_parent" />
-
             <LinearLayout
                 android:id="@+id/llBold"
                 android:layout_width="@dimen/_36sdp"
@@ -98,6 +94,21 @@
                     android:layout_height="wrap_content"
                     android:contentDescription="@null"
                     android:src="@mipmap/ic_u" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llStrike"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="@dimen/_36sdp"
+                android:background="@drawable/white_ripple"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imgStrike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@mipmap/ic_strike" />
             </LinearLayout>
 
         </LinearLayout>

@@ -1,12 +1,12 @@
 package com.seeaspark
 
-import android.app.Activity
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
+import android.graphics.Typeface
+import android.os.Handler
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.util.Log
@@ -22,8 +22,12 @@ import retrofit2.Response
 import utils.Constants
 
 class ReviewActivity : BaseActivity() {
+
     private var userData: SignupModel? = null
     private var isSwitched = false
+    private var mQuotesArrayList = ArrayList<String>()
+    private var mQuotesAuthorArrayList = ArrayList<String>()
+    private var count = 1
 
     override fun getContentView() = R.layout.activity_review
 
@@ -31,17 +35,21 @@ class ReviewActivity : BaseActivity() {
         if (intent.hasExtra("isSwitched")) {
             isSwitched = true
             imgBackReview.visibility = View.VISIBLE
-            txtLogoutReviewScreen.visibility = View.INVISIBLE
+            imgLogoutReview.visibility = View.INVISIBLE
         }
     }
 
     override fun displayDayMode() {
+
     }
 
     override fun displayNightMode() {
+
     }
 
     override fun onCreateStuff() {
+        loadQuotesData()
+
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
         if (!isSwitched && mUtils!!.getString("profileReview", "").isEmpty())
@@ -55,10 +63,26 @@ class ReviewActivity : BaseActivity() {
         } else {
             showInternetAlert(imgBackReview)
         }
+
+        val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
+        val typefaceBold = Typeface.createFromAsset(assets, "fonts/bold.otf")
+
+        txtQuote.typeface = typeface
+        txtQuoteAuthor.typeface = typefaceBold
+
+        txtQuote.setText(mQuotesArrayList[0])
+        txtQuote.show()
+        txtQuote.setValueUpdateListener {
+            displayQuotesWithAnimation(it)
+        }
+
+        txtQuoteAuthor.setText(mQuotesAuthorArrayList[0])
+        txtQuoteAuthor.show()
+        txtQuoteAuthor.setValueUpdateListener { displayQuotesWithAnimation(it) }
     }
 
     override fun initListener() {
-        txtLogoutReviewScreen.setOnClickListener(this)
+        imgLogoutReview.setOnClickListener(this)
         imgBackReview.setOnClickListener(this)
     }
 
@@ -66,11 +90,11 @@ class ReviewActivity : BaseActivity() {
 
     override fun onClick(view: View?) {
         when (view) {
-            txtLogoutReviewScreen -> {
+            imgLogoutReview -> {
                 if (connectedToInternet())
                     alertLogoutDialog()
                 else
-                    showInternetAlert(txtLogoutReviewScreen)
+                    showInternetAlert(imgLogoutReview)
             }
             imgBackReview -> {
                 if (isSwitched) {
@@ -89,9 +113,7 @@ class ReviewActivity : BaseActivity() {
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
                 if (response.body().response != null) {
                     dismissLoader()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        updateProfileDatabase(response.body().response)
-                    }
+                    updateProfileDatabase(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
@@ -106,6 +128,41 @@ class ReviewActivity : BaseActivity() {
                 showAlert(imgBackReview, t!!.localizedMessage)
             }
         })
+    }
+
+    private fun loadQuotesData() {
+        mQuotesArrayList.add(getString(R.string.quote_1))
+        mQuotesArrayList.add(getString(R.string.quote_2))
+        mQuotesArrayList.add(getString(R.string.quote_3))
+        mQuotesArrayList.add(getString(R.string.quote_4))
+        mQuotesArrayList.add(getString(R.string.quote_5))
+        mQuotesArrayList.add(getString(R.string.quote_6))
+
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner1))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner2))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner3))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner4))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner5))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner6))
+    }
+
+    private fun displayQuotesWithAnimation(isVisible: Boolean) {
+        if (count < 6) {
+            if (isVisible) {
+                /// turn to hide
+                Handler().postDelayed({
+                    txtQuote.hide()
+                    txtQuoteAuthor.hide()
+                }, 3000)
+            } else {
+                /// turn to visible
+                txtQuote.setText(mQuotesArrayList[count])
+                txtQuote.show()
+                txtQuoteAuthor.setText(mQuotesAuthorArrayList[count])
+                txtQuoteAuthor.show()
+                count++
+            }
+        }
     }
 
     private fun updateProfileDatabase(response: SignupModel.ResponseBean?) {
@@ -151,7 +208,7 @@ class ReviewActivity : BaseActivity() {
 
     var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            var intent: Intent? = null
+            val intent: Intent?
             if (isSwitched) {
                 intent = Intent(mContext!!, QuestionnariesActivity::class.java)
                 intent.putExtra("newUserType", Constants.MENTOR)

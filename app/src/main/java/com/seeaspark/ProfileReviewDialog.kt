@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_review.*
 import kotlinx.android.synthetic.main.dialog_profile_review.*
 import models.SignupModel
 import utils.Connection_Detector
