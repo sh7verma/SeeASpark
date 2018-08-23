@@ -39,7 +39,7 @@ class BookmarkEventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostMode
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.cvEventsListing.setOnClickListener {
-            mbookmarkEvents!!.moveToEventDetail(mEventsArray[position].id)
+            mbookmarkEvents!!.moveToEventDetail(mEventsArray[position].id, holder.imgEventsListing)
         }
 
     }

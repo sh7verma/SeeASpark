@@ -157,9 +157,9 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
 
                 holder.cvCommunityListing.setOnClickListener {
                     when {
-                        mCommunityFragment != null -> mCommunityFragment!!.moveToCommunityDetail(mCommunityArray[position].id)
-                        mSearchInstance != null -> mSearchInstance!!.moveToCommunityDetail(mCommunityArray[position].id)
-                        mBookmarkInstance != null -> mBookmarkInstance!!.moveToCommunityDetail(mCommunityArray[position].id)
+                        mCommunityFragment != null -> mCommunityFragment!!.moveToCommunityDetail(mCommunityArray[position].id,holder.imgCommunityListing)
+                        mSearchInstance != null -> mSearchInstance!!.moveToCommunityDetail(mCommunityArray[position].id,holder.imgCommunityListing)
+                        mBookmarkInstance != null -> mBookmarkInstance!!.moveToCommunityDetail(mCommunityArray[position].id,holder.imgCommunityListing)
                     }
                 }
             }

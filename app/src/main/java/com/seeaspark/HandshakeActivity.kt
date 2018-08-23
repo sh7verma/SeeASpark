@@ -1,15 +1,15 @@
 package com.seeaspark
 
+import android.content.Intent
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_handshake.*
-import kotlinx.android.synthetic.main.dialog_short_profile.*
 import models.SignupModel
 import pl.droidsonroids.gif.GifDrawable
+import java.util.*
 
 class HandshakeActivity : BaseActivity() {
 
@@ -17,7 +17,7 @@ class HandshakeActivity : BaseActivity() {
     var userProfileData: SignupModel? = null
 
     override fun getContentView(): Int {
-        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent ));
+        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent));
         return R.layout.activity_handshake
     }
 
@@ -36,15 +36,14 @@ class HandshakeActivity : BaseActivity() {
 
     override fun onCreateStuff() {
 
-      /*  mOtherProfileData = if (intent.hasExtra("otherProfileData"))
+        mOtherProfileData = if (intent.hasExtra("otherProfileData"))
             intent.getParcelableExtra("otherProfileData")
         else
             Gson().fromJson(intent.getStringExtra("matchData"), SignupModel.ResponseBean::class.java);
 
-
         userProfileData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         populateData()
-*/
+
         val animation1 = AlphaAnimation(0f, 1f)
         animation1.duration = 1500
         animation1.fillAfter = true
@@ -60,15 +59,14 @@ class HandshakeActivity : BaseActivity() {
     }
 
     private fun populateData() {
-        Picasso.with(this).load(userProfileData!!.response.avatar).into(imgUserMatch1)
-        Picasso.with(this).load(mOtherProfileData!!.avatar).into(imgUserMatch2)
+        Picasso.with(this).load(userProfileData!!.response.avatar.avtar_url).into(imgUserMatch1)
+        Picasso.with(this).load(mOtherProfileData!!.avatar.avtar_url).into(imgUserMatch2)
     }
 
     override fun initListener() {
         txtStartChat.setOnClickListener(this)
         txtExplore.setOnClickListener(this)
     }
-
 
 
     override fun getContext() = this
@@ -79,7 +77,15 @@ class HandshakeActivity : BaseActivity() {
                 moveBack()
             }
             txtStartChat -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                val intent = Intent(this, ConversationActivity::class.java)
+                val mParticpantIDSList = ArrayList<String>()
+                mParticpantIDSList.add(mOtherProfileData!!.id.toString() + "_" + mOtherProfileData!!.user_type)
+                mParticpantIDSList.add(userProfileData!!.response.id.toString() + "_" + userProfileData!!.response.user_type)
+                Collections.sort(mParticpantIDSList)
+                var mParticpantIDS = "" + mParticpantIDSList
+                var participants = mParticpantIDS.substring(1, mParticpantIDS.length - 1)
+                intent.putExtra("participantIDs", participants)
+                startActivity(intent)
                 moveBack()
             }
         }

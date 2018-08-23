@@ -117,6 +117,7 @@ class ChangePasswordActivity : BaseActivity() {
                     moveBack()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(txtChangePassword, response.body().error!!.message!!)

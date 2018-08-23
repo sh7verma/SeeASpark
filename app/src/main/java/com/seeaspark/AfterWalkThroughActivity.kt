@@ -10,6 +10,7 @@ class AfterWalkThroughActivity : BaseActivity() {
 
     override fun initUI() {
 
+
     }
 
     override fun displayDayMode() {

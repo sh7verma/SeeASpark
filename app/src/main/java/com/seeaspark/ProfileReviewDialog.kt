@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
@@ -16,8 +17,13 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import com.firebase.client.Firebase
+import com.firebase.client.FirebaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
+import database.Database
 import kotlinx.android.synthetic.main.dialog_profile_review.*
+import models.ProfileModel
 import models.SignupModel
 import utils.Connection_Detector
 import utils.Constants
@@ -30,7 +36,7 @@ class ProfileReviewDialog : Activity() {
     var mUtils: Utils? = null
     var userProfileData: SignupModel.ResponseBean? = null
     var mContext: Context? = null
-
+    var mDb: Database? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +53,7 @@ class ProfileReviewDialog : Activity() {
         mContext = this
 
         mUtils = Utils(this)
+        mDb = Database(this)
         userProfileData = intent.getParcelableExtra("userProfileData")
 
         mUtils!!.setInt("open_questionnaries", 0)
@@ -56,7 +63,7 @@ class ProfileReviewDialog : Activity() {
 
         var drawable = ContextCompat.getDrawable(this, R.mipmap.ic_avatar_1)
 
-        Picasso.with(this).load(userProfileData!!.avatar).resize(drawable!!.intrinsicWidth, drawable!!.intrinsicHeight).into(imgAvatarProfileReview)
+        Picasso.with(this).load(userProfileData!!.avatar.avtar_url).resize(drawable!!.intrinsicWidth, drawable!!.intrinsicHeight).into(imgAvatarProfileReview)
 
         if (userProfileData!!.user_type == Constants.MENTEE) {
             txtMsgReview.text = getString(R.string.mentee_msg)
@@ -89,6 +96,25 @@ class ProfileReviewDialog : Activity() {
                 alertLogoutDialog()
             else
                 Toast.makeText(this, R.string.internet, Toast.LENGTH_SHORT).show()
+        }
+
+        setDataOnFirebase()
+    }
+
+    internal fun setDataOnFirebase() {
+        val model = ProfileModel()
+        model.access_token = userProfileData!!.access_token
+        model.user_id = userProfileData!!.id.toString()
+        model.online_status = Constants.ONLINE_LONG
+        var mFirebaseConfigProfile = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
+        mFirebaseConfigProfile.child("id_" + model.user_id).setValue(model).addOnSuccessListener {
+            try {
+                mDb!!.addProfile(model)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.addOnFailureListener {
+
         }
     }
 

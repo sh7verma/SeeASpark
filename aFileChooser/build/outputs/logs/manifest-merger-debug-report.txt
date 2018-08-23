@@ -1,25 +1,25 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:17:2-24:12
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:17:2-24:12
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:17:2-24:12
+ADDED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:17:2-24:12
+INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:17:2-24:12
+INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:17:2-24:12
 	package
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:18:5-40
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml
+		ADDED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:18:5-40
+		INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml
+		INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml
 	xmlns:android
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:17:12-70
+		ADDED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:17:12-70
 uses-sdk
-ADDED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:20:3-22:41
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:20:3-22:41
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:20:3-22:41
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:20:3-22:41
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:20:3-22:41
+ADDED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:20:3-22:41
+INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:20:3-22:41
+INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:20:3-22:41
+INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:20:3-22:41
+INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:20:3-22:41
 	android:targetSdkVersion
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:22:9-38
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml
+		ADDED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:22:9-38
+		INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml
+		INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml
 	android:minSdkVersion
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml:21:9-35
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\aFileChooser\src\main\AndroidManifest.xml
+		ADDED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml:21:9-35
+		INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml
+		INJECTED from /home/dev/Work/Studio/SeeASpark/aFileChooser/src/main/AndroidManifest.xml

@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layerType="software"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,7 +13,7 @@
     <customviews.ScrollViewX
         android:id="@+id/svViewProfile"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -168,6 +169,7 @@
                 android:layout_marginLeft="@dimen/_24sdp"
                 android:layout_marginStart="@dimen/_24sdp"
                 android:layout_marginTop="@dimen/_50sdp"
+                android:transitionName="@string/transition_image"
                 android:elevation="@dimen/_5sdp"
                 android:src="@drawable/placeholder_image" />
 

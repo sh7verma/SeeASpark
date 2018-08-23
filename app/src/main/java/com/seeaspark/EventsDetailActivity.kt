@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.like.LikeButton
 import com.like.OnLikeListener
 import com.squareup.picasso.Picasso
@@ -31,6 +32,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
+import utils.MainApplication
 
 
 class EventsDetailActivity : BaseActivity() {
@@ -160,6 +162,7 @@ class EventsDetailActivity : BaseActivity() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         if (intent.hasExtra("postId")) {
             mPostId = intent.getStringExtra("postId")
+            svViewEvent.visibility = View.GONE
             if (connectedToInternet())
                 hitDetailAPI()
             else
@@ -179,10 +182,13 @@ class EventsDetailActivity : BaseActivity() {
                 if (response!!.body().response != null) {
                     addToLocalDatabase(response.body().response)
                     mEventData = response.body().response
+                    svViewEvent.visibility = View.VISIBLE
                     populateData()
                 } else {
-                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
+                    }
                     else {
                         showToast(mContext!!, response.body().error!!.message!!)
                         finish()
@@ -211,7 +217,7 @@ class EventsDetailActivity : BaseActivity() {
 
     private fun populateData() {
         svViewEvent.visibility = View.VISIBLE
-        Picasso.with(mContext).load(mEventData!!.images[0].image_url).centerCrop().resize(mWidth, resources.getDimension(R.dimen._240sdp).toInt()).into(imgEventDetail)
+        Picasso.with(mContext).load(mEventData!!.images[0].image_url).centerCrop().resize(mWidth, resources.getDimension(R.dimen._190sdp).toInt()).into(imgEventDetail)
 
         txtTitleCustom.text = mEventData!!.title
         txtTitleEvents.text = mEventData!!.title
@@ -364,6 +370,7 @@ class EventsDetailActivity : BaseActivity() {
             }
             imgOption1Custom -> {
                 intent = Intent(mContext!!, ShareActivity::class.java)
+                intent.putExtra("path", 3)
                 intent.putExtra("postUrl", mEventData!!.shareable_link)
                 startActivity(intent)
                 overridePendingTransition(0, 0)
@@ -421,8 +428,19 @@ class EventsDetailActivity : BaseActivity() {
     }
 
     private fun moveBack() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        if (MainApplication.isLandingAvailable) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                supportFinishAfterTransition()
+            else {
+                finish()
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+            }
+        } else {
+            val intent = Intent(mContext, LandingActivity::class.java)
+            startActivity(intent)
+            finish()
+            overridePendingTransition(0, 0)
+        }
     }
 
     private fun getAlphaforActionBar(scrollY: Int): Int {
@@ -552,6 +570,7 @@ class EventsDetailActivity : BaseActivity() {
                     /// change db status to previous
                     setPreviousDBStatus(status)
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -587,6 +606,7 @@ class EventsDetailActivity : BaseActivity() {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -613,7 +633,7 @@ class EventsDetailActivity : BaseActivity() {
 
     private fun addOwnToGoingList() {
         val goingUserData = PostModel.ResponseBean.GoingUserBean()
-        goingUserData.avatar = userData!!.response.avatar
+        goingUserData.avatar = userData!!.response.avatar.avtar_url
         goingUserData.full_name = userData!!.response.full_name
         goingUserData.id = userData!!.response.id
         mEventData!!.going_list!!.add(0, goingUserData)

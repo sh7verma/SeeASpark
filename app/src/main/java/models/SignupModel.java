@@ -122,7 +122,7 @@ public class SignupModel extends BaseModel implements Parcelable {
         private String linkedin_id;
         private int user_type;
         private int email_verified;
-        private String avatar;
+        private AvatarBean avatar;
         private ProfessionBean profession;
         private String bio;
         private String pro_description;
@@ -134,6 +134,15 @@ public class SignupModel extends BaseModel implements Parcelable {
         private List<String> skills;
         private List<LanguageModel> languages;
         private List<AnswerModel> answers;
+
+        private int submitted_document;
+        private int mentee_profile_status;
+        private int mentee_question_status;
+        private int mentor_profile_status;
+        private int mentor_question_status;
+        private int can_switch;
+        private int switch_status;
+        private int mentor_verified;
 
         public int getId() {
             return id;
@@ -231,11 +240,11 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.email_verified = email_verified;
         }
 
-        public String getAvatar() {
+        public AvatarBean getAvatar() {
             return avatar;
         }
 
-        public void setAvatar(String avatar) {
+        public void setAvatar(AvatarBean avatar) {
             this.avatar = avatar;
         }
 
@@ -327,6 +336,70 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.answers = answers;
         }
 
+        public int getSubmitted_document() {
+            return submitted_document;
+        }
+
+        public void setSubmitted_document(int submitted_document) {
+            this.submitted_document = submitted_document;
+        }
+
+        public int getMentee_profile_status() {
+            return mentee_profile_status;
+        }
+
+        public void setMentee_profile_status(int mentee_profile_status) {
+            this.mentee_profile_status = mentee_profile_status;
+        }
+
+        public int getMentee_question_status() {
+            return mentee_question_status;
+        }
+
+        public void setMentee_question_status(int mentee_question_status) {
+            this.mentee_question_status = mentee_question_status;
+        }
+
+        public int getMentor_profile_status() {
+            return mentor_profile_status;
+        }
+
+        public void setMentor_profile_status(int mentor_profile_status) {
+            this.mentor_profile_status = mentor_profile_status;
+        }
+
+        public int getMentor_question_status() {
+            return mentor_question_status;
+        }
+
+        public void setMentor_question_status(int mentor_question_status) {
+            this.mentor_question_status = mentor_question_status;
+        }
+
+        public int getCan_switch() {
+            return can_switch;
+        }
+
+        public void setCan_switch(int can_switch) {
+            this.can_switch = can_switch;
+        }
+
+        public int getSwitch_status() {
+            return switch_status;
+        }
+
+        public void setSwitch_status(int switch_status) {
+            this.switch_status = switch_status;
+        }
+
+        public int getMentor_verified() {
+            return mentor_verified;
+        }
+
+        public void setMentor_verified(int mentor_verified) {
+            this.mentor_verified = mentor_verified;
+        }
+
         public static class ProfessionBean implements Parcelable {
 
             private int id;
@@ -401,6 +474,92 @@ public class SignupModel extends BaseModel implements Parcelable {
                 }
             };
         }
+
+        public static class AvatarBean implements Parcelable {
+            private String avtar_url;
+            private int gender;
+            private int id;
+            private String name;
+            private int parent_id;
+
+            public String getAvtar_url() {
+                return avtar_url;
+            }
+
+            public void setAvtar_url(String avtar_url) {
+                this.avtar_url = avtar_url;
+            }
+
+            public int getGender() {
+                return gender;
+            }
+
+            public void setGender(int gender) {
+                this.gender = gender;
+            }
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public int getParent_id() {
+                return parent_id;
+            }
+
+            public void setParent_id(int parent_id) {
+                this.parent_id = parent_id;
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(this.avtar_url);
+                dest.writeInt(this.gender);
+                dest.writeInt(this.id);
+                dest.writeString(this.name);
+                dest.writeInt(this.parent_id);
+            }
+
+            public AvatarBean() {
+            }
+
+            protected AvatarBean(Parcel in) {
+                this.avtar_url = in.readString();
+                this.gender = in.readInt();
+                this.id = in.readInt();
+                this.name = in.readString();
+                this.parent_id = in.readInt();
+            }
+
+            public static final Creator<AvatarBean> CREATOR = new Creator<AvatarBean>() {
+                @Override
+                public AvatarBean createFromParcel(Parcel source) {
+                    return new AvatarBean(source);
+                }
+
+                @Override
+                public AvatarBean[] newArray(int size) {
+                    return new AvatarBean[size];
+                }
+            };
+        }
+
 
         public static class PreferencesBean implements Parcelable {
             /**
@@ -541,7 +700,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             dest.writeString(this.linkedin_id);
             dest.writeInt(this.user_type);
             dest.writeInt(this.email_verified);
-            dest.writeString(this.avatar);
+            dest.writeParcelable(this.avatar, flags);
             dest.writeParcelable(this.profession, flags);
             dest.writeString(this.bio);
             dest.writeString(this.pro_description);
@@ -553,6 +712,14 @@ public class SignupModel extends BaseModel implements Parcelable {
             dest.writeStringList(this.skills);
             dest.writeTypedList(this.languages);
             dest.writeList(this.answers);
+            dest.writeInt(this.submitted_document);
+            dest.writeInt(this.mentee_profile_status);
+            dest.writeInt(this.mentee_question_status);
+            dest.writeInt(this.mentor_profile_status);
+            dest.writeInt(this.mentor_question_status);
+            dest.writeInt(this.can_switch);
+            dest.writeInt(this.switch_status);
+            dest.writeInt(this.mentor_verified);
         }
 
         protected ResponseBean(Parcel in) {
@@ -568,7 +735,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.linkedin_id = in.readString();
             this.user_type = in.readInt();
             this.email_verified = in.readInt();
-            this.avatar = in.readString();
+            this.avatar = in.readParcelable(AvatarBean.class.getClassLoader());
             this.profession = in.readParcelable(ProfessionBean.class.getClassLoader());
             this.bio = in.readString();
             this.pro_description = in.readString();
@@ -581,6 +748,14 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.languages = in.createTypedArrayList(LanguageModel.CREATOR);
             this.answers = new ArrayList<AnswerModel>();
             in.readList(this.answers, AnswerModel.class.getClassLoader());
+            this.submitted_document = in.readInt();
+            this.mentee_profile_status = in.readInt();
+            this.mentee_question_status = in.readInt();
+            this.mentor_profile_status = in.readInt();
+            this.mentor_question_status = in.readInt();
+            this.can_switch = in.readInt();
+            this.switch_status = in.readInt();
+            this.mentor_verified = in.readInt();
         }
 
         public static final Creator<ResponseBean> CREATOR = new Creator<ResponseBean>() {

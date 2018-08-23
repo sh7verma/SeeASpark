@@ -1,0 +1,52 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/dev/Work/Studio/SeeASpark/rangeBar1/build/intermediates/res/merged/androidTest/debug/values_values.arsc.flat",
+            "map": [
+                {
+                    "source": "/home/dev/Work/Studio/SeeASpark/rangeBar1/build/intermediates/packaged_res/debug/values/values.xml",
+                    "from": {
+                        "startLines": "3,4,11",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "663,709,1000",
+                        "endLines": "3,10,13",
+                        "endColumns": "45,12,12",
+                        "endOffsets": "704,995,1155"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "/home/dev/Work/Studio/SeeASpark/rangeBar1/build/intermediates/res/merged/androidTest/debug/values-v14_values-v14.arsc.flat",
+            "map": [
+                {
+                    "source": "/home/dev/Work/Studio/SeeASpark/rangeBar1/build/intermediates/packaged_res/debug/values-v14/values-v14.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "4",
+                        "endColumns": "12",
+                        "endOffsets": "201"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "/home/dev/Work/Studio/SeeASpark/rangeBar1/build/intermediates/res/merged/androidTest/debug/values-v11_values-v11.arsc.flat",
+            "map": [
+                {
+                    "source": "/home/dev/Work/Studio/SeeASpark/rangeBar1/build/intermediates/packaged_res/debug/values-v11/values-v11.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "4",
+                        "endColumns": "12",
+                        "endOffsets": "187"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -9,6 +9,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
@@ -17,7 +19,9 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_search_events.*
 import kotlinx.android.synthetic.main.fragment_notes.*
 import models.BaseSuccessModel
@@ -136,6 +140,7 @@ class SearchActivity : BaseActivity() {
                             populateCommunityData(response.body().response)
                         } else {
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                 moveToSplash()
                             } else
                                 showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -156,6 +161,7 @@ class SearchActivity : BaseActivity() {
                             populateEventData(response.body().response)
                         } else {
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                 moveToSplash()
                             } else
                                 showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -178,6 +184,7 @@ class SearchActivity : BaseActivity() {
                             populateCommunityData(response.body().response)
                         } else {
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                 moveToSplash()
                             } else
                                 showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -199,6 +206,7 @@ class SearchActivity : BaseActivity() {
                                 populateEventData(response.body().response)
                             } else {
                                 if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                    Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                     moveToSplash()
                                 } else
                                     showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -229,6 +237,7 @@ class SearchActivity : BaseActivity() {
                         } else {
                             dismissLoader()
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                 moveToSplash()
                             } else
                                 showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -254,6 +263,7 @@ class SearchActivity : BaseActivity() {
                         } else {
                             dismissLoader()
                             if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                                 moveToSplash()
                             } else
                                 showAlert(rvSearchEventCommunity, response.body().error!!.message!!)
@@ -354,22 +364,34 @@ class SearchActivity : BaseActivity() {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }
 
-    fun moveToCommunityDetail(communityId: Int) {
+    fun moveToCommunityDetail(communityId: Int, imgCommunityListing: ImageView) {
         if (connectedToInternet()) {
             val intent = Intent(mContext, CommunityDetailActivity::class.java)
             intent.putExtra("communityId", communityId)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val option = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                        imgCommunityListing, getString(R.string.transition_image))
+                startActivity(intent, option.toBundle())
+            } else {
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         } else
             showInternetAlert(rvSearchEventCommunity)
     }
 
-    fun moveToEventDetail(eventId: Int) {
+    fun moveToEventDetail(eventId: Int, imgEventsListing: ImageView) {
         if (connectedToInternet()) {
             val intent = Intent(mContext, EventsDetailActivity::class.java)
             intent.putExtra("eventId", eventId)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val option = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                        imgEventsListing, getString(R.string.transition_image))
+                startActivity(intent, option.toBundle())
+            }else {
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         } else
             showInternetAlert(rvSearchEventCommunity)
     }
@@ -395,6 +417,7 @@ class SearchActivity : BaseActivity() {
                     /// change db status to previous
                     setPreviousDBStatus(postId)
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -424,6 +447,7 @@ class SearchActivity : BaseActivity() {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -651,6 +675,7 @@ class SearchActivity : BaseActivity() {
                     populateNotesData()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llMainNotes, response.body().error!!.message!!)
@@ -715,6 +740,7 @@ class SearchActivity : BaseActivity() {
                     populateReceivedNotesData()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llMainNotes, response.body().error!!.message!!)

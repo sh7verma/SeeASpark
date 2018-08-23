@@ -5,14 +5,27 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 
+import models.ChatsModel;
+import models.MessagesModel;
 import models.NotesListingModel;
 import models.NotesModel;
 import models.PostModel;
+import models.ProfileModel;
+import utils.Constants;
 import utils.Utils;
 
 
@@ -20,7 +33,7 @@ public class Database extends SQLiteOpenHelper {
 
     private Utils utils;
     private static final int dbversion = 1;
-    private static final String DATABASE = "see_a_spark_local";
+    public static final String DATABASE = "see_a_spark_local";
 
     /// Events Table
     static final String POSTS_TABLE = "posts_table";
@@ -67,6 +80,55 @@ public class Database extends SQLiteOpenHelper {
     static final String NOTES_UPDATED = "notes_updated";
     static final String NOTES_USER_ID = "note_user_id";
     static final String NOTES_USER_NAME = "note_user_name";
+
+    /// Profile Table
+    static final String ID = "id";
+    static final String PROFILE_TABLE = "profile_table";
+    static final String ONLINE_STATUS = "online_status";
+    static final String ACCESS_TOKEN = "access_token";
+
+    /// Dialogs Table
+    static final String DIALOGS_TABLE = "dialogs_table";
+    static final String CHAT_DIALOG_ID = "chat_dialog_id";
+
+    /// Chats Table
+    static final String CHATS_TABLE = "chats_table";
+    static final String LAST_MESSAGE = "last_message";
+    static final String LAST_MESSAGE_TIME = "last_message_time";
+    static final String LAST_MESSAGE_SENDER_ID = "last_message_sender_id";
+    static final String LAST_MESSAGE_ID = "last_message_id";
+    static final String LAST_MESSAGE_TYPE = "last_message_type";
+    static final String PARTICIPANT_IDS = "participant_id";
+    static final String NAME = "name";
+    static final String PROFILE_PIC = "profile_pic";
+    static final String DELETE_DIALOG_TIME = "delete_dialog_time";
+    static final String USER_TYPE = "user_type";
+    static final String OPPONENT_USER_TYPE = "opponent_user_type";
+    static final String OPPONENT_USER_ID = "opponent_user_id";
+
+    /// Unread Count Table
+    static final String UNREAD_COUNT_TABLE = "unread_count_table";
+    static final String UNREAD_COUNT = "unread_count";
+
+    /// Block Table
+    static final String BLOCK_TABLE = "block_table";
+    static final String BLOCK_STATUS = "block_status";
+
+    /// Messages Table
+    static final String MESSAGES_TABLE = "messages_table";
+    static final String MESSAGE_ID = "message_id";
+    static final String MESSAGE = "message";
+    static final String MESSAGE_TYPE = "message_type";
+    static final String MESSAGE_TIME = "message_time";
+    static final String FIRBASE_MESSAGE_TIME = "firebase_message_time";
+    static final String SENDER_ID = "sender_id";
+    static final String MESSAGE_STATUS = "message_status";
+    static final String ATTACHMENT_URL = "attachment_data";
+    static final String MESSAGE_DELETED = "message_deleted";
+    static final String FAVOURITE_MESSAGE = "favourite_message";
+    static final String ATTACHMENT_PROGRESS = "attachment_progress";
+    static final String ATTACHMENT_PATH = "attachment_path"; //local path
+    static final String ATTACHMENT_STATUS = "attachment_status"; // uploading; error; success;
 
     public Database(Context context) {
         super(context, DATABASE, null, dbversion);
@@ -127,6 +189,68 @@ public class Database extends SQLiteOpenHelper {
                 + NOTES_USER_ID + " TEXT ,"
                 + NOTES_USER_NAME + " TEXT )";
         db.execSQL(notesQuery);
+
+        String profileQuery = "create table if not exists " + PROFILE_TABLE
+                + " (" + ID + " integer primary key AUTOINCREMENT ,"
+                + USER_ID + " TEXT ,"
+                + ONLINE_STATUS + " TEXT ,"
+                + ACCESS_TOKEN + " TEXT )";
+        db.execSQL(profileQuery);
+
+        String dialogQuery = "create table if not exists " + DIALOGS_TABLE
+                + " (" + ID + " integer primary key AUTOINCREMENT ,"
+                + USER_ID + " TEXT ,"
+                + CHAT_DIALOG_ID + " TEXT )";
+        db.execSQL(dialogQuery);
+
+        String chatsQuery = "create table if not exists " + CHATS_TABLE
+                + " (" + ID + " integer primary key AUTOINCREMENT ,"
+                + CHAT_DIALOG_ID + " TEXT ,"
+                + LAST_MESSAGE + " TEXT ,"
+                + LAST_MESSAGE_TIME + " TEXT ,"
+                + LAST_MESSAGE_SENDER_ID + " TEXT ,"
+                + LAST_MESSAGE_ID + " TEXT ,"
+                + LAST_MESSAGE_TYPE + " TEXT ,"
+                + PARTICIPANT_IDS + " TEXT ,"
+                + NAME + " TEXT ,"
+                + PROFILE_PIC + " TEXT ,"
+                + DELETE_DIALOG_TIME + " TEXT ,"
+                + USER_TYPE + " TEXT ,"
+                + OPPONENT_USER_TYPE + " TEXT ,"
+                + OPPONENT_USER_ID + " TEXT )";
+        db.execSQL(chatsQuery);
+
+        String unreadCountQuery = "create table if not exists " + UNREAD_COUNT_TABLE
+                + " (" + ID + " integer primary key AUTOINCREMENT ,"
+                + CHAT_DIALOG_ID + " TEXT ,"
+                + USER_ID + " TEXT ,"
+                + UNREAD_COUNT + " integer )";
+        db.execSQL(unreadCountQuery);
+
+        String blockQuery = "create table if not exists " + BLOCK_TABLE
+                + " (" + ID + " integer primary key AUTOINCREMENT ,"
+                + CHAT_DIALOG_ID + " TEXT ,"
+                + USER_ID + " TEXT ,"
+                + BLOCK_STATUS + " TEXT )";
+        db.execSQL(blockQuery);
+
+        String messageQuery = "create table if not exists " + MESSAGES_TABLE
+                + " (" + ID + " integer primary key AUTOINCREMENT ,"
+                + MESSAGE_ID + " TEXT ,"
+                + MESSAGE + " TEXT ,"
+                + MESSAGE_TYPE + " TEXT ,"
+                + MESSAGE_TIME + " TEXT ,"
+                + FIRBASE_MESSAGE_TIME + " TEXT ,"
+                + CHAT_DIALOG_ID + " TEXT ,"
+                + SENDER_ID + " TEXT ,"
+                + MESSAGE_STATUS + " TEXT ,"
+                + ATTACHMENT_URL + " TEXT ,"
+                + MESSAGE_DELETED + " TEXT ,"
+                + FAVOURITE_MESSAGE + " TEXT ,"
+                + ATTACHMENT_PROGRESS + " TEXT ,"
+                + ATTACHMENT_PATH + " TEXT ,"
+                + ATTACHMENT_STATUS + " TEXT )";
+        db.execSQL(messageQuery);
 
     }
 
@@ -613,6 +737,24 @@ public class Database extends SQLiteOpenHelper {
             String dropNotes = "Delete from  " + NOTES_TABLE;
             db.execSQL(dropNotes);
 
+            String dropProfile = "Delete from  " + PROFILE_TABLE;
+            db.execSQL(dropProfile);
+
+            String dropDialogs = "Delete from  " + DIALOGS_TABLE;
+            db.execSQL(dropDialogs);
+
+            String dropChats = "Delete from  " + CHATS_TABLE;
+            db.execSQL(dropChats);
+
+            String dropUnread = "Delete from  " + UNREAD_COUNT_TABLE;
+            db.execSQL(dropUnread);
+
+            String dropBlock = "Delete from  " + BLOCK_TABLE;
+            db.execSQL(dropBlock);
+
+            String dropMessages = "Delete from  " + MESSAGES_TABLE;
+            db.execSQL(dropMessages);
+
             db.setTransactionSuccessful();
         } catch (Exception e) {
             Log.e("Exception = ", e + "");
@@ -620,4 +762,587 @@ public class Database extends SQLiteOpenHelper {
             db.endTransaction();
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////
+
+    public void addProfile(ProfileModel model) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        Cursor data = null;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(ONLINE_STATUS, "" + model.online_status);
+            values.put(ACCESS_TOKEN, "" + model.access_token);
+            data = getReadableDatabase().rawQuery("Select * from " + PROFILE_TABLE + " where "
+                    + USER_ID + " = '" + model.user_id + "'", null);
+            if (data.getCount() > 0) {
+                db.update(PROFILE_TABLE, values, USER_ID + " = '" + model.user_id + "'", null);
+            } else {
+                values.put(USER_ID, "" + model.user_id);
+                db.insertOrThrow(PROFILE_TABLE, null, values);
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception", "is " + e);
+        } finally {
+            if (data != null && !data.isClosed()) {
+                data.close();
+            }
+            db.endTransaction();
+        }
+    }
+
+    public ProfileModel getProfile(String userId) {
+        SQLiteDatabase db_read = this.getReadableDatabase();
+        Cursor cur = null;
+        ProfileModel mUser = null;
+        try {
+            String qry = "select * from " + PROFILE_TABLE + " where " + USER_ID + " = '" + userId + "'";
+            cur = db_read.rawQuery(qry, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                mUser = new ProfileModel();
+                mUser.user_id = cur.getString(1);
+                mUser.online_status = Long.parseLong(cur.getString(2));
+                mUser.access_token = cur.getString(3);
+                mUser.chat_dialog_ids = new HashMap<String, String>();
+                cur.moveToNext();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed()) {
+                cur.close();
+            }
+        }
+        return mUser;
+    }
+
+    public void addDialogs(HashMap<String, String> list, String userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        Cursor data = null;
+        try {
+            for (String userUniqueKey : list.keySet()) {
+                ContentValues values = new ContentValues();
+
+                values.put(USER_ID, userId);
+                values.put(CHAT_DIALOG_ID, userUniqueKey);
+
+                data = getReadableDatabase().rawQuery(
+                        "Select * from " + DIALOGS_TABLE + " where "
+                                + USER_ID + " = '" + userId + "' and " + CHAT_DIALOG_ID + " = '" + userUniqueKey + "'", null);
+                if (data.getCount() > 0) {
+                } else {
+                    db.insertOrThrow(DIALOGS_TABLE, null, values);
+                }
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception", "is " + e);
+        } finally {
+            if (data != null && !data.isClosed()) {
+                data.close();
+            }
+            db.endTransaction();
+        }
+    }
+
+    public HashMap<String, String> getDialogs(String userId) {
+        SQLiteDatabase db_read = this.getReadableDatabase();
+        Cursor cur = null;
+        HashMap<String, String> list = new HashMap<String, String>();
+        try {
+            String qry = "select * from " + DIALOGS_TABLE + " where " + USER_ID + " = '" + userId + "'";
+            cur = db_read.rawQuery(qry, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                list.put(cur.getString(2), cur.getString(2));
+                cur.moveToNext();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed()) {
+                cur.close();
+            }
+        }
+        return list;
+    }
+
+    public void addNewChat(ChatsModel chat, String userId, String otherUserId) {
+        SQLiteDatabase db_write = this.getWritableDatabase();
+        db_write.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(CHAT_DIALOG_ID, chat.chat_dialog_id);
+            values.put(LAST_MESSAGE, chat.last_message);
+            values.put(LAST_MESSAGE_TIME, "" + chat.last_message_time);
+            values.put(LAST_MESSAGE_SENDER_ID, chat.last_message_sender_id);
+            values.put(LAST_MESSAGE_ID, chat.last_message_id);
+            values.put(LAST_MESSAGE_TYPE, chat.last_message_type);
+            values.put(PARTICIPANT_IDS, chat.participant_ids);
+            values.put(NAME, chat.name.get(otherUserId));
+            values.put(PROFILE_PIC, chat.profile_pic.get(otherUserId));
+            values.put(DELETE_DIALOG_TIME, "" + chat.delete_dialog_time.get(userId));
+            values.put(USER_TYPE, chat.user_type.get(userId));
+            values.put(OPPONENT_USER_TYPE, chat.user_type.get(otherUserId));
+            values.put(OPPONENT_USER_ID, otherUserId);
+
+            db_write.insertOrThrow(CHATS_TABLE, null, values);
+
+            addUnreadCount(chat.unread_count, chat.chat_dialog_id);
+
+            addBlockStatus(chat.unread_count, chat.chat_dialog_id);
+
+            db_write.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db_write.endTransaction();
+        }
+    }
+
+    public void addUpateChat(ChatsModel chat, String userId, String otherUserId) {
+        SQLiteDatabase db_write = this.getWritableDatabase();
+        SQLiteDatabase db_read = this.getReadableDatabase();
+        db_write.beginTransaction();
+        Cursor cur = null;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(LAST_MESSAGE, chat.last_message);
+            values.put(LAST_MESSAGE_TIME, "" + chat.last_message_time);
+            values.put(LAST_MESSAGE_SENDER_ID, chat.last_message_sender_id);
+            values.put(LAST_MESSAGE_ID, chat.last_message_id);
+            values.put(LAST_MESSAGE_TYPE, chat.last_message_type);
+            values.put(NAME, chat.name.get(otherUserId));
+            values.put(PROFILE_PIC, chat.profile_pic.get(otherUserId));
+            values.put(DELETE_DIALOG_TIME, "" + chat.delete_dialog_time.get(userId));
+
+            addUnreadCount(chat.unread_count, chat.chat_dialog_id);
+
+            addBlockStatus(chat.unread_count, chat.chat_dialog_id);
+
+            String qry = "select * from " + CHATS_TABLE + " where " + CHAT_DIALOG_ID
+                    + " = '" + chat.chat_dialog_id + "'";
+            cur = db_read.rawQuery(qry, null);
+            if (cur.getCount() > 0) {
+                db_write.update(CHATS_TABLE, values, CHAT_DIALOG_ID + " ='" + chat.chat_dialog_id + "'", null);
+            } else {
+                values.put(CHAT_DIALOG_ID, chat.chat_dialog_id);
+                values.put(PARTICIPANT_IDS, chat.participant_ids);
+                values.put(USER_TYPE, chat.user_type.get(userId));
+                values.put(OPPONENT_USER_TYPE, chat.user_type.get(otherUserId));
+                values.put(OPPONENT_USER_ID, otherUserId);
+                db_write.insertOrThrow(CHATS_TABLE, null, values);
+            }
+
+            db_write.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed()) {
+                cur.close();
+            }
+            db_write.endTransaction();
+        }
+    }
+
+    public void addUnreadCount(HashMap<String, Integer> unreadCount, String dialogId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        Cursor data = null;
+        try {
+            for (String userUniqueKey : unreadCount.keySet()) {
+                data = getReadableDatabase().rawQuery(
+                        "Select * from " + UNREAD_COUNT_TABLE + " where "
+                                + CHAT_DIALOG_ID + " = '" + dialogId + "' and " + USER_ID + " = '" + userUniqueKey + "'", null);
+                ContentValues values = new ContentValues();
+                values.put(UNREAD_COUNT, unreadCount.get(userUniqueKey));
+                if (data.getCount() > 0) {
+                    db.update(UNREAD_COUNT_TABLE, values, CHAT_DIALOG_ID + " = '" +
+                            dialogId + "' and " + USER_ID + " = '" + userUniqueKey + "'", null);
+                } else {
+                    values.put(CHAT_DIALOG_ID, dialogId);
+                    values.put(USER_ID, userUniqueKey);
+                    db.insertOrThrow(UNREAD_COUNT_TABLE, null, values);
+                }
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception", "is " + e);
+        } finally {
+            if (data != null && !data.isClosed()) {
+                data.close();
+            }
+            db.endTransaction();
+        }
+    }
+
+    public void addBlockStatus(HashMap<String, Integer> blockStatus, String dialogId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        Cursor data = null;
+        try {
+            for (String userUniqueKey : blockStatus.keySet()) {
+                data = getReadableDatabase().rawQuery(
+                        "Select * from " + BLOCK_TABLE + " where "
+                                + CHAT_DIALOG_ID + " = '" + dialogId + "' and " + USER_ID + " = '" + userUniqueKey + "'", null);
+                ContentValues values = new ContentValues();
+                values.put(BLOCK_STATUS, blockStatus.get(userUniqueKey));
+                if (data.getCount() > 0) {
+                    db.update(BLOCK_TABLE, values, CHAT_DIALOG_ID + " = '" +
+                            dialogId + "' and " + USER_ID + " = '" + userUniqueKey + "'", null);
+                } else {
+                    values.put(CHAT_DIALOG_ID, dialogId);
+                    values.put(USER_ID, userUniqueKey);
+                    db.insertOrThrow(BLOCK_TABLE, null, values);
+                }
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception", "is " + e);
+        } finally {
+            if (data != null && !data.isClosed()) {
+                data.close();
+            }
+            db.endTransaction();
+        }
+    }
+
+    public LinkedHashMap<String, ChatsModel> getAllChats(String userId, String type) {
+        SQLiteDatabase db_read = this.getReadableDatabase();
+        Cursor cur = null;
+        LinkedHashMap<String, ChatsModel> mChatList = new LinkedHashMap<>();
+        try {
+            String qry = "Select * from " + CHATS_TABLE + " order by " + LAST_MESSAGE_TIME + " desc";
+            cur = db_read.rawQuery(qry, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                if (!TextUtils.isEmpty(cur.getString(6))) {
+                    ChatsModel mChats = new ChatsModel();
+                    mChats.chat_dialog_id = cur.getString(1);
+                    mChats.last_message = cur.getString(2);
+                    mChats.last_message_time = Long.parseLong(cur.getString(3));
+                    mChats.last_message_sender_id = cur.getString(4);
+                    mChats.last_message_id = cur.getString(5);
+                    mChats.last_message_type = cur.getString(6);
+                    mChats.participant_ids = cur.getString(7);
+                    mChats.opponent_user_id = cur.getString(13);
+                    String otherUserId = cur.getString(13);
+//                    String[] particID = mChats.participant_ids.split(",");
+//                    for (String id : particID) {
+//                        String[] userIds = id.split("_");
+//                        if (!(userIds[0].trim()).equalsIgnoreCase(userId)) {
+//                            otherUserId = userIds[0].trim();
+//                            break;
+//                        }
+//                    }
+
+                    mChats.name = new HashMap<>();
+                    mChats.name.put(otherUserId, cur.getString(8));
+                    mChats.name.put(userId, "");
+
+                    mChats.profile_pic = new HashMap<>();
+                    mChats.profile_pic.put(otherUserId, cur.getString(9));
+                    mChats.profile_pic.put(userId, "");
+
+                    mChats.delete_dialog_time = new HashMap<>();
+                    mChats.delete_dialog_time.put(otherUserId, Long.parseLong(cur.getString(10)));
+                    mChats.delete_dialog_time.put(userId, Long.parseLong(cur.getString(10)));
+
+                    mChats.user_type = new HashMap<>();
+                    mChats.user_type.put(userId, cur.getString(11));
+                    mChats.user_type.put(otherUserId, cur.getString(12));
+
+                    mChats.unread_count = getUnreadCount(cur.getString(1));
+                    mChats.block_status = getBlockStatus(cur.getString(1));
+
+                    int status = 0;
+                    if (type.equals(Constants.FILTER_MENTOR)) {
+                        if (mChats.user_type.get(otherUserId).equals(Constants.FILTER_MENTOR)) {
+                            status = 1;
+                        }
+                    } else if (type.equals(Constants.FILTER_MENTEE)) {
+                        if (mChats.user_type.get(otherUserId).equals(Constants.FILTER_MENTEE)) {
+                            status = 1;
+                        }
+                    } else {
+                        status = 1;
+                    }
+                    if (status == 1) {
+                        long messageTime = Long.parseLong(cur.getString(3));
+                        if (mChats.delete_dialog_time.containsKey(userId)) {
+                            long deletetime = mChats.delete_dialog_time.get(userId);
+                            if (messageTime >= deletetime) {
+                                mChatList.put(cur.getString(1), mChats);
+                            }
+                            if (mChats.last_message.equals(Constants.DEFAULT_MESSAGE_REGEX)) {
+                                mChatList.put(cur.getString(1), mChats);
+                            }
+                        }
+                    }
+                }
+                cur.moveToNext();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed()) {
+                cur.close();
+            }
+        }
+        return mChatList;
+    }
+
+    public ChatsModel getChatDialog(String participants, String userId, String otherUserId) {
+        SQLiteDatabase db_read = this.getReadableDatabase();
+        Cursor cur = null;
+        ChatsModel mChats = null;
+        try {
+            String qry = "Select * from " + CHATS_TABLE + " where " + PARTICIPANT_IDS + " = '" + participants + "'";
+            cur = db_read.rawQuery(qry, null);
+            if (cur.getCount() > 0) {
+                cur.moveToFirst();
+                while (!cur.isAfterLast()) {
+                    mChats = new ChatsModel();
+                    mChats.chat_dialog_id = cur.getString(1);
+                    mChats.last_message = cur.getString(2);
+                    mChats.last_message_time = Long.parseLong(cur.getString(3));
+                    mChats.last_message_sender_id = cur.getString(4);
+                    mChats.last_message_id = cur.getString(5);
+                    mChats.last_message_type = cur.getString(6);
+                    mChats.participant_ids = cur.getString(7);
+
+                    mChats.name = new HashMap<>();
+                    mChats.name.put(otherUserId, cur.getString(8));
+                    mChats.name.put(userId, "");
+
+                    mChats.profile_pic = new HashMap<>();
+                    mChats.profile_pic.put(otherUserId, cur.getString(9));
+                    mChats.profile_pic.put(userId, "");
+
+                    mChats.delete_dialog_time = new HashMap<>();
+                    mChats.delete_dialog_time.put(otherUserId, Long.parseLong(cur.getString(10)));
+                    mChats.delete_dialog_time.put(userId, Long.parseLong(cur.getString(10)));
+
+                    mChats.user_type = new HashMap<>();
+                    mChats.user_type.put(userId, cur.getString(11));
+                    mChats.user_type.put(otherUserId, cur.getString(12));
+
+                    mChats.opponent_user_id = cur.getString(13);
+
+                    mChats.unread_count = getUnreadCount(cur.getString(1));
+                    mChats.block_status = getBlockStatus(cur.getString(1));
+                    cur.moveToNext();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed()) {
+                cur.close();
+            }
+        }
+        return mChats;
+    }
+
+    public HashMap<String, Integer> getUnreadCount(String dialogId) {
+        SQLiteDatabase db_read = this.getReadableDatabase();
+        Cursor cur = null;
+        HashMap<String, Integer> list = new HashMap<String, Integer>();
+        try {
+            String qry = "select * from " + UNREAD_COUNT_TABLE + " where " + CHAT_DIALOG_ID + " = '" + dialogId + "'";
+            cur = db_read.rawQuery(qry, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                list.put(cur.getString(2), cur.getInt(3));
+                cur.moveToNext();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed()) {
+                cur.close();
+            }
+        }
+        return list;
+    }
+
+    public HashMap<String, String> getBlockStatus(String dialogId) {
+        SQLiteDatabase db_read = this.getReadableDatabase();
+        Cursor cur = null;
+        HashMap<String, String> list = new HashMap<String, String>();
+        try {
+            String qry = "select * from " + BLOCK_TABLE + " where " + CHAT_DIALOG_ID + " = '" + dialogId + "'";
+            cur = db_read.rawQuery(qry, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                list.put(cur.getString(2), cur.getString(3));
+                cur.moveToNext();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed()) {
+                cur.close();
+            }
+        }
+        return list;
+    }
+
+    public LinkedHashMap<String, MessagesModel> getAllMessages(String chatDialogId, String userId, int limit, long dialogDeleteTime, String otherUserId) {
+        SQLiteDatabase db_read = this.getReadableDatabase();
+        Cursor cur = null;
+        SimpleDateFormat today_date_format = new SimpleDateFormat("hh:mm aa", Locale.US);
+        LinkedHashMap<String, MessagesModel> mMessageList = new LinkedHashMap<>();
+        List<MessagesModel> localMessage = new ArrayList<>();
+        try {
+            String qry = "select * from " + MESSAGES_TABLE + " where " + CHAT_DIALOG_ID
+                    + " = '" + chatDialogId + "' order by " + ID + " desc limit " + limit;
+            cur = db_read.rawQuery(qry, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                if (!("" + cur.getString(10)).equals("1")) {
+                    Calendar calDb = Calendar.getInstance();
+                    long timeinMillis;
+                    try {
+                        timeinMillis = Long.parseLong(cur.getString(4));
+                    } catch (Exception e) {
+                        timeinMillis = calDb.getTimeInMillis();
+                    }
+                    calDb.setTimeInMillis(timeinMillis);
+
+                    MessagesModel mMessage = new MessagesModel();
+                    mMessage.message_id = cur.getString(1);
+                    mMessage.message = cur.getString(2);
+                    mMessage.message_type = cur.getString(3);
+                    mMessage.message_time = cur.getString(4);
+                    mMessage.firebase_message_time = Long.parseLong(cur.getString(5));
+                    mMessage.chat_dialog_id = cur.getString(6);
+                    mMessage.sender_id = cur.getString(7);
+                    mMessage.message_status = cur.getInt(8);
+                    mMessage.attachment_url = cur.getString(9);
+
+                    mMessage.message_deleted = new HashMap<>();
+                    mMessage.message_deleted.put(userId, cur.getString(10));
+                    mMessage.message_deleted.put(otherUserId, "");
+
+                    mMessage.favourite_message = new HashMap<>();
+                    mMessage.favourite_message.put(userId, cur.getString(11));
+                    mMessage.favourite_message.put(otherUserId, "");
+
+                    mMessage.is_header = false;
+                    mMessage.attachment_progress = cur.getString(12);
+                    mMessage.attachment_path = cur.getString(13);
+                    mMessage.attachment_status = cur.getString(14);
+                    mMessage.show_message_datetime = today_date_format.format(calDb.getTime());
+
+                    if (!mMessage.message_deleted.get(userId).equals("1")) {
+                        long messageTime = mMessage.firebase_message_time;
+                        if (messageTime >= dialogDeleteTime) {
+                            localMessage.add(mMessage);
+                        }
+                    }
+                }
+                cur.moveToNext();
+            }
+            Collections.reverse(localMessage);
+            mMessageList = createHeader(localMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed()) {
+                cur.close();
+            }
+        }
+        return mMessageList;
+    }
+
+    LinkedHashMap<String, MessagesModel> createHeader(List<MessagesModel> messages) {
+        LinkedHashMap<String, MessagesModel> mMessageList = new LinkedHashMap<>();
+        SimpleDateFormat chat_date_format = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        SimpleDateFormat today_date_format = new SimpleDateFormat("hh:mm aa", Locale.US);
+        SimpleDateFormat show_dateheader_format = new SimpleDateFormat("dd MMM yyyy", Locale.US);
+
+        Calendar cal = Calendar.getInstance();
+        String today = chat_date_format.format(cal.getTime());
+
+        Calendar cal1 = Calendar.getInstance();
+        cal1.add(Calendar.DATE, -1);
+        String yesterday = chat_date_format.format(cal1.getTime());
+
+        String lastHeader = "";
+
+        for (MessagesModel message : messages) {
+            Calendar calDb = Calendar.getInstance();
+            long timeinMillis;
+            try {
+                timeinMillis = Long.parseLong(message.message_time);
+            } catch (Exception e) {
+                timeinMillis = calDb.getTimeInMillis();
+            }
+            calDb.setTimeInMillis(timeinMillis);
+            String dbDate = chat_date_format.format(calDb.getTime());
+
+            if (!TextUtils.equals(lastHeader, dbDate)) {
+                lastHeader = dbDate;
+
+                MessagesModel mMessage = new MessagesModel();
+                mMessage.is_header = true;
+                if (dbDate.equals(today)) {
+                    mMessage.show_header_text = "Today";
+                    mMessage.show_message_datetime = today_date_format.format(calDb.getTime());
+                } else if (dbDate.equals(yesterday)) {
+                    mMessage.show_header_text = "Yesterday";
+                    mMessage.show_message_datetime = today_date_format.format(calDb.getTime());
+                } else {
+                    mMessage.show_header_text = show_dateheader_format.format(calDb.getTime());
+                    mMessage.show_message_datetime = today_date_format.format(calDb.getTime());
+                }
+                mMessageList.put(lastHeader, mMessage);
+            }
+            MessagesModel mMessage = message;
+            mMessage.is_header = false;
+            mMessage.show_message_datetime = today_date_format.format(calDb.getTime());
+            mMessageList.put(message.message_id, mMessage);
+        }
+        return mMessageList;
+    }
+
+    public void deleteDialogData(String dialogId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            String chatQuery = "DELETE FROM " + CHATS_TABLE + " where "
+                    + CHAT_DIALOG_ID + " = '" + dialogId + "'";
+            db.execSQL(chatQuery);
+
+            String deleteQuery = "DELETE FROM " + DELETE_DIALOG_TIME + " where "
+                    + CHAT_DIALOG_ID + " = '" + dialogId + "'";
+            db.execSQL(deleteQuery);
+
+            String unreadQuery = "DELETE FROM " + UNREAD_COUNT_TABLE + " where "
+                    + CHAT_DIALOG_ID + " = '" + dialogId + "'";
+            db.execSQL(unreadQuery);
+
+            String blockQuery = "DELETE FROM " + BLOCK_TABLE + " where "
+                    + CHAT_DIALOG_ID + " = '" + dialogId + "'";
+            db.execSQL(blockQuery);
+
+            String messageQuery = "DELETE FROM " + MESSAGES_TABLE + " where "
+                    + CHAT_DIALOG_ID + " = '" + dialogId + "'";
+            db.execSQL(messageQuery);
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.e("Exception", "is " + e);
+        } finally {
+            db.endTransaction();
+        }
+
+    }
+
 }

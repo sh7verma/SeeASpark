@@ -1,11 +1,14 @@
 package adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.StrictMode;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -18,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 
+import com.seeaspark.CommunityDetailActivity;
 import com.seeaspark.FullViewImageActivity;
 import com.seeaspark.R;
 import com.squareup.picasso.Picasso;
@@ -68,11 +72,11 @@ public class FullImageAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, final int position) {
 
         View itemView = inflater.inflate(R.layout.item_fullview, container, false);
-        TouchImageView imgPic = (TouchImageView) itemView.findViewById(R.id.imgPic);
+        final TouchImageView imgPic = (TouchImageView) itemView.findViewById(R.id.imgPic);
 
         if (mPath == 1)
             Picasso.with(mContext).load(mData.get(position).getImage_url()).
-                    centerCrop().resize(mWidth, (int) mContext.getResources().getDimension(R.dimen._240sdp)).
+                    centerCrop().resize(mWidth, (int) mContext.getResources().getDimension(R.dimen._190sdp)).
                     into(imgPic);
         else
             imgPic.setImageBitmap(getBitmapFromURL(mData.get(position).getImage_url()));
@@ -81,10 +85,8 @@ public class FullImageAdapter extends PagerAdapter {
             @Override
             public void onClick(View view) {
                 if (mPath == 1) {
-                    Intent intent = new Intent(mContext, FullViewImageActivity.class);
-                    intent.putParcelableArrayListExtra("images", mData);
-                    intent.putExtra("imagePosition", position);
-                    mContext.startActivity(intent);
+                    ((CommunityDetailActivity) mContext).moveToFullView(imgPic,position,mData);
+
                 }
             }
         });

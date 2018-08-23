@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -198,7 +200,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/TransparentActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
             android:name=".ViewProfileActivity"
@@ -359,7 +361,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="192.168.1.51"
+                    android:host="34.247.115.251"
                     android:pathPattern=":3000"
                     android:pathPrefix="/notes"
                     android:scheme="http" />
@@ -372,9 +374,22 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="192.168.1.51"
+                    android:host="34.247.115.251"
                     android:pathPattern=":3000"
                     android:pathPrefix="/posts"
+                    android:scheme="http" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="34.247.115.251"
+                    android:pathPattern=":3000"
+                    android:pathPrefix="/share_user"
                     android:scheme="http" />
             </intent-filter>
 
@@ -392,6 +407,110 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".OtherProfileActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".AnimationDemo"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme">
+
+        </activity>
+
+        <activity
+            android:name=".ConversationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".FavouriteMessageActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".AttachmentActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".DocActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name="filePicker.DocPickerActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".AttachVideoActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".MyNotesActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".SearchNotesActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".FullViewActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".VideoDisplayActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".AttachmentSelectionActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity" />
+
+        <activity
+            android:name=".ChatFilterActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity" />
+
+        <activity
+            android:name=".ChatOptionsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity" />
+
+        <service android:name="services.UploadFileService" />
+        <service android:name="services.DownloadFileService" />
+        <service android:name="services.ListenerService"
+            android:enabled="true"/>
+
+        <service
+            android:name="services.JobSchedulerService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:stopWithTask="false" />
 
         <receiver
             android:name="services.DayBroadcastReceiver"

@@ -7,11 +7,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_community_bookmark.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import models.BaseSuccessModel
@@ -109,6 +112,7 @@ class CommunityBookmarkActivity : BaseActivity() {
                     populateData(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(rvCommunityBookmark, response.body().error!!.message!!)
@@ -137,12 +141,18 @@ class CommunityBookmarkActivity : BaseActivity() {
     }
 
 
-    fun moveToCommunityDetail(communityId: Int) {
+    fun moveToCommunityDetail(communityId: Int, imgCommunityListing: ImageView) {
         if (connectedToInternet()) {
             val intent = Intent(mContext, CommunityDetailActivity::class.java)
             intent.putExtra("communityId", communityId)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val option = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+                        imgCommunityListing, getString(R.string.transition_image))
+                startActivity(intent, option.toBundle())
+            } else {
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         } else
             showInternetAlert(rvCommunityBookmark)
     }
@@ -177,6 +187,7 @@ class CommunityBookmarkActivity : BaseActivity() {
                     /// change db status to previous
                     setPreviousDBStatus(postId)
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -214,6 +225,7 @@ class CommunityBookmarkActivity : BaseActivity() {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)

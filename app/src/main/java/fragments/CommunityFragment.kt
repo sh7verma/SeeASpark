@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
@@ -17,6 +18,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.Toast
 import com.seeaspark.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_community.*
@@ -191,6 +194,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
                     addToLocalDatabase(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         mLandingInstance!!.moveToSplash()
                     } else
                         mLandingInstance!!.showAlert(rvCommunityListing, response.body().error!!.message!!)
@@ -278,6 +282,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
                     /// change db status to previous
                     setPreviousDBStatus(postId)
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         mLandingInstance!!.moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         mLandingInstance!!.showToast(mContext!!, response.body().error!!.message!!)
@@ -313,6 +318,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         mLandingInstance!!.moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         mLandingInstance!!.showToast(mContext!!, response.body().error!!.message!!)
@@ -397,12 +403,18 @@ class CommunityFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    fun moveToCommunityDetail(communityId: Int) {
+    fun moveToCommunityDetail(communityId: Int, imgCommunityListing: ImageView) {
         if (mLandingInstance!!.connectedToInternet()) {
             val intent = Intent(mContext, CommunityDetailActivity::class.java)
             intent.putExtra("communityId", communityId)
-            startActivity(intent)
-            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                        imgCommunityListing, getString(R.string.transition_image))
+                activity.startActivity(intent, option.toBundle())
+            } else {
+                startActivity(intent)
+                activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         } else
             mLandingInstance!!.showInternetAlert(rvCommunityListing)
     }

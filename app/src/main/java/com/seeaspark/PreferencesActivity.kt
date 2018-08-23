@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.cocosw.bottomsheet.BottomSheet
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_edit_profile.*
@@ -41,7 +42,7 @@ class PreferencesActivity : BaseActivity() {
     var mSelectedProfessionsArray = ArrayList<String>()
     private var userData: SignupModel? = null
     private var mGenderValue = 0
-    private var mMaxDistanceValue = 0
+    private var mMaxDistanceValue = 15
     private var mMaxExperienceValue = 3
     private var moveToHome = false
     private var mPreferActivity: PreferencesActivity? = null
@@ -65,7 +66,20 @@ class PreferencesActivity : BaseActivity() {
             }
             rsbExperience.selectedMaxValue = 3
             txtExperienceCount.text = "3 Year(s)"
+        }
 
+        cbNoDistance.setOnCheckedChangeListener { p0, isChecked ->
+            if (isChecked) {
+                llDisableDistance.visibility = View.VISIBLE
+                mMaxDistanceValue = 102
+                rsbDistance.selectedMaxValue = 100
+                txtDistanceCount.text = "100+ Mile(s)"
+            } else {
+                llDisableDistance.visibility = View.GONE
+              /*  mMaxDistanceValue = 15
+                rsbDistance.selectedMaxValue = 15
+                txtDistanceCount.text = "15 Mile(s)"*/
+            }
         }
     }
 
@@ -121,7 +135,6 @@ class PreferencesActivity : BaseActivity() {
                 mMaxDistanceValue = maxValue.toInt() + 1
                 txtDistanceCount.text = "$maxValue+ Mile(s)"
             }
-
         }
 
         rsbExperience.isNotifyWhileDragging = true
@@ -135,23 +148,27 @@ class PreferencesActivity : BaseActivity() {
             moveToHome = true
 
             mMaxDistanceValue = userData!!.response.preferences.distance
-            txtDistanceCount.text = "${userData!!.response.preferences.distance} Mile(s)"
-            rsbDistance.selectedMaxValue = mMaxDistanceValue
 
-            if (userData!!.response.preferences.distance == 101)
+            if (userData!!.response.preferences.distance == 102) {
+                cbNoDistance.isChecked = true
+                rsbDistance.selectedMaxValue = 100
+            } else if (userData!!.response.preferences.distance == 101) {
                 txtDistanceCount.text = "100+ Mile(s)"
-
-
+                rsbDistance.selectedMaxValue = 100
+            } else {
+                txtDistanceCount.text = "${userData!!.response.preferences.distance} Mile(s)"
+                rsbDistance.selectedMaxValue = userData!!.response.preferences.distance
+            }
 
             if (userData!!.response.preferences.experience_year == -1) {
                 mMaxExperienceValue = -1
-                cbNoExperience.isChecked=true
-                llDisableExperience.visibility=View.VISIBLE
+                cbNoExperience.isChecked = true
+                llDisableExperience.visibility = View.VISIBLE
                 rsbExperience.selectedMaxValue = 3
                 txtExperienceCount.text = "3 Year(s)"
             } else {
-                cbNoExperience.isChecked=false
-                llDisableExperience.visibility=View.GONE
+                cbNoExperience.isChecked = false
+                llDisableExperience.visibility = View.GONE
                 mMaxExperienceValue = userData!!.response.preferences.experience_year
                 rsbExperience.selectedMaxValue = userData!!.response.preferences.experience_year
                 txtExperienceCount.text = "${userData!!.response.preferences.experience_year} Year(s)"
@@ -342,7 +359,7 @@ class PreferencesActivity : BaseActivity() {
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(imgForwardPrefer, response.body().error!!.message!!)
@@ -513,6 +530,7 @@ class PreferencesActivity : BaseActivity() {
                     upDateData(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(imgForwardPrefer, response.body().error!!.message!!)

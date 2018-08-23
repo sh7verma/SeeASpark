@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="D:\GitLocationSeeASpark\SeeASpark\rangeseekbar\src\main\assets"/><source path="D:\GitLocationSeeASpark\SeeASpark\rangeseekbar\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="D:\GitLocationSeeASpark\SeeASpark\rangeseekbar\src\debug\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/home/dev/Work/Studio/SeeASpark/rangeseekbar/src/main/assets"/><source path="/home/dev/Work/Studio/SeeASpark/rangeseekbar/build/generated/assets/shaders/debug"/></dataSet><dataSet config="debug"><source path="/home/dev/Work/Studio/SeeASpark/rangeseekbar/src/debug/assets"/></dataSet></merger>

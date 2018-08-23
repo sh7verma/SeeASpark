@@ -2,7 +2,12 @@ package com.seeaspark
 
 import adapters.TipsAdapter
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.Fragment
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -12,6 +17,7 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.widget.Toast
 import com.google.android.gms.analytics.HitBuilders
 import com.google.android.gms.analytics.Tracker
 import com.google.android.gms.common.ConnectionResult
@@ -20,10 +26,8 @@ import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.squareup.picasso.Picasso
-import fragments.CommunityFragment
-import fragments.EventsFragment
-import fragments.HomeFragment
-import fragments.NotesFragment
+import fragments.*
+import helper.FirebaseListeners
 import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.activity_verify_id.*
 import models.BaseSuccessModel
@@ -33,12 +37,14 @@ import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import services.JobSchedulerService
+import services.ListenerService
 import utils.Constants
 import utils.GpsStatusDetector
 import utils.MainApplication
 
 class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
-        LocationListener, GpsStatusDetector.GpsStatusDetectorCallBack, GoogleApiClient.OnConnectionFailedListener {
+        LocationListener, GpsStatusDetector.GpsStatusDetectorCallBack, GoogleApiClient.OnConnectionFailedListener, FirebaseListeners.ProfileListenerInterface {
 
     private val LOCATION_CHECK: Int = 1
 
@@ -56,6 +62,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     private var height = 0
 
     private var homeFragment: HomeFragment? = null
+    private var chatFragment: ChatFragment? = null
 
     private var mTracker: Tracker? = null
     var mArrayCards = ArrayList<CardsDisplayModel>()
@@ -93,6 +100,9 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     }
 
     override fun onCreateStuff() {
+        callService()
+        FirebaseListeners.setProfileDataListener(this)
+        FirebaseListeners.getListenerClass(this).setProfileListener(mUtils!!.getString("user_id", ""))
         if (intent.hasExtra("matchData")) {
             val matchData: String = intent.getStringExtra("matchData")
             intent = Intent(this, HandshakeActivity::class.java)
@@ -129,13 +139,11 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
 
-        Picasso.with(mContext).load(userData!!.response.avatar)
+        Picasso.with(mContext).load(userData!!.response.avatar.avtar_url)
                 .resize(width, height).into(imgProfileTip)
 
-        if (userData!!.response.user_type == Constants.MENTEE) {
-            imgCommunity.setImageResource(R.mipmap.ic_boost)
-            imgCommunityTips.setImageResource(R.mipmap.ic_boost_s)
-        }
+        checkUserType()
+
         homeFragment = HomeFragment()
         /// adding home fragment
         addHomeFragment(homeFragment!!)
@@ -150,6 +158,24 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         mTracker = application.defaultTracker
         mTracker!!.setScreenName(getString(R.string.home))
         mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
+    }
+
+    fun checkUserType() {
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        if (userData!!.response.user_type == Constants.MENTEE)
+            switchToMentee()
+        else
+            switchToMentor()
+    }
+
+    private fun switchToMentee() {
+        imgCommunity.setImageResource(R.mipmap.ic_boost)
+        imgCommunityTips.setImageResource(R.mipmap.ic_boost_s)
+    }
+
+    private fun switchToMentor() {
+        imgCommunity.setImageResource(R.mipmap.ic_community)
+        imgCommunityTips.setImageResource(R.mipmap.ic_community_s)
     }
 
     override fun initListener() {
@@ -173,30 +199,56 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 homeFragment = HomeFragment()
                 imgHome.setImageResource(R.mipmap.ic_home_s)
                 imgEvents.setImageResource(R.mipmap.ic_events)
-                imgCommunity.setImageResource(R.mipmap.ic_community)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
                 imgNotes.setImageResource(R.mipmap.ic_notes)
+                imgChat.setImageResource(R.mipmap.ic_speach)
                 replaceFragment(homeFragment!!)
+                chatFragment = null
                 mTracker!!.setScreenName(getString(R.string.home))
                 mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llNotes -> {
                 imgHome.setImageResource(R.mipmap.ic_home)
                 imgEvents.setImageResource(R.mipmap.ic_events)
-                imgCommunity.setImageResource(R.mipmap.ic_community)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
                 imgNotes.setImageResource(R.mipmap.ic_notes_s)
+                imgChat.setImageResource(R.mipmap.ic_speach)
                 replaceFragment(NotesFragment())
+                chatFragment = null
                 mTracker!!.setScreenName(getString(R.string.notes))
                 mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llChat -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                chatFragment = ChatFragment()
+                imgHome.setImageResource(R.mipmap.ic_home)
+                imgEvents.setImageResource(R.mipmap.ic_events)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
+                imgNotes.setImageResource(R.mipmap.ic_notes)
+                imgChat.setImageResource(R.mipmap.ic_speach_s)
+                replaceFragment(chatFragment!!)
+                mTracker!!.setScreenName(getString(R.string.notes))
+                mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llEvents -> {
                 imgHome.setImageResource(R.mipmap.ic_home)
                 imgEvents.setImageResource(R.mipmap.ic_events_s)
-                imgCommunity.setImageResource(R.mipmap.ic_community)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
                 imgNotes.setImageResource(R.mipmap.ic_notes)
+                imgChat.setImageResource(R.mipmap.ic_speach)
                 replaceFragment(EventsFragment())
+                chatFragment = null
                 mTracker!!.setScreenName(getString(R.string.events))
                 mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
@@ -207,7 +259,9 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                     imgEvents.setImageResource(R.mipmap.ic_events)
                     imgCommunity.setImageResource(R.mipmap.ic_community_s)
                     imgNotes.setImageResource(R.mipmap.ic_notes)
+                    imgChat.setImageResource(R.mipmap.ic_speach)
                     replaceFragment(CommunityFragment())
+                    chatFragment = null
                     mTracker!!.setScreenName(getString(R.string.community))
                     mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
                 } else {
@@ -271,6 +325,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(llCancelDone, response.body().error!!.message!!)
@@ -326,9 +381,9 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 getString(R.string.tips_boost))
 
         if (userData!!.response.user_type == Constants.MENTOR)
-            vpTips.adapter = TipsAdapter(iconArray, titleArray, descArray, mContext!!, userData!!.response.avatar)
+            vpTips.adapter = TipsAdapter(iconArray, titleArray, descArray, mContext!!, userData!!.response.avatar.avtar_url)
         else
-            vpTips.adapter = TipsAdapter(iconArrayMentee, titleArrayMentee, descArrayMentee, mContext!!, userData!!.response.avatar)
+            vpTips.adapter = TipsAdapter(iconArrayMentee, titleArrayMentee, descArrayMentee, mContext!!, userData!!.response.avatar.avtar_url)
 
         cpIndicatorTips.setViewPager(vpTips)
         cpIndicatorTips.radius = 10f
@@ -351,7 +406,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         mLocationRequest!!.fastestInterval = 1000
         mLocationRequest!!.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
         if (ContextCompat.checkSelfPermission(mContext!!,
-                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (mGoogleApiClient!!.isConnected)
                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this)
         }
@@ -411,7 +466,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         when (requestCode) {
             LOCATION_CHECK -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(mContext!!,
-                                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     if (mGoogleApiClient == null) {
                         buildGoogleApiClient()
                         mGpsStatusDetector = GpsStatusDetector(this)
@@ -432,6 +487,52 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     override fun onDestroy() {
         MainApplication.isLandingAvailable = false
         super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (chatFragment != null) {
+            if (chatFragment!!.checkSearch()) {
+                finish()
+            }
+        } else {
+            finish()
+        }
+    }
+
+    @SuppressLint("NewApi")
+    internal fun callService() {
+        // get job api service
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+            val jobService = ComponentName(packageName, JobSchedulerService::class.java!!.getName())
+            val jobInfo: JobInfo
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                jobInfo = JobInfo.Builder(1, jobService).setMinimumLatency(5000).build()
+            } else {
+                jobInfo = JobInfo.Builder(1, jobService).setPeriodic(5000).build()
+            }
+            jobScheduler.schedule(jobInfo)
+        } else {
+            if (checkServiceRunning()) {
+
+            } else {
+                startService(Intent(applicationContext, ListenerService::class.java))
+            }
+        }
+    }
+
+    fun checkServiceRunning(): Boolean {
+        val manager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("services.ListenerService" == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
+
+    override fun onProfileChanged(value: String?) {
+        moveToSplash()
     }
 
 }

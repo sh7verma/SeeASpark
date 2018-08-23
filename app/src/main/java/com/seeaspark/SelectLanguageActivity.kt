@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_select_language.*
 import models.LanguageListingModel
 import models.LanguageModel
@@ -118,6 +119,7 @@ class SelectLanguageActivity : BaseActivity() {
                     upDateData(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
                         showAlert(txtNextSelectLanguage, response.body().error!!.message!!)

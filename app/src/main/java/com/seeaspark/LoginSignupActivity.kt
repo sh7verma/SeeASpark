@@ -20,6 +20,7 @@ import com.facebook.FacebookException
 import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.google.firebase.database.FirebaseDatabase
 import com.linkedin.platform.APIHelper
 import com.linkedin.platform.LISessionManager
 import com.linkedin.platform.errors.LIApiError
@@ -29,6 +30,7 @@ import com.linkedin.platform.listeners.ApiResponse
 import com.linkedin.platform.listeners.AuthListener
 import com.linkedin.platform.utils.Scope
 import kotlinx.android.synthetic.main.activity_signup.*
+import models.ProfileModel
 import models.SignupModel
 import network.RetrofitClient
 import org.json.JSONException
@@ -40,7 +42,6 @@ import java.util.*
 
 
 class LoginSignupActivity : BaseActivity() {
-
 
     private val VERIFY: Int = 1
 
@@ -418,6 +419,7 @@ class LoginSignupActivity : BaseActivity() {
                         mUtils!!.setString("access_token", response.body().response.access_token)
                         mUtils!!.setString("user_id", response.body().response.id.toString())
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
+                        mUtils!!.setString("user_type", response.body().response.user_type.toString())
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
@@ -431,6 +433,7 @@ class LoginSignupActivity : BaseActivity() {
                         mUtils!!.setString("access_token", response.body().response.access_token)
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
                         mUtils!!.setString("user_id", response.body().response.id.toString())
+                        mUtils!!.setString("user_type", response.body().response.user_type.toString())
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
@@ -465,103 +468,112 @@ class LoginSignupActivity : BaseActivity() {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
                 dismissLoader()
 
-                if (response.body().code == Constants.PROCEED_AS_OTHER
-                        && response.body().response != null) {
-                    /// user enter as different user Type as comapred to signup
-                    // but didn't setuped profile yet
-
-                    val signupModel = response.body()
-
-                    if (signupModel.response.user_type == Constants.MENTOR)
-                        signupModel.response.user_type = Constants.MENTEE
-                    else if (signupModel.response.user_type == Constants.MENTEE)
-                        signupModel.response.user_type = Constants.MENTOR
-
-                    signupModel.response.full_name = mName
-
-                    /// add data to shared preference
-                    addDataToSharedPreferences(signupModel)
-
-                    alertContinueDialog(response.body().message, signupModel)
-
-                } else if (response.body().code == Constants.PROFILE_UNDER_REVIEW
-                        && response.body().response != null) {
-                    /// add data to shared preference
-                    addDataToSharedPreferences(response.body())
-                    /// navigate to review screen
-                    moveToReview(response.body())
-                } else if (response.body().code == Constants.PROCEED_NORMAL
-                        && response.body().response != null) {
-                    if (response.body().response.email_verified == 0 &&
-                            response.body().response.profile_status == 0 &&
-                            (response.body().response.account_type == Constants.EMAIL_LOGIN)) {
-
+                if (response.body().response != null) {
+                    if (response.body().response.user_type != mUserType) {
                         addDataToSharedPreferences(response.body())
-                        /// navigate to email verification screen
-                        moveToEmailVerification(response.body())
+                        mUtils!!.setInt("switchMode", 1)
+                        switchAccounts(response.body())
+                    } else {
+                        mUtils!!.setInt("switchMode", 0)
+                        if (response.body().code == Constants.PROCEED_AS_OTHER
+                                && response.body().response != null) {
+                            /// user enter as different user Type as comapred to signup
+                            // but didn't setuped profile yet
 
-                    } else if (response.body().response.email_verified == 0 &&
-                            response.body().response.profile_status == 0 &&
-                            response.body().response.document_verified == 0 &&
-                            (response.body().response.account_type == Constants.FACEBOOK_LOGIN ||
-                                    response.body().response.account_type == Constants.LIKENDIN_LOGIN)) {
+                            val signupModel = response.body()
 
-                        response.body().response.full_name = mName
-                        addDataToSharedPreferences(response.body())
+                            if (signupModel.response.user_type == Constants.MENTOR)
+                                signupModel.response.user_type = Constants.MENTEE
+                            else if (signupModel.response.user_type == Constants.MENTEE)
+                                signupModel.response.user_type = Constants.MENTOR
 
-                        if (!TextUtils.isEmpty(response.body().response.email)) {
-                            mUtils!!.setBoolean("addEmailFragment", false)
+                            signupModel.response.full_name = mName
 
-                            moveToEmailVerification(response.body())
-                        } else {
-                            mUtils!!.setBoolean("addEmailFragment", true)
-                            /// navigate to create profile screen
-                            moveToCreateProfile(response.body())
+                            /// add data to shared preference
+                            addDataToSharedPreferences(signupModel)
+
+                            alertContinueDialog(response.body().message, signupModel)
+
+                        } else if (response.body().code == Constants.PROFILE_UNDER_REVIEW
+                                && response.body().response != null) {
+                            /// add data to shared preference
+                            addDataToSharedPreferences(response.body())
+                            /// navigate to review screen
+                            moveToReview(response.body())
+                        } else if (response.body().code == Constants.PROCEED_NORMAL
+                                && response.body().response != null) {
+                            if (response.body().response.email_verified == 0 &&
+                                    response.body().response.profile_status == 0 &&
+                                    (response.body().response.account_type == Constants.EMAIL_LOGIN)) {
+
+                                addDataToSharedPreferences(response.body())
+                                /// navigate to email verification screen
+                                moveToEmailVerification(response.body())
+
+                            } else if (response.body().response.email_verified == 0 &&
+                                    response.body().response.profile_status == 0 &&
+                                    response.body().response.document_verified == 0 &&
+                                    (response.body().response.account_type == Constants.FACEBOOK_LOGIN ||
+                                            response.body().response.account_type == Constants.LIKENDIN_LOGIN)) {
+
+                                response.body().response.full_name = mName
+                                addDataToSharedPreferences(response.body())
+
+                                if (!TextUtils.isEmpty(response.body().response.email)) {
+                                    mUtils!!.setBoolean("addEmailFragment", false)
+
+                                    moveToEmailVerification(response.body())
+                                } else {
+                                    mUtils!!.setBoolean("addEmailFragment", true)
+                                    /// navigate to create profile screen
+                                    moveToCreateProfile(response.body())
+                                }
+                            } else if (response.body().response.email_verified == 1 &&
+                                    response.body().response.document_verified == 0 &&
+                                    response.body().response.profile_status == 0) {
+
+                                mUtils!!.setBoolean("addEmailFragment", false)
+                                response.body().response.full_name = mName
+                                addDataToSharedPreferences(response.body())
+                                /// navigate to create profile screen
+                                moveToCreateProfile(response.body())
+
+                            } else if (response.body().response.email_verified == 1 &&
+                                    response.body().response.document_verified == 1 &&
+                                    response.body().response.profile_status == 0) {
+
+                                mUtils!!.setBoolean("addEmailFragment", false)
+                                response.body().response.full_name = mName
+                                addDataToSharedPreferences(response.body())
+                                /// navigate to create profile screen
+                                moveToCreateProfile(response.body())
+
+                            } else if (response.body().response.email_verified == 1 &&
+                                    response.body().response.document_verified == 1 &&
+                                    response.body().response.profile_status == 1) {
+
+                                mUtils!!.setString("access_token", response.body().response.access_token)
+                                mUtils!!.setInt("profile_status", response.body().response.profile_status)
+                                mUtils!!.setString("user_id", response.body().response.id.toString())
+                                mUtils!!.setString("user_type", response.body().response.user_type.toString())
+                                addDataToSharedPreferences(response.body())
+                                /// navigate to questionarrie
+                                moveToQuestionnaire()
+
+                            } else if (response.body().response.email_verified == 1 &&
+                                    response.body().response.document_verified == 1 &&
+                                    response.body().response.profile_status == 2) {
+
+                                mUtils!!.setString("access_token", response.body().response.access_token)
+                                mUtils!!.setInt("profile_status", response.body().response.profile_status)
+                                mUtils!!.setString("user_id", response.body().response.id.toString())
+                                mUtils!!.setString("user_type", response.body().response.user_type.toString())
+                                addDataToSharedPreferences(response.body())
+                                /// navigate to landing Screen
+                                moveToLanding()
+                            }
                         }
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 0 &&
-                            response.body().response.profile_status == 0) {
-
-                        mUtils!!.setBoolean("addEmailFragment", false)
-                        response.body().response.full_name = mName
-                        addDataToSharedPreferences(response.body())
-                        /// navigate to create profile screen
-                        moveToCreateProfile(response.body())
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 1 &&
-                            response.body().response.profile_status == 0) {
-
-                        mUtils!!.setBoolean("addEmailFragment", false)
-                        response.body().response.full_name = mName
-                        addDataToSharedPreferences(response.body())
-                        /// navigate to create profile screen
-                        moveToCreateProfile(response.body())
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 1 &&
-                            response.body().response.profile_status == 1) {
-
-                        mUtils!!.setString("access_token", response.body().response.access_token)
-                        mUtils!!.setInt("profile_status", response.body().response.profile_status)
-                        mUtils!!.setString("user_id", response.body().response.id.toString())
-                        addDataToSharedPreferences(response.body())
-                        /// navigate to questionarrie
-                        moveToQuestionnaire()
-
-                    } else if (response.body().response.email_verified == 1 &&
-                            response.body().response.document_verified == 1 &&
-                            response.body().response.profile_status == 2) {
-
-                        mUtils!!.setString("access_token", response.body().response.access_token)
-                        mUtils!!.setInt("profile_status", response.body().response.profile_status)
-                        mUtils!!.setString("user_id", response.body().response.id.toString())
-
-                        addDataToSharedPreferences(response.body())
-                        /// navigate to landing Screen
-                        moveToLanding()
                     }
-
                 } else {
                     if (response.body().error!!.code == Constants.PROCEED_AS_OTHER_UNDER_REVIEW)
                         alertProfileSubmittedDialog(response.body().error!!.message!!)
@@ -575,6 +587,29 @@ class LoginSignupActivity : BaseActivity() {
                 showAlert(txtDone, t!!.getLocalizedMessage())
             }
         })
+    }
+
+    private fun switchAccounts(response: SignupModel) {
+        var docVerified = 0
+        var profileStatus = 1
+        if (mUserType == Constants.MENTOR) {
+            docVerified = response.response.mentor_verified
+            profileStatus = response.response.mentor_profile_status
+        } else if (mUserType == Constants.MENTEE) {
+            docVerified = response.response.document_verified
+            profileStatus = response.response.mentee_profile_status
+        }
+        if (docVerified == 0 && profileStatus == 1) {
+            /// Review Screen
+            moveToReview(response)
+        } else if (docVerified == 1 && profileStatus == 1) {
+            /// Questionarrie Screen
+
+            moveToQuestionnaire()
+        } else if (docVerified == 0 && profileStatus == 1) {
+            /// Landing Screen
+            moveToLanding()
+        }
     }
 
     private fun moveToReview(body: SignupModel?) {
@@ -612,6 +647,19 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     private fun moveToLanding() {
+        val values = HashMap<String, Any>()
+        values.put("user_id", mUtils!!.getString("user_id", ""))
+        values.put("online_status", "Online")
+        values.put("access_token", mUtils!!.getString("access_token", ""))
+        var mFirebaseConfigProfile = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
+        mFirebaseConfigProfile.child("id_" + mUtils!!.getString("user_id", "")).updateChildren(values)
+
+        val model = ProfileModel()
+        model.access_token = mUtils!!.getString("access_token", "")
+        model.user_id = mUtils!!.getString("user_id", "")
+        model.online_status = Constants.ONLINE_LONG
+        db!!.addProfile(model)
+
         intent = Intent(mContext, LandingActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -667,11 +715,6 @@ class LoginSignupActivity : BaseActivity() {
     fun addDataToSharedPreferences(signupModel: SignupModel) {
         mUtils!!.setString("tipsVisible", signupModel.response.tip)
         mUtils!!.setString("userDataLocal", mGson.toJson(signupModel))
-
-        /*mUtils!!.setString("professionData", mGson.toJson(signupModel.professions))
-       mUtils!!.setString("skillsData", mGson.toJson(signupModel.skills))
-       mUtils!!.setString("avatarData", mGson.toJson(signupModel.avatars))
-       mUtils!!.setString("profileDataLocal", mGson.toJson(signupModel.response))*/
     }
 
 }

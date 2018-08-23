@@ -11,8 +11,7 @@
         android:id="@+id/svViewCommunity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:visibility="gone">
+        android:scrollbars="none">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -22,11 +21,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_240sdp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_190sdp"
+                    android:background="@drawable/background_gradient" />
+
                 <android.support.v4.view.ViewPager
                     android:id="@+id/vpCommunityDetail"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_240sdp"
-                    android:background="@drawable/background_gradient" />
+                    android:transitionName="@string/transition_image"
+                    android:layout_height="@dimen/_190sdp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

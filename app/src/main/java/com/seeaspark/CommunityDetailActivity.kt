@@ -1,6 +1,8 @@
 package com.seeaspark
 
 import adapters.FullImageAdapter
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -9,9 +11,12 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.view.View
+import android.widget.ImageView
+import android.widget.Toast
 import com.like.LikeButton
 import com.like.OnLikeListener
 import kotlinx.android.synthetic.main.activity_community_detail.*
@@ -25,6 +30,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
+import utils.MainApplication
 import java.util.ArrayList
 
 class CommunityDetailActivity : BaseActivity() {
@@ -137,6 +143,7 @@ class CommunityDetailActivity : BaseActivity() {
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
         if (intent.hasExtra("postId")) {
             mPostId = intent.getStringExtra("postId")
+            svViewCommunity.visibility = View.GONE
             if (connectedToInternet())
                 hitDetailAPI()
             else
@@ -156,10 +163,13 @@ class CommunityDetailActivity : BaseActivity() {
                 if (response!!.body().response != null) {
                     mCommunityData = response.body().response
                     addToLocalDatabase(response.body().response)
+                    svViewCommunity.visibility = View.VISIBLE
                     populateData()
                 } else {
-                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN)
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
+                    }
                     else {
                         showToast(mContext!!, response.body().error!!.message!!)
                         finish()
@@ -192,13 +202,14 @@ class CommunityDetailActivity : BaseActivity() {
     override fun getContext() = this
 
     override fun onClick(view: View?) {
-        var intent: Intent? = null
+        val intent: Intent?
         when (view) {
             imgBackCustom -> {
                 moveBack()
             }
             imgOption1Custom -> {
                 intent = Intent(mContext!!, ShareActivity::class.java)
+                intent.putExtra("path", 4)
                 intent.putExtra("postUrl", mCommunityData!!.shareable_link)
                 startActivity(intent)
                 overridePendingTransition(0, 0)
@@ -308,6 +319,7 @@ class CommunityDetailActivity : BaseActivity() {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -334,6 +346,7 @@ class CommunityDetailActivity : BaseActivity() {
                     setPreviousDBStatus(status)
 
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -385,6 +398,8 @@ class CommunityDetailActivity : BaseActivity() {
                     txtCommentCountCommunity.text = "${intent.getIntExtra("commentCount", 0)} COMMENT(S)"
                 } else if (intent.getIntExtra("status", 0) == Constants.DELETE) {
                     finish()
+                } else if (intent.getIntExtra("status", 0) == Constants.CHANGE_POSITION) {
+                    vpCommunityDetail.currentItem = intent.getIntExtra("position", 0)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -397,8 +412,32 @@ class CommunityDetailActivity : BaseActivity() {
     }
 
     private fun moveBack() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        if (MainApplication.isLandingAvailable) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                supportFinishAfterTransition()
+            else {
+                finish()
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+            }
+        } else {
+            val intent = Intent(mContext, LandingActivity::class.java)
+            startActivity(intent)
+            finish()
+            overridePendingTransition(0, 0)
+        }
     }
 
+    @SuppressLint("RestrictedApi")
+    fun moveToFullView(imgPic: ImageView, position: Int, mData: ArrayList<PostModel.ResponseBean.ImagesBean>) {
+        val intent = Intent(mContext, FullViewImageActivity::class.java)
+        intent.putParcelableArrayListExtra("images", mData)
+        intent.putExtra("imagePosition", position)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val option = ActivityOptionsCompat.makeSceneTransitionAnimation(mContext as Activity,
+                    imgPic, getString(R.string.transition_image))
+            startActivity(intent, option.toBundle())
+        } else {
+            startActivity(intent)
+        }
+    }
 }

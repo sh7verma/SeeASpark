@@ -8,13 +8,13 @@
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifHandshake"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_200sdp"
+        android:layout_height="@dimen/_180sdp"
         android:src="@drawable/new_ani" />
 
     <LinearLayout
         android:id="@+id/llDataHandshake"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_330sdp"
+        android:layout_height="@dimen/_300sdp"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/_16sdp"
         android:visibility="invisible"
@@ -107,7 +107,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_330sdp"
+        android:layout_height="@dimen/_300sdp"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/_16sdp"
         android:layout_marginRight="@dimen/_16sdp"

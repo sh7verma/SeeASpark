@@ -42,20 +42,22 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
     var width: Int = 0
     var height: Int = 0
     var mUtils: Utils? = null
+    private var mWidthCommunity = 0
 
     var mTimer: CountDownTimer? = null
     var mTimerTime: Long = 0
-    var localFormat = SimpleDateFormat("HH:mm:ss")
+    var localFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
 
     init {
         this.mCardsArray = mCardsArray
         this.mContext = mContext
         mUtils = Utils(mContext)
         mScreenWidth = mWidth / 2
+        mWidthCommunity = mWidth - mWidth / 9
         mScreenCalculated = mScreenWidth / 100
         this.mHomeFragment = mHomeFragment
 
-        var drawable = ContextCompat.getDrawable(mContext, R.mipmap.ic_avatar_1)
+        val drawable = ContextCompat.getDrawable(mContext, R.mipmap.ic_avatar_1)
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
     }
@@ -99,10 +101,12 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 if (mCardsArray[position].date_time.isNotEmpty())
                     holder.txtDateCommunity.text = Constants.displayDateTime(mCardsArray[position].date_time)
 
-                Picasso.with(mContext).load(mCardsArray[position].images[0].image_url).fit().into(holder.imgCommunityListing)
+                Picasso.with(mContext).load(mCardsArray[position].images[0].image_url)
+                        .resize(mWidthCommunity, mContext!!.resources.getDimension(R.dimen._161sdp).toInt())
+                        .centerCrop().into(holder.imgCommunityListing)
 
                 holder.cvClick.setOnClickListener {
-                    mHomeFragment!!.moveToCommunityDetail(mCardsArray[position].id)
+                    mHomeFragment!!.moveToCommunityDetail(mCardsArray[position].id,holder.imgCommunityListing)
                 }
             }
             Constants.EVENT -> {
@@ -114,7 +118,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 Picasso.with(mContext).load(mCardsArray[position].images[0].image_url).fit().into(holder.imgEventCard)
 
                 holder.txtEventExploreCard.setOnClickListener {
-                    mHomeFragment!!.moveToEventDetail(mCardsArray[position].id)
+                    mHomeFragment!!.moveToEventDetail(mCardsArray[position].id,holder.imgEventCard)
                 }
             }
             Constants.OUT_OF_CARD -> {
@@ -138,7 +142,10 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
 
                 holder.txtSkillCard.text = mCardsArray[position].skills[0]
 
-                Picasso.with(mContext).load(mCardsArray[position].avatar).resize(width, width).placeholder(R.mipmap.ic_avatar_1).into(holder.imgAvatarCard)
+                Picasso.with(mContext).load(mCardsArray[position].avatar.avtar_url)
+                        .resize(width, width)
+                        .placeholder(R.mipmap.ic_avatar_1)
+                        .into(holder.imgAvatarCard)
 
                 if (mCardsArray[position].skills.size == 1) {
                     holder.txtSkillCountCard.visibility = View.GONE
@@ -148,7 +155,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                 }
 
                 holder.llData.setOnClickListener {
-                    mHomeFragment!!.openShortProfile(mCardsArray[position])
+                    mHomeFragment!!.openProfile(mCardsArray[position], holder.imgAvatarCard)
                 }
 
                 holder.swlCard.addSwipeListener(object : SwipeLayout.SwipeListener {
@@ -162,7 +169,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
                                 isSwiped = 0
                             }
                             if (Connection_Detector(mContext).isConnectingToInternet) {
-                                removeCard(isSwiped, mCardsArray[elementPosition].id)
+                                removeCard(isSwiped, mCardsArray[elementPosition])
                             } else {
                                 holder.swlCard.close()
                                 Toast.makeText(mContext!!, mContext!!.getString(R.string.internet), Toast.LENGTH_LONG).show()
@@ -214,7 +221,7 @@ class HomeCardsAdapter(mCardsArray: ArrayList<CardsDisplayModel>, mContext: Cont
 
     }
 
-    private fun removeCard(swiped: Int, id: Int) {
+    private fun removeCard(swiped: Int, id: CardsDisplayModel) {
         mCardsArray.removeAt(elementPosition)
         notifyItemRemoved(elementPosition)
         isDraged = false

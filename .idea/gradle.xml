@@ -11,8 +11,10 @@
             <option value="$PROJECT_DIR$/aFileChooser" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/cropLib" />
+            <option value="$PROJECT_DIR$/ffmpeg4android_lib" />
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/linkedin-sdk" />
+            <option value="$PROJECT_DIR$/rangeBar1" />
             <option value="$PROJECT_DIR$/rangeseekbar" />
             <option value="$PROJECT_DIR$/richeditor" />
           </set>

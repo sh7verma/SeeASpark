@@ -8,6 +8,7 @@ import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_comments.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import models.BaseSuccessModel
@@ -121,6 +122,7 @@ class CommentsActivity : BaseActivity() {
                     updateCommentCountByBroadcast()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -204,7 +206,7 @@ class CommentsActivity : BaseActivity() {
         val commentModel = CommentModel.ResponseBean()
         commentModel.id = 0
         commentModel.full_name = userData!!.response.full_name
-        commentModel.avatar = userData!!.response.avatar
+        commentModel.avatar = userData!!.response.avatar.avtar_url
         commentModel.user_id = userData!!.response.id
         commentModel.description = commentText
         commentModel.date_time = getDate()
@@ -224,6 +226,7 @@ class CommentsActivity : BaseActivity() {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)
@@ -267,6 +270,7 @@ class CommentsActivity : BaseActivity() {
                     getRealTimeComments()
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else if (response.body().error!!.code == Constants.POST_DELETED) {
                         showToast(mContext!!, response.body().error!!.message!!)

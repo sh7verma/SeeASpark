@@ -7,21 +7,30 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.analytics.HitBuilders
-import com.google.android.gms.analytics.Tracker
+import android.widget.ImageView
+import android.widget.Toast
+import com.firebase.client.Firebase
+import com.firebase.client.FirebaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.gson.Gson
 import com.seeaspark.*
 import com.squareup.picasso.Picasso
+import database.Database
 import kotlinx.android.synthetic.main.fragment_event.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import models.*
@@ -33,6 +42,7 @@ import utils.ConnectivityReceiver
 import utils.Constants
 import utils.MainApplication
 import utils.Utils
+import java.util.*
 
 
 class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.ConnectivityReceiverListener {
@@ -47,6 +57,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     private var mHomeFragment: HomeFragment? = null
 
     private var mUtils: Utils? = null
+    private var mDb: Database? = null
     private var mOffset = 1
 
     private var mLayoutManager: LinearLayoutManager? = null
@@ -70,6 +81,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         mLandingInstance = activity as LandingActivity
         mHomeFragment = this
         mUtils = Utils(mContext)
+        mDb = Database(mContext)
 
         if (mUtils!!.getInt("nightMode", 0) != 1) displayDayMode() else displayNightMode()
 
@@ -112,7 +124,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
 
-        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar)
+        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar.avtar_url)
                 .resize(width, height).into(imgProfileHome)
 
         mLayoutManager = LinearLayoutManager(mContext)
@@ -157,7 +169,9 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         if (visibleLoader)
             mLandingInstance!!.showLoader()
         val call = RetrofitClient.getInstance().getCards(mUtils!!.getString("access_token", ""),
-                mLandingInstance!!.mLatitude.toString(), mLandingInstance!!.mLongitude.toString(), mOffset.toString())
+                mLandingInstance!!.mLatitude.toString(),
+                mLandingInstance!!.mLongitude.toString(),
+                mOffset.toString())
         call.enqueue(object : Callback<CardModel> {
 
             override fun onResponse(call: Call<CardModel>?, response: Response<CardModel>) {
@@ -180,6 +194,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         mLandingInstance!!.moveToSplash()
                     } else
                         mLandingInstance!!.showAlert(rvCards, response.body().error!!.message!!)
@@ -189,6 +204,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             override fun onFailure(call: Call<CardModel>?, t: Throwable?) {
                 if (visibleLoader)
                     mLandingInstance!!.dismissLoader()
+                mLandingInstance!!.showAlert(rvCards, t!!.localizedMessage)
             }
         })
     }
@@ -210,6 +226,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 val postData = createPostData(postValue)
 
                 mLandingInstance!!.db!!.addPosts(postData)
+
                 for (imagesData in postData.images) {
                     if (postValue.post_type == Constants.EVENT)
                         mLandingInstance!!.db!!.addPostImages(imagesData, postData.id.toString(), Constants.EVENT)
@@ -227,7 +244,12 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 cardsDisplayModel.time_left = response.time_left
                 mLandingInstance!!.mArrayCards.add(cardsDisplayModel)
             }
-            displayCards()
+            if (mLandingInstance!!.mArrayCards.size == 0) {
+                llOutOfCards.visibility = View.VISIBLE
+            } else {
+                llOutOfCards.visibility = View.GONE
+                displayCards()
+            }
         }
     }
 
@@ -258,6 +280,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         postData.bookmarked = postValue.bookmarked
         postData.going_list = postValue.going_list
         postData.images = postValue.images
+        postData.shareable_link = postValue.shareable_link
         return postData
     }
 
@@ -271,8 +294,14 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         when (view) {
             imgProfileHome -> {
                 intent = Intent(mContext!!, ViewProfileActivity::class.java)
-                startActivityForResult(intent, VIEWPROFILE)
-                activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                            imgProfileHome, getString(R.string.transition_image))
+                    activity.startActivityForResult(intent, VIEWPROFILE, option.toBundle())
+                } else {
+                    startActivityForResult(intent, VIEWPROFILE)
+                    activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                }
             }
             imgPreferHome -> {
                 intent = Intent(mContext!!, PreferencesActivity::class.java)
@@ -283,53 +312,44 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         }
     }
 
-    fun openShortProfile(cardsDisplayModel: CardsDisplayModel) {
-        val intent = Intent(mContext, ShortProfileDialog::class.java)
+    fun openProfile(cardsDisplayModel: CardsDisplayModel, imgAvatarCard: ImageView) {
+        val intent = Intent(mContext, OtherProfileActivity::class.java)
         intent.putExtra("otherProfileData", cardsDisplayModel)
-        startActivity(intent)
-        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                    imgAvatarCard, getString(R.string.transition_image))
+            activity.startActivity(intent, option.toBundle())
+        } else {
+            startActivity(intent)
+            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        }
+
     }
 
-    fun swipeRightLeft(swiped: Int, id: Int) {
+    fun swipeRightLeft(swiped: Int, id: CardsDisplayModel) {
         if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTOR) {
             if (mLandingInstance!!.mArrayCards.size == 0) {
                 rvCards.visibility = View.GONE
                 llOutOfCards.visibility = View.VISIBLE
             }
-        } else {
-            /* var count = 0
-             for (cardsData in mArrayCards) {
-                 if (cardsData.post_type == 0) {
-                     count++
-                 }
-             }
-             /// adding out of cards data in list
-             if (count == 0) {
-                 val cardsDisplayModel = CardsDisplayModel()
-                 cardsDisplayModel.post_type = 3
-                 mArrayCards.add(cardsDisplayModel)
-                 mAdapterCards!!.notifyDataSetChanged()
-             }*/
         }
         isLoading = false
         hitSwipeAPI(swiped, id)
     }
 
-    private fun hitSwipeAPI(swiped: Int, othetUserId: Int) {
+    private fun hitSwipeAPI(swiped: Int, othetUserId: CardsDisplayModel) {
         val call = RetrofitClient.getInstance().swipeCards(mUtils!!.getString("access_token", ""),
-                swiped, othetUserId.toString())
+                swiped, othetUserId.id.toString())
         call.enqueue(object : Callback<SwipeCardModel> {
             override fun onResponse(call: Call<SwipeCardModel>?, response: Response<SwipeCardModel>) {
                 if (response.body().response != null) {
                     if (response.body().is_handshake == 1) {
                         /// match case
-                        val intent = Intent(mContext!!, HandshakeActivity::class.java)
-                        intent.putExtra("otherProfileData", response.body().response)
-                        startActivity(intent)
-                        activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        createNewChat(othetUserId, response.body().response)
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        mLandingInstance!!.showToast(mContext!!, response.body().error!!.message!!)
                         mLandingInstance!!.moveToSplash()
                     } else if (response.body().error!!.code == Constants.DELETE_ACCOUNT) {
                         /// no operation
@@ -343,6 +363,80 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
             }
 
         })
+    }
+
+    internal fun createNewChat(othetUser: CardsDisplayModel, response: SignupModel.ResponseBean) {
+        val mParticpantIDSList = ArrayList<String>()
+        mParticpantIDSList.add(othetUser!!.id.toString() + "_" + othetUser!!.user_type)
+        mParticpantIDSList.add(mLandingInstance!!.userData!!.response.id.toString() + "_" + mLandingInstance!!.userData!!.response.user_type)
+        Collections.sort(mParticpantIDSList)
+        var mParticpantIDS = "" + mParticpantIDSList
+        var participants = mParticpantIDS.substring(1, mParticpantIDS.length - 1)
+        val mChat = ChatsModel()
+        mChat.chat_dialog_id = participants
+        mChat.last_message = Constants.DEFAULT_MESSAGE_REGEX
+        mChat.last_message_time = 0L
+        mChat.last_message_sender_id = mLandingInstance!!.userData!!.response.id.toString()
+        mChat.last_message_id = "0"
+        mChat.last_message_type = "0"
+        mChat.participant_ids = participants
+        val unread = HashMap<String, Int>()
+        unread.put(mLandingInstance!!.userData!!.response.id.toString(), 0)
+        unread.put(othetUser.id.toString(), 0)
+        mChat.unread_count = unread
+
+        val name = HashMap<String, String>()
+        name.put(mLandingInstance!!.userData!!.response.id.toString(), mLandingInstance!!.userData!!.response.full_name)
+        name.put(othetUser.id.toString(), othetUser.full_name)
+        mChat.name = name
+
+        val pic = HashMap<String, String>()
+        pic.put(mLandingInstance!!.userData!!.response.id.toString(), mLandingInstance!!.userData!!.response.avatar.avtar_url)
+        pic.put(othetUser.id.toString(), othetUser.avatar.avtar_url)
+        mChat.profile_pic = pic
+
+//        val time = ServerValue.TIMESTAMP
+        val utcTime = Constants.getUtcTime(Calendar.getInstance().timeInMillis)
+        val deleteTime = HashMap<String, Long>()
+        deleteTime.put(mLandingInstance!!.userData!!.response.id.toString(), utcTime)
+        deleteTime.put(othetUser.id.toString(), utcTime)
+        mChat.delete_dialog_time = deleteTime
+
+        val block = HashMap<String, String>()
+        block.put(mLandingInstance!!.userData!!.response.id.toString(), "0")
+        block.put(othetUser.id.toString(), "0")
+        mChat.block_status = block
+
+        val userType = HashMap<String, String>()
+        userType.put(mLandingInstance!!.userData!!.response.id.toString(), mLandingInstance!!.userData!!.response.user_type.toString())
+        userType.put(othetUser.id.toString(), othetUser.user_type.toString())
+        mChat.user_type = userType
+
+        val mFirebaseConfig = FirebaseDatabase.getInstance().getReference().child(Constants.CHATS)
+        mFirebaseConfig.child(participants).setValue(mChat).addOnSuccessListener {
+            mChat.opponent_user_id = othetUser.id.toString()
+            mDb!!.addNewChat(mChat, mLandingInstance!!.userData!!.response.id.toString(), othetUser.id.toString())
+            var mFirebaseConfigChat: DatabaseReference
+            mFirebaseConfigChat = FirebaseDatabase.getInstance().getReference().child(Constants.CHATS)
+            mFirebaseConfigChat.child(participants).child("delete_dialog_time").child(mLandingInstance!!.userData!!.response.id.toString())
+                    .setValue(ServerValue.TIMESTAMP)
+            mFirebaseConfigChat.child(participants).child("delete_dialog_time").child(othetUser.id.toString())
+                    .setValue(ServerValue.TIMESTAMP)
+
+            var mFirebaseConfigUser: DatabaseReference
+            mFirebaseConfigUser = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
+            mFirebaseConfigUser.child("id_" + othetUser.id).child("chat_dialog_ids").child(participants)
+                    .setValue(participants)
+            mFirebaseConfigUser.child("id_" + mLandingInstance!!.userData!!.response.id.toString()).child("chat_dialog_ids").child(participants)
+                    .setValue(participants)
+
+            val intent = Intent(mContext!!, HandshakeActivity::class.java)
+            intent.putExtra("otherProfileData", response)
+            startActivity(intent)
+            activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+        }.addOnFailureListener {
+
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -364,7 +458,7 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     private fun populateData() {
         val mGson = Gson()
         mLandingInstance!!.userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
-        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar)
+        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar.avtar_url)
                 .resize(width, height).into(imgProfileHome)
     }
 
@@ -409,22 +503,34 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
         }
     }
 
-    fun moveToCommunityDetail(postId: Int) {
+    fun moveToCommunityDetail(postId: Int, imgCommunityListing: ImageView) {
         if (mLandingInstance!!.connectedToInternet()) {
             val intent = Intent(mContext, CommunityDetailActivity::class.java)
             intent.putExtra("communityId", postId)
-            startActivity(intent)
-            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                        imgCommunityListing, getString(R.string.transition_image))
+                activity.startActivity(intent, option.toBundle())
+            } else {
+                startActivity(intent)
+                activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         } else
             mLandingInstance!!.showInternetAlert(rvEventsListing)
     }
 
-    fun moveToEventDetail(postId: Int) {
+    fun moveToEventDetail(postId: Int, imgEventCard: ImageView) {
         if (mLandingInstance!!.connectedToInternet()) {
             val intent = Intent(mContext, EventsDetailActivity::class.java)
             intent.putExtra("eventId", postId)
-            startActivity(intent)
-            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val option = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                        imgEventCard, getString(R.string.transition_image))
+                activity.startActivity(intent, option.toBundle())
+            } else {
+                startActivity(intent)
+                activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         } else
             mLandingInstance!!.showInternetAlert(rvEventsListing)
     }
@@ -432,11 +538,14 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     override fun onStart() {
         LocalBroadcastManager.getInstance(activity).registerReceiver(nightModeReceiver,
                 IntentFilter(Constants.NIGHT_MODE))
+        LocalBroadcastManager.getInstance(activity).registerReceiver(switchUserTypeReceiver,
+                IntentFilter(Constants.SWITCH_USER_TYPE))
         super.onStart()
     }
 
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(nightModeReceiver)
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(switchUserTypeReceiver)
         super.onDestroy()
     }
 
@@ -452,6 +561,18 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
                 resetData()
                 displayNightMode()
             }
+        }
+    }
+
+    var switchUserTypeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            hitAPI(false)
+            mLandingInstance!!.checkUserType()
+            mUtils!!.setString("user_type", mLandingInstance!!.userData!!.response.user_type.toString())
+            if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTEE)
+                txtTitleHome.text = getString(R.string.mentors)
+            else
+                txtTitleHome.text = getString(R.string.mentees)
         }
     }
 }

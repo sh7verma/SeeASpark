@@ -73,7 +73,7 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
                 (holder as PostViewHolder)
                 if (!TextUtils.isEmpty(mEventsArray[position].images[0].thumbnail_url))
                     Picasso.with(mContext).load(mEventsArray[position].images[0].thumbnail_url)
-                            .resize(mWidth, mContext!!.resources.getDimension(R.dimen._160sdp).toInt())
+                            .resize(mWidth, mContext!!.resources.getDimension(R.dimen._161sdp).toInt())
                             .centerCrop().into(holder.imgEventsListing)
 
                 holder.txtTitleEventsListing.text = mEventsArray[position].title
@@ -157,9 +157,9 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
 
                 holder.cvEventsListing.setOnClickListener {
                     when {
-                        mEventFragment != null -> mEventFragment!!.moveToEventDetail(mEventsArray[position].id)
-                        mSearchInstance != null -> mSearchInstance!!.moveToEventDetail(mEventsArray[position].id)
-                        mBookmarkInstance != null -> mBookmarkInstance!!.moveToEventDetail(mEventsArray[position].id)
+                        mEventFragment != null -> mEventFragment!!.moveToEventDetail(mEventsArray[position].id,holder.imgEventsListing)
+                        mSearchInstance != null -> mSearchInstance!!.moveToEventDetail(mEventsArray[position].id,holder.imgEventsListing)
+                        mBookmarkInstance != null -> mBookmarkInstance!!.moveToEventDetail(mEventsArray[position].id,holder.imgEventsListing)
                     }
                 }
             }

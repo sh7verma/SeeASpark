@@ -3,16 +3,17 @@ package network;
 import models.CardModel;
 import models.CommentModel;
 import models.LanguageListingModel;
-import models.LanguageModel;
 import models.NotesListingModel;
 import models.NotesModel;
+import models.OtherProfileModel;
 import models.PostDetailModel;
 import models.PostModel;
 import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
 import models.NotificationModel;
 import models.ProfessionListingModel;
-import models.ProfessionModel;
+import models.ViewProfileModel;
+import models.QuestionListingModel;
 import models.SearchSkillModel;
 import models.ServerSkillsModel;
 import models.SignupModel;
@@ -65,6 +66,12 @@ public interface ApiInterface {
                                     @Part("bio") RequestBody bio,
                                     @Part("pro_description") RequestBody pro_description,
                                     @Part MultipartBody.Part document);
+
+
+    @Multipart
+    @POST("/api/v1/switches/upload_document")
+    Call<SignupModel> switchUploadDocument(@Part("access_token") RequestBody access_token,
+                                           @Part MultipartBody.Part document);
 
     @FormUrlEncoded
     @POST("/api/v1/verifications/resend_email")
@@ -287,5 +294,35 @@ public interface ApiInterface {
     @POST("/api/v1/posts/post_by_id")
     Call<PostDetailModel> getPostDetail(@Field("access_token") String access_token,
                                         @Field("id") int id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/switches/questions")
+    Call<QuestionListingModel> getSwitchQuestions(@Field("access_token") String access_token,
+                                                  @Field("user_type") int user_type);
+
+    @FormUrlEncoded
+    @POST("/api/v1/switches/post_answers")
+    Call<SignupModel> postSwitchAnswers(@Field("access_token") String access_token,
+                                        @Field("user_type") int user_type,
+                                        @Field("questions") String questions);
+
+
+    @FormUrlEncoded
+    @POST("/api/v1/switches/switch")
+    Call<SignupModel> switchUser(@Field("access_token") String access_token,
+                                 @Field("user_type") int user_type);
+
+
+    @GET("/api/v1/users")
+    Call<ViewProfileModel> getProfile(@Query("access_token") String access_token,
+                                      @Query("id") String id);
+
+    @GET("/api/v1/users")
+    Call<OtherProfileModel> getOtherProfile(@Query("access_token") String access_token,
+                                            @Query("id") String id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/switches/submit_profile")
+    Call<SignupModel> submitProfile(@Field("access_token") String access_token);
 
 }

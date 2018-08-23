@@ -21,12 +21,15 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Switch
 import android.widget.Toast
 import com.google.android.cameraview.CameraView
 import com.ipaulpro.afilechooser.utils.FileUtils
 import com.soundcloud.android.crop.Crop
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_questionaires.*
 import kotlinx.android.synthetic.main.activity_verify_id.*
+import kotlinx.android.synthetic.main.disclamier_dialog.*
 import kotlinx.android.synthetic.main.tool_bar.*
 import models.SignupModel
 import network.RetrofitClient
@@ -45,7 +48,6 @@ import java.util.*
 @Suppress("DEPRECATION")
 class VerifyIdActivity : BaseActivity() {
 
-
     internal val GALLERY_INTENT = 2
     private val MULTIPLE_PERMISSIONS = 5
     internal var permissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
@@ -57,6 +59,7 @@ class VerifyIdActivity : BaseActivity() {
     private var isFlashON: Boolean = false
     private var mBackgroundHandler: Handler? = null
     var userData: SignupModel? = null
+    var isSwitchEnabled = false
 
     override fun initUI() {
         setSupportActionBar(toolBar)
@@ -76,9 +79,14 @@ class VerifyIdActivity : BaseActivity() {
 
     override fun onCreateStuff() {
 
-        userData = intent.getParcelableExtra("userData")
-
-        if (userData!!.response.user_type == Constants.MENTEE) {
+        if (intent.hasExtra("userData"))
+            userData = intent.getParcelableExtra("userData")
+        else {
+            isSwitchEnabled = true
+            txtOption.visibility = View.INVISIBLE
+            userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        }
+        if (userData!!.response.user_type == Constants.MENTEE && !isSwitchEnabled) {
             txtOption.visibility = View.VISIBLE
             txtOption.text = getString(R.string.skip)
             txtOption.setTextColor(ContextCompat.getColor(this, R.color.white_color))
@@ -152,17 +160,61 @@ class VerifyIdActivity : BaseActivity() {
             }
             txtDoneVerify -> {
                 if (connectedToInternet()) {
-                    hitAPI()
+                    if (isSwitchEnabled)
+                        hitSwitchDocumentAPI()
+                    else
+                        hitAPI()
                 } else
                     showInternetAlert(txtDoneVerify)
             }
             txtOption -> {
-                if (connectedToInternet())
+                if (connectedToInternet()) {
+                    serverFile = null
                     hitAPI()
-                else
+                } else
                     showInternetAlert(llCancelDone)
             }
         }
+    }
+
+    private fun hitSwitchDocumentAPI() {
+        showLoader()
+
+        val call = RetrofitClient.getInstance().switchUploadDocument(
+                createPartFromString(userData!!.response.access_token),
+                prepareFilePart(serverFile!!))
+        call.enqueue(object : Callback<SignupModel> {
+
+            override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>?) {
+                if (response!!.body().response != null) {
+                    updateProfileDatabase(response.body().response)
+                    val intent = Intent(mContext!!, ReviewActivity::class.java)
+                    intent.putExtra("isSwitched", true)
+                    startActivity(intent)
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                } else {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+                        moveToSplash()
+                    } else
+                        showAlert(txtDoneQuestion, response.body().error!!.message!!)
+                }
+                dismissLoader()
+            }
+
+            override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(txtDoneVerify, t!!.localizedMessage)
+            }
+        })
+    }
+
+    private fun updateProfileDatabase(response: SignupModel.ResponseBean?) {
+        userData!!.response = response
+        mUtils!!.setString("userDataLocal", mGson.toJson(userData))
+        val broadCastIntent = Intent(Constants.PROFILE_UPDATE)
+        broadcaster!!.sendBroadcast(broadCastIntent)
     }
 
     private fun hitAPI() {
@@ -220,6 +272,7 @@ class VerifyIdActivity : BaseActivity() {
 
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        showToast(mContext!!, response.body().error!!.message!!)
                         moveToSplash()
                     } else
                         showAlert(llCancelDone, response.body().error!!.message!!)
@@ -268,7 +321,8 @@ class VerifyIdActivity : BaseActivity() {
     }
 
     private fun moveBack() {
-        Constants.showKeyboard(this, imgClick)
+        if (!isSwitchEnabled)
+            Constants.showKeyboard(this, imgClick)
         finish()
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }
@@ -395,19 +449,6 @@ class VerifyIdActivity : BaseActivity() {
             Picasso.with(mContext).load(uri).fit().into(imgDisplay)
             progDailog!!.dismiss()
 
-
-            /*  Picasso.with(mContext).load("file://" + FileUtils.getPath(this, Uri.fromFile(absolutePath)))
-                      .fit().centerCrop()
-                      .into(imgDisplay, object : Callback {
-                          override fun onSuccess() {
-
-                          }
-
-                          override fun onError() {
-                              Log.e("Error = ", "Yes")
-                          }
-
-                      })*/
         })
     }
 
