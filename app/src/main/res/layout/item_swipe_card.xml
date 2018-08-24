@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            android:gravity="center"
+            android:gravity="bottom|center_horizontal"
             android:background="@color/colorPrimary"
             android:orientation="vertical">
 
@@ -25,7 +25,7 @@
                 android:id="@+id/imgAvatarCard"
                 android:layout_width="@dimen/_70sdp"
                 android:layout_height="@dimen/_70sdp"
-                android:src="@mipmap/ic_avatar_1"
+                android:src="@drawable/placeholder_image"
                 android:transitionName="@string/transition_image" />
 
             <customviews.BoldTextView
@@ -38,6 +38,7 @@
                 android:paddingLeft="@dimen/_8sdp"
                 android:paddingRight="@dimen/_8sdp"
                 android:text="Victor Martin"
+                android:layout_marginBottom="@dimen/_16sdp"
                 android:textColor="@color/black_color"
                 android:textSize="@dimen/_15ssp" />
 
@@ -50,6 +51,7 @@
                 android:paddingRight="@dimen/_8sdp"
                 android:paddingTop="@dimen/_8sdp"
                 android:text="Physician"
+                android:visibility="gone"
                 android:textColor="@color/white_color"
                 android:textSize="@dimen/_12ssp" />
 
@@ -58,7 +60,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2.5"
+            android:layout_weight="2.4"
             android:gravity="center"
             android:orientation="vertical">
 

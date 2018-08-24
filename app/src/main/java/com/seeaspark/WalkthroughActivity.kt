@@ -30,7 +30,7 @@ class WalkthroughActivity : BaseActivity() {
         vpWalk.adapter = mAdapterWalk
         cpIndicatorWalk.setViewPager(vpWalk)
         cpIndicatorWalk.fillColor = Color.BLACK
-        delay = 12000
+        delay = 16000
         mHandler.postDelayed(runnable, delay)
 
         cpIndicatorWalk.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -43,11 +43,11 @@ class WalkthroughActivity : BaseActivity() {
 
             override fun onPageSelected(position: Int) {
                 if (position == 0) {
-                    delay = 12000
+                    delay = 16000
                     mHandler.removeCallbacks(runnable)
                     mHandler.postDelayed(runnable, delay)
                 } else {
-                    delay = 3000
+                    delay = 4000
                     mHandler.removeCallbacks(runnable)
                     mHandler.postDelayed(runnable, delay)
                 }

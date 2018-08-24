@@ -23,6 +23,7 @@ import android.widget.Toast
 import com.seeaspark.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import kotlinx.android.synthetic.main.fragment_community.*
+import kotlinx.android.synthetic.main.fragment_event.*
 import models.BaseSuccessModel
 import models.PostModel
 import network.RetrofitClient
@@ -130,6 +131,8 @@ class CommunityFragment : Fragment(), View.OnClickListener {
         imgOption1Custom.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
         imgOption2Custom.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
         rvCommunityListing.setBackgroundColor(ContextCompat.getColor(activity, R.color.background))
+        txtNoCommunityListing.setTextColor(mLandingInstance!!.blackColor)
+        llMainCommunityFrag.setBackgroundColor(mLandingInstance!!.whiteColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -140,6 +143,8 @@ class CommunityFragment : Fragment(), View.OnClickListener {
         imgOption1Custom.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
         imgOption2Custom.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
         rvCommunityListing.setBackgroundColor(ContextCompat.getColor(activity, R.color.black_color))
+        txtNoCommunityListing.setTextColor(mLandingInstance!!.whiteColor)
+        llMainCommunityFrag.setBackgroundColor(mLandingInstance!!.blackColor)
     }
 
     private fun onCreateStuff() {
@@ -217,7 +222,6 @@ class CommunityFragment : Fragment(), View.OnClickListener {
         else {
             isLoading = response.isEmpty()
         }
-
         for (responseData in response) {
             mLandingInstance!!.db!!.addPosts(responseData)
             for (imagesData in responseData.images) {
@@ -241,15 +245,19 @@ class CommunityFragment : Fragment(), View.OnClickListener {
             }
 
             mCommunityArray.addAll(mLandingInstance!!.db!!.getPostsByType(Constants.COMMUNITY))
-            if (rvCommunityListing.adapter == null) {
-                if (mCommunityArray.size == 0)
-                    txtNoCommunityListing.visibility = View.VISIBLE
-                else {
+
+            if (mCommunityArray.size == 0) {
+                rvCommunityListing.visibility = View.GONE
+                txtNoCommunityListing.visibility = View.VISIBLE
+            } else {
+                rvCommunityListing.visibility = View.VISIBLE
+                txtNoCommunityListing.visibility = View.GONE
+                if (rvCommunityListing.adapter == null) {
                     mCommunityAdapter = CommunityAdapter(mCommunityArray, mContext!!, mCommunityFragment)
                     rvCommunityListing.adapter = mCommunityAdapter
+                } else {
+                    mCommunityAdapter!!.notifyDataSetChanged()
                 }
-            } else {
-                mCommunityAdapter!!.notifyDataSetChanged()
             }
         }
     }

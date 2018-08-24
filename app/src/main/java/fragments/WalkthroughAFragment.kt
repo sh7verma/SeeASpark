@@ -56,13 +56,15 @@ class WalkthroughAFragment : Fragment() {
                         itemView!!.txtWalk.text = textArray[count]
                         if (count == 1)
                             Picasso.with(activity).load(walkArray[count]).placeholder(walkArray[0]).into(itemView!!.imgWalk)
-                        else
+                        else if (count == 2)
                             Picasso.with(activity).load(walkArray[count]).placeholder(walkArray[1]).into(itemView!!.imgWalk)
-                        mHandler.postDelayed(this, 3000)
+                        else if (count == 3)
+                            Picasso.with(activity).load(walkArray[count]).placeholder(walkArray[2]).into(itemView!!.imgWalk)
+                        mHandler.postDelayed(this, 4000)
                     }
                 }
             }
-            mHandler.postDelayed(runnable, 3000)
+            mHandler.postDelayed(runnable, 4000)
         } else {
             if (runnable != null)
                 mHandler.removeCallbacks(runnable)
@@ -74,7 +76,6 @@ class WalkthroughAFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-
         super.onDestroyView()
     }
 

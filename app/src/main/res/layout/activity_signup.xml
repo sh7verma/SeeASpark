@@ -170,7 +170,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:text="@string/show_password"
-                        android:textSize="@dimen/_12ssp" />
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_12ssp"
+                        android:theme="@style/checkBoxStyle" />
 
                     <customviews.MediumTextView
                         android:id="@+id/txtForgotPassword"

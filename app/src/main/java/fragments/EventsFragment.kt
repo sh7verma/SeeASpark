@@ -134,6 +134,8 @@ class EventsFragment : Fragment(), View.OnClickListener {
         imgOption1Custom.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
         imgOption2Custom.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
         rvEventsListing.setBackgroundColor(ContextCompat.getColor(activity, R.color.background))
+        txtNoEventsListing.setTextColor(mLandingInstance!!.blackColor)
+        llMainEventFrag.setBackgroundColor(mLandingInstance!!.whiteColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -144,6 +146,8 @@ class EventsFragment : Fragment(), View.OnClickListener {
         imgOption1Custom.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
         imgOption2Custom.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
         rvEventsListing.setBackgroundColor(ContextCompat.getColor(activity, R.color.black_color))
+        txtNoEventsListing.setTextColor(mLandingInstance!!.whiteColor)
+        llMainEventFrag.setBackgroundColor(mLandingInstance!!.blackColor)
     }
 
     private fun onCreateStuff() {
@@ -219,15 +223,19 @@ class EventsFragment : Fragment(), View.OnClickListener {
             }
 
             mEventsArray.addAll(mLandingInstance!!.db!!.getPostsByType(Constants.EVENT))
-            if (rvEventsListing.adapter == null) {
-                if (mEventsArray.size == 0) {
-                    txtNoEventsListing.visibility = View.VISIBLE
-                } else {
+
+            if (mEventsArray.size == 0) {
+                rvEventsListing.visibility = View.GONE
+                txtNoEventsListing.visibility = View.VISIBLE
+            } else {
+                rvEventsListing.visibility = View.VISIBLE
+                txtNoEventsListing.visibility = View.GONE
+                if (rvEventsListing.adapter == null) {
                     mEventsAdapter = EventsAdapter(mContext, mEventsArray, mEventFragment)
                     rvEventsListing.adapter = mEventsAdapter
+                } else {
+                    mEventsAdapter!!.notifyDataSetChanged()
                 }
-            } else {
-                mEventsAdapter!!.notifyDataSetChanged()
             }
         }
     }

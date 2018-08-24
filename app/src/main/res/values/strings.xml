@@ -212,8 +212,8 @@
     <string name="not_interested">Not Interested</string>
     <string name="write_a_comment">Write a Comment...</string>
     <string name="comments">Comments</string>
-    <string name="no_events_available">No Events Available</string>
-    <string name="no_community_available">No Community Available</string>
+    <string name="no_events_available">No events available…yet!</string>
+    <string name="no_community_available">No community available…yet!</string>
     <string name="error_comment">Please enter comment</string>
     <string name="no_community_bookmarked">No Community Bookmarked</string>
     <string name="no_event_bookmarked">No Event Bookmarked</string>
@@ -255,8 +255,18 @@
     <string name="quote_owner5">― Warren Buffett</string>
     <string name="quote_6">“Have patience. All things are difficult before they become easy.” </string>
     <string name="quote_owner6">― Saadi</string>
+    <string name="quote_7">"You don’t have to see the whole staircase, just take the first step"</string>
+    <string name="quote_owner7">― Martin Luther King, Jr.</string>
+    <string name="quote_8">"Do the hard jobs first. The easy jobs will take care of themselves"</string>
+    <string name="quote_owner8">― Dale Carnegie</string>
+    <string name="quote_9">"A small key can open big doors"</string>
+    <string name="quote_owner9">― Kurdish Proverb</string>
+    <string name="quote_10">"A tree begins with a seed"</string>
+    <string name="quote_owner10">― Arabic Proverb</string>
     <string name="tutorial">Tutorial</string>
     <string name="show_password">Show Password</string>
     <string name="book_now">Book Now</string>
+    <string name="don_t_mind">Don\'t Mind</string>
+    <string name="you_can_always_get_more_cards_by_subscribing_to_our_service">You can always get more cards by subscribing to our service</string>
 
 </resources>

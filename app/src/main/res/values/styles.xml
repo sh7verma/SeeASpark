@@ -124,4 +124,14 @@
         <item name="colorControlActivated">#75D995</item>
     </style>
 
+    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/black_color</item>
+        <item name="android:textColorSecondary">@color/black_color</item>
+    </style>
+
+    <style name="checkBoxStylePrefer" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:textColorSecondary">@color/colorPrimary</item>
+    </style>
+
 </resources>

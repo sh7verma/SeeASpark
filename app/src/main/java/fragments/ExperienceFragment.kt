@@ -2,15 +2,13 @@ package fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
-import kotlinx.android.synthetic.main.activity_preferences.*
 import kotlinx.android.synthetic.main.fragment_experience.*
-import org.florescu.android.rangeseekbar.RangeSeekBar
+import utils.Constants
 
 
 class ExperienceFragment : Fragment(), View.OnClickListener {
@@ -31,7 +29,10 @@ class ExperienceFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
-
+        if (mCreateProfileInstance!!.userData!!.response.user_type == Constants.MENTOR)
+            txtUserType.text = getString(R.string.mentor)
+        else
+            txtUserType.text = getString(R.string.mentee)
         rsbYears.isNotifyWhileDragging = true
         rsbYears.selectedMaxValue = 2
         rsbYears.setOnRangeSeekBarChangeListener { bar, minValue, maxValue ->

@@ -15,7 +15,6 @@ import android.view.View
 import android.view.animation.TranslateAnimation
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -30,7 +29,6 @@ import com.linkedin.platform.listeners.ApiListener
 import com.linkedin.platform.listeners.ApiResponse
 import com.linkedin.platform.listeners.AuthListener
 import com.linkedin.platform.utils.Scope
-import kotlinx.android.synthetic.main.activity_preferences.*
 import kotlinx.android.synthetic.main.activity_signup.*
 import models.SignupModel
 import network.RetrofitClient
@@ -219,6 +217,7 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     private fun setLogin() {
+        cbShowPassword.isChecked=false
         edEmail.isFocusable = true
         edEmail.setText(Constants.EMPTY)
         edPassword.setText(Constants.EMPTY)
@@ -228,6 +227,7 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     private fun setRegister() {
+        cbShowPassword.isChecked=false
         edEmail.setText(Constants.EMPTY)
         edPassword.setText(Constants.EMPTY)
         txtForgotPassword.visibility = View.INVISIBLE
@@ -409,7 +409,7 @@ class LoginSignupActivity : BaseActivity() {
 
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
-
+                        mUtils!!.setBoolean("addEmailFragment", false)
                         /// navigate to create profile screen
                         moveToCreateProfile(response.body())
 
@@ -419,7 +419,7 @@ class LoginSignupActivity : BaseActivity() {
 
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
-
+                        mUtils!!.setBoolean("addEmailFragment", false)
                         /// navigate to create profile screen
                         moveToCreateProfile(response.body())
 
@@ -432,7 +432,6 @@ class LoginSignupActivity : BaseActivity() {
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
-
                         /// navigate to questionarrie
                         moveToQuestionnaire()
 

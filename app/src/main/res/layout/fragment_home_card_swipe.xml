@@ -94,10 +94,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:maxLength="40"
-                android:text="@string/lorem_ipsum"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp"
+                android:text="@string/you_can_always_get_more_cards_by_subscribing_to_our_service"
                 android:textColor="@color/black_color"
-                android:textSize="@dimen/_13ssp" />
+                android:textSize="@dimen/_11ssp" />
 
             <customviews.MediumTextView
                 android:id="@+id/txtGetCards"
@@ -121,7 +122,7 @@
             android:paddingBottom="@dimen/_32sdp"
             android:paddingLeft="@dimen/_16sdp"
             android:paddingRight="@dimen/_16sdp"
-            android:paddingTop="@dimen/_90sdp"
+            android:paddingTop="@dimen/_60sdp"
             app:elevationEnabled="true"
             app:leftOverlay="@layout/layout_left_overlay"
             app:rightOverlay="@layout/layout_right_overlay"
@@ -132,7 +133,6 @@
             app:swipeThreshold="0.75"
             app:translationDiff="26"
             app:visibleCount="5" />
-
 
     </RelativeLayout>
 

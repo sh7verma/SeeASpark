@@ -12,10 +12,7 @@ import android.view.ViewGroup
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import com.seeaspark.VerifyIdActivity
-import kotlinx.android.synthetic.main.fragment_bio.*
 import kotlinx.android.synthetic.main.fragment_description.*
-import kotlinx.android.synthetic.main.fragment_name.*
-import kotlinx.android.synthetic.main.fragment_profession.*
 import utils.Constants
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,6 +31,10 @@ class DescribeProfessionFragment : Fragment(), View.OnClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         mCreateProfileInstance = activity as CreateProfileActivity
+        if (mCreateProfileInstance!!.userData!!.response.user_type == Constants.MENTOR)
+            txtUserType.text = getString(R.string.mentor)
+        else
+            txtUserType.text = getString(R.string.mentee)
         onCreateStuff()
         initListener()
         super.onActivityCreated(savedInstanceState)

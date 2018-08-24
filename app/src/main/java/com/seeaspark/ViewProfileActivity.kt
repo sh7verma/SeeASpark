@@ -275,6 +275,7 @@ class ViewProfileActivity : BaseActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 EDITPROFILE -> {
+                    sendSwitchUserTypeBroadCast()
                     populateData()
                 }
             }

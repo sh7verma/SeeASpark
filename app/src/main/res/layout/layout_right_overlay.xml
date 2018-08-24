@@ -13,7 +13,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableTop="@mipmap/ic_shakehan_newd"
-        android:text="@string/handshake"
         android:layout_gravity="center"
         android:textAllCaps="true"
         android:textColor="@color/black_color"

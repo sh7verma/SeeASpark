@@ -237,18 +237,20 @@ class NotesFragment : Fragment(), View.OnClickListener {
                 Constants.MYNOTES, mMyNotesOffset.toString())
         call.enqueue(object : Callback<NotesListingModel> {
             override fun onResponse(call: Call<NotesListingModel>?, response: Response<NotesListingModel>) {
-                if (isVisible)
-                    pbMyNotes.visibility = View.GONE
+                if (pbMyNotes != null) {
+                    if (isVisible)
+                        pbMyNotes.visibility = View.GONE
 
-                if (response.body().response != null) {
-                    addToLocalDatabase(response.body().response)
-                    populateData()
-                } else {
-                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
-                        mLandingInstance!!.moveToSplash()
-                    } else
-                        mLandingInstance!!.showAlert(llMainNotes, response.body().error!!.message!!)
+                    if (response.body().response != null) {
+                        addToLocalDatabase(response.body().response)
+                        populateData()
+                    } else {
+                        if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                            Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+                            mLandingInstance!!.moveToSplash()
+                        } else
+                            mLandingInstance!!.showAlert(llMainNotes, response.body().error!!.message!!)
+                    }
                 }
             }
 
@@ -267,18 +269,20 @@ class NotesFragment : Fragment(), View.OnClickListener {
                 Constants.RECEIVEDNOTES, mReceivedNotesOffset.toString())
         call.enqueue(object : Callback<NotesListingModel> {
             override fun onResponse(call: Call<NotesListingModel>?, response: Response<NotesListingModel>) {
-                if (isVisible)
-                    pbReceivedNotes.visibility = View.GONE
+                if (pbReceivedNotes != null) {
+                    if (isVisible)
+                        pbReceivedNotes.visibility = View.GONE
 
-                if (response.body().response != null) {
-                    addToLocalDatabase(response.body().response)
-                    populateReceivedData()
-                } else {
-                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
-                        mLandingInstance!!.moveToSplash()
-                    } else
-                        mLandingInstance!!.showAlert(llMainNotes, response.body().error!!.message!!)
+                    if (response.body().response != null) {
+                        addToLocalDatabase(response.body().response)
+                        populateReceivedData()
+                    } else {
+                        if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                            Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+                            mLandingInstance!!.moveToSplash()
+                        } else
+                            mLandingInstance!!.showAlert(llMainNotes, response.body().error!!.message!!)
+                    }
                 }
             }
 
@@ -294,7 +298,6 @@ class NotesFragment : Fragment(), View.OnClickListener {
             mLandingInstance!!.db!!.addNotes(notesData)
         }
     }
-
 
     private fun populateData() {
         mMyNotesArray.clear()
@@ -429,7 +432,7 @@ class NotesFragment : Fragment(), View.OnClickListener {
 
     fun moveToShare(responseBean: NotesListingModel.ResponseBean) {
         val intent = Intent(mContext!!, ShareActivity::class.java)
-        intent.putExtra("path",2)
+        intent.putExtra("path", 2)
         intent.putExtra("notesData", responseBean)
         startActivity(intent)
         activity.overridePendingTransition(0, 0)

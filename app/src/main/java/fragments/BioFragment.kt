@@ -11,8 +11,6 @@ import android.view.ViewGroup
 import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import kotlinx.android.synthetic.main.fragment_bio.*
-import kotlinx.android.synthetic.main.fragment_name.*
-import network.RetrofitClient
 import utils.Constants
 
 class BioFragment : Fragment(), View.OnClickListener {
@@ -40,6 +38,10 @@ class BioFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
+        if (mCreateProfileInstance!!.userData!!.response.user_type == Constants.MENTOR)
+            txtUserType.text = getString(R.string.mentor)
+        else
+            txtUserType.text = getString(R.string.mentee)
         edBioProfile.isFocusableInTouchMode = true
         edBioProfile.requestFocus()
         edBioProfile.addTextChangedListener(object : TextWatcher {

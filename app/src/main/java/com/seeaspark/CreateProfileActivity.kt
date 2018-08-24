@@ -57,7 +57,6 @@ class CreateProfileActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
-
         /// getting profile Data
         if (intent.hasExtra("userData"))
             userData = intent.getParcelableExtra("userData")
@@ -158,12 +157,12 @@ class CreateProfileActivity : BaseActivity() {
 
     fun verifyEmail(email: String) {
         showLoader()
-        var call = RetrofitClient.getInstance().verifyEmail(email, userData!!.response.access_token)
+        val call = RetrofitClient.getInstance().verifyEmail(email, userData!!.response.access_token)
         call.enqueue(object : Callback<BaseSuccessModel> {
             override fun onResponse(call: retrofit2.Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
                 dismissLoader()
                 if (response!!.body().response != null) {
-                    var intent = Intent(mContext, EmailVerificationActivity::class.java)
+                    val intent = Intent(mContext, EmailVerificationActivity::class.java)
                     intent.putExtra("access_token", userData!!.response.access_token)
                     intent.putExtra("path", "profile")
                     startActivity(intent)

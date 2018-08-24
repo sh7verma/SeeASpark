@@ -100,6 +100,9 @@ class PreferencesActivity : BaseActivity() {
 
         llSkillSelection.setBackgroundResource(whiteRipple)
         txtSkillHint.setTextColor(blackColor)
+
+        cbNoDistance.setTextColor(blackColor)
+        cbNoExperience.setTextColor(blackColor)
     }
 
     override fun displayNightMode() {
@@ -123,6 +126,9 @@ class PreferencesActivity : BaseActivity() {
 
         llSkillSelection.setBackgroundResource(blackRipple)
         txtSkillHint.setTextColor(whiteColor)
+
+        cbNoDistance.setTextColor(whiteColor)
+        cbNoExperience.setTextColor(whiteColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -187,7 +193,7 @@ class PreferencesActivity : BaseActivity() {
                 }
                 else -> {
                     mGenderValue = 3
-                    txtGenderPrefer.text = getString(R.string.other)
+                    txtGenderPrefer.text = getString(R.string.don_t_mind)
                 }
             }
         } else {
@@ -205,7 +211,7 @@ class PreferencesActivity : BaseActivity() {
                 txtGenderPrefer.text = getString(R.string.male)
             } else {
                 mGenderValue = 3
-                txtGenderPrefer.text = getString(R.string.other)
+                txtGenderPrefer.text = getString(R.string.don_t_mind)
             }
         }
 
@@ -501,7 +507,7 @@ class PreferencesActivity : BaseActivity() {
     private fun optionGender() {
         BottomSheet.Builder(this, R.style.BottomSheet_Dialog)
                 .title(getString(R.string.select_gender))
-                .sheet(R.menu.menu_gender).listener { dialog, which ->
+                .sheet(R.menu.menu_preferences_gender).listener { dialog, which ->
                     when (which) {
                         R.id.item_male -> {
                             txtGenderPrefer.setText(R.string.male)
@@ -512,7 +518,7 @@ class PreferencesActivity : BaseActivity() {
                             mGenderValue = 2
                         }
                         R.id.item_other -> {
-                            txtGenderPrefer.setText(R.string.other)
+                            txtGenderPrefer.setText(R.string.don_t_mind)
                             mGenderValue = 3
                         }
                     }

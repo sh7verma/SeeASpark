@@ -137,6 +137,10 @@ class ReviewActivity : BaseActivity() {
         mQuotesArrayList.add(getString(R.string.quote_4))
         mQuotesArrayList.add(getString(R.string.quote_5))
         mQuotesArrayList.add(getString(R.string.quote_6))
+        mQuotesArrayList.add(getString(R.string.quote_7))
+        mQuotesArrayList.add(getString(R.string.quote_8))
+        mQuotesArrayList.add(getString(R.string.quote_9))
+        mQuotesArrayList.add(getString(R.string.quote_10))
 
         mQuotesAuthorArrayList.add(getString(R.string.quote_owner1))
         mQuotesAuthorArrayList.add(getString(R.string.quote_owner2))
@@ -144,10 +148,14 @@ class ReviewActivity : BaseActivity() {
         mQuotesAuthorArrayList.add(getString(R.string.quote_owner4))
         mQuotesAuthorArrayList.add(getString(R.string.quote_owner5))
         mQuotesAuthorArrayList.add(getString(R.string.quote_owner6))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner7))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner8))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner9))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner10))
     }
 
     private fun displayQuotesWithAnimation(isVisible: Boolean) {
-        if (count < 6) {
+        if (count < 10) {
             if (isVisible) {
                 /// turn to hide
                 Handler().postDelayed({

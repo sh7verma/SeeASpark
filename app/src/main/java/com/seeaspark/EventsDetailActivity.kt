@@ -51,12 +51,11 @@ class EventsDetailActivity : BaseActivity() {
     override fun initUI() {
         txtTitleCustom.alpha = 0f
 
+//        imgBackCustom.setImageResource(R.mipmap.ic_action_arrow_back)
         imgOption1Custom.visibility = View.VISIBLE
         imgOption2Custom.visibility = View.VISIBLE
-
         imgOption1Custom.setImageResource(R.mipmap.ic_share_white)
         imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_border)
-
 
         val cd = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
         llCustomToolbar.background = cd
@@ -465,7 +464,6 @@ class EventsDetailActivity : BaseActivity() {
     private fun showInterestedOptions() {
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.dialog_interested)
-
 
         var dialogParms = CoordinatorLayout.LayoutParams(mWidth - (mWidth / 16), mHeight / 6)
         dialogParms.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL

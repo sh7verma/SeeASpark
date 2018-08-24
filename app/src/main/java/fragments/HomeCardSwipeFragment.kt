@@ -14,6 +14,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -136,23 +137,27 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
 
         csvUsers.setCardEventListener(object : CardStackView.CardEventListener {
             override fun onCardDragging(percentX: Float, percentY: Float) {
-                mCurrentPosition = csvUsers.topIndex
+
             }
 
             override fun onCardSwiped(direction: SwipeDirection?) {
                 if (mLandingInstance!!.connectedToInternet()) {
+
+                    Log.e("Test = ", mCurrentPosition.toString())
 
                     if (direction == SwipeDirection.Left)
                         swipeRightLeft(0, mLandingInstance!!.mArrayCards[mCurrentPosition].id)
                     else
                         swipeRightLeft(1, mLandingInstance!!.mArrayCards[mCurrentPosition].id)
 
+                    mCurrentPosition++
+
                     mLandingInstance!!.mArrayTempCards.removeAt(0)
 
                     if (mLandingInstance!!.mArrayTempCards.size == 0)
                         checkVisibility()
 
-                    if (mLandingInstance!!.mArrayCards.size - CARDAPICOUNT == mCurrentPosition) { ///Paging
+                    if (mLandingInstance!!.mArrayTempCards.size - CARDAPICOUNT == 5) { ///Paging
                         mOffset++
                         hitAPI(false)
                     }
@@ -206,7 +211,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
                         mLandingInstance!!.showAlert(llMainHomeFrag, response.body().error!!.message!!)
                     }
                 }
-                mLandingInstance!!.dismissLoader()
+                if (visibleLoader)
+                    mLandingInstance!!.dismissLoader()
             }
 
             override fun onFailure(call: Call<CardModel>?, t: Throwable?) {
@@ -274,6 +280,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
             txtGetCards -> {
                 if (mLandingInstance!!.connectedToInternet()) {
                     mOffset = 1
+                    mCurrentPosition = 0
                     hitAPI(true)
                 } else {
                     mLandingInstance!!.showInternetAlert(llMainHomeFrag)
@@ -357,6 +364,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 PREFERENCES -> {
+                    mCurrentPosition = 0
                     mOffset = 1
                     hitAPI(false)
                 }
@@ -424,6 +432,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
         @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
         override fun onReceive(context: Context, intent: Intent) {
             mOffset = 1
+            mCurrentPosition=0
             if (intent.getIntExtra("status", 0) == Constants.DAY) {
                 resetData()
                 displayDayMode()
@@ -436,9 +445,12 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
 
     var switchUserTypeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            mOffset = 1
+            mCurrentPosition=0
             hitAPI(false)
             mUtils!!.setString("user_type", mLandingInstance!!.userData!!.response.user_type.toString())
             mLandingInstance!!.checkUserType()
+            populateData()
             if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTEE)
                 txtTitleHome.text = getString(R.string.mentors)
             else
@@ -448,7 +460,9 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
 
     fun resetData() {
         mOffset = 1
+        mCurrentPosition=0
         mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0, mLandingInstance!!.mArrayCards)
         csvUsers.setAdapter(mAdapterCards)
+        checkVisibility()
     }
 }
