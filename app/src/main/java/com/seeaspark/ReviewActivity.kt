@@ -30,6 +30,7 @@ class ReviewActivity : BaseActivity() {
     private var mQuotesAuthorArrayList = ArrayList<String>()
     private var count = 1
     private var countAuthor = 1
+    private var reviewActivity: ReviewActivity? = null
 
     override fun getContentView() = R.layout.activity_review
 
@@ -50,21 +51,26 @@ class ReviewActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
+
         loadQuotesData()
 
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
-         if (!isSwitched && mUtils!!.getString("profileReview", "").isEmpty())
-             mUtils!!.setString("profileReview", "yes")
+        if (!isSwitched && mUtils!!.getString("profileReview", "").isEmpty())
+            mUtils!!.setString("profileReview", "yes")
 
-         Picasso.with(mContext).load(userData!!.response.avatar.avtar_url).into(imgAvatarReview)
+        Picasso.with(mContext).load(userData!!.response.avatar.avtar_url).into(imgAvatarReview)
 
-         if (connectedToInternet()) {
-             if (userData!!.response.switch_status == 0)
-                 hitSubmitAPI()
-         } else {
-             showInternetAlert(imgBackReview)
-         }
+        if (connectedToInternet()) {
+            if (userData!!.response.switch_status == 0)
+                hitSubmitAPI()
+        } else {
+            showInternetAlert(imgBackReview)
+        }
+
+        if (mUtils!!.getInt("document_verified", 0) == 2) {
+            txtUnderReview.text = getString(R.string.in_review_message)
+        }
 
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
         val typefaceBold = Typeface.createFromAsset(assets, "fonts/bold.otf")
@@ -75,19 +81,23 @@ class ReviewActivity : BaseActivity() {
         txtQuote.setText(mQuotesArrayList[0])
         txtQuote.show()
         txtQuote.setValueUpdateListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                displayQuotesWithAnimationNougat(it)
-            else
-                displayQuotesWithAnimation(it)
+            if (reviewActivity != null) {
+                if (reviewActivity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                    displayQuotesWithAnimationNougat(it)
+                else
+                    displayQuotesWithAnimation(it)
+            }
         }
 
         txtQuoteAuthor.setText(mQuotesAuthorArrayList[0])
         txtQuoteAuthor.show()
         txtQuoteAuthor.setValueUpdateListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                displayQuotesWithAnimationNougatAuthor(it)
-            else
-                displayQuotesWithAnimation(it)
+            if (reviewActivity != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                    displayQuotesWithAnimationNougatAuthor(it)
+                else
+                    displayQuotesWithAnimation(it)
+            }
         }
     }
 
@@ -252,6 +262,7 @@ class ReviewActivity : BaseActivity() {
     }
 
     override fun onStart() {
+        reviewActivity = this
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
                 IntentFilter(Constants.REVIEW))
         LocalBroadcastManager.getInstance(this).registerReceiver(receiverUnverified,
@@ -261,6 +272,7 @@ class ReviewActivity : BaseActivity() {
 
     override fun onStop() {
         mUtils!!.setInt("inside_reviewFull", 0)
+        reviewActivity = null
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverUnverified)
         super.onStop()
@@ -268,20 +280,24 @@ class ReviewActivity : BaseActivity() {
 
 
     var receiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
+        override fun onReceive(context: Context, data: Intent) {
             val intent: Intent?
-            if (isSwitched) {
-                intent = Intent(mContext!!, QuestionnariesActivity::class.java)
-                intent.putExtra("newUserType", Constants.MENTOR)
-                startActivity(intent)
-                finish()
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            if (data.hasExtra("type")) {
+                txtUnderReview.text = data.getStringExtra("displayMessage")
             } else {
-                intent = Intent(mContext, QuestionnariesActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                if (isSwitched) {
+                    intent = Intent(mContext!!, QuestionnariesActivity::class.java)
+                    intent.putExtra("newUserType", Constants.MENTOR)
+                    startActivity(intent)
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                } else {
+                    intent = Intent(mContext, QuestionnariesActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                }
             }
         }
     }

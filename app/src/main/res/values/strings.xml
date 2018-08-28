@@ -268,5 +268,6 @@
     <string name="book_now">Book Now</string>
     <string name="don_t_mind">Don\'t Mind</string>
     <string name="you_can_always_get_more_cards_by_subscribing_to_our_service">You can always get more cards by subscribing to our service</string>
+    <string name="in_review_message">Your Profile has been put On Hold. Kindly Check your email for further Instructions.</string>
 
 </resources>

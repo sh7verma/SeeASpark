@@ -48,6 +48,7 @@ public class Constants {
     public static int PROCEED_NORMAL = 200;
     public static int PROCEED_AS_OTHER = 2001;
     public static int PROFILE_UNDER_REVIEW = 3001;
+    public static int PROFILE_IN_REVIEW = 2005;
     public static final String EMAIL_VERIFY = "email_verify";
     public static final String REVIEW = "review";
     public static final String UNVERIFIED = "unverified";

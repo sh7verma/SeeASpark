@@ -217,7 +217,7 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     private fun setLogin() {
-        cbShowPassword.isChecked=false
+        cbShowPassword.isChecked = false
         edEmail.isFocusable = true
         edEmail.setText(Constants.EMPTY)
         edPassword.setText(Constants.EMPTY)
@@ -227,7 +227,7 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     private fun setRegister() {
-        cbShowPassword.isChecked=false
+        cbShowPassword.isChecked = false
         edEmail.setText(Constants.EMPTY)
         edPassword.setText(Constants.EMPTY)
         txtForgotPassword.visibility = View.INVISIBLE
@@ -284,12 +284,12 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     fun getuserData() {
-        var url = "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,headline,public-profile-url,picture-url,email-address,picture-urls::(original))";
-        var apiHelper = APIHelper.getInstance(getApplicationContext())
+        val url = "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,headline,public-profile-url,picture-url,email-address,picture-urls::(original))";
+        val apiHelper = APIHelper.getInstance(getApplicationContext())
 
         apiHelper.getRequest(this, url, object : ApiListener {
             override fun onApiSuccess(apiResponse: ApiResponse?) {
-                var jsonObject = apiResponse!!.responseDataAsJson
+                val jsonObject = apiResponse!!.responseDataAsJson
                 try {
                     if (connectedToInternet()) {
                         Log.e("Response", "Linkedin apiResponse JSON " + apiResponse.getResponseDataAsString());
@@ -366,9 +366,7 @@ class LoginSignupActivity : BaseActivity() {
                         && response.body().response != null) {
                     /// user enter as different user Type as comapred to signup
                     // but didn't setuped profile yet
-
                     /// changing userType
-
                     val signupModel = response.body()
 
                     if (signupModel.response.user_type == Constants.MENTOR)
@@ -377,36 +375,35 @@ class LoginSignupActivity : BaseActivity() {
                         signupModel.response.user_type = Constants.MENTOR
 
                     signupModel.response.full_name = mName
-
                     /// add data to shared preference
                     addDataToSharedPreferences(signupModel)
 
                     alertContinueDialog(response.body().message, signupModel)
-
                 } else if (response.body().code == Constants.PROFILE_UNDER_REVIEW
                         && response.body().response != null) {
-
                     /// add data to shared preference
                     addDataToSharedPreferences(response.body())
-
                     /// navigate to review screen
                     moveToReview(response.body())
-
+                } else if (response.body().code == Constants.PROFILE_IN_REVIEW
+                        && response.body().response != null) {
+                    /// add data to shared preference
+                    addDataToSharedPreferences(response.body())
+                    /// profile moved toin review by admin
+                    mUtils!!.setInt("document_verified", 2)
+                    /// navigate to review screen
+                    moveToReview(response.body())
                 } else if (response.body().code == Constants.PROCEED_NORMAL
                         && response.body().response != null) {
                     if (response.body().response.email_verified == 0 &&
                             response.body().response.profile_status == 0) {
-
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
-
                         /// navigate to email verification screen
                         moveToEmailVerification(response.body())
-
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 0 &&
                             response.body().response.profile_status == 0) {
-
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
                         mUtils!!.setBoolean("addEmailFragment", false)
@@ -506,6 +503,14 @@ class LoginSignupActivity : BaseActivity() {
                                 && response.body().response != null) {
                             /// add data to shared preference
                             addDataToSharedPreferences(response.body())
+                            /// navigate to review screen
+                            moveToReview(response.body())
+                        } else if (response.body().code == Constants.PROFILE_IN_REVIEW
+                                && response.body().response != null) {
+                            /// add data to shared preference
+                            addDataToSharedPreferences(response.body())
+                            /// profile moved toin review by admin
+                            mUtils!!.setInt("document_verified", 2)
                             /// navigate to review screen
                             moveToReview(response.body())
                         } else if (response.body().code == Constants.PROCEED_NORMAL
@@ -609,9 +614,12 @@ class LoginSignupActivity : BaseActivity() {
         if (docVerified == 0 && profileStatus == 1) {
             /// Review Screen
             moveToReview(response)
+        } else if (docVerified == 2 && profileStatus == 1) {
+            /// issue with the provided Id Move to review screen with updated message
+            mUtils!!.setInt("document_verified", 2)
+            moveToReview(response)
         } else if (docVerified == 1 && profileStatus == 1) {
             /// Questionarrie Screen
-
             moveToQuestionnaire()
         } else if (docVerified == 0 && profileStatus == 1) {
             /// Landing Screen

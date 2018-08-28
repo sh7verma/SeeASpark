@@ -39,7 +39,7 @@ class DisclamierDialog : Activity() {
         }
 
         txtSkip.setOnClickListener {
-            var intent = Intent(this, LandingActivity::class.java)
+            val intent = Intent(this, LandingActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
@@ -47,7 +47,11 @@ class DisclamierDialog : Activity() {
         }
 
         txtSettings.setOnClickListener {
-            Toast.makeText(this, "work in progress", Toast.LENGTH_LONG).show()
+            val intent = Intent(this, NotificationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
         }
     }
 

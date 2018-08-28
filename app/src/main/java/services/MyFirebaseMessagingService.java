@@ -21,6 +21,7 @@ import com.seeaspark.HandshakeActivity;
 import com.seeaspark.LandingActivity;
 import com.seeaspark.QuestionnariesActivity;
 import com.seeaspark.R;
+import com.seeaspark.ReviewActivity;
 
 import java.util.Map;
 
@@ -70,7 +71,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 broadcaster.sendBroadcast(notificationIntent);
             }
         } else if (messageBody.get("push_type").equalsIgnoreCase("2")) {
-            if (utils.getInt("inside_review", 0) == 0 && utils.getInt("inside_reviewFull", 0) == 0) {
+            if (utils.getInt("inside_review", 0) == 0 &&
+                    utils.getInt("inside_reviewFull", 0) == 0) {
                 /// outside review activity
                 intent = new Intent(this, QuestionnariesActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -122,13 +124,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 startActivity(intent);
             }
         } else if (messageBody.get("push_type").equalsIgnoreCase("6")) {
-            if (utils.getInt("inside_review", 0) == 0 && utils.getInt("inside_reviewFull", 0) == 0) {
+            if (utils.getInt("inside_review", 0) == 0 &&
+                    utils.getInt("inside_reviewFull", 0) == 0) {
                 /// outside review activity
                 intent = new Intent();
                 ringNotification(intent, message, 0, messageBody.get("body"));
             } else {
                 /// inside review activity
                 Intent notificationIntent = new Intent(Constants.UNVERIFIED);
+                broadcaster.sendBroadcast(notificationIntent);
+            }
+        } else if (messageBody.get("push_type").equalsIgnoreCase("7")) {
+            utils.setInt("document_verified", 2);
+            if (utils.getInt("inside_review", 0) == 0 &&
+                    utils.getInt("inside_reviewFull", 0) == 0) {
+                /// outside review activity
+                intent = new Intent(this, ReviewActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                ringNotification(intent, message, 0, messageBody.get("title"));
+            } else {
+                /// inside review activity
+                Intent notificationIntent = new Intent(Constants.REVIEW);
+                notificationIntent.putExtra("type", "inReview");
+                notificationIntent.putExtra("displayMessage", messageBody.get("message"));
                 broadcaster.sendBroadcast(notificationIntent);
             }
         }
