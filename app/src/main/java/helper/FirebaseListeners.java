@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.seeaspark.ConversationActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +56,8 @@ public class FirebaseListeners {
     Query usersQuery;
     Context con;
 
+    public static String chatDialogId = "";
+
     public static void initListener(Context con) {
         if (mListener == null)
             mListener = new FirebaseListeners();
@@ -79,16 +82,17 @@ public class FirebaseListeners {
 
     ////////////////////  MessagesModel Listener  //////////////////////
 
-    public interface DialogListenerInterface {
+    public interface MessageListenerInterface {
         void onMessageAdd(MessagesModel message);
 
         void onMessageChanged(MessagesModel message);
     }
 
-    public static DialogListenerInterface mDialogInterface;
+    public static MessageListenerInterface mMessageInterface;
 
-    public static void setDialogListener(DialogListenerInterface listsner) {
-        mDialogInterface = listsner;
+    public static void setMessageListener(MessageListenerInterface listsner, String dialogId) {
+        mMessageInterface = listsner;
+        chatDialogId = dialogId;
     }
 
     public void removeMessageListener(String dialogId) {
@@ -105,7 +109,7 @@ public class FirebaseListeners {
         dialogId = dialogId.trim();
         if (!messageListener.containsKey(dialogId)) {
             messageListener.put(dialogId, mMessageChildListener);
-            messageQry = mFirebaseConfigMessages.child(dialogId)/*.orderByChild("chat_dialog_id").equalTo(dialogId)*/;
+            messageQry = mFirebaseConfigMessages.child(dialogId);
             messageQry.addChildEventListener(mMessageChildListener);
             messageQuery.put(dialogId, messageQry);
         }
@@ -117,58 +121,42 @@ public class FirebaseListeners {
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             Log.e("message added", "is " + dataSnapshot + ", " + s);
             MessagesModel message = MessagesModel.parseMessage(dataSnapshot);
-            message.message_id = dataSnapshot.getKey();
-//            mDb.addMessage(message, util.getString("user_id", ""));
-//            if (ActivityChat.chatDialogId != null && ActivityChat.chatDialogId.equals(message.chat_dialog_id)) {
-//                if (!message.sender_id.equals(util.getString("user_id", ""))) {
-//                    if (message.read_ids.size() <= 0 && message.deliver_ids.size() <= 0) {
-//                        ArrayList<String> de = new ArrayList<>();
-//                        de.add(util.getString("user_id", ""));
-//                        HashMap<String, Object> val = new HashMap<>();
-//                        val.put("message_status", Consts.STATUS_MESSAGE_DELIVERED);
-//                        val.put("deliver_ids", de);
-//                        mFirebaseConfigMessages.child(message.message_id).updateChildren(val);
-//                    }
-//                }
-//                if (mDialogInterface != null) {
-//                    mDialogInterface.onMessageAdd(message);
-//                }
-//            } else {
-//                if (!message.sender_id.equals(util.getString("user_id", ""))) {
-//                    if (message.read_ids.size() <= 0 && message.deliver_ids.size() <= 0) {
-//                        ArrayList<String> de = new ArrayList<>();
-//                        de.add(util.getString("user_id", ""));
-//                        HashMap<String, Object> val = new HashMap<>();
-//                        val.put("message_status", Consts.STATUS_MESSAGE_DELIVERED);
-//                        val.put("deliver_ids", de);
-//                        mFirebaseConfigMessages.child(message.message_id).updateChildren(val);
-//                    }
-//                }
-//            }
+            if (message.message_deleted.get(util.getString("user_id", "")).equals("0")) {
+                mDb.addMessage(message, util.getString("user_id", ""));
+                if (chatDialogId.equals(message.chat_dialog_id)) {
+                    if (mMessageInterface != null) {
+                        message = mDb.getSingleMessage(message.message_id, util.getString("user_id", ""));
+                        mMessageInterface.onMessageAdd(message);
+                    }
+                } else {
+                    if (!message.sender_id.equals(util.getString("user_id", ""))) {
+                        if (message.message_status == Constants.STATUS_MESSAGE_SENT) {
+                            mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_DELIVERED);
+                        }
+                    }
+                }
+            }
         }
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
             Log.e("message changed", "is " + dataSnapshot + ", " + s);
             MessagesModel message = MessagesModel.parseMessage(dataSnapshot);
-            message.message_id = dataSnapshot.getKey();
-
-//            mDb.updateMessageFromListener(message, util.getString("user_id", ""));
-
-//            if (ActivityChat.chatDialogId != null && ActivityChat.chatDialogId.equals(message.chat_dialog_id)) {
-//                if (mDialogInterface != null) {
-//                    mDialogInterface.onMessageChanged(message);
-//                }
-//            }
-//
-//            if (ChatsFragment.mContext != null) {
-//                ChatsFragment.mContext.notifyData(message.chat_dialog_id);
-//            }
-
-//            if (message.read_ids.size() > 0 && message.sender_id.equals(util.getString("user_id", ""))) {
-//                DatabaseReference mFirebaseConfigUser = FirebaseDatabase.getInstance().getReference().child("MessagesModel").child(message.message_id);
-//                mFirebaseConfigUser.removeValue();
-//            }
+            if (message.message_deleted.get(util.getString("user_id", "")).equals("0")) {
+                mDb.addMessage(message, util.getString("user_id", ""));
+                if (chatDialogId.equals(message.chat_dialog_id)) {
+                    if (mMessageInterface != null) {
+                        message = mDb.getSingleMessage(message.message_id, util.getString("user_id", ""));
+                        mMessageInterface.onMessageChanged(message);
+                    }
+                } else {
+                    if (!message.sender_id.equals(util.getString("user_id", ""))) {
+                        if (message.message_status == Constants.STATUS_MESSAGE_SENT) {
+                            mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_DELIVERED);
+                        }
+                    }
+                }
+            }
         }
 
         @Override
@@ -211,8 +199,9 @@ public class FirebaseListeners {
 
     public static ChatDialogsListenerInterfaceForChat mChatDialogInterfaceForChat;
 
-    public static void setChatDialogListenerForChat(ChatDialogsListenerInterfaceForChat listsner) {
+    public static void setChatDialogListenerForChat(ChatDialogsListenerInterfaceForChat listsner, String dialogId) {
         mChatDialogInterfaceForChat = listsner;
+        chatDialogId = dialogId;
     }
 
     public void removeChatsListener(String dialogId) {
@@ -283,11 +272,13 @@ public class FirebaseListeners {
                         mChatDialogInterface.onDialogChanged(chat, 0);
                     }
                     if (mChatDialogInterfaceForChat != null) {
-                        mChatDialogInterfaceForChat.onDialogChanged(chat, 0);
+                        if (chatDialogId.equals(chat.chat_dialog_id)) {
+                            mChatDialogInterfaceForChat.onDialogChanged(chat, 0);
+                        }
                     }
                 }
             } else {
-                mDb.deleteDialogData(chat.chat_dialog_id);
+                mDb.deleteDialogData(dataSnapshot.getKey());
                 mFirebaseConfigProfile.child("Users").child("id_" + util.getString("user_id", "")).child("chat_dialog_ids").child(dataSnapshot.getKey());
                 mFirebaseConfigProfile.removeValue();
                 removeMessageListener(dataSnapshot.getKey());
@@ -296,7 +287,9 @@ public class FirebaseListeners {
                     mChatDialogInterface.onDialogChanged(chat, 1);
                 }
                 if (mChatDialogInterfaceForChat != null) {
-                    mChatDialogInterfaceForChat.onDialogChanged(chat, 1);
+                    if (chatDialogId.equals(chat.chat_dialog_id)) {
+                        mChatDialogInterfaceForChat.onDialogChanged(chat, 1);
+                    }
                 }
             }
         }
@@ -308,6 +301,11 @@ public class FirebaseListeners {
             removeChatsListener(dataSnapshot.getKey());
             if (mChatDialogInterface != null) {
                 mChatDialogInterface.onDialogRemoved(dataSnapshot.getKey());
+            }
+            if (mChatDialogInterfaceForChat != null) {
+                if (chatDialogId.equals(dataSnapshot.getKey())) {
+                    mChatDialogInterfaceForChat.onDialogChanged(null, 1);
+                }
             }
         }
 

@@ -6,17 +6,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.seeaspark.R;
-
 import org.apache.commons.lang3.StringEscapeUtils;
-
 import models.MessagesModel;
+import utils.Constants;
 
 public class ChatHolderReceiverText {
 
     public LinearLayout llReceiveText, llReceiveMessage;
-    public ImageView imgFavouriteTextReceive, imgRead;
+    public ImageView imgFavouriteTextReceive;
     public TextView txtMessage, txtReadMore, txtTime;
     int mWidth;
 
@@ -36,10 +34,9 @@ public class ChatHolderReceiverText {
 
         txtTime = (TextView) view.findViewById(R.id.txtTime);
 
-        imgRead = (ImageView) view.findViewById(R.id.imgRead);
     }
 
-    public void bindHolder(Context mContext, MessagesModel mMessage) {
+    public void bindHolder(Context mContext, MessagesModel mMessage, String userId) {
 
         boolean containsOtherText = false;
         int emojiCounter = 0;
@@ -80,39 +77,22 @@ public class ChatHolderReceiverText {
             txtMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) (mWidth * 0.05));
         }
 
-//        txtTime.setText(mMessage.show_message_datetime);
-//
-//        if (TextUtils.isEmpty(mMessage.mytranslation)) {
-//            String show = mMessage.message;
-//            if (show.length() > Consts.TEXT_LENGTH) {
-//                show = show.substring(0, Consts.TEXT_LENGTH);
-//                txtReadMore.setVisibility(View.VISIBLE);
-//            } else {
-//                txtReadMore.setVisibility(View.GONE);
-//            }
-//            reciever_message_text1.setText(show);
-//        } else {
-//            if (mMessage.show_message_status == 0) {
-//
-//                String show = mMessage.mytranslation;
-//                if (show.length() > Consts.TEXT_LENGTH) {
-//                    show = show.substring(0, Consts.TEXT_LENGTH);
-//                    txtReadMore.setVisibility(View.VISIBLE);
-//                } else {
-//                    txtReadMore.setVisibility(View.GONE);
-//                }
-//                reciever_message_text1.setText(show);
-//            } else {
-//                String show = mMessage.message;
-//                if (show.length() > Consts.TEXT_LENGTH) {
-//                    show = show.substring(0, Consts.TEXT_LENGTH);
-//                    txtReadMore.setVisibility(View.VISIBLE);
-//                } else {
-//                    txtReadMore.setVisibility(View.GONE);
-//                }
-//                reciever_message_text1.setText(show);
-//            }
-//        }
+        String show = "";
+        if (mMessage.message.length() > Constants.SHOW_TEXT_LENGTH) {
+            show = mMessage.message.substring(0, Constants.SHOW_TEXT_LENGTH)+"...";
+            txtReadMore.setVisibility(View.VISIBLE);
+        } else {
+            show = mMessage.message;
+            txtReadMore.setVisibility(View.GONE);
+        }
+        txtMessage.setText(show);
 
+        txtTime.setText(mMessage.show_message_datetime);
+
+        if (mMessage.favourite_message.get(userId).equals("0")) {
+            imgFavouriteTextReceive.setImageResource(R.mipmap.ic_heart);
+        } else {
+            imgFavouriteTextReceive.setImageResource(R.mipmap.ic_heart_red);
+        }
     }
 }

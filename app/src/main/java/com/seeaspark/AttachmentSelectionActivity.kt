@@ -31,11 +31,19 @@ class AttachmentSelectionActivity : BaseActivity() {
     override fun displayDayMode() {
         llMainAttachment.setBackgroundResource(R.drawable.white_short_profile_background)
         txtShareChat.setTextColor(blackColor)
+        txtCamera.setTextColor(blackColor)
+        txtGallery.setTextColor(blackColor)
+        txtNotes.setTextColor(blackColor)
+        txtDocument.setTextColor(blackColor)
     }
 
     override fun displayNightMode() {
         llMainAttachment.setBackgroundResource(R.drawable.dark_short_profile_background)
         txtShareChat.setTextColor(whiteColor)
+        txtCamera.setTextColor(whiteColor)
+        txtGallery.setTextColor(whiteColor)
+        txtNotes.setTextColor(whiteColor)
+        txtDocument.setTextColor(whiteColor)
     }
 
     override fun onCreateStuff() {
@@ -43,20 +51,20 @@ class AttachmentSelectionActivity : BaseActivity() {
     }
 
     override fun initListener() {
-        imgCamera.setOnClickListener(this)
-        imgGallery.setOnClickListener(this)
-        imgNotes.setOnClickListener(this)
-        imgDocument.setOnClickListener(this)
+        llCamera.setOnClickListener(this)
+        llGallery.setOnClickListener(this)
+        llNotes.setOnClickListener(this)
+        llDocument.setOnClickListener(this)
     }
 
     override fun getContext() = this
 
     override fun onClick(view: View?) {
         when (view) {
-            imgCamera -> {
+            llCamera -> {
                 if (checkCameraPermissions()) {
                     val intent = Intent()
-                    intent.putExtra("type","camera")
+                    intent.putExtra("type", "camera")
                     setResult(Activity.RESULT_OK, intent)
                     finish()
                     overridePendingTransition(0, 0)
@@ -64,10 +72,10 @@ class AttachmentSelectionActivity : BaseActivity() {
                     requestCameraPermission()
                 }
             }
-            imgGallery -> {
+            llGallery -> {
                 if (checkGalleryPermissions()) {
                     val intent = Intent()
-                    intent.putExtra("type","gallery")
+                    intent.putExtra("type", "gallery")
                     setResult(Activity.RESULT_OK, intent)
                     finish()
                     overridePendingTransition(0, 0)
@@ -75,17 +83,17 @@ class AttachmentSelectionActivity : BaseActivity() {
                     requestGalleryPermission()
                 }
             }
-            imgNotes -> {
+            llNotes -> {
                 val intent = Intent()
-                intent.putExtra("type","notes")
+                intent.putExtra("type", "notes")
                 setResult(Activity.RESULT_OK, intent)
                 finish()
                 overridePendingTransition(0, 0)
             }
-            imgDocument -> {
+            llDocument -> {
                 if (checkGalleryPermissions()) {
                     val intent = Intent()
-                    intent.putExtra("type","document")
+                    intent.putExtra("type", "document")
                     setResult(Activity.RESULT_OK, intent)
                     finish()
                     overridePendingTransition(0, 0)
@@ -234,7 +242,7 @@ class AttachmentSelectionActivity : BaseActivity() {
                 }
                 return
             }
-            GALLERY_PERMISSION_REQUEST_CODE ->{
+            GALLERY_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.size == 2) {
                     if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                             && grantResults.size > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {

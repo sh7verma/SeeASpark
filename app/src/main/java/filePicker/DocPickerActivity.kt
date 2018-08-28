@@ -28,18 +28,18 @@ class DocPickerActivity : BaseActivity(), DocPickerFragment.DocPickerFragmentLis
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
-        llOuterDoc.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
-        txtSendDoc.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        txtDone.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        txtName.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+//        llOuterDoc.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
+//        txtSendDoc.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+//        txtDone.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+//        txtName.setTextColor(ContextCompat.getColor(this, R.color.black_color))
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-        llOuterDoc.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
-        txtSendDoc.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        txtName.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        txtDone.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+//        llOuterDoc.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+//        txtSendDoc.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+//        txtName.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+//        txtDone.setTextColor(ContextCompat.getColor(this, R.color.white_color))
     }
 
     override fun onCreateStuff() {

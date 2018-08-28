@@ -3,7 +3,7 @@
     android:id="@+id/llOuterAttachment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:background="@color/black_color"
     android:orientation="vertical">
 
     <LinearLayout
@@ -42,6 +42,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="@string/send_photo"
+                android:visibility="gone"
                 android:textColor="@color/black_color"
                 android:textSize="@dimen/_14ssp"
                 android:transitionName="@string/transition" />
@@ -51,9 +52,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="Active"
-                android:textColor="@color/textGrey"
-                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/white_color"
+                android:textSize="@dimen/_14ssp"
                 android:transitionName="@string/transition" />
 
         </LinearLayout>
@@ -64,15 +64,21 @@
             android:layout_height="wrap_content"
             android:background="@drawable/transparent_ripple"
             android:padding="@dimen/_12sdp"
-            android:src="@mipmap/ic_options"
+            android:src="@mipmap/ic_crop"
             android:textColor="@color/white_color" />
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="gone"
+        android:background="@color/greyLine" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
+        android:gravity="right"
         android:orientation="vertical">
 
         <LinearLayout
@@ -89,22 +95,12 @@
 
         </LinearLayout>
 
-        <customviews.MediumTextView
-            android:id="@+id/txtSend"
+        <ImageView
+            android:id="@+id/imgSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:background="@drawable/mentee_ripple"
-            android:elevation="@dimen/_3"
-            android:paddingBottom="@dimen/_8sdp"
-            android:paddingLeft="@dimen/_24sdp"
-            android:paddingRight="@dimen/_24sdp"
-            android:paddingTop="@dimen/_8sdp"
-            android:text="@string/send"
-            android:textAllCaps="true"
-            android:textColor="@color/black_color"
-            android:textSize="@dimen/_14ssp" />
+            android:src="@mipmap/ic_send_btn"
+            android:layout_margin="@dimen/_10sdp"/>
 
     </LinearLayout>
 

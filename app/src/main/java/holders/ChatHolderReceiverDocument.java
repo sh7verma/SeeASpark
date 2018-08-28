@@ -8,10 +8,12 @@ import android.widget.TextView;
 
 import com.seeaspark.R;
 
+import models.MessagesModel;
+
 public class ChatHolderReceiverDocument {
 
     public LinearLayout llReceiveDocument, llReceiveMessage;
-    public ImageView imgFavouriteDocumentReceive, imgRead;
+    public ImageView imgFavouriteDocumentReceive;
     public TextView txtMessage, txtTime;
     int mWidth;
 
@@ -29,12 +31,19 @@ public class ChatHolderReceiverDocument {
 
         txtTime = (TextView) view.findViewById(R.id.txtTime);
 
-        imgRead = (ImageView) view.findViewById(R.id.imgRead);
     }
 
-    public void bindHolder(Context mContext) {
+    public void bindHolder(Context mContext, MessagesModel mMessage, String userId, String name) {
 
-//        txtTime.setText(mMessage.show_message_datetime);
+        txtMessage.setText(name + " " + mContext.getString(R.string.shared_document));
+
+        txtTime.setText(mMessage.show_message_datetime);
+
+        if (mMessage.favourite_message.get(userId).equals("0")) {
+            imgFavouriteDocumentReceive.setImageResource(R.mipmap.ic_heart);
+        } else {
+            imgFavouriteDocumentReceive.setImageResource(R.mipmap.ic_heart_red);
+        }
 
     }
 }

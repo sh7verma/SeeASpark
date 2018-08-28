@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Toast
 import com.ipaulpro.afilechooser.utils.FileUtils
 import com.soundcloud.android.crop.Crop
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_attachment.*
 import java.io.File
 import java.io.FileOutputStream
@@ -36,13 +37,16 @@ class AttachmentActivity : BaseActivity() {
     internal var pic: Bitmap? = null
     internal var max_color = 0
     internal var name = ""
+    internal var mPic = ""
 
     override fun getContentView() = R.layout.activity_attachment
 
     override fun initUI() {
         select_path = intent.getStringExtra("select_path")
         name = intent.getStringExtra("name")
+        mPic = intent.extras!!.getString("pic")
         txtName.text = name
+        Picasso.with(this).load(mPic).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
 
         val options = BitmapFactory.Options()
         options.inSampleSize = 4
@@ -74,16 +78,16 @@ class AttachmentActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
-        llOuterAttachment.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
-        txtSendPhoto.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        txtName.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+//        llOuterAttachment.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
+//        txtSendPhoto.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+//        txtName.setTextColor(ContextCompat.getColor(this, R.color.black_color))
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-        llOuterAttachment.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
-        txtSendPhoto.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        txtName.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+//        llOuterAttachment.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+//        txtSendPhoto.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+//        txtName.setTextColor(ContextCompat.getColor(this, R.color.white_color))
     }
 
     override fun onCreateStuff() {
@@ -93,7 +97,7 @@ class AttachmentActivity : BaseActivity() {
     override fun initListener() {
         imgBack.setOnClickListener(this)
         imgCrop.setOnClickListener(this)
-        txtSend.setOnClickListener(this)
+        imgSend.setOnClickListener(this)
     }
 
     override fun getContext() = this
@@ -108,7 +112,7 @@ class AttachmentActivity : BaseActivity() {
                 val rr = Uri.fromFile(File(f.absolutePath))
                 beginCrop(rr)
             }
-            txtSend -> {
+            imgSend -> {
                 sendMessage("")
             }
         }
@@ -130,7 +134,6 @@ class AttachmentActivity : BaseActivity() {
     private fun handleCrop(resultCode: Int, result: Intent) {
         try {
             if (resultCode == RESULT_OK) {
-
                 val ur = Crop.getOutput(result)
                 val picturePath = FileUtils.getPath(this, ur)
                 crop_path = picturePath
@@ -283,10 +286,8 @@ class AttachmentActivity : BaseActivity() {
     internal fun sendMessage(message: String) {
         save_image(2)
         val intent = Intent()
-        intent.putExtra("caption", message)
         intent.putExtra("selected_image", saved_path)
         intent.putExtra("selected_name", fname)
-        intent.putExtra("selected_color", max_color)
         setResult(RESULT_OK, intent)
         finish()
     }

@@ -1,6 +1,7 @@
 package holders;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,8 +11,12 @@ import android.widget.TextView;
 import com.seeaspark.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 import customviews.CircularProgressBar;
 import customviews.RoundedTransformation;
+import models.MessagesModel;
+import utils.Constants;
 
 /**
  * Created by Applify on 11/9/2016.
@@ -19,9 +24,9 @@ import customviews.RoundedTransformation;
 public class ChatHolderSenderVideo {
 
     public LinearLayout llSentVideo;
-    public ImageView imgVideoSent, imgFavouriteVideoSent, imgRead, imgUpload,imgPlayVideoSent;
+    public ImageView imgVideoSent, imgFavouriteVideoSent, imgRead, imgUpload, imgPlayVideoSent;
     public TextView txtTime;
-    RelativeLayout rlSentMessage;
+    public RelativeLayout rlSentMessage;
     CircularProgressBar cpbProgress;
     int mWidth;
 
@@ -46,7 +51,7 @@ public class ChatHolderSenderVideo {
 
         imgUpload = (ImageView) view.findViewById(R.id.imgUpload);
 
-        imgPlayVideoSent= (ImageView) view.findViewById(R.id.imgPlayVideoSent);
+        imgPlayVideoSent = (ImageView) view.findViewById(R.id.imgPlayVideoSent);
 
         txtTime = (TextView) view.findViewById(R.id.txtTime);
 
@@ -54,72 +59,57 @@ public class ChatHolderSenderVideo {
 
     }
 
-    public void bindHolder(Context mContext) {
+    public void bindHolder(Context mContext, MessagesModel mMessage, String userId) {
 
-//        txtTime.setText(model.show_message_datetime);
+        if (TextUtils.isEmpty(mMessage.attachment_path)) {
+            //attachment not download yet
+            if (!TextUtils.isEmpty(mMessage.custom_data)) {
+                File file = new File(mMessage.custom_data);
+                if (file.exists()) {
+                    Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoSent);
+                }
+            }
+            imgPlayVideoSent.setVisibility(View.VISIBLE);
+            cpbProgress.setVisibility(View.GONE);
+            imgUpload.setVisibility(View.GONE);
+        } else {
+            File file = new File(mMessage.custom_data);
+            if (file.exists()) {
+                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoSent);
+            }
+            if (mMessage.attachment_status.equals("" + Constants.FILE_UPLOADING)) {
+                imgUpload.setVisibility(View.GONE);
+                cpbProgress.setVisibility(View.VISIBLE);
+                cpbProgress.setProgress(Integer.parseInt(mMessage.attachment_progress));
+                imgPlayVideoSent.setVisibility(View.GONE);
+            } else if (mMessage.attachment_status.equals("" + Constants.FILE_EREROR)) {
+                imgUpload.setVisibility(View.VISIBLE);
+                cpbProgress.setVisibility(View.GONE);
+                imgPlayVideoSent.setVisibility(View.GONE);
+            } else {//Success
+                imgUpload.setVisibility(View.GONE);
+                cpbProgress.setVisibility(View.GONE);
+                imgPlayVideoSent.setVisibility(View.VISIBLE);
+            }
+        }
 
-        Picasso.with(mContext).load(R.mipmap.ic_blur_card).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(8, 0)).into(imgVideoSent);
+        txtTime.setText(mMessage.show_message_datetime);
 
-//        if (!model.attachment_max_color.equals("null") && !TextUtils.isEmpty(model.attachment_max_color))
-//            ((GradientDrawable) sent_attach_relative1.getBackground()).setColor(Color.parseColor(model.attachment_max_color));
-//
-//        if (TextUtils.isEmpty(model.attachment_path)) {
-//            //attachment not download yet
-//            sent_attach_image1.setImageResource(R.drawable.transparent_shape);
-//            sent_attach_loading_lay1.setVisibility(View.GONE);
-//            loading_image_lay.setVisibility(View.GONE);
-//            sent_attach_download_error_play1.setVisibility(View.GONE);
-//            sent_attach_play1.setVisibility(View.GONE);
-//        } else {
-//            File f = new File(model.custom_data);
-//            Picasso.with(mContext).load(f).resize((int) (width * 0.75), (int) (width * 0.75)).centerCrop().transform(new RoundedTransformation(8, 0)).into(sent_attach_image1);
-//
-//            if (model.attachment_status.equals("" + Consts.FILE_UPLOADING)) {
-//                sent_attach_loading_lay1.setVisibility(View.VISIBLE);
-//                sent_attach_loading_lay1.setBackgroundResource(R.drawable.white_circle);
-//                sent_attach_download_error_play1.setVisibility(View.GONE);
-//                loading_image_lay.setVisibility(View.VISIBLE);
-//                cpb_progress.setProgress(Integer.parseInt(model.attachment_progress));
-//                sent_attach_play1.setVisibility(View.GONE);
-//            } else if (model.attachment_status.equals("" + Consts.FILE_EREROR)) {
-//                sent_attach_loading_lay1.setVisibility(View.VISIBLE);
-//                sent_attach_loading_lay1.setBackgroundResource(R.drawable.white_circle);
-//                sent_attach_download_error_play1.setVisibility(View.VISIBLE);
-//                loading_image_lay.setVisibility(View.GONE);
-//                sent_attach_play1.setVisibility(View.GONE);
-//            } else {//Success
-//                loading_image_lay.setVisibility(View.GONE);
-//                sent_attach_loading_lay1.setVisibility(View.VISIBLE);
-//                sent_attach_loading_lay1.setBackgroundResource(0);
-//                sent_attach_download_error_play1.setVisibility(View.GONE);
-//                sent_attach_play1.setVisibility(View.VISIBLE);
-//            }
-//        }
-//
-//        if (TextUtils.isEmpty(opponentIDs)) {
-//            if(model.read_ids.size()>0){
-//                sent_time_img1.setImageResource(R.drawable.ic_seen);
-//            }else if(model.deliver_ids.size()>0){
-//                sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//            }else{
-//                sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//            }
-//        } else {
-//            sent_time_img1.setVisibility(View.VISIBLE);
-//            if (model.read_ids.contains(opponentIDs)) {
-//                sent_time_img1.setImageResource(R.drawable.ic_seen);
-//            } else if (model.deliver_ids.contains(opponentIDs)) {
-//                sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//            } else {
-//                if (TextUtils.isEmpty(model.message_status)) {
-//                    sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//                }else if (model.message_status.equals("" + Consts.STATUS_MESSAGE_PENDING)) {
-//                    sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//                } else if (model.message_status.equals("" + Consts.STATUS_MESSAGE_SENT)) {
-//                    sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//                }
-//            }
-//        }
+        if (mMessage.favourite_message.get(userId).equals("0")) {
+            imgFavouriteVideoSent.setImageResource(R.mipmap.ic_heart);
+        } else {
+            imgFavouriteVideoSent.setImageResource(R.mipmap.ic_heart_red);
+        }
+
+        if (mMessage.message_status == Constants.STATUS_MESSAGE_SENT) {
+            imgRead.setImageResource(R.mipmap.ic_sent);
+        } else if (mMessage.message_status == Constants.STATUS_MESSAGE_DELIVERED) {
+            imgRead.setImageResource(R.mipmap.ic_delivered);
+        } else if (mMessage.message_status == Constants.STATUS_MESSAGE_SEEN) {
+            imgRead.setImageResource(R.mipmap.ic_seen);
+        } else if (mMessage.message_status == Constants.STATUS_MESSAGE_PENDING) {
+            imgRead.setImageResource(R.mipmap.ic_message_pending);
+        }
 
     }
 

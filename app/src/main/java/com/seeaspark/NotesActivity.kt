@@ -347,10 +347,14 @@ class NotesActivity : BaseActivity() {
                 if (response!!.body().response != null) {
                     mNotesData = response.body().response
                     if (mNotesData!!.user_id.toString() == mUtils!!.getString("user_id", "")) {
-                        setEditorData()
-                        mNotesData!!.note_type = Constants.MYNOTES
-                        isEdit = true
-                        isDoneEnabled = true
+                        if (intent.hasExtra("chat")) {
+                            setNonEditableMode()
+                        } else {
+                            setEditorData()
+                            mNotesData!!.note_type = Constants.MYNOTES
+                            isEdit = true
+                            isDoneEnabled = true
+                        }
                     } else {
                         setNonEditableMode()
                     }

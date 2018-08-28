@@ -10,6 +10,7 @@ import android.support.v4.view.ViewCompat
 import android.util.Log
 import android.view.View
 import android.widget.MediaController
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_video_display.*
 
 /**
@@ -18,21 +19,30 @@ import kotlinx.android.synthetic.main.activity_video_display.*
 class VideoDisplayActivity : BaseActivity() {
 
     internal var path = ""
+    internal var name = ""
+    internal var mPic = ""
 
     override fun getContentView() = R.layout.activity_video_display
 
     override fun initUI() {
-        path = intent.extras!!.getString("path")
+        path = intent.extras!!.getString("video_path")
+        name = intent.getStringExtra("name")
+        mPic = intent.extras!!.getString("pic")
+        txtName.text = name
+        Picasso.with(this).load(mPic).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
+
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
         llOuterVideoDisplay.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
+        txtName.setTextColor(ContextCompat.getColor(this, R.color.black_color))
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
         llOuterVideoDisplay.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+        txtName.setTextColor(ContextCompat.getColor(this, R.color.white_color))
     }
 
     override fun onCreateStuff() {
@@ -45,11 +55,17 @@ class VideoDisplayActivity : BaseActivity() {
     }
 
     override fun initListener() {
+        imgBack.setOnClickListener(this)
     }
 
     override fun getContext() = this
 
     override fun onClick(v: View?) {
+        when (v) {
+            imgBack -> {
+                moveBack()
+            }
+        }
     }
 
     override fun onBackPressed() {

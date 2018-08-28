@@ -9,6 +9,13 @@ import android.support.multidex.MultiDexApplication;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.FirebaseDatabase;
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.seeaspark.R;
 
 
@@ -29,6 +36,22 @@ public class MainApplication extends MultiDexApplication {
         Foreground.init(this);
         sAnalytics = GoogleAnalytics.getInstance(this);
         instance = this;
+        if (!FirebaseApp.getApps(this).isEmpty()) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        }
+
+        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(false).cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .displayer(new FadeInBitmapDisplayer(300)).build();
+
+        ImageLoaderConfiguration configLoad = new ImageLoaderConfiguration.Builder(
+                getApplicationContext())
+                .defaultDisplayImageOptions(defaultOptions)
+                .memoryCache(new WeakMemoryCache())
+                .build();
+
+        ImageLoader.getInstance().init(configLoad);
     }
 
     public static MainApplication getInstance() {

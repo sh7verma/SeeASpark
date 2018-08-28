@@ -3,7 +3,7 @@
     android:id="@+id/llOuterDoc"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:background="@color/textColorPrimary"
     android:orientation="vertical">
 
     <LinearLayout
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/transparent_ripple"
             android:padding="@dimen/_12sdp"
-            android:src="@mipmap/ic_back_org"
+            android:src="@mipmap/ic_back_b"
             android:textColor="@color/white_color" />
 
         <ImageView
@@ -76,7 +76,8 @@
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/view_line_color_orange">
 
     </FrameLayout>
 

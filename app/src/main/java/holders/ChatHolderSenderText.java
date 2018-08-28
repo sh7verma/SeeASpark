@@ -41,7 +41,7 @@ public class ChatHolderSenderText {
 
     }
 
-    public void bindHolder(Context mContext, MessagesModel mMessage) {
+    public void bindHolder(Context mContext, MessagesModel mMessage, String userId) {
 
         boolean containsOtherText = false;
         int emojiCounter = 0;
@@ -83,8 +83,8 @@ public class ChatHolderSenderText {
         }
 
         String show = "";
-        if (mMessage.message.length() > Constants.TEXT_LENGTH) {
-            show = show.substring(0, Constants.TEXT_LENGTH);
+        if (mMessage.message.length() > Constants.SHOW_TEXT_LENGTH) {
+            show = mMessage.message.substring(0, Constants.SHOW_TEXT_LENGTH) + "...";
             txtReadMore.setVisibility(View.VISIBLE);
         } else {
             show = mMessage.message;
@@ -94,12 +94,18 @@ public class ChatHolderSenderText {
 
         txtTime.setText(mMessage.show_message_datetime);
 
+        if (mMessage.favourite_message.get(userId).equals("0")) {
+            imgFavouriteTextSent.setImageResource(R.mipmap.ic_heart);
+        } else {
+            imgFavouriteTextSent.setImageResource(R.mipmap.ic_heart_red);
+        }
+
         if (mMessage.message_status == Constants.STATUS_MESSAGE_SENT) {
             imgRead.setImageResource(R.mipmap.ic_sent);
         } else if (mMessage.message_status == Constants.STATUS_MESSAGE_DELIVERED) {
             imgRead.setImageResource(R.mipmap.ic_delivered);
         } else if (mMessage.message_status == Constants.STATUS_MESSAGE_SEEN) {
-            imgRead.setImageResource(R.mipmap.ic_seen);
+            imgRead.setImageResource(R.mipmap.ic_message_pending);
         }
 
     }

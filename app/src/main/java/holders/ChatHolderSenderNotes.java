@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.seeaspark.R;
 
+import models.MessagesModel;
+import utils.Constants;
+
 /**
  * Created by dev on 30/7/18.
  */
@@ -37,34 +40,25 @@ public class ChatHolderSenderNotes {
 
     }
 
-    public void bindHolder(Context mContext) {
+    public void bindHolder(Context mContext, MessagesModel mMessage, String userId, String name) {
 
-//        txtTime.setText(mMessage.show_message_datetime);
+        txtMessage.setText(mContext.getString(R.string.you_shared_notes) + " " + name);
 
-//        if (TextUtils.isEmpty(opponentIDs)) {
-//            if (mMessage.read_ids.size() > 0) {
-//                sent_time_img1.setImageResource(R.drawable.ic_seen);
-//            } else if (mMessage.deliver_ids.size() > 0) {
-//                sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//            } else {
-//                sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//            }
-//        } else {
-//            sent_time_img1.setVisibility(View.VISIBLE);
-//            if (mMessage.read_ids.contains(opponentIDs)) {
-//                sent_time_img1.setImageResource(R.drawable.ic_seen);
-//            } else if (mMessage.deliver_ids.contains(opponentIDs)) {
-//                sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//            } else {
-//                if (TextUtils.isEmpty(mMessage.message_status)) {
-//                    sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//                } else if (mMessage.message_status.equals("" + Consts.STATUS_MESSAGE_PENDING)) {
-//                    sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//                } else if (mMessage.message_status.equals("" + Consts.STATUS_MESSAGE_SENT)) {
-//                    sent_time_img1.setImageResource(R.drawable.ic_delivered);
-//                }
-//            }
-//        }
+        txtTime.setText(mMessage.show_message_datetime);
+
+        if (mMessage.favourite_message.get(userId).equals("0")) {
+            imgFavouriteNotesSent.setImageResource(R.mipmap.ic_heart);
+        } else {
+            imgFavouriteNotesSent.setImageResource(R.mipmap.ic_heart_red);
+        }
+
+        if (mMessage.message_status == Constants.STATUS_MESSAGE_SENT) {
+            imgRead.setImageResource(R.mipmap.ic_sent);
+        } else if (mMessage.message_status == Constants.STATUS_MESSAGE_DELIVERED) {
+            imgRead.setImageResource(R.mipmap.ic_delivered);
+        } else if (mMessage.message_status == Constants.STATUS_MESSAGE_SEEN) {
+            imgRead.setImageResource(R.mipmap.ic_message_pending);
+        }
 
     }
 

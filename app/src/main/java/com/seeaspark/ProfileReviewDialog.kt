@@ -106,6 +106,8 @@ class ProfileReviewDialog : Activity() {
         model.access_token = userProfileData!!.access_token
         model.user_id = userProfileData!!.id.toString()
         model.online_status = Constants.ONLINE_LONG
+        model.user_name = userProfileData!!.full_name
+        model.user_pic = userProfileData!!.avatar.avtar_url
         var mFirebaseConfigProfile = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
         mFirebaseConfigProfile.child("id_" + model.user_id).setValue(model).addOnSuccessListener {
             try {

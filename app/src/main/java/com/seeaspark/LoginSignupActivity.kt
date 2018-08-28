@@ -420,6 +420,8 @@ class LoginSignupActivity : BaseActivity() {
                         mUtils!!.setString("user_id", response.body().response.id.toString())
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
                         mUtils!!.setString("user_type", response.body().response.user_type.toString())
+                        mUtils!!.setString("user_name", response.body().response.full_name)
+                        mUtils!!.setString("user_pic", response.body().response.avatar.avtar_url)
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
@@ -434,6 +436,8 @@ class LoginSignupActivity : BaseActivity() {
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
                         mUtils!!.setString("user_id", response.body().response.id.toString())
                         mUtils!!.setString("user_type", response.body().response.user_type.toString())
+                        mUtils!!.setString("user_name", response.body().response.full_name)
+                        mUtils!!.setString("user_pic", response.body().response.avatar.avtar_url)
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
@@ -556,6 +560,8 @@ class LoginSignupActivity : BaseActivity() {
                                 mUtils!!.setInt("profile_status", response.body().response.profile_status)
                                 mUtils!!.setString("user_id", response.body().response.id.toString())
                                 mUtils!!.setString("user_type", response.body().response.user_type.toString())
+                                mUtils!!.setString("user_name", response.body().response.full_name)
+                                mUtils!!.setString("user_pic", response.body().response.avatar.avtar_url)
                                 addDataToSharedPreferences(response.body())
                                 /// navigate to questionarrie
                                 moveToQuestionnaire()
@@ -568,6 +574,8 @@ class LoginSignupActivity : BaseActivity() {
                                 mUtils!!.setInt("profile_status", response.body().response.profile_status)
                                 mUtils!!.setString("user_id", response.body().response.id.toString())
                                 mUtils!!.setString("user_type", response.body().response.user_type.toString())
+                                mUtils!!.setString("user_name", response.body().response.full_name)
+                                mUtils!!.setString("user_pic", response.body().response.avatar.avtar_url)
                                 addDataToSharedPreferences(response.body())
                                 /// navigate to landing Screen
                                 moveToLanding()
@@ -649,8 +657,10 @@ class LoginSignupActivity : BaseActivity() {
     private fun moveToLanding() {
         val values = HashMap<String, Any>()
         values.put("user_id", mUtils!!.getString("user_id", ""))
-        values.put("online_status", "Online")
+        values.put("online_status", Constants.ONLINE_LONG)
         values.put("access_token", mUtils!!.getString("access_token", ""))
+        values.put("user_name", mUtils!!.getString("user_name", ""))
+        values.put("user_pic", mUtils!!.getString("user_pic", ""))
         var mFirebaseConfigProfile = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
         mFirebaseConfigProfile.child("id_" + mUtils!!.getString("user_id", "")).updateChildren(values)
 
@@ -658,6 +668,8 @@ class LoginSignupActivity : BaseActivity() {
         model.access_token = mUtils!!.getString("access_token", "")
         model.user_id = mUtils!!.getString("user_id", "")
         model.online_status = Constants.ONLINE_LONG
+        model.user_name = mUtils!!.getString("user_name", "")
+        model.user_pic = mUtils!!.getString("user_pic", "")
         db!!.addProfile(model)
 
         intent = Intent(mContext, LandingActivity::class.java)

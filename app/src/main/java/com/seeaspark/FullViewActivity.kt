@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.activity_full_view.*
 class FullViewActivity : BaseActivity() {
 
     internal var display = ""
+    internal var name = ""
+    internal var mPic = ""
     var paths = ArrayList<String>()
     private var mFullViewPagerAdapter: FullViewPagerAdapter? = null
 
@@ -29,22 +31,22 @@ class FullViewActivity : BaseActivity() {
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
         llOuterFullView.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
-        txtDone.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
-        txtDone.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+        imgBack.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         txtHeading.setTextColor(ContextCompat.getColor(this, R.color.black_color))
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
         llOuterFullView.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
-        txtDone.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
-        txtDone.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+        imgBack.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         txtHeading.setTextColor(ContextCompat.getColor(this, R.color.white_color))
     }
 
     override fun onCreateStuff() {
         paths = intent.extras!!.getStringArrayList("paths")
         display = intent.extras!!.getString("display")
+        name = intent.getStringExtra("name")
+        mPic = intent.extras!!.getString("pic")
 
         if (!paths.contains(display)) {
             Toast.makeText(this, resources.getString(R.string.media_not_found), Toast.LENGTH_SHORT).show()
@@ -52,7 +54,7 @@ class FullViewActivity : BaseActivity() {
 
         viewPager.offscreenPageLimit = 2
 
-        mFullViewPagerAdapter = FullViewPagerAdapter(applicationContext, paths.size, paths, mWidth)
+        mFullViewPagerAdapter = FullViewPagerAdapter(applicationContext, paths.size, paths, mWidth, name, mPic)
         viewPager.adapter = mFullViewPagerAdapter
         viewPager.currentItem = paths.indexOf(display)
 
@@ -81,14 +83,14 @@ class FullViewActivity : BaseActivity() {
     }
 
     override fun initListener() {
-        txtDone.setOnClickListener(this)
+        imgBack.setOnClickListener(this)
     }
 
     override fun getContext() = this
 
     override fun onClick(v: View?) {
         when (v) {
-            txtDone -> {
+            imgBack -> {
                 moveBack()
             }
         }

@@ -46,7 +46,7 @@ public class DownloadFileService extends Service {
 
         void onErrorDownloading(String message_id, Exception exception);
 
-        void onProgressUpdate(String message_id, int progress);
+        void onDownloadProgressUpdate(String message_id, int progress);
     }
 
     public static FileDownloadInterface mFileDownloadInterface;
@@ -76,7 +76,7 @@ public class DownloadFileService extends Service {
             if (intent != null) {
                 if (intent.hasExtra("message_id")) {
                     String message_id = intent.getStringExtra("message_id");
-//                    mMessage = mDb.getSingleMessage(message_id, util.getString("user_id", ""));
+                    mMessage = mDb.getSingleMessage(message_id, util.getString("user_id", ""));
                 }
             }
         } catch (Exception e) {
@@ -91,7 +91,7 @@ public class DownloadFileService extends Service {
     void downloadFile(final MessagesModel mMessage) {
         mProgress = 0;
         String root = Environment.getExternalStorageDirectory().getPath();
-        final File myDir;
+        File myDir = null;
         final Calendar cal = Calendar.getInstance();
         String fname = "";
         if (mMessage.message_type.equals(Constants.TYPE_IMAGE)) {
@@ -104,24 +104,24 @@ public class DownloadFileService extends Service {
             if (!myDir.isDirectory())
                 myDir.mkdirs();
             fname = "VID" + cal.getTimeInMillis() + ".mp4";
-        } else {
+        } else if (mMessage.message_type.equals(Constants.TYPE_AUDIO)) {
             myDir = new File(root + "/SeeASpark/Audio");
             if (!myDir.isDirectory())
                 myDir.mkdirs();
             fname = "AUD" + cal.getTimeInMillis() + ".m4a";
+        } else {
+
         }
         final File localFile = new File(myDir, fname);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference imagesRef = storage.getReferenceFromUrl(mMessage.attachment_url);
-//        StorageReference imagesRef = storageRef.child(Consts.fireBase_Storage_Directory + mMessage.attachment_name);
-//        mBuilder.setProgress(100, (0), false);
-//        mNotificationManager.notify(1, mBuilder.build());
-//        mDb.changeDownloadStatus(mMessage.message_id, Consts.FILE_UPLOADING, "");
+        mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_UPLOADING, "");
         if (mFileDownloadInterface != null) {
             mFileDownloadInterface.onStartDownloading(mMessage.message_id);
         }
         try {
+            final File finalMyDir = myDir;
             imagesRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -132,7 +132,7 @@ public class DownloadFileService extends Service {
                             try {
                                 String after_convert = "";
                                 String camname = "VIDRecieved" + cal.getTimeInMillis() + ".mp4";
-                                File cam = new File(myDir, camname);
+                                File cam = new File(finalMyDir, camname);
                                 if (cam.exists()) {
                                     cam.delete();
                                 }
@@ -144,7 +144,6 @@ public class DownloadFileService extends Service {
                                     String[] complexCommand = {"ffmpeg", "-i",
                                             localFile.getAbsolutePath(), "-c", "copy",
                                             after_convert};
-
                                     vk.run(complexCommand, workFolder, getApplicationContext());
                                     Log.i("test",
                                             "ffmpeg4android finished successfully");
@@ -153,14 +152,13 @@ public class DownloadFileService extends Service {
                                             ff.getAbsolutePath(),
                                             MediaStore.Video.Thumbnails.MINI_KIND);
                                     File filethumb = save_image(bitmap, "mp4");
-
                                     if (mFileDownloadInterface != null) {
                                         mFileDownloadInterface.onSuccessDownloading(mMessage.message_id, ff.getAbsolutePath(), filethumb.getAbsolutePath());
                                     }
-//                                    mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_SUCCESS,
-//                                            ff.getAbsolutePath(), filethumb.getAbsolutePath());
+                                    mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_SUCCESS,
+                                            ff.getAbsolutePath(), filethumb.getAbsolutePath());
                                 } catch (Throwable e) {
-                                   e.printStackTrace();
+                                    e.printStackTrace();
                                 }
                             } catch (Exception e) {
                                 // TODO Auto-generated catch block
@@ -172,22 +170,20 @@ public class DownloadFileService extends Service {
                         }
                     } else if (mMessage.message_type.equals(Constants.TYPE_AUDIO)) {
                         try {
-//                            if (mFileDownloadInterface != null) {
-//                                mFileDownloadInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), mMessage.custom_data);
-//                            }
-//                            mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_SUCCESS, localFile.getAbsolutePath(), mMessage.custom_data);
+                            if (mFileDownloadInterface != null) {
+                                mFileDownloadInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), mMessage.custom_data);
+                            }
+                            mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_SUCCESS, localFile.getAbsolutePath(), mMessage.custom_data);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }else {
+                    } else if (mMessage.message_type.equals(Constants.TYPE_IMAGE)) {
                         if (mFileDownloadInterface != null) {
                             mFileDownloadInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), "");
                         }
-//                        mDb.changeDownloadStatus(mMessage.message_id, Consts.FILE_SUCCESS, localFile.getAbsolutePath());
+                        mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_SUCCESS, localFile.getAbsolutePath());
                     }
-
                     stopSelf();
-
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -196,7 +192,7 @@ public class DownloadFileService extends Service {
                     if (mFileDownloadInterface != null) {
                         mFileDownloadInterface.onErrorDownloading(mMessage.message_id, exception);
                     }
-//                    mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_EREROR, "");
+                    mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_EREROR, "");
                 }
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
@@ -204,17 +200,16 @@ public class DownloadFileService extends Service {
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                     if (((int) progress) - mProgress > 9 || progress == 100) {
                         if (mFileDownloadInterface != null) {
-                            mFileDownloadInterface.onProgressUpdate(mMessage.message_id, (int) progress);
+                            mFileDownloadInterface.onDownloadProgressUpdate(mMessage.message_id, (int) progress);
                         }
                         mProgress = (int) progress;
-//                        mDb.changDownloadProgress(mMessage.message_id, "" + ((int) progress));
+                        mDb.changProgress(mMessage.message_id, "" + ((int) progress));
                     }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     File save_image(Bitmap pic, String contentType) {
@@ -237,9 +232,7 @@ public class DownloadFileService extends Service {
             fname = "VTH" + cal.getTimeInMillis() + ".jpg";
         } else if (contentType.equals("mp4")) {
             fname = ".VTH" + cal.getTimeInMillis() + ".jpg";
-        } /*else {
-            fname = "VTH" + cal.getTimeInMillis() + ".m4a";
-        }*/
+        }
 
         File file = new File(myDir, fname);
         if (file.exists())

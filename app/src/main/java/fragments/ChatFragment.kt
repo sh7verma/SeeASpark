@@ -92,23 +92,25 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
             mCurrentUser!!.chat_dialog_ids = mDb!!.getDialogs(mCurrentUser!!.user_id)
             mChats = mDb!!.getAllChats(mCurrentUser!!.user_id, mUtils!!.getString("filter_type", Constants.FILTER_BOTH))
             mKeys = ArrayList()
-            var count = 0
             for (key in mChats!!.keys) {
                 mKeys.add(key)
-//                if (mChats!![key]!!.unread_count.get(mCurrentUser!!.user_id) != 0) {
-//                    count++
-//                }
             }
             mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth!!, mChats!!, mKeys!!,
                     mCurrentUser!!.user_id, false)
             rvChats.adapter = mChatsAdapter
-//            mUtils!!.setInt("unread_chats_count", count)
         }
 
         if (mChats != null && mChats!!.size > 0) {
             llNoHandshake.setVisibility(View.GONE)
         } else {
             llNoHandshake.setVisibility(View.VISIBLE)
+            if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
+                txtNoChat.text = getString(R.string.chat_available)
+            }else if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)){
+                txtNoChat.text = getString(R.string.no_mentee)
+            }else{
+                txtNoChat.text = getString(R.string.no_mentor)
+            }
         }
 
         edSearch.addTextChangedListener(object : TextWatcher {
@@ -128,6 +130,7 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                             mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth!!, mChats!!, mKeys!!,
                                     mCurrentUser!!.user_id, false)
                             rvChats.adapter = mChatsAdapter
+                            llNoHandshake.setVisibility(View.GONE)
                         } else {
                             val localChat = LinkedHashMap<String, ChatsModel>()
                             val localKeys = ArrayList<String>()
@@ -148,6 +151,12 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                             mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth!!, localChat!!, localKeys!!,
                                     mCurrentUser!!.user_id, true)
                             rvChats.adapter = mChatsAdapter
+                            if (localChat != null && localChat!!.size > 0) {
+                                llNoHandshake.setVisibility(View.GONE)
+                            } else {
+                                llNoHandshake.setVisibility(View.VISIBLE)
+                                txtNoChat.text = getString(R.string.no_result_found)
+                            }
                         }
                     }
                 }
@@ -272,6 +281,13 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                         llNoHandshake.setVisibility(View.GONE)
                     } else {
                         llNoHandshake.setVisibility(View.VISIBLE)
+                        if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
+                            txtNoChat.text = getString(R.string.chat_available)
+                        }else if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)){
+                            txtNoChat.text = getString(R.string.no_mentee)
+                        }else{
+                            txtNoChat.text = getString(R.string.no_mentor)
+                        }
                     }
                 }
             }
@@ -312,6 +328,13 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                     llNoHandshake.setVisibility(View.GONE)
                 } else {
                     llNoHandshake.setVisibility(View.VISIBLE)
+                    if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
+                        txtNoChat.text = getString(R.string.chat_available)
+                    }else if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)){
+                        txtNoChat.text = getString(R.string.no_mentee)
+                    }else{
+                        txtNoChat.text = getString(R.string.no_mentor)
+                    }
                 }
             }
             mChatsAdapter!!.notifyDataSetChanged()
@@ -375,6 +398,13 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                 llNoHandshake.setVisibility(View.GONE)
             } else {
                 llNoHandshake.setVisibility(View.VISIBLE)
+                if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
+                    txtNoChat.text = getString(R.string.chat_available)
+                }else if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)){
+                    txtNoChat.text = getString(R.string.no_mentee)
+                }else{
+                    txtNoChat.text = getString(R.string.no_mentor)
+                }
             }
         }
     }
@@ -408,6 +438,13 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                 llNoHandshake.setVisibility(View.GONE)
             } else {
                 llNoHandshake.setVisibility(View.VISIBLE)
+                if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
+                    txtNoChat.text = getString(R.string.chat_available)
+                }else if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)){
+                    txtNoChat.text = getString(R.string.no_mentee)
+                }else{
+                    txtNoChat.text = getString(R.string.no_mentor)
+                }
             }
         }
     }

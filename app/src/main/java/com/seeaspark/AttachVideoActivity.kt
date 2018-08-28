@@ -2,7 +2,6 @@ package com.seeaspark
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -16,8 +15,6 @@ import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore
 import android.support.annotation.RequiresApi
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -28,12 +25,14 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import com.edmodo.rangebar.RangeBar
 import com.netcompss.loader.LoadJNI
+import com.squareup.picasso.Picasso
 import helper.VideoCompressionHelper
 import kotlinx.android.synthetic.main.activity_attach_video.*
 import utils.TimeUtilsTrim
 import java.io.*
 import java.util.*
 
+@Suppress("DEPRECATION")
 /**
  * Created by dev on 8/8/18.
  */
@@ -52,6 +51,7 @@ class AttachVideoActivity : BaseActivity() {
     internal var handleProgress = Handler()
     internal var camerapathVideo = ""
     internal var name = ""
+    internal var mPic = ""
 
     internal var mgetFramesAsync: GetFrames? = null
 
@@ -60,6 +60,8 @@ class AttachVideoActivity : BaseActivity() {
     override fun initUI() {
         select_path = intent.getStringExtra("select_path")
         name = intent.getStringExtra("name")
+        mPic = intent.extras!!.getString("pic")
+        Picasso.with(this).load(mPic).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
         txtName.setText(name)
         rangeSeekbar.setEnabled(false)
 
@@ -79,22 +81,22 @@ class AttachVideoActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
-        llOuterAttachVideo.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
-        txtSendVideo.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        txtName.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        showSelectedDuration.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        maxDuration.setTextColor(ContextCompat.getColor(this, R.color.black_color))
-        fileSize.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+//        llOuterAttachVideo.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
+//        txtSendVideo.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+//        txtName.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+//        showSelectedDuration.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+//        maxDuration.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+//        fileSize.setTextColor(ContextCompat.getColor(this, R.color.black_color))
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-        llOuterAttachVideo.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
-        txtSendVideo.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        txtName.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        showSelectedDuration.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        maxDuration.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        fileSize.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+//        llOuterAttachVideo.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+//        txtSendVideo.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+//        txtName.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+//        showSelectedDuration.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+//        maxDuration.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+//        fileSize.setTextColor(ContextCompat.getColor(this, R.color.white_color))
     }
 
     override fun onCreateStuff() {
@@ -139,7 +141,7 @@ class AttachVideoActivity : BaseActivity() {
 
     override fun initListener() {
         imgBack.setOnClickListener(this)
-        txtSend.setOnClickListener(this)
+        imgSend.setOnClickListener(this)
         imgPlayVideo.setOnClickListener(this)
         videoView.setOnPreparedListener(MediaPlayer.OnPreparedListener {
             rangeSeekbar.setEnabled(true)
@@ -230,8 +232,12 @@ class AttachVideoActivity : BaseActivity() {
                 handleProgress.postDelayed(onEverySecond, 1000)
                 handleStop.postDelayed(stopVideo, ((stopIt + 1) * 1000).toLong())
             }
-            txtSend -> {
-                sendMessage("")
+            imgSend -> {
+                if (connectedToInternet()) {
+                    sendMessage("")
+                } else {
+                    showInternetAlert(txtName)
+                }
             }
         }
     }
@@ -247,6 +253,7 @@ class AttachVideoActivity : BaseActivity() {
                 imgPlayVideo.setVisibility(View.VISIBLE)
             }
         } catch (e: Exception) {
+            e.printStackTrace()
         }
 
         if (mgetFramesAsync != null) {
@@ -268,11 +275,11 @@ class AttachVideoActivity : BaseActivity() {
 
             val length = file.length()
             if (length < 1024) {
-                fileSize.setText(length.toString() + "bytes")
+                fileSize.setText(length.toString() + "Bytes")
             } else if (length / 1024 >= 1 && length / 1024 < 1024) {
-                fileSize.setText((length / 1024).toString() + "kb")
+                fileSize.setText((length / 1024).toString() + "KB")
             } else if (length / 1024 >= 1024) {
-                fileSize.setText((length / 1024 / 1024).toString() + "mb")
+                fileSize.setText((length / 1024 / 1024).toString() + "MB")
             }
 
         }
@@ -351,7 +358,7 @@ class AttachVideoActivity : BaseActivity() {
         }
     }
 
-    internal inner class CropVideo : AsyncTask<Void, Void, Void>() {
+    inner class CropVideo : AsyncTask<Void, Void, Void>() {
 
         var croppd: ProgressDialog? = null
 
@@ -373,7 +380,7 @@ class AttachVideoActivity : BaseActivity() {
             // TODO Auto-generated method stub
             super.onPreExecute()
             try {
-                croppd = ProgressDialog(applicationContext)
+                croppd = ProgressDialog(this@AttachVideoActivity)
                 croppd!!.setMessage("Cropping video")
                 croppd!!.setCancelable(false)
                 croppd!!.show()
@@ -389,10 +396,10 @@ class AttachVideoActivity : BaseActivity() {
             val vk = LoadJNI()
             try {
                 try {
-                    val workFolder = applicationContext.filesDir
+                    val workFolder = filesDir
                             .absolutePath
                     val complexCommand = arrayOf("ffmpeg", "-ss", TimeUtilsTrim.toFormattedTime(leftThumb * 1000), "-i", select_path, "-c:v", "copy", "-c:a", "copy", "-t", "" + (rightThumb - leftThumb), saved_video)
-                    vk.run(complexCommand, workFolder, applicationContext)
+                    vk.run(complexCommand, workFolder, this@AttachVideoActivity)
                     Log.i("test", "ffmpeg4android finished successfully")
                 } catch (e: Throwable) {
                     Log.e("test", "vk run exception.", e)
@@ -407,7 +414,7 @@ class AttachVideoActivity : BaseActivity() {
             return null
         }
 
-        override fun onPostExecute(result: Void) {
+        override fun onPostExecute(result: Void?) {
             // TODO Auto-generated method stub
             super.onPostExecute(result)
             try {
@@ -416,7 +423,7 @@ class AttachVideoActivity : BaseActivity() {
                         croppd!!.dismiss()
                     }
                 VideoCompressionHelper.initCompressor()
-                        .startCompression(applicationContext, saved_video, camerapathVideo)
+                        .startCompression(this@AttachVideoActivity, saved_video, camerapathVideo)
             } catch (e: Exception) {
                 // TODO Auto-generated catch block
                 e.printStackTrace()
@@ -490,11 +497,11 @@ class AttachVideoActivity : BaseActivity() {
         val fn = File(result)
         if (fn.exists()) {
             val intent = Intent()
-            intent.putExtra("caption", "")
+//            intent.putExtra("caption", "")
             intent.putExtra("selected_video_thumb", saved_path)
             intent.putExtra("selected_video", result)
-            intent.putExtra("selected_name", fn.name)
-            intent.putExtra("selected_color", max_color)
+//            intent.putExtra("selected_name", fn.name)
+//            intent.putExtra("selected_color", max_color)
             setResult(RESULT_OK, intent)
             finish()
         }

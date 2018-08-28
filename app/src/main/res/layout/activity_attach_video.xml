@@ -4,7 +4,7 @@
     android:id="@+id/llOuterAttachVideo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:background="@color/black_color"
     android:orientation="vertical">
 
     <LinearLayout
@@ -37,22 +37,21 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
+            <customviews.RegularTextView
+                android:id="@+id/txtName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textColor="@color/white_color"
+                android:textSize="@dimen/_14ssp"
+                android:transitionName="@string/transition" />
+
             <customviews.BoldTextView
                 android:id="@+id/txtSendVideo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="@string/send_video"
-                android:textColor="@color/black_color"
-                android:textSize="@dimen/_14ssp"
-                android:transitionName="@string/transition" />
-
-            <customviews.RegularTextView
-                android:id="@+id/txtName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="Active"
                 android:textColor="@color/textGrey"
                 android:textSize="@dimen/_12ssp"
                 android:transitionName="@string/transition" />
@@ -61,19 +60,24 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/greyLine" />
+
     <LinearLayout
         android:id="@+id/attachVideoMainLay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center_horizontal"
+        android:gravity="right"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-            android:layout_weight=".55">
+            android:layout_weight=".6">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -92,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:padding="@dimen/_5sdp"
-                    android:src="@mipmap/ic_play_black"
+                    android:src="@mipmap/ic_play_video"
                     android:visibility="gone" />
 
             </RelativeLayout>
@@ -108,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/_3sdp"
-                    android:textColor="@color/black_color" />
+                    android:textColor="@color/white_color" />
 
                 <customviews.RegularTextView
                     android:id="@+id/showSelectedDuration"
@@ -117,14 +121,14 @@
                     android:gravity="center"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/_3sdp"
-                    android:textColor="@color/black_color" />
+                    android:textColor="@color/white_color" />
 
                 <customviews.RegularTextView
                     android:id="@+id/maxDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/_3sdp"
-                    android:textColor="@color/black_color" />
+                    android:textColor="@color/white_color" />
 
             </LinearLayout>
 
@@ -133,7 +137,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight=".35"
+            android:layout_weight=".3"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -192,6 +196,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
+                    android:visibility="gone"
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:layout_marginRight="@dimen/_5sdp"
                     app:barColor="@color/green_color"
@@ -205,29 +210,19 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="@dimen/_7sdp"
                     android:layout_marginRight="@dimen/_7sdp"
-                    app:barColor="@color/green_color"
-                    app:tickHeight="1dp" />
+                    app:barColor="@color/view_line_color_orange"
+                    app:tickHeight="0dp" />
 
             </RelativeLayout>
 
         </LinearLayout>
 
-        <customviews.MediumTextView
-            android:id="@+id/txtSend"
+        <ImageView
+            android:id="@+id/imgSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:background="@drawable/mentee_ripple"
-            android:elevation="@dimen/_3"
-            android:paddingBottom="@dimen/_8sdp"
-            android:paddingLeft="@dimen/_24sdp"
-            android:paddingRight="@dimen/_24sdp"
-            android:paddingTop="@dimen/_8sdp"
-            android:text="@string/send"
-            android:textAllCaps="true"
-            android:textColor="@color/black_color"
-            android:textSize="@dimen/_14ssp" />
+            android:src="@mipmap/ic_send_btn"
+            android:layout_margin="@dimen/_10sdp"/>
 
     </LinearLayout>
 

@@ -325,4 +325,11 @@ public interface ApiInterface {
     @POST("/api/v1/switches/submit_profile")
     Call<SignupModel> submitProfile(@Field("access_token") String access_token);
 
+    @FormUrlEncoded
+    @POST("/api/v1/shares/share")
+    Call<NotesModel> shareNotes(@Field("access_token") String access_token,
+                                @Field("id") String id,
+                                @Field("receiver_id") String receiver_id,
+                                @Field("name") String file_name);
+
 }

@@ -253,6 +253,7 @@
     <string name="slide_to_cancel">Slide to cancel</string>
     <string name="share">Share</string>
     <string name="time_limit_reached">Time limit reached</string>
+    <string name="download_permission">Permission is required for download.</string>
     <string name="audio_permission">Permission is required for record audio.</string>
     <string name="camera_permission">Permission is required for access camera.</string>
     <string name="gallery_permission">Permission is required for access gallery.</string>
@@ -264,10 +265,10 @@
     <string name="select_video">Select Video</string>
     <string name="capture_video">Capture Video</string>
     <string name="video_size_limit">Video less than 2 seconds is not allowed.</string>
-    <string name="file_size_exceeds">File size exceeds the limit of 300MB</string>
+    <string name="file_size_exceeds">File size exceeds the limit of 50MB</string>
     <string name="send_photo">Send photo</string>
     <string name="send_document">Send document</string>
-    <string name="select_document">Select document</string>
+    <string name="select_document">Select Document</string>
     <string name="invalid_value">Invalid Value</string>
     <string name="something_went_wrong">Somethimg went wrong</string>
     <string name="send_video">Send video</string>
@@ -281,5 +282,30 @@
     <string name="Last_seen_yesterday_at">Last seen yesterday at</string>
     <string name="Last_seen">Last seen</string>
     <string name="at">at</string>
+    <string name="unblock_message">You have blocked this person. To continue, you need to unblock this person.</string>
+    <string name="unblock_small">Unblock</string>
+    <string name="character_limit_message">Message content exceeded the prescribed limit. Only first</string>
+    <string name="character_sent">characters will be sent.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="shared_notes">shared notes with you</string>
+    <string name="shared_document">shared documents with you</string>
+    <string name="you_shared_notes">You shared notes with</string>
+    <string name="you_shared_document">You shared documents with</string>
+    <string name="unmatch_message">unmatch with you</string>
+    <string name="text_copied">Text copied</string>
+    <string name="message">Message</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="document">Document</string>
+    <string name="sure_to_unblock">Are you sure you want to unblock?</string>
+    <string name="sure_to_block">Are you sure you want to block?</string>
+    <string name="sure_to_unmatch">Are you sure you want to unmatch?</string>
+    <string name="sure_to_clear_chat">Are you sure you want to clear chat history?</string>
+    <string name="clear">Clear</string>
+    <string name="no_mentor">No mentor is available for chat.</string>
+    <string name="no_mentee">No mentee is available for chat.</string>
+    <string name="report_an_issue">Report An Issue</string>
+    <string name="enter_your_details">Enter Your Details:</string>
 
 </resources>

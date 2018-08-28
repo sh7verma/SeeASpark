@@ -95,7 +95,7 @@ public class CircularProgressBar extends ProgressBar{
 
 		color = a.getString(R.styleable.CircularProgressBar_cpb_progressColor);
 		if(color==null)
-			mProgressColorPaint.setColor(res.getColor(R.color.circular_progress_default_progress));
+			mProgressColorPaint.setColor(res.getColor(R.color.colorPrimary));
 		else
 			mProgressColorPaint.setColor(Color.parseColor(color));
 

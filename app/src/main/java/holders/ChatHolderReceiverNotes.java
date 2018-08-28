@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.seeaspark.R;
 
+import models.MessagesModel;
+import utils.Constants;
+
 /**
  * Created by dev on 30/7/18.
  */
@@ -15,7 +18,7 @@ import com.seeaspark.R;
 public class ChatHolderReceiverNotes {
 
     public LinearLayout llReceiveNotes, llReceiveMessage;
-    public ImageView imgFavouriteNotesReceive, imgRead;
+    public ImageView imgFavouriteNotesReceive;
     public TextView txtMessage, txtTime;
     int mWidth;
 
@@ -33,12 +36,19 @@ public class ChatHolderReceiverNotes {
 
         txtTime = (TextView) view.findViewById(R.id.txtTime);
 
-        imgRead = (ImageView) view.findViewById(R.id.imgRead);
     }
 
-    public void bindHolder(Context mContext) {
+    public void bindHolder(Context mContext, MessagesModel mMessage, String userId, String name) {
 
-//        txtTime.setText(mMessage.show_message_datetime);
+        txtMessage.setText(name + " " + mContext.getString(R.string.shared_notes));
+
+        txtTime.setText(mMessage.show_message_datetime);
+
+        if (mMessage.favourite_message.get(userId).equals("0")) {
+            imgFavouriteNotesReceive.setImageResource(R.mipmap.ic_heart);
+        } else {
+            imgFavouriteNotesReceive.setImageResource(R.mipmap.ic_heart_red);
+        }
 
     }
 

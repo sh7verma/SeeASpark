@@ -23,6 +23,7 @@ public class ChatsModel implements Serializable {
     public HashMap<String, Long> delete_dialog_time;
     public HashMap<String, String> block_status;
     public HashMap<String, String> user_type;
+    public HashMap<String, String> rating;
     public String opponent_user_id;
 
     public static ChatsModel parseChat(DataSnapshot dataSnapshot, String userId) {
@@ -59,6 +60,10 @@ public class ChatsModel implements Serializable {
         GenericTypeIndicator<HashMap<String, String>> gtType = new GenericTypeIndicator<HashMap<String, String>>() {
         };
         chat.user_type = dataSnapshot.child("user_type").getValue(gtType);
+
+//        GenericTypeIndicator<HashMap<String, String>> gtRating = new GenericTypeIndicator<HashMap<String, String>>() {
+//        };
+//        chat.rating = dataSnapshot.child("rating").getValue(gtRating);
 
         String otherUserId = "";
         for (String id : chat.user_type.keySet()) {

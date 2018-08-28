@@ -32,6 +32,7 @@ import java.util.TimeZone;
 
 import database.Database;
 import models.SkillsModel;
+import network.RetrofitClient;
 
 
 public class Constants {
@@ -353,6 +354,7 @@ public class Constants {
 
     public final static String SERVICE_RUNNING = "service_running";
 
+    public final static int STATUS_MESSAGE_PENDING = 0;
     public final static int STATUS_MESSAGE_SENT = 1;
     public final static int STATUS_MESSAGE_DELIVERED = 2;
     public final static int STATUS_MESSAGE_SEEN = 3;
@@ -382,6 +384,7 @@ public class Constants {
     public final static int DOC_PICKER = 0x12;
     public final static String PERMISSIONS_FILE_PICKER =
             Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
     public enum FILE_TYPE {
         PDF, WORD, EXCEL, PPT, TXT, UNKNOWN
     }
@@ -403,10 +406,13 @@ public class Constants {
     public final static String MESSAGES = "Messages";
     public final static Long ONLINE_LONG = 123L;
     public final static String ONLINE = "Online";
-    public final static int TEXT_LENGTH = 1000;
+    public final static int TEXT_LENGTH = 2000;
+    public final static int SHOW_TEXT_LENGTH = 500;
 
     public final static String FILTER_MENTEE = "1";
     public final static String FILTER_MENTOR = "0";
     public final static String FILTER_BOTH = "2";
+
+    public static final String SHARE_URL = RetrofitClient.BASE_URL+"share_user?id=";
 
 }

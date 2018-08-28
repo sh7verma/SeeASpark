@@ -22,23 +22,50 @@
             android:src="@mipmap/ic_back_org"
             android:textColor="@color/white_color" />
 
-        <ImageView
-            android:id="@+id/imgProfileAvatar"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_marginLeft="@dimen/_4sdp"
-            android:layout_marginRight="@dimen/_8sdp"
-            android:src="@mipmap/ic_avatar_1" />
+        <LinearLayout
+            android:id="@+id/llViewProfile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <customviews.BoldTextView
-            android:id="@+id/txtName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:text="Hunny"
-            android:textColor="@color/black_color"
-            android:textSize="@dimen/_14ssp"
-            android:transitionName="@string/transition" />
+            <ImageView
+                android:id="@+id/imgProfileAvatar"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginLeft="@dimen/_4sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:src="@mipmap/ic_avatar_1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <customviews.BoldTextView
+                    android:id="@+id/txtName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_14ssp"
+                    android:transitionName="@string/transition" />
+
+                <customviews.RegularTextView
+                    android:id="@+id/txtActive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="@color/textGrey"
+                    android:textSize="@dimen/_12ssp"
+                    android:transitionName="@string/transition" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 

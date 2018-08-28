@@ -35,6 +35,7 @@ public class FullViewPagerAdapter extends PagerAdapter {
     Context context;
     int count = 0;
     ArrayList<String> paths;
+    String mName, mpic;
     Bitmap bm;
     int mScreenWidth;
     DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -45,11 +46,13 @@ public class FullViewPagerAdapter extends PagerAdapter {
 
     private ImageLoader imageLoader = ImageLoader.getInstance();
 
-    public FullViewPagerAdapter(Context con, int count, ArrayList<String> paths, int width) {
+    public FullViewPagerAdapter(Context con, int count, ArrayList<String> paths, int width, String name, String pic) {
         context = con;
         this.count = count;
         this.paths = paths;
         mScreenWidth = width;
+        mName = name;
+        mpic = pic;
     }
 
     @Override
@@ -114,14 +117,15 @@ public class FullViewPagerAdapter extends PagerAdapter {
             try {
                 bm = ThumbnailUtils.createVideoThumbnail(paths.get(index), MediaStore.Video.Thumbnails.MINI_KIND);
                 image.setImageBitmap(bm);
-
                 llVideo.setOnClickListener(new OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
                         // TODO Auto-generated method stub
                         Intent in = new Intent(context, VideoDisplayActivity.class);
-                        in.putExtra("path", paths.get(index));
+                        in.putExtra("video_path", paths.get(index));
+                        in.putExtra("pic", "" + mpic);
+                        in.putExtra("name", "" + mName);
                         in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(in);
                     }

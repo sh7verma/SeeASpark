@@ -1,6 +1,8 @@
 package holders;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -9,20 +11,25 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.seeaspark.R;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 import customviews.CircularProgressBar;
+import customviews.RoundedTransformation;
+import models.MessagesModel;
+import utils.Constants;
 
 
 public class ChatHolderReceiverAudio {
 
-    public LinearLayout llReceiveAudio, llSentMessage;
-    public ImageView imgFavouriteAudioReceive, imgPlay, imgReadInvisible, imgRead;
+    public LinearLayout llReceiveAudio, llReceiveMessage;
+    public ImageView imgFavouriteAudioReceive, imgDownload, imgPlay, imgReadInvisible;
     public TextView txtTimeInvisible, txtTime, txtAudioLength;
     CircularProgressBar cpbProgress;
     public SeekBar audioSeekReceive;
     int mWidth;
-
-//    int id = R.drawable.ic_play;
+    int id = R.mipmap.ic_play_black;
 
     public ChatHolderReceiverAudio(Context con, View view, int width) {
         // TODO Auto-generated constructor stub
@@ -32,9 +39,12 @@ public class ChatHolderReceiverAudio {
 
         imgFavouriteAudioReceive = (ImageView) view.findViewById(R.id.imgFavouriteAudioReceive);
 
-        llSentMessage = (LinearLayout) view.findViewById(R.id.llSentMessage);
+        llReceiveMessage = (LinearLayout) view.findViewById(R.id.llReceiveMessage);
+
+        imgDownload = (ImageView) view.findViewById(R.id.imgDownload);
 
         imgPlay = (ImageView) view.findViewById(R.id.imgPlay);
+        imgPlay.setTag(id);
 
         RelativeLayout.LayoutParams cpbParams = new RelativeLayout.LayoutParams((mWidth / 9), (mWidth / 9));
         cpbParams.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -50,40 +60,42 @@ public class ChatHolderReceiverAudio {
 
         txtTime = (TextView) view.findViewById(R.id.txtTime);
 
-        imgRead = (ImageView) view.findViewById(R.id.imgRead);
-
         txtAudioLength = (TextView) view.findViewById(R.id.txtAudioLength);
 
     }
 
-    public void bindHolder(Context mContext) {
+    public void bindHolder(Context mContext, MessagesModel mMessage, String userId) {
 
-//        txtTime.setText(model.show_message_datetime);
-//
-//        txtAudioLength.setText(model.custom_data);
+        txtTime.setText(mMessage.show_message_datetime);
 
-//        if (TextUtils.isEmpty(model.attachment_path)) {
-//            //attachment not download yet
-//            if(TextUtils.isEmpty(model.attachment_status)) {
-//                reciever_audio_loading_progress1.setVisibility(View.GONE);
-//                reciever_audio_img1.setVisibility(View.VISIBLE);
-//            }else if (model.attachment_status.equals("" + Consts.FILE_UPLOADING)) {
-//                reciever_audio_loading_progress1.setVisibility(View.VISIBLE);
-//                reciever_audio_img1.setVisibility(View.INVISIBLE);
-//            } else if (model.attachment_status.equals("" + Consts.FILE_EREROR)) {
-//                reciever_audio_loading_progress1.setVisibility(View.GONE);
-//                reciever_audio_img1.setVisibility(View.VISIBLE);
-//            } else {//Success
-//                reciever_audio_loading_progress1.setVisibility(View.GONE);
-//                reciever_audio_img1.setVisibility(View.VISIBLE);
-//            }
-//        } else {
-//            //show image either sending or received
-//            reciever_audio_loading_progress1.setVisibility(View.GONE);
-//			reciever_audio_img1.setVisibility(View.VISIBLE);
-//			reciever_audio_img1.setBackgroundResource(R.drawable.ic_play);
-//			reciever_audio_img1.setTag(R.drawable.ic_play);
-//        }
+        if (mMessage.favourite_message.get(userId).equals("0")) {
+            imgFavouriteAudioReceive.setImageResource(R.mipmap.ic_heart);
+        } else {
+            imgFavouriteAudioReceive.setImageResource(R.mipmap.ic_heart_red);
+        }
 
+        txtAudioLength.setText(mMessage.message);
+
+        if (TextUtils.isEmpty(mMessage.attachment_path)) {
+            //attachment not download yet
+            if (mMessage.attachment_status.equals("" + Constants.FILE_UPLOADING)) {
+                imgPlay.setVisibility(View.GONE);
+                imgDownload.setVisibility(View.GONE);
+                cpbProgress.setVisibility(View.VISIBLE);
+                cpbProgress.setProgress(Integer.parseInt(mMessage.attachment_progress));
+            } else if (mMessage.attachment_status.equals("" + Constants.FILE_EREROR)) {
+                imgPlay.setVisibility(View.GONE);
+                cpbProgress.setVisibility(View.GONE);
+                imgDownload.setVisibility(View.VISIBLE);
+            } else {//Success
+                imgPlay.setVisibility(View.VISIBLE);
+                cpbProgress.setVisibility(View.GONE);
+                imgDownload.setVisibility(View.GONE);
+            }
+        } else {
+            cpbProgress.setVisibility(View.GONE);
+            imgPlay.setVisibility(View.VISIBLE);
+            imgDownload.setVisibility(View.GONE);
+        }
     }
 }

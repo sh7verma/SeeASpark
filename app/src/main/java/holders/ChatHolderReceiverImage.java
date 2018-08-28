@@ -1,6 +1,7 @@
 package holders;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,15 +11,19 @@ import android.widget.TextView;
 import com.seeaspark.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 import customviews.CircularProgressBar;
 import customviews.RoundedTransformation;
+import models.MessagesModel;
+import utils.Constants;
 
 public class ChatHolderReceiverImage {
 
     public LinearLayout llReceiveImage;
-    public ImageView imgImageReceive, imgFavouriteImageReceive, imgRead, imgDownload;
+    public ImageView imgImageReceive, imgFavouriteImageReceive, imgDownload;
     public TextView txtTime;
-    RelativeLayout rlReceiveMessage;
+    public RelativeLayout rlReceiveMessage;
     CircularProgressBar cpbProgress;
     int mWidth;
 
@@ -45,47 +50,45 @@ public class ChatHolderReceiverImage {
 
         txtTime = (TextView) view.findViewById(R.id.txtTime);
 
-        imgRead = (ImageView) view.findViewById(R.id.imgRead);
     }
 
-    public void bindHolder(Context mContext) {
+    public void bindHolder(Context mContext, MessagesModel mMessage, String userId) {
 
-//        txtTime.setText(model.show_message_datetime);
+        txtTime.setText(mMessage.show_message_datetime);
 
-        Picasso.with(mContext).load(R.mipmap.ic_blur_card).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(8, 0)).into(imgImageReceive);
+        if (mMessage.favourite_message.get(userId).equals("0")) {
+            imgFavouriteImageReceive.setImageResource(R.mipmap.ic_heart);
+        } else {
+            imgFavouriteImageReceive.setImageResource(R.mipmap.ic_heart_red);
+        }
 
-//        if (TextUtils.isEmpty(model.attachment_path)) {
-//            //attachment not download yet
-//            reciever_attach_image1.setImageResource(R.drawable.transparent_shape);
-//            reciever_attach_play1.setVisibility(View.GONE);
-//            if(TextUtils.isEmpty(model.attachment_status)){
-//                reciever_attach_loading_lay1.setVisibility(View.VISIBLE);
-//                reciever_attach_download_error_play1.setVisibility(View.VISIBLE);
-//                loading_image_lay.setVisibility(View.GONE);
-//            } else if (model.attachment_status.equals("" + Consts.FILE_UPLOADING)) {
-//                reciever_attach_loading_lay1.setVisibility(View.VISIBLE);
-//                reciever_attach_download_error_play1.setVisibility(View.GONE);
-//                loading_image_lay.setVisibility(View.VISIBLE);
-//                cpb_progress.setProgress(Integer.parseInt(model.attachment_progress));
-//            } else if (model.attachment_status.equals("" + Consts.FILE_EREROR)) {
-//                reciever_attach_loading_lay1.setVisibility(View.VISIBLE);
-//                reciever_attach_download_error_play1.setVisibility(View.VISIBLE);
-//                loading_image_lay.setVisibility(View.GONE);
-//            } else {//Success
-//                reciever_attach_loading_lay1.setVisibility(View.GONE);
-//                loading_image_lay.setVisibility(View.GONE);
-//                reciever_attach_download_error_play1.setVisibility(View.GONE);
-//            }
-//        } else {
-//            //show image either sending or received
-//            File f = new File(model.attachment_path);
-//            Uri imageUri = Uri.fromFile(new File(model.attachment_path));
-//            Picasso.with(mContext).load(f).resize((int) (width * 0.75), (int) (width * 0.75)).centerCrop().transform(new RoundedTransformation(8, 0)).into(reciever_attach_image1);
-//            reciever_attach_loading_lay1.setVisibility(View.GONE);
-//            reciever_attach_loading_lay1.setVisibility(View.GONE);
-//            reciever_attach_download_error_play1.setVisibility(View.GONE);
-//            reciever_attach_play1.setVisibility(View.GONE);
-//        }
+        if (TextUtils.isEmpty(mMessage.attachment_path)) {
+            //attachment not download yet
+            if (!TextUtils.isEmpty(mMessage.attachment_url)) {
+                Picasso.with(mContext).load(mMessage.attachment_url).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageReceive);
+            }
+            if (mMessage.attachment_status.equals("" + Constants.FILE_UPLOADING)) {
+                imgDownload.setVisibility(View.GONE);
+                cpbProgress.setVisibility(View.VISIBLE);
+                cpbProgress.setProgress(Integer.parseInt(mMessage.attachment_progress));
+            } else if (mMessage.attachment_status.equals("" + Constants.FILE_EREROR)) {
+                imgDownload.setVisibility(View.VISIBLE);
+                cpbProgress.setVisibility(View.GONE);
+            } else {//Success
+                imgDownload.setVisibility(View.GONE);
+                cpbProgress.setVisibility(View.GONE);
+            }
+        } else {
+            File file = new File(mMessage.attachment_path);
+            if (file.exists()) {
+                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageReceive);
+            } else {
+                if (!TextUtils.isEmpty(mMessage.attachment_url)) {
+                    Picasso.with(mContext).load(mMessage.attachment_url).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageReceive);
+                }
+            }
+            cpbProgress.setVisibility(View.GONE);
+            imgDownload.setVisibility(View.GONE);
+        }
     }
-
 }

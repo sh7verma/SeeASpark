@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cocosw.bottomsheet.BottomSheet
+import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_edit_profile.*
@@ -270,12 +271,22 @@ class EditProfileActivity : BaseActivity() {
         call.enqueue(object : Callback<SignupModel> {
 
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>?) {
-                dismissLoader()
+
                 userData!!.response = response!!.body().response
                 mUtils!!.setString("userDataLocal", mGson.toJson(userData))
-                val intent = Intent()
-                setResult(Activity.RESULT_OK, intent)
-                moveBack()
+
+                val values = HashMap<String, Any>()
+                values.put("online_status", Constants.ONLINE_LONG)
+                values.put("access_token", userData!!.response.access_token)
+                values.put("user_name", userData!!.response.full_name)
+                values.put("user_pic", userData!!.response.avatar.avtar_url)
+                var mFirebaseConfigProfile = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
+                mFirebaseConfigProfile.child("id_" + userData!!.response.id.toString()).updateChildren(values).addOnCompleteListener {
+                    dismissLoader()
+                    val intent = Intent()
+                    setResult(Activity.RESULT_OK, intent)
+                    moveBack()
+                }
             }
 
             override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {
@@ -419,39 +430,39 @@ class EditProfileActivity : BaseActivity() {
         BottomSheet.Builder(this, R.style.BottomSheet_Dialog)
                 .title(getString(R.string.select_gender))
                 .sheet(R.menu.menu_gender).listener { dialog, which ->
-                    when (which) {
-                        R.id.item_male -> {
-                            txtGenderEditProfile.text = getString(R.string.male)
-                            if (mGender != 1) {
-                                mGender = 1
-                                mAvatarURL = Constants.EMPTY
-                                mAvatarParentId = 0
-                                showToast(mContext!!, getString(R.string.gender_changed))
-                                Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
-                            }
-                        }
-                        R.id.item_female -> {
-                            txtGenderEditProfile.text = getString(R.string.female)
-                            if (mGender != 2) {
-                                mGender = 2
-                                mAvatarURL = Constants.EMPTY
-                                mAvatarParentId = 0
-                                showToast(mContext!!, getString(R.string.gender_changed))
-                                Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
-                            }
-                        }
-                        R.id.item_other -> {
-                            txtGenderEditProfile.text = getString(R.string.other)
-                            if (mGender != 3) {
-                                mGender = 3
-                                mAvatarURL = Constants.EMPTY
-                                mAvatarParentId = 0
-                                showToast(mContext!!, getString(R.string.gender_changed))
-                                Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
-                            }
-                        }
+            when (which) {
+                R.id.item_male -> {
+                    txtGenderEditProfile.text = getString(R.string.male)
+                    if (mGender != 1) {
+                        mGender = 1
+                        mAvatarURL = Constants.EMPTY
+                        mAvatarParentId = 0
+                        showToast(mContext!!, getString(R.string.gender_changed))
+                        Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
                     }
-                }.show()
+                }
+                R.id.item_female -> {
+                    txtGenderEditProfile.text = getString(R.string.female)
+                    if (mGender != 2) {
+                        mGender = 2
+                        mAvatarURL = Constants.EMPTY
+                        mAvatarParentId = 0
+                        showToast(mContext!!, getString(R.string.gender_changed))
+                        Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
+                    }
+                }
+                R.id.item_other -> {
+                    txtGenderEditProfile.text = getString(R.string.other)
+                    if (mGender != 3) {
+                        mGender = 3
+                        mAvatarURL = Constants.EMPTY
+                        mAvatarParentId = 0
+                        showToast(mContext!!, getString(R.string.gender_changed))
+                        Picasso.with(this).load(R.drawable.placeholder_image).placeholder(R.drawable.placeholder_image).into(imgEditProfile)
+                    }
+                }
+            }
+        }.show()
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)

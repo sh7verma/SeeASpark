@@ -314,6 +314,13 @@
             android:windowSoftInputMode="stateHidden" />
 
         <activity
+            android:name=".ReportActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
             android:name=".CommunityBookmarkActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -345,8 +352,7 @@
             android:name=".NotesActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="stateVisible" />
+            android:theme="@style/MainActionBarTheme" />
 
         <activity
             android:name=".DeepLinkingActivity"
@@ -473,6 +479,12 @@
 
         <activity
             android:name=".FullViewActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".FullViewMessageActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme" />

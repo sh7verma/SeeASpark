@@ -32,6 +32,7 @@ public class MessagesModel implements Serializable {
     public String attachment_status;
     public String show_message_datetime;
     public String show_header_text;
+    public String custom_data;
 
     public static MessagesModel parseMessage(DataSnapshot dataSnapshot) {
 //        MessagesModel msg = dataSnapshot.getValue(MessagesModel.class);
@@ -44,7 +45,7 @@ public class MessagesModel implements Serializable {
         msg.firebase_message_time = dataSnapshot.child("firebase_message_time").getValue(Long.class);
         msg.chat_dialog_id = dataSnapshot.child("chat_dialog_id").getValue(String.class);
         msg.sender_id = dataSnapshot.child("sender_id").getValue(String.class);
-        if (TextUtils.isEmpty(dataSnapshot.child("message_status").getValue(String.class))) {
+        if (dataSnapshot.child("message_status").getValue(Integer.class) != null) {
             msg.message_status = Constants.STATUS_MESSAGE_SENT;
         } else {
             msg.message_status = dataSnapshot.child("message_status").getValue(Integer.class);
@@ -65,6 +66,7 @@ public class MessagesModel implements Serializable {
         msg.attachment_status = "";
         msg.show_message_datetime = "";
         msg.show_header_text = "";
+        msg.custom_data = "";
 
         return msg;
     }

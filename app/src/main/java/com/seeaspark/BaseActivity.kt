@@ -53,6 +53,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var blackRipple = 0
     var whiteRipple = 0
     var lightGrey = 0
+    var transperent = 0
 
     var mReceiverFunction: ReceiverFunctions? = null
     var currentCalendar: Calendar? = null
@@ -75,6 +76,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         whiteColor = ContextCompat.getColor(this, R.color.white_color)
         darkGrey = ContextCompat.getColor(this, R.color.darkGreyText)
         lightGrey = ContextCompat.getColor(this, R.color.light_grey)
+        transperent = ContextCompat.getColor(this, R.color.transperent)
 
         blackRipple = R.drawable.black_ripple
         whiteRipple = R.drawable.white_ripple

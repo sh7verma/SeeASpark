@@ -70,6 +70,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-analytics:16.0.0'
     implementation project(':ffmpeg4android_lib')
     implementation project(':rangeBar1')
+
+    compile 'jp.wasabeef:blurry:2.1.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

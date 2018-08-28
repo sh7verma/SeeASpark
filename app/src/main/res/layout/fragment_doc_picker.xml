@@ -3,12 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/view_line_color_orange">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:tabTextColor="@color/disabled"
+        app:tabSelectedTextColor="@color/white_color"
         style="@style/PickerTabLayout">
 
     </android.support.design.widget.TabLayout>

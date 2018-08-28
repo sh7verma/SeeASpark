@@ -1,6 +1,7 @@
 package com.seeaspark
 
 import adapters.ShareNotesAdapter
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -52,7 +53,7 @@ class MyNotesActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-        llOuterNotes.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
+        llOuterNotes.setBackgroundResource(R.drawable.background_gradient)
         txtSendNotes.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         txtName.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         txtNoMyNotes.setTextColor(ContextCompat.getColor(this, R.color.white_color))
@@ -157,10 +158,12 @@ class MyNotesActivity : BaseActivity() {
     }
 
     fun moveToDetail(notesData: NotesListingModel.ResponseBean) {
-//        val intent = Intent(mContext, NotesActivity::class.java)
-//        intent.putExtra("notesData", notesData)
-//        startActivityForResult(intent, NOTES)
-//        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        val intent = Intent()
+        intent.putExtra("note_id", ""+notesData.id)
+        intent.putExtra("note_name", ""+notesData.name)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
     }
 
 }

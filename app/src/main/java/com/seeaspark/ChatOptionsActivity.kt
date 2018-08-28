@@ -18,6 +18,12 @@ class ChatOptionsActivity : BaseActivity() {
     }
 
     override fun initUI() {
+        var blockStatus = intent.getStringExtra("block_status")
+        if (blockStatus.equals("0")) {
+            txtBlock.text = getString(R.string.block)
+        } else {
+            txtBlock.text = getString(R.string.unblock)
+        }
     }
 
     override fun displayDayMode() {
@@ -72,32 +78,56 @@ class ChatOptionsActivity : BaseActivity() {
                 overridePendingTransition(0, 0)
             }
             txtClearChat -> {
-                val intent = Intent()
-                intent.putExtra("type", "clear_chat")
-                setResult(Activity.RESULT_OK, intent)
-                finish()
-                overridePendingTransition(0, 0)
+                if (connectedToInternet()) {
+                    val intent = Intent()
+                    intent.putExtra("type", "clear_chat")
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                    overridePendingTransition(0, 0)
+                } else {
+                    showInternetAlert(txtShareProfile)
+                    finish()
+                    overridePendingTransition(0, 0)
+                }
             }
             txtUnmatch -> {
-                val intent = Intent()
-                intent.putExtra("type", "unmatch")
-                setResult(Activity.RESULT_OK, intent)
-                finish()
-                overridePendingTransition(0, 0)
+                if (connectedToInternet()) {
+                    val intent = Intent()
+                    intent.putExtra("type", "unmatch")
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                    overridePendingTransition(0, 0)
+                } else {
+                    showInternetAlert(txtShareProfile)
+                    finish()
+                    overridePendingTransition(0, 0)
+                }
             }
             txtBlock -> {
-                val intent = Intent()
-                intent.putExtra("type", "block")
-                setResult(Activity.RESULT_OK, intent)
-                finish()
-                overridePendingTransition(0, 0)
+                if (connectedToInternet()) {
+                    val intent = Intent()
+                    intent.putExtra("type", "block")
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                    overridePendingTransition(0, 0)
+                } else {
+                    showInternetAlert(txtShareProfile)
+                    finish()
+                    overridePendingTransition(0, 0)
+                }
             }
             txtReport -> {
-                val intent = Intent()
-                intent.putExtra("type", "report")
-                setResult(Activity.RESULT_OK, intent)
-                finish()
-                overridePendingTransition(0, 0)
+                if (connectedToInternet()) {
+                    val intent = Intent()
+                    intent.putExtra("type", "report")
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                    overridePendingTransition(0, 0)
+                } else {
+                    showInternetAlert(txtShareProfile)
+                    finish()
+                    overridePendingTransition(0, 0)
+                }
             }
         }
     }

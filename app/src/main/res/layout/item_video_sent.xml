@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/_5sdp"
-                android:src="@mipmap/ic_heart_red" />
+                android:src="@mipmap/ic_heart" />
 
             <RelativeLayout
                 android:id="@+id/rlSentMessage"
@@ -43,8 +43,7 @@
                 <ImageView
                     android:id="@+id/imgVideoSent"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@mipmap/ic_blur_card" />
+                    android:layout_height="match_parent" />
 
                 <customviews.CircularProgressBar
                     android:id="@+id/cpbProgress"
@@ -58,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:src="@mipmap/ic_heart_red" />
+                    android:src="@mipmap/ic_upload" />
 
                 <ImageView
                     android:id="@+id/imgPlayVideoSent"
@@ -93,7 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/_4sdp"
-                        android:src="@mipmap/ic_tick_avatar" />
+                        android:src="@mipmap/ic_message_pending" />
 
                 </LinearLayout>
 

@@ -166,47 +166,47 @@ class HomeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.Conn
     }
 
     fun hitAPI(visibleLoader: Boolean) {
-        if (visibleLoader)
-            mLandingInstance!!.showLoader()
-        val call = RetrofitClient.getInstance().getCards(mUtils!!.getString("access_token", ""),
-                mLandingInstance!!.mLatitude.toString(),
-                mLandingInstance!!.mLongitude.toString(),
-                mOffset.toString())
-        call.enqueue(object : Callback<CardModel> {
-
-            override fun onResponse(call: Call<CardModel>?, response: Response<CardModel>) {
-                if (visibleLoader)
-                    mLandingInstance!!.dismissLoader()
-                if (response.body().response != null) {
-                    if (mOffset == 1)
-                        populateData(response.body())
-                    else {
-                        mLandingInstance!!.mArrayCards.removeAt(mLandingInstance!!.mArrayCards.size - 1)
-                        mAdapterCards!!.notifyItemRemoved(mLandingInstance!!.mArrayCards.size)
-
-                        if (response.body().response.size > 0) {
-                            mLandingInstance!!.mArrayCards.addAll(response.body().response)
-                            mAdapterCards!!.notifyDataSetChanged()
-                            isLoading = false
-                        } else {
-                            isLoading = true
-                        }
-                    }
-                } else {
-                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
-                        mLandingInstance!!.moveToSplash()
-                    } else
-                        mLandingInstance!!.showAlert(rvCards, response.body().error!!.message!!)
-                }
-            }
-
-            override fun onFailure(call: Call<CardModel>?, t: Throwable?) {
-                if (visibleLoader)
-                    mLandingInstance!!.dismissLoader()
-                mLandingInstance!!.showAlert(rvCards, t!!.localizedMessage)
-            }
-        })
+//        if (visibleLoader)
+//            mLandingInstance!!.showLoader()
+//        val call = RetrofitClient.getInstance().getCards(mUtils!!.getString("access_token", ""),
+//                mLandingInstance!!.mLatitude.toString(),
+//                mLandingInstance!!.mLongitude.toString(),
+//                mOffset.toString())
+//        call.enqueue(object : Callback<CardModel> {
+//
+//            override fun onResponse(call: Call<CardModel>?, response: Response<CardModel>) {
+//                if (visibleLoader)
+//                    mLandingInstance!!.dismissLoader()
+//                if (response.body().response != null) {
+//                    if (mOffset == 1)
+//                        populateData(response.body())
+//                    else {
+//                        mLandingInstance!!.mArrayCards.removeAt(mLandingInstance!!.mArrayCards.size - 1)
+//                        mAdapterCards!!.notifyItemRemoved(mLandingInstance!!.mArrayCards.size)
+//
+//                        if (response.body().response.size > 0) {
+//                            mLandingInstance!!.mArrayCards.addAll(response.body().response)
+//                            mAdapterCards!!.notifyDataSetChanged()
+//                            isLoading = false
+//                        } else {
+//                            isLoading = true
+//                        }
+//                    }
+//                } else {
+//                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+//                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+//                        mLandingInstance!!.moveToSplash()
+//                    } else
+//                        mLandingInstance!!.showAlert(rvCards, response.body().error!!.message!!)
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<CardModel>?, t: Throwable?) {
+//                if (visibleLoader)
+//                    mLandingInstance!!.dismissLoader()
+//                mLandingInstance!!.showAlert(rvCards, t!!.localizedMessage)
+//            }
+//        })
     }
 
     private fun populateData(response: CardModel) {

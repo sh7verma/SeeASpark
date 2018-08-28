@@ -64,12 +64,12 @@ class QuestionnariesActivity : BaseActivity() {
 
         if (intent.hasExtra("newUserType")) {
             mNewUserType = intent.getIntExtra("newUserType", 0)
-            imgBackQuestion.visibility=View.VISIBLE
+            imgBackQuestion.visibility = View.VISIBLE
             isSwitchAccount = true
             hitFetchSwitchQuestionAPI(mNewUserType)
         } else {
             if (mUtils!!.getInt("switchMode", 0) == 1) {
-                imgBackQuestion.visibility=View.VISIBLE
+                imgBackQuestion.visibility = View.VISIBLE
                 isSwitchAccount = true
                 mNewUserType = Constants.MENTOR
                 hitFetchSwitchQuestionAPI(mNewUserType)
@@ -78,7 +78,7 @@ class QuestionnariesActivity : BaseActivity() {
                     mArrayQuestions.addAll(userData!!.answers)
                     populateData()
                 } else {
-                    imgBackQuestion.visibility=View.VISIBLE
+                    imgBackQuestion.visibility = View.VISIBLE
                     isSwitchAccount = true
                     mNewUserType = Constants.MENTOR
                     hitFetchSwitchQuestionAPI(mNewUserType)
@@ -237,6 +237,8 @@ class QuestionnariesActivity : BaseActivity() {
         mUtils!!.setInt("profile_status", userData!!.response.profile_status)
         mUtils!!.setString("user_id", response.id.toString())
         mUtils!!.setString("user_type", userData!!.response.user_type.toString())
+        mUtils!!.setString("user_name", userData!!.response.full_name)
+        mUtils!!.setString("user_pic", userData!!.response.avatar.avtar_url)
         val intent = Intent(mContext!!, PreferencesActivity::class.java)
         startActivity(intent)
         finish()
