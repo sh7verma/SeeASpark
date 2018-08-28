@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Handler
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
@@ -28,6 +29,7 @@ class ReviewActivity : BaseActivity() {
     private var mQuotesArrayList = ArrayList<String>()
     private var mQuotesAuthorArrayList = ArrayList<String>()
     private var count = 1
+    private var countAuthor = 1
 
     override fun getContentView() = R.layout.activity_review
 
@@ -52,17 +54,17 @@ class ReviewActivity : BaseActivity() {
 
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
-        if (!isSwitched && mUtils!!.getString("profileReview", "").isEmpty())
-            mUtils!!.setString("profileReview", "yes")
+         if (!isSwitched && mUtils!!.getString("profileReview", "").isEmpty())
+             mUtils!!.setString("profileReview", "yes")
 
-        Picasso.with(mContext).load(userData!!.response.avatar.avtar_url).into(imgAvatarReview)
+         Picasso.with(mContext).load(userData!!.response.avatar.avtar_url).into(imgAvatarReview)
 
-        if (connectedToInternet()) {
-            if (userData!!.response.switch_status == 0)
-                hitSubmitAPI()
-        } else {
-            showInternetAlert(imgBackReview)
-        }
+         if (connectedToInternet()) {
+             if (userData!!.response.switch_status == 0)
+                 hitSubmitAPI()
+         } else {
+             showInternetAlert(imgBackReview)
+         }
 
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
         val typefaceBold = Typeface.createFromAsset(assets, "fonts/bold.otf")
@@ -73,12 +75,20 @@ class ReviewActivity : BaseActivity() {
         txtQuote.setText(mQuotesArrayList[0])
         txtQuote.show()
         txtQuote.setValueUpdateListener {
-            displayQuotesWithAnimation(it)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                displayQuotesWithAnimationNougat(it)
+            else
+                displayQuotesWithAnimation(it)
         }
 
         txtQuoteAuthor.setText(mQuotesAuthorArrayList[0])
         txtQuoteAuthor.show()
-        txtQuoteAuthor.setValueUpdateListener { displayQuotesWithAnimation(it) }
+        txtQuoteAuthor.setValueUpdateListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                displayQuotesWithAnimationNougatAuthor(it)
+            else
+                displayQuotesWithAnimation(it)
+        }
     }
 
     override fun initListener() {
@@ -154,7 +164,50 @@ class ReviewActivity : BaseActivity() {
         mQuotesAuthorArrayList.add(getString(R.string.quote_owner10))
     }
 
+    private fun displayQuotesWithAnimationNougat(isVisible: Boolean) {
+        Log.e("Count  = ", count.toString())
+        if (isVisible) {
+            /// turn to hide
+            Handler().postDelayed({
+                if (count < 9) {
+                    txtQuote.hide()
+                }
+            }, 3000)
+        } else {
+            /// turn to visible
+            Handler().postDelayed({
+                if (count < 10) {
+                    txtQuote.setText(mQuotesArrayList[count])
+                    txtQuote.show()
+                }
+            }, 100)
+            count++
+        }
+    }
+
+    private fun displayQuotesWithAnimationNougatAuthor(isVisible: Boolean) {
+        Log.e("Count  = ", countAuthor.toString())
+        if (isVisible) {
+            /// turn to hide
+            Handler().postDelayed({
+                if (countAuthor < 9) {
+                    txtQuoteAuthor.hide()
+                }
+            }, 3000)
+        } else {
+            /// turn to visible
+            Handler().postDelayed({
+                if (countAuthor < 10) {
+                    txtQuoteAuthor.setText(mQuotesAuthorArrayList[countAuthor])
+                    txtQuoteAuthor.show()
+                }
+            }, 100)
+            countAuthor++
+        }
+    }
+
     private fun displayQuotesWithAnimation(isVisible: Boolean) {
+        Log.e("Count  = ", count.toString())
         if (count < 10) {
             if (isVisible) {
                 /// turn to hide

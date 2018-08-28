@@ -3,6 +3,7 @@ package customviews;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.AttributeSet;
@@ -11,7 +12,7 @@ import android.widget.TextView;
 /**
  * Created by matt on 5/27/14.
  */
-public class SecretTextView extends TextView {
+public class SecretTextView extends AppCompatTextView {
     private String mTextString;
     private SpannableString mSpannableString;
 
@@ -78,7 +79,7 @@ public class SecretTextView extends TextView {
 
     public void setIsVisible(boolean isVisible) {
         mIsVisible = isVisible;
-        resetSpannableString(isVisible == true ? 2.0f : 0.0f);
+        resetSpannableString(isVisible ? 2.0f : 0.0f);
     }
 
     public boolean getIsVisible() {

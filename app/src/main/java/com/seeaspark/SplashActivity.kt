@@ -10,7 +10,9 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageInfo
 import android.util.Base64
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.iid.FirebaseInstanceId
+import io.fabric.sdk.android.Fabric
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -19,9 +21,10 @@ class SplashActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Fabric.with(this, Crashlytics())
         setContentView(R.layout.activity_splash)
 
-        var mUtils = Utils(this)
+        val mUtils = Utils(this)
 
         try {
             val info = packageManager.getPackageInfo(

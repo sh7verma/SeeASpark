@@ -49,6 +49,8 @@ class CommunityDetailActivity : BaseActivity() {
 
         imgOption1Custom.visibility = View.VISIBLE
         imgOption2Custom.visibility = View.VISIBLE
+
+        imgBackCustom.setImageResource(R.mipmap.ic_back_white)
         imgOption1Custom.setImageResource(R.mipmap.ic_share_white)
         imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_border)
 

@@ -8,11 +8,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Point;
+import android.os.Handler;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 
@@ -26,11 +28,19 @@ import java.util.List;
 
 public class CardStackView extends FrameLayout {
 
+    private Runnable mRunnable;
+    private Handler mHandler;
+    private int count = 0;
+
     public interface CardEventListener {
         void onCardDragging(float percentX, float percentY);
+
         void onCardSwiped(SwipeDirection direction);
+
         void onCardReversed();
+
         void onCardMovedToOrigin();
+
         void onCardClicked(int index);
     }
 
@@ -59,10 +69,12 @@ public class CardStackView extends FrameLayout {
         public void onContainerDragging(float percentX, float percentY) {
             update(percentX, percentY);
         }
+
         @Override
         public void onContainerSwiped(Point point, SwipeDirection direction) {
             swipe(point, direction);
         }
+
         @Override
         public void onContainerMovedToOrigin() {
             initializeCardStackPosition();
@@ -70,6 +82,7 @@ public class CardStackView extends FrameLayout {
                 cardEventListener.onCardMovedToOrigin();
             }
         }
+
         @Override
         public void onContainerClicked() {
             if (cardEventListener != null) {
@@ -114,6 +127,7 @@ public class CardStackView extends FrameLayout {
     }
 
     private void initialize(boolean shouldReset) {
+        mHandler = new Handler();
         resetIfNeeded(shouldReset);
         initializeViews();
         initializeCardStackPosition();
@@ -129,7 +143,6 @@ public class CardStackView extends FrameLayout {
     private void initializeViews() {
         removeAllViews();
         containers.clear();
-
         for (int i = 0; i < option.visibleCount; i++) {
             CardContainerView view = (CardContainerView) LayoutInflater.from(getContext())
                     .inflate(R.layout.card_container, this, false);
@@ -139,9 +152,8 @@ public class CardStackView extends FrameLayout {
             containers.add(0, view);
             addView(view);
         }
-
+//        addCardWithAnimation(option.visibleCount,this);
         containers.getFirst().setContainerEventListener(containerEventListener);
-
         state.isInitialized = true;
     }
 
@@ -267,15 +279,15 @@ public class CardStackView extends FrameLayout {
             getTopView().showLeftOverlay();
         } else if (showOverlay = direction == SwipeDirection.Right) {
             getTopView().showRightOverlay();
-        } else if (showOverlay = direction == SwipeDirection.Bottom){
+        } else if (showOverlay = direction == SwipeDirection.Bottom) {
             getTopView().showBottomOverlay();
-        } else if (showOverlay = direction == SwipeDirection.Top){
+        } else if (showOverlay = direction == SwipeDirection.Top) {
             getTopView().showTopOverlay();
         } else {
             showOverlay = false;
         }
-        if(showOverlay) {
-            if(overlayAnimatorSet != null) {
+        if (showOverlay) {
+            if (overlayAnimatorSet != null) {
                 getTopView().setOverlayAlpha(overlayAnimatorSet);
             } else {
                 getTopView().setOverlayAlpha(1f);
@@ -521,4 +533,23 @@ public class CardStackView extends FrameLayout {
         return state.topIndex;
     }
 
+
+    private void addCardWithAnimation(final int visibleCount, final CardStackView cardStackView) {
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (count < visibleCount) {
+                    CardContainerView view = (CardContainerView) LayoutInflater.from(getContext())
+                            .inflate(R.layout.card_container, cardStackView, false);
+                    view.setDraggable(false);
+                    view.setCardStackOption(option);
+                    view.setOverlay(option.leftOverlay, option.rightOverlay, option.bottomOverlay, option.topOverlay);
+                    containers.add(0, view);
+                    addView(view);
+
+                }
+            }
+        };
+        mHandler.postDelayed(mRunnable, 0);
+    }
 }

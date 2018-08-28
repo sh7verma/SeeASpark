@@ -7,6 +7,9 @@
 package com.yuyakaido.android.cardstackview;
 
 public final class R {
+    public static final class anim {
+        public static int slide_in_left = 0x7f010001;
+    }
     public static final class attr {
         public static int bottomOverlay = 0x7f040001;
         public static int elevationEnabled = 0x7f040002;

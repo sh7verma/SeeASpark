@@ -61,6 +61,8 @@ class HomeCardSwipeAdapter(context: Context, resource: Int, mCardArray: ArrayLis
             holder.txtSkillCountCard?.visibility = View.VISIBLE
             holder.txtSkillCountCard?.text = "+${mCardArray[position].skills.size - 1} more"
         }
+
+//        setAnimation(cardView!!, position)
         return cardView
     }
 

@@ -1,3 +1,4 @@
+int anim slide_in_left 0x7f010001
 int attr bottomOverlay 0x7f040001
 int attr elevationEnabled 0x7f040002
 int attr leftOverlay 0x7f040003

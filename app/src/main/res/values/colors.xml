@@ -5,7 +5,6 @@
     <color name="colorAccent">#f77a52</color>
     <color name="colorPass">#E34561</color>
 
-
     <color name="colorMentor">#EDFAE1</color>
     <color name="colorMentorEffect">#EFF7E8</color>
     <color name="colorMentee">#CDFB92</color>
@@ -20,7 +19,6 @@
     <color name="cardColorDark">#23251F</color>
 
     <color name="darkGreyText">#8F919E</color>
-
 
     <color name="navigationBarColor">#202851</color>
     <color name="textColorPrimary">#f77a52</color>

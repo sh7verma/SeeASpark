@@ -234,6 +234,9 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
 
                 mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0, mLandingInstance!!.mArrayCards)
                 csvUsers.setAdapter(mAdapterCards)
+
+//                addCardWithAnimation(response.response)
+
             } else {
                 if (response.response.isNotEmpty()) {
                     mLandingInstance!!.mArrayCards.addAll(response.response)
@@ -346,17 +349,13 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         mLandingInstance!!.showToast(mContext!!, response.body().error!!.message!!)
                         mLandingInstance!!.moveToSplash()
-                    } else if (response.body().error!!.code == Constants.DELETE_ACCOUNT) {
-                        /// no operation
-                    } else
-                        mLandingInstance!!.showAlert(llMainHomeFrag, response.body().error!!.message!!)
+                    }
                 }
             }
 
             override fun onFailure(call: Call<SwipeCardModel>?, t: Throwable?) {
                 mLandingInstance!!.showAlert(llHomeToolbar, t!!.localizedMessage)
             }
-
         })
     }
 
@@ -432,7 +431,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
         @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
         override fun onReceive(context: Context, intent: Intent) {
             mOffset = 1
-            mCurrentPosition=0
+            mCurrentPosition = 0
             if (intent.getIntExtra("status", 0) == Constants.DAY) {
                 resetData()
                 displayDayMode()
@@ -446,7 +445,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
     var switchUserTypeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             mOffset = 1
-            mCurrentPosition=0
+            mCurrentPosition = 0
             hitAPI(false)
             mUtils!!.setString("user_type", mLandingInstance!!.userData!!.response.user_type.toString())
             mLandingInstance!!.checkUserType()
@@ -460,7 +459,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
 
     fun resetData() {
         mOffset = 1
-        mCurrentPosition=0
+        mCurrentPosition = 0
         mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0, mLandingInstance!!.mArrayCards)
         csvUsers.setAdapter(mAdapterCards)
         checkVisibility()
