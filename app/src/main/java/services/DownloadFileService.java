@@ -110,7 +110,16 @@ public class DownloadFileService extends Service {
                 myDir.mkdirs();
             fname = "AUD" + cal.getTimeInMillis() + ".m4a";
         } else {
-
+            myDir = new File(root + "/SeeASpark/Documents");
+            if (!myDir.isDirectory())
+                myDir.mkdirs();
+            if (mMessage.attachment_url.contains(".pdf")) {
+                fname = "Document" + cal.getTimeInMillis() + ".pdf";
+            } else if (mMessage.attachment_url.contains(".txt")) {
+                fname = "Document" + cal.getTimeInMillis() + ".txt";
+            } else {
+                fname = "Document" + cal.getTimeInMillis() + ".doc";
+            }
         }
         final File localFile = new File(myDir, fname);
 
@@ -178,6 +187,11 @@ public class DownloadFileService extends Service {
                             e.printStackTrace();
                         }
                     } else if (mMessage.message_type.equals(Constants.TYPE_IMAGE)) {
+                        if (mFileDownloadInterface != null) {
+                            mFileDownloadInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), "");
+                        }
+                        mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_SUCCESS, localFile.getAbsolutePath());
+                    } else if (mMessage.message_type.equals(Constants.TYPE_DOCUMENT)) {
                         if (mFileDownloadInterface != null) {
                             mFileDownloadInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), "");
                         }

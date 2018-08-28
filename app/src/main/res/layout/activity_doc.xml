@@ -36,24 +36,14 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <customviews.BoldTextView
-                android:id="@+id/txtSendDoc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="@string/send_document"
-                android:textColor="@color/black_color"
-                android:textSize="@dimen/_14ssp"
-                android:transitionName="@string/transition" />
-
             <customviews.RegularTextView
                 android:id="@+id/txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="Active"
-                android:textColor="@color/textGrey"
-                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_14ssp"
                 android:transitionName="@string/transition" />
 
         </LinearLayout>
@@ -95,24 +85,6 @@
             </RelativeLayout>
 
         </LinearLayout>
-
-        <customviews.MediumTextView
-            android:id="@+id/txtSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_8sdp"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:background="@drawable/mentee_ripple"
-            android:elevation="@dimen/_3"
-            android:paddingBottom="@dimen/_8sdp"
-            android:paddingLeft="@dimen/_24sdp"
-            android:paddingRight="@dimen/_24sdp"
-            android:paddingTop="@dimen/_8sdp"
-            android:text="@string/send"
-            android:textAllCaps="true"
-            android:visibility="gone"
-            android:textColor="@color/black_color"
-            android:textSize="@dimen/_14ssp" />
 
     </LinearLayout>
 

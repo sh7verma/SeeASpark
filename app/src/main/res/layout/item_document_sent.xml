@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/_5sdp"
-                android:src="@mipmap/ic_heart_red" />
+                android:src="@mipmap/ic_heart" />
 
             <LinearLayout
                 android:id="@+id/llSentMessage"
@@ -52,18 +52,33 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight=".28"
                         android:gravity="center">
 
                         <ImageView
+                            android:id="@+id/imgDocument"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@mipmap/ic_shared_doc" />
 
-                    </LinearLayout>
+                        <ImageView
+                            android:id="@+id/imgUpload"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:src="@mipmap/ic_upload_s" />
+
+                        <customviews.CircularProgressBar
+                            android:id="@+id/cpbProgress"
+                            style="@style/Widget.ProgressBar.Holo.CircularProgressBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true" />
+
+                    </RelativeLayout>
 
                     <customviews.MediumTextView
                         android:id="@+id/txtMessage"

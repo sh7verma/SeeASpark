@@ -723,8 +723,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             val message = mMessagesMap!![mMessageIds[i]]
             if (!message!!.is_header) {
                 if (!message.sender_id.equals(mCurrentUser!!.user_id) && (message.message_type.equals(Constants.TYPE_IMAGE) ||
-                        message.message_type.equals(Constants.TYPE_AUDIO) || message.message_type.equals(Constants.TYPE_VIDEO)/* ||
-                        message.message_type.equals(Constants.TYPE_DOCUMENT)*/)) {
+                        message.message_type.equals(Constants.TYPE_AUDIO) || message.message_type.equals(Constants.TYPE_VIDEO) ||
+                        message.message_type.equals(Constants.TYPE_DOCUMENT))) {
                     if (mMessageIds.contains(message.message_id)) {
                         if (TextUtils.isEmpty(message.attachment_path) && message.attachment_status.equals(Constants.FILE_EREROR) && !TextUtils.isEmpty(message.attachment_url)) {
                             if (connectedToInternet()) {
@@ -1081,31 +1081,17 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         intent.putExtra("attachment_path", "" + data!!.getStringExtra("selected_video"))
                         startService(intent)
                     }
-                    //                    status = 0
-//                    val blockIds = db.getBlockedByOtherIds()
-//                    if (blockIds != null && blockIds!!.size > 0 && blockIds!!.containsKey(mOpponentUser.user_id)) {
-//                        status = 1
-//                    } else {
-//                        status = 0
-//                    }
-//
-//                    val strColor = String.format("#%06X", 0xFFFFFF and data!!.getIntExtra("selected_color", 0))
-//                    addVideoMessage(data.getStringExtra("caption"), data!!.getStringExtra("selected_video"),
-//                            strColor, data.getStringExtra("selected_video_thumb"), status)
-//
-//                    if (status == 0) {
-//                        val intent = Intent(this, UploadFileService::class.java)
-//                        intent.putExtra("attachment_path", "" + data!!.getStringExtra("selected_video"))
-//                        intent.putExtra("push_token", "" + mOpponentUser.push_token)
-//                        intent.putExtra("access_token", "" + mOpponentUser.access_token)
-//                        intent.putExtra("participant_ids", "" + mPrivateChat.participant_ids)
-//                        startService(intent)
-//                    }
                 }
                 Constants.REQUEST_CODE_DOC -> {
                     var docPaths = ArrayList<String>()
                     docPaths.addAll(data!!.getStringArrayListExtra(Constants.KEY_SELECTED_DOCS))
                     docPath = docPaths.get(0)
+                    if (mPrivateChat != null) {
+                        addDocumentMessage(docPath)
+                        val intent = Intent(this, UploadFileService::class.java)
+                        intent.putExtra("attachment_path", "" + docPath)
+                        startService(intent)
+                    }
 //                    openFile(docPath)
 //                    val intent = Intent(this, DocActivity::class.java)
 //                    intent.putExtra("select_path", docPath)
@@ -2028,6 +2014,69 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mMessage.attachment_status = Constants.FILE_EREROR
                 mMessage.attachment_progress = "0"
                 mMessage.custom_data = videoThumb
+
+                if (mp != null) {
+                    mp!!.stop()
+                    mp!!.release()
+                    mp = null
+                }
+//                mp = MediaPlayer.create(this, R.raw.message_sent)
+//                mp!!.start()
+
+                db!!.addMessage(mMessage, mCurrentUser!!.user_id)
+                addMessage(mMessage)
+            }
+        }
+    }
+
+    fun addDocumentMessage(videoPath: String) {
+
+        if (mPrivateChat != null) {
+
+            if (mPrivateChat!!.block_status.get(mCurrentUser!!.user_id).equals("1")) {
+                status = 2
+                ShowUnblockPrompt()
+            } else if (mPrivateChat!!.block_status.get(mOpponentUserId).equals("1")) {
+                status = 1
+            } else {
+                status = 0
+            }
+            if (llDefaultActionbar.getVisibility() != View.VISIBLE) {
+                selectedPosition = 0
+                llDefaultActionbar.setVisibility(View.VISIBLE)
+                llOptionActionbar.setVisibility(View.GONE)
+                mConversationAdapter!!.remove_selection()
+            }
+            if (status != 2) {
+                val mMessage = MessagesModel()
+                val messagePush = mFirebaseConfigMessages.push()
+                mMessage.message_id = messagePush.key
+                mMessage.message = "Document"
+                mMessage.message_type = Constants.TYPE_DOCUMENT
+                mMessage.message_time = "" + (Calendar.getInstance()).timeInMillis
+                mMessage.firebase_message_time = Constants.getUtcTime((Calendar.getInstance()).timeInMillis)
+                mMessage.chat_dialog_id = mPrivateChat!!.chat_dialog_id
+                mMessage.sender_id = mCurrentUser!!.user_id
+                mMessage.message_status = Constants.STATUS_MESSAGE_PENDING
+                mMessage.attachment_url = ""
+
+                val delete = HashMap<String, String>()
+                delete.put(mCurrentUser!!.user_id, "0")
+                if (status == 1) {
+                    delete.put(mOpponentUserId, "1")
+                } else {
+                    delete.put(mOpponentUserId, "0")
+                }
+                mMessage.message_deleted = delete
+
+                val favourite = HashMap<String, String>()
+                favourite.put(mCurrentUser!!.user_id, "0")
+                favourite.put(mOpponentUserId, "0")
+                mMessage.favourite_message = favourite
+
+                mMessage.attachment_path = videoPath
+                mMessage.attachment_status = Constants.FILE_EREROR
+                mMessage.attachment_progress = "0"
 
                 if (mp != null) {
                     mp!!.stop()

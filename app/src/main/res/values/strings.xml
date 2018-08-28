@@ -307,5 +307,6 @@
     <string name="no_mentee">No mentee is available for chat.</string>
     <string name="report_an_issue">Report An Issue</string>
     <string name="enter_your_details">Enter Your Details:</string>
+    <string name="file_not_found">File not found</string>
 
 </resources>

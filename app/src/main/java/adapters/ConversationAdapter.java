@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.seeaspark.ConversationActivity;
+import com.seeaspark.DocActivity;
 import com.seeaspark.FullViewActivity;
 import com.seeaspark.FullViewMessageActivity;
 import com.seeaspark.NotesActivity;
@@ -269,7 +271,8 @@ public class ConversationAdapter extends BaseAdapter {
                     mSentImageHolder.rlSentMessage.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+//                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+                            if (mMessage.message_status < Constants.STATUS_MESSAGE_SENT) {
                                 mConversationActivity.is_options_visible();
                                 mConversationActivity.make_options_visible(position, mMessage.message_id, 2);
                                 notifyDataSetChanged();
@@ -350,7 +353,7 @@ public class ConversationAdapter extends BaseAdapter {
                     mReceiveImageHolder.rlReceiveMessage.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+                            if (/*!mMessage.attachment_status.equals(Constants.FILE_EREROR) &&*/ !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
                                 mConversationActivity.is_options_visible();
                                 mConversationActivity.make_options_visible(position, mMessage.message_id, 2);
                                 notifyDataSetChanged();
@@ -427,7 +430,8 @@ public class ConversationAdapter extends BaseAdapter {
                     mSentVideoHolder.rlSentMessage.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+//                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+                            if (mMessage.message_status < Constants.STATUS_MESSAGE_SENT) {
                                 mConversationActivity.is_options_visible();
                                 mConversationActivity.make_options_visible(position, mMessage.message_id, 2);
                                 notifyDataSetChanged();
@@ -515,7 +519,7 @@ public class ConversationAdapter extends BaseAdapter {
                     mReceiveVideoHolder.rlReceiveMessage.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+                            if (/*!mMessage.attachment_status.equals(Constants.FILE_EREROR) &&*/ !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
                                 mConversationActivity.is_options_visible();
                                 mConversationActivity.make_options_visible(position, mMessage.message_id, 2);
                                 notifyDataSetChanged();
@@ -604,17 +608,67 @@ public class ConversationAdapter extends BaseAdapter {
                     mSentDocumentHolder.llSentMessage.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            mConversationActivity.is_options_visible();
-                            mConversationActivity.make_options_visible(position, mMessage.message_id, 2);
-                            notifyDataSetChanged();
+//                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+                            if (mMessage.message_status < Constants.STATUS_MESSAGE_SENT) {
+                                mConversationActivity.is_options_visible();
+                                mConversationActivity.make_options_visible(position, mMessage.message_id, 2);
+                                notifyDataSetChanged();
+                            }
                             return true;
+                        }
+                    });
+
+                    mSentDocumentHolder.imgUpload.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!TextUtils.isEmpty(mMessage.attachment_path)) {
+                                File ff = new File(mMessage.attachment_path);
+                                if (ff.exists()) {
+                                    Intent in = new Intent(mContext, UploadFileService.class);
+                                    in.putExtra("attachment_path", "" + mMessage.attachment_path);
+                                    mContext.startService(in);
+                                } else {
+                                    Toast.makeText(mContext, mContext.getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(mContext, mContext.getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
                     mSentDocumentHolder.llSentMessage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
+                            if (!TextUtils.isEmpty(mMessage.attachment_path)) {
+                                File file = new File(mMessage.attachment_path);
+                                if (file.exists()) {
+                                    Uri uri = Uri.fromFile(file);
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    if (mMessage.attachment_url.contains(".pdf")) {
+                                        intent.setDataAndType(uri, "application/pdf");
+                                    } else if (mMessage.attachment_url.contains(".txt")) {
+                                        intent.setDataAndType(uri, "text/plain");
+                                    } else {
+                                        intent.setDataAndType(uri, "application/msword");
+                                    }
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    Intent newIntent = Intent.createChooser(intent, "Open File");
+                                    try {
+                                        mContext.startActivity(newIntent);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+//                                Intent in = new Intent(mContext, DocActivity.class);
+//                                in.putExtra("url", mMessage.attachment_url);
+//                                in.putExtra("pic", "" + mPrivateChat.profile_pic.get(mOpponentUserId));
+//                                in.putExtra("name", "" + mPrivateChat.name.get(mOpponentUserId));
+//                                mContext.startActivity(in);
+                                } else {
+                                    Toast.makeText(mContext, mContext.getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(mContext, mContext.getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
@@ -646,17 +700,65 @@ public class ConversationAdapter extends BaseAdapter {
                     mReceiveDocumentHolder.llReceiveMessage.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            mConversationActivity.is_options_visible();
-                            mConversationActivity.make_options_visible(position, mMessage.message_id, 2);
-                            notifyDataSetChanged();
+                            if (/*!mMessage.attachment_status.equals(Constants.FILE_EREROR) &&*/ !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+                                mConversationActivity.is_options_visible();
+                                mConversationActivity.make_options_visible(position, mMessage.message_id, 2);
+                                notifyDataSetChanged();
+                            }
                             return true;
+                        }
+                    });
+
+                    mReceiveDocumentHolder.imgDownload.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (TextUtils.isEmpty(mMessage.attachment_path) && mMessage.attachment_status.equals(Constants.FILE_EREROR) && !TextUtils.isEmpty(mMessage.attachment_url)) {
+                                if (mConversationActivity.checkGalleryPermissions()) {
+                                    Intent in = new Intent(mContext, DownloadFileService.class);
+                                    in.putExtra("message_id", "" + mMessage.message_id);
+                                    mContext.startService(in);
+                                } else {
+                                    mConversationActivity.requestGalleryPermission(R.string.download_permission);
+                                }
+                            }
                         }
                     });
 
                     mReceiveDocumentHolder.llReceiveMessage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
+                            if (!TextUtils.isEmpty(mMessage.attachment_url)) {
+                                if (!TextUtils.isEmpty(mMessage.attachment_path)) {
+                                    File file = new File(mMessage.attachment_path);
+                                    if (file.exists()) {
+                                        Uri uri = Uri.fromFile(file);
+                                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                                        if (mMessage.attachment_url.contains(".pdf")) {
+                                            intent.setDataAndType(uri, "application/pdf");
+                                        } else if (mMessage.attachment_url.contains(".txt")) {
+                                            intent.setDataAndType(uri, "text/plain");
+                                        } else {
+                                            intent.setDataAndType(uri, "application/msword");
+                                        }
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        Intent newIntent = Intent.createChooser(intent, "Open File");
+                                        try {
+                                            mContext.startActivity(newIntent);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+//                                Intent in = new Intent(mContext, DocActivity.class);
+//                                in.putExtra("url", mMessage.attachment_url);
+//                                in.putExtra("pic", "" + mPrivateChat.profile_pic.get(mOpponentUserId));
+//                                in.putExtra("name", "" + mPrivateChat.name.get(mOpponentUserId));
+//                                mContext.startActivity(in);
+                                    } else {
+                                        Toast.makeText(mContext, mContext.getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(mContext, mContext.getString(R.string.file_not_found), Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     });
 
@@ -785,7 +887,8 @@ public class ConversationAdapter extends BaseAdapter {
                     mSentAudioHolder.llSentMessage.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+//                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+                            if (mMessage.message_status < Constants.STATUS_MESSAGE_SENT) {
                                 if (play_seekbar != null) {
                                     remocecall();
                                 }
@@ -879,7 +982,7 @@ public class ConversationAdapter extends BaseAdapter {
                     mReceiveAudioHolder.llReceiveMessage.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
+                            if (/*!mMessage.attachment_status.equals(Constants.FILE_EREROR) &&*/ !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
                                 if (play_seekbar != null) {
                                     remocecall();
                                 }

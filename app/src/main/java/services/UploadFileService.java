@@ -122,9 +122,21 @@ public class UploadFileService extends Service {
                         .setContentType("Audio/m4a")
                         .build();
             } else if (mMessage.message_type.equals(Constants.TYPE_DOCUMENT)) {
-//                metadata = new StorageMetadata.Builder()
-//                        .setContentType("Audio/m4a")
-//                        .build();
+                File file = new File(mAttachmentPath);
+                String fName = file.getName();
+                if (fName.endsWith(".txt")) {
+                    metadata = new StorageMetadata.Builder()
+                            .setContentType("Document/txt")
+                            .build();
+                } else if (fName.endsWith(".pdf")) {
+                    metadata = new StorageMetadata.Builder()
+                            .setContentType("Document/pdf")
+                            .build();
+                } else {
+                    metadata = new StorageMetadata.Builder()
+                            .setContentType("Document/doc")
+                            .build();
+                }
             }
 
             Uri file = Uri.fromFile(new File(mMessage.attachment_path));
@@ -216,9 +228,12 @@ public class UploadFileService extends Service {
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                    if (mFileUploadInterface != null) {
-                        mFileUploadInterface.onProgressUpdate(mMessage.message_id, (int) progress);
+                    double progress = 0;
+                    if (taskSnapshot.getBytesTransferred() > 0) {
+                        progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        if (mFileUploadInterface != null) {
+                            mFileUploadInterface.onProgressUpdate(mMessage.message_id, (int) progress);
+                        }
                     }
                     mDb.changProgress(mMessage.attachment_path, "" + ((int) progress));
                 }
