@@ -12,6 +12,7 @@ import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
 import models.NotificationModel;
 import models.ProfessionListingModel;
+import models.RatingModel;
 import models.ViewProfileModel;
 import models.QuestionListingModel;
 import models.SearchSkillModel;
@@ -331,5 +332,31 @@ public interface ApiInterface {
                                 @Field("id") String id,
                                 @Field("receiver_id") String receiver_id,
                                 @Field("name") String file_name);
+
+    @FormUrlEncoded
+    @POST("/api/v1/ratings")
+    Call<BaseSuccessModel> rateUser(@Field("access_token") String access_token,
+                                    @Field("other_user_id") String other_user_id,
+                                    @Field("rating") String rating,
+                                    @Field("comment") String comment);
+
+    @GET("/api/v1/ratings")
+    Call<RatingModel> getRating(@Query("access_token") String access_token,
+                                @Query("other_user_id") String other_user_id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/matches/unmatch")
+    Call<BaseSuccessModel> unmatch(@Field("access_token") String access_token,
+                                   @Field("other_user_id") String other_user_id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/chats/mark_as_favourite")
+    Call<BaseSuccessModel> favouriteMessage(@Field("access_token") String access_token,
+                                            @Field("message_id") String message_id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/chats/delete_messages")
+    Call<BaseSuccessModel> deleteMessage(@Field("access_token") String access_token,
+                                         @Field("message_id") String message_id);
 
 }

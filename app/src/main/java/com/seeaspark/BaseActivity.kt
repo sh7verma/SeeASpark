@@ -54,6 +54,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var whiteRipple = 0
     var lightGrey = 0
     var transperent = 0
+    var viewLineColor = 0
 
     var mReceiverFunction: ReceiverFunctions? = null
     var currentCalendar: Calendar? = null
@@ -77,6 +78,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         darkGrey = ContextCompat.getColor(this, R.color.darkGreyText)
         lightGrey = ContextCompat.getColor(this, R.color.light_grey)
         transperent = ContextCompat.getColor(this, R.color.transperent)
+        viewLineColor = ContextCompat.getColor(this, R.color.view_line_color)
 
         blackRipple = R.drawable.black_ripple
         whiteRipple = R.drawable.white_ripple
@@ -146,7 +148,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
 
     fun moveToSplash() {
         FirebaseListeners.getListenerClass(this).RemoveAllListeners()
-        FirebaseListeners.getListenerClass(this).clearApplicationData(this)
+//        FirebaseListeners.getListenerClass(this).clearApplicationData(this)
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
             jobScheduler.cancelAll()

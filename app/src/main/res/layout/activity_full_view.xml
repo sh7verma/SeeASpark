@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/transparent_ripple"
             android:padding="@dimen/_12sdp"
-            android:src="@mipmap/ic_back_org"
+            android:src="@mipmap/ic_back_b"
             android:textColor="@color/white_color" />
 
         <customviews.MediumTextView

@@ -33,6 +33,7 @@ class FullViewActivity : BaseActivity() {
         llOuterFullView.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
         imgBack.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         txtHeading.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+        imgBack.setImageResource(R.mipmap.ic_back_b)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -40,6 +41,7 @@ class FullViewActivity : BaseActivity() {
         llOuterFullView.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
         imgBack.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         txtHeading.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+        imgBack.setImageResource(R.mipmap.ic_back_w)
     }
 
     override fun onCreateStuff() {
@@ -58,8 +60,8 @@ class FullViewActivity : BaseActivity() {
         viewPager.adapter = mFullViewPagerAdapter
         viewPager.currentItem = paths.indexOf(display)
 
-        val title = "" + (viewPager.currentItem + 1) + "/" + paths.size
-        txtHeading!!.setText(title)
+//        val title = "" + (viewPager.currentItem + 1) + "/" + paths.size
+        txtHeading!!.setText(paths.size.toString()+" "+getString(R.string.media))
 
         viewPager.setOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 

@@ -55,6 +55,22 @@ public class DownloadFileService extends Service {
         mFileDownloadInterface = listsner;
     }
 
+    public interface FileDownloadFavouriteInterface {
+        void onStartDownloading(String message_id);
+
+        void onSuccessDownloading(String message_id, String custom_data, String thumbPath);
+
+        void onErrorDownloading(String message_id, Exception exception);
+
+        void onDownloadProgressUpdate(String message_id, int progress);
+    }
+
+    public static FileDownloadFavouriteInterface mFileDownloadFavouriteInterface;
+
+    public static void setFavouriteDownloadingListener(FileDownloadFavouriteInterface listsner) {
+        mFileDownloadFavouriteInterface = listsner;
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -129,6 +145,9 @@ public class DownloadFileService extends Service {
         if (mFileDownloadInterface != null) {
             mFileDownloadInterface.onStartDownloading(mMessage.message_id);
         }
+        if (mFileDownloadFavouriteInterface != null) {
+            mFileDownloadFavouriteInterface.onStartDownloading(mMessage.message_id);
+        }
         try {
             final File finalMyDir = myDir;
             imagesRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -164,6 +183,9 @@ public class DownloadFileService extends Service {
                                     if (mFileDownloadInterface != null) {
                                         mFileDownloadInterface.onSuccessDownloading(mMessage.message_id, ff.getAbsolutePath(), filethumb.getAbsolutePath());
                                     }
+                                    if (mFileDownloadFavouriteInterface != null) {
+                                        mFileDownloadFavouriteInterface.onSuccessDownloading(mMessage.message_id, ff.getAbsolutePath(), filethumb.getAbsolutePath());
+                                    }
                                     mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_SUCCESS,
                                             ff.getAbsolutePath(), filethumb.getAbsolutePath());
                                 } catch (Throwable e) {
@@ -182,6 +204,9 @@ public class DownloadFileService extends Service {
                             if (mFileDownloadInterface != null) {
                                 mFileDownloadInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), mMessage.custom_data);
                             }
+                            if (mFileDownloadFavouriteInterface != null) {
+                                mFileDownloadFavouriteInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), mMessage.custom_data);
+                            }
                             mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_SUCCESS, localFile.getAbsolutePath(), mMessage.custom_data);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -190,10 +215,16 @@ public class DownloadFileService extends Service {
                         if (mFileDownloadInterface != null) {
                             mFileDownloadInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), "");
                         }
+                        if (mFileDownloadFavouriteInterface != null) {
+                            mFileDownloadFavouriteInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), "");
+                        }
                         mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_SUCCESS, localFile.getAbsolutePath());
                     } else if (mMessage.message_type.equals(Constants.TYPE_DOCUMENT)) {
                         if (mFileDownloadInterface != null) {
                             mFileDownloadInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), "");
+                        }
+                        if (mFileDownloadFavouriteInterface != null) {
+                            mFileDownloadFavouriteInterface.onSuccessDownloading(mMessage.message_id, localFile.getAbsolutePath(), "");
                         }
                         mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_SUCCESS, localFile.getAbsolutePath());
                     }
@@ -206,6 +237,9 @@ public class DownloadFileService extends Service {
                     if (mFileDownloadInterface != null) {
                         mFileDownloadInterface.onErrorDownloading(mMessage.message_id, exception);
                     }
+                    if (mFileDownloadFavouriteInterface != null) {
+                        mFileDownloadFavouriteInterface.onErrorDownloading(mMessage.message_id, exception);
+                    }
                     mDb.changeDownloadStatus(mMessage.message_id, Constants.FILE_EREROR, "");
                 }
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
@@ -215,6 +249,9 @@ public class DownloadFileService extends Service {
                     if (((int) progress) - mProgress > 9 || progress == 100) {
                         if (mFileDownloadInterface != null) {
                             mFileDownloadInterface.onDownloadProgressUpdate(mMessage.message_id, (int) progress);
+                        }
+                        if (mFileDownloadFavouriteInterface != null) {
+                            mFileDownloadFavouriteInterface.onDownloadProgressUpdate(mMessage.message_id, (int) progress);
                         }
                         mProgress = (int) progress;
                         mDb.changProgress(mMessage.message_id, "" + ((int) progress));

@@ -1,5 +1,6 @@
 package com.seeaspark
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -11,7 +12,9 @@ import android.os.Environment
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
+import android.widget.Switch
 import android.widget.Toast
 import com.ipaulpro.afilechooser.utils.FileUtils
 import com.soundcloud.android.crop.Crop
@@ -123,13 +126,27 @@ class AttachmentActivity : BaseActivity() {
         Crop.of(source, destination).asSquare().start(this)
     }
 
-    override fun onActivityResult(arg0: Int, arg1: Int, arg2: Intent) {
-        // TODO Auto-generated method stub
-        if (arg0 == Crop.REQUEST_CROP) {
-            handleCrop(arg1, arg2)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                Crop.REQUEST_CROP -> {
+                    Log.e("crop photo", "is " + data)
+                    handleCrop(resultCode, data!!)
+                }
+            }
         }
-        super.onActivityResult(arg0, arg1, arg2)
+        super.onActivityResult(requestCode, resultCode, data)
     }
+
+//    override fun onActivityResult(arg0: Int, arg1: Int, arg2: Intent?) {
+//        // TODO Auto-generated method stub
+//        if (arg1 == RESULT_OK) {
+//            if (arg0!! == Crop.REQUEST_CROP) {
+//                handleCrop(arg1, arg2)
+//            }
+//        }
+//        super.onActivityResult(arg0, arg1, arg2)
+//    }
 
     private fun handleCrop(resultCode: Int, result: Intent) {
         try {

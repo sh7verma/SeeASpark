@@ -20,7 +20,7 @@ import utils.Constants
  */
 class ReportActivity : BaseActivity() {
 
-    var mPostType = 1
+    var mPostType = 3
 
     override fun getContentView(): Int {
         this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
@@ -77,7 +77,7 @@ class ReportActivity : BaseActivity() {
                     toast.show()
                 } else {
                     if (connectedToInternet())
-//                        hitAPI()
+                        hitAPI()
                     else
                         showInternetAlert(imgDoneIdea)
                 }

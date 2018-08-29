@@ -29,6 +29,7 @@ class ChatOptionsActivity : BaseActivity() {
     override fun displayDayMode() {
         llOuterChatOptions.setBackgroundResource(R.drawable.white_short_profile_background)
         txtShareProfile.setTextColor(blackColor)
+        txtRating.setTextColor(blackColor)
         txtFavouriteMessage.setTextColor(blackColor)
         txtClearChat.setTextColor(blackColor)
         txtUnmatch.setTextColor(blackColor)
@@ -39,6 +40,7 @@ class ChatOptionsActivity : BaseActivity() {
     override fun displayNightMode() {
         llOuterChatOptions.setBackgroundResource(R.drawable.dark_short_profile_background)
         txtShareProfile.setTextColor(whiteColor)
+        txtRating.setTextColor(whiteColor)
         txtFavouriteMessage.setTextColor(whiteColor)
         txtClearChat.setTextColor(whiteColor)
         txtUnmatch.setTextColor(whiteColor)
@@ -52,6 +54,7 @@ class ChatOptionsActivity : BaseActivity() {
 
     override fun initListener() {
         txtShareProfile.setOnClickListener(this)
+        txtRating.setOnClickListener(this)
         txtFavouriteMessage.setOnClickListener(this)
         txtClearChat.setOnClickListener(this)
         txtUnmatch.setOnClickListener(this)
@@ -66,6 +69,13 @@ class ChatOptionsActivity : BaseActivity() {
             txtShareProfile -> {
                 val intent = Intent()
                 intent.putExtra("type", "share_profile")
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+                overridePendingTransition(0, 0)
+            }
+            txtRating -> {
+                val intent = Intent()
+                intent.putExtra("type", "rating")
                 setResult(Activity.RESULT_OK, intent)
                 finish()
                 overridePendingTransition(0, 0)

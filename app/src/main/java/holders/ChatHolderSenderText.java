@@ -105,6 +105,8 @@ public class ChatHolderSenderText {
         } else if (mMessage.message_status == Constants.STATUS_MESSAGE_DELIVERED) {
             imgRead.setImageResource(R.mipmap.ic_delivered);
         } else if (mMessage.message_status == Constants.STATUS_MESSAGE_SEEN) {
+            imgRead.setImageResource(R.mipmap.ic_seen);
+        } else {
             imgRead.setImageResource(R.mipmap.ic_message_pending);
         }
 

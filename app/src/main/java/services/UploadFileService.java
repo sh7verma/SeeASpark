@@ -59,6 +59,22 @@ public class UploadFileService extends Service {
         mFileUploadInterface = listsner;
     }
 
+    public interface FileUploadFavouriteInterface {
+        void onStartUploading(String message_id);
+
+        void onSuccessUploading(String message_id, String attachment_data);
+
+        void onErrorUploading(String message_id, Exception exception);
+
+        void onProgressUpdate(String message_id, int progress);
+    }
+
+    public static FileUploadFavouriteInterface mFileUploadFavouriteInterface;
+
+    public static void setFavouriteUploadingListener(FileUploadFavouriteInterface listsner) {
+        mFileUploadFavouriteInterface = listsner;
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -150,6 +166,9 @@ public class UploadFileService extends Service {
             if (mFileUploadInterface != null) {
                 mFileUploadInterface.onStartUploading(mMessage.message_id);
             }
+            if (mFileUploadFavouriteInterface != null) {
+                mFileUploadFavouriteInterface.onStartUploading(mMessage.message_id);
+            }
 
             Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
@@ -169,6 +188,9 @@ public class UploadFileService extends Service {
                         if (mFileUploadInterface != null) {
                             mFileUploadInterface.onSuccessUploading(mMessage.message_id, "" + downloadUri);
                         }
+                        if (mFileUploadFavouriteInterface != null) {
+                            mFileUploadFavouriteInterface.onSuccessUploading(mMessage.message_id, "" + downloadUri);
+                        }
                         HashMap<String, Object> msgHashMap = new HashMap<>();
                         msgHashMap.put("message_id", mMessage.message_id);
                         msgHashMap.put("message", mMessage.message);
@@ -178,6 +200,8 @@ public class UploadFileService extends Service {
                         msgHashMap.put("sender_id", mMessage.sender_id);
                         msgHashMap.put("message_status", Constants.STATUS_MESSAGE_SENT);
                         msgHashMap.put("attachment_url", downloadUri);
+                        msgHashMap.put("receiver_id", mMessage.receiver_id);
+                        msgHashMap.put("sender_name", mUtil.getString("user_name", ""));
 
                         HashMap<String, String> blockStatus = mDb.getBlockStatus(mMessage.chat_dialog_id);
                         HashMap<String, String> delete = new HashMap<>();
@@ -203,6 +227,10 @@ public class UploadFileService extends Service {
                         DatabaseReference mFirebaseConfigMessages = FirebaseDatabase.getInstance().getReference().child(Constants.MESSAGES);
                         mFirebaseConfigMessages.child(mMessage.chat_dialog_id).child(mMessage.message_id).setValue(msgHashMap);
                         mDb.changeUploadStatus(mMessage.message_id, Constants.FILE_SUCCESS, Constants.STATUS_MESSAGE_SENT);
+
+                        DatabaseReference mFirebaseConfigNotification = FirebaseDatabase.getInstance().getReference().child(Constants.NOTIFICATIONS);
+                        mFirebaseConfigNotification.child(mMessage.message_id).setValue(msgHashMap);
+
                         stopSelf();
                     } else {
                         // Handle failures
@@ -223,6 +251,9 @@ public class UploadFileService extends Service {
                     if (mFileUploadInterface != null) {
                         mFileUploadInterface.onErrorUploading(mMessage.message_id, exception);
                     }
+                    if (mFileUploadFavouriteInterface != null) {
+                        mFileUploadFavouriteInterface.onErrorUploading(mMessage.message_id, exception);
+                    }
                     mDb.changeUploadStatus(mMessage.message_id, Constants.FILE_EREROR, Constants.STATUS_MESSAGE_PENDING);
                 }
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -233,6 +264,9 @@ public class UploadFileService extends Service {
                         progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         if (mFileUploadInterface != null) {
                             mFileUploadInterface.onProgressUpdate(mMessage.message_id, (int) progress);
+                        }
+                        if (mFileUploadFavouriteInterface != null) {
+                            mFileUploadFavouriteInterface.onProgressUpdate(mMessage.message_id, (int) progress);
                         }
                     }
                     mDb.changProgress(mMessage.attachment_path, "" + ((int) progress));

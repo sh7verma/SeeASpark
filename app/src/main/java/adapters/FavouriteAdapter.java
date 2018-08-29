@@ -158,31 +158,12 @@ public class FavouriteAdapter extends BaseAdapter {
                         }
                     });
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mSentTextHolder.llSentText.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mSentTextHolder.llSentText.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mSentTextHolder.llSentMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-//                            mFavouriteMessageActivity.is_options_visible();
-//                            mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 1);
-//                            notifyDataSetChanged();
-//                            return true;
-//                        }
-//                    });
-//
-//                    mSentTextHolder.txtMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-//                            mFavouriteMessageActivity.is_options_visible();
-//                            mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 1);
-//                            notifyDataSetChanged();
-//                            return true;
-//                        }
-//                    });
+                    mSentTextHolder.imgFavouriteTextSent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                 } else {
                     ChatHolderReceiverText mReceiveTextHolder;
@@ -214,31 +195,12 @@ public class FavouriteAdapter extends BaseAdapter {
                         }
                     });
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mReceiveTextHolder.llReceiveText.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mReceiveTextHolder.llReceiveText.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mReceiveTextHolder.llReceiveMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-//                            mFavouriteMessageActivity.is_options_visible();
-//                            mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 1);
-//                            notifyDataSetChanged();
-//                            return true;
-//                        }
-//                    });
-//
-//                    mReceiveTextHolder.txtMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-//                            mFavouriteMessageActivity.is_options_visible();
-//                            mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 1);
-//                            notifyDataSetChanged();
-//                            return true;
-//                        }
-//                    });
+                    mReceiveTextHolder.imgFavouriteTextReceive.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
                 }
             } else if (mMessage.message_type.equals(Constants.TYPE_IMAGE)) {
 
@@ -262,24 +224,12 @@ public class FavouriteAdapter extends BaseAdapter {
                     }
                     mSentImageHolder.bindHolder(mContext, mMessage, mUserID);
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mSentImageHolder.llSentImage.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mSentImageHolder.llSentImage.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mSentImageHolder.rlSentMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-////                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
-//                            if (mMessage.message_status < Constants.STATUS_MESSAGE_SENT) {
-//                                mFavouriteMessageActivity.is_options_visible();
-//                                mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 2);
-//                                notifyDataSetChanged();
-//                            }
-//                            return true;
-//                        }
-//                    });
+                    mSentImageHolder.imgFavouriteImageSent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                     mSentImageHolder.imgUpload.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -344,23 +294,12 @@ public class FavouriteAdapter extends BaseAdapter {
                     }
                     mReceiveImageHolder.bindHolder(mContext, mMessage, mUserID);
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mReceiveImageHolder.llReceiveImage.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mReceiveImageHolder.llReceiveImage.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mReceiveImageHolder.rlReceiveMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-//                            if (/*!mMessage.attachment_status.equals(Constants.FILE_EREROR) &&*/ !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
-//                                mFavouriteMessageActivity.is_options_visible();
-//                                mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 2);
-//                                notifyDataSetChanged();
-//                            }
-//                            return true;
-//                        }
-//                    });
+                    mReceiveImageHolder.imgFavouriteImageReceive.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                     mReceiveImageHolder.imgDownload.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -421,24 +360,12 @@ public class FavouriteAdapter extends BaseAdapter {
                     }
                     mSentVideoHolder.bindHolder(mContext, mMessage, mUserID);
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mSentVideoHolder.llSentVideo.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mSentVideoHolder.llSentVideo.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mSentVideoHolder.rlSentMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-////                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
-//                            if (mMessage.message_status < Constants.STATUS_MESSAGE_SENT) {
-//                                mFavouriteMessageActivity.is_options_visible();
-//                                mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 2);
-//                                notifyDataSetChanged();
-//                            }
-//                            return true;
-//                        }
-//                    });
+                    mSentVideoHolder.imgFavouriteVideoSent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                     mSentVideoHolder.imgUpload.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -510,23 +437,12 @@ public class FavouriteAdapter extends BaseAdapter {
                     }
                     mReceiveVideoHolder.bindHolder(mContext, mMessage, mUserID);
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mReceiveVideoHolder.llReceiveVideo.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mReceiveVideoHolder.llReceiveVideo.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mReceiveVideoHolder.rlReceiveMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-//                            if (/*!mMessage.attachment_status.equals(Constants.FILE_EREROR) &&*/ !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
-//                                mFavouriteMessageActivity.is_options_visible();
-//                                mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 2);
-//                                notifyDataSetChanged();
-//                            }
-//                            return true;
-//                        }
-//                    });
+                    mReceiveVideoHolder.imgFavouriteVideoReceive.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                     mReceiveVideoHolder.imgDownload.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -599,24 +515,12 @@ public class FavouriteAdapter extends BaseAdapter {
                     }
                     mSentDocumentHolder.bindHolder(mContext, mMessage, mUserID, mPrivateChat.name.get(mOpponentUserId));
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mSentDocumentHolder.llSentDocumnet.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mSentDocumentHolder.llSentDocumnet.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mSentDocumentHolder.llSentMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-////                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
-//                            if (mMessage.message_status < Constants.STATUS_MESSAGE_SENT) {
-//                                mFavouriteMessageActivity.is_options_visible();
-//                                mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 2);
-//                                notifyDataSetChanged();
-//                            }
-//                            return true;
-//                        }
-//                    });
+                    mSentDocumentHolder.imgFavouriteDocumnetSent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                     mSentDocumentHolder.imgUpload.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -691,23 +595,12 @@ public class FavouriteAdapter extends BaseAdapter {
                     }
                     mReceiveDocumentHolder.bindHolder(mContext, mMessage, mUserID, mPrivateChat.name.get(mOpponentUserId));
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mReceiveDocumentHolder.llReceiveDocument.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mReceiveDocumentHolder.llReceiveDocument.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mReceiveDocumentHolder.llReceiveMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-//                            if (/*!mMessage.attachment_status.equals(Constants.FILE_EREROR) &&*/ !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
-//                                mFavouriteMessageActivity.is_options_visible();
-//                                mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 2);
-//                                notifyDataSetChanged();
-//                            }
-//                            return true;
-//                        }
-//                    });
+                    mReceiveDocumentHolder.imgFavouriteDocumentReceive.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                     mReceiveDocumentHolder.imgDownload.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -783,21 +676,12 @@ public class FavouriteAdapter extends BaseAdapter {
                     }
                     mSentNotesHolder.bindHolder(mContext, mMessage, mUserID, mPrivateChat.name.get(mOpponentUserId));
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mSentNotesHolder.llSentNotes.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mSentNotesHolder.llSentNotes.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mSentNotesHolder.llSentMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-//                            mFavouriteMessageActivity.is_options_visible();
-//                            mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 2);
-//                            notifyDataSetChanged();
-//                            return true;
-//                        }
-//                    });
+                    mSentNotesHolder.imgFavouriteNotesSent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                     mSentNotesHolder.llSentMessage.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -830,21 +714,12 @@ public class FavouriteAdapter extends BaseAdapter {
                     }
                     mReceiveNotesHolder.bindHolder(mContext, mMessage, mUserID, mPrivateChat.name.get(mOpponentUserId));
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mReceiveNotesHolder.llReceiveNotes.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mReceiveNotesHolder.llReceiveNotes.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mReceiveNotesHolder.llReceiveMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-//                            mFavouriteMessageActivity.is_options_visible();
-//                            mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 2);
-//                            notifyDataSetChanged();
-//                            return true;
-//                        }
-//                    });
+                    mReceiveNotesHolder.imgFavouriteNotesReceive.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                     mReceiveNotesHolder.llReceiveMessage.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -878,27 +753,12 @@ public class FavouriteAdapter extends BaseAdapter {
                     }
                     mSentAudioHolder.bindHolder(mContext, mMessage, mUserID);
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mSentAudioHolder.llSentAudio.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mSentAudioHolder.llSentAudio.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mSentAudioHolder.llSentMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-////                            if (!mMessage.attachment_status.equals(Constants.FILE_EREROR) && !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
-//                            if (mMessage.message_status < Constants.STATUS_MESSAGE_SENT) {
-//                                if (play_seekbar != null) {
-//                                    remocecall();
-//                                }
-//                                mFavouriteMessageActivity.is_options_visible();
-//                                mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 2);
-//                                notifyDataSetChanged();
-//                            }
-//                            return true;
-//                        }
-//                    });
+                    mSentAudioHolder.imgFavouriteAudioSent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                     mSentAudioHolder.imgPlay.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -973,26 +833,12 @@ public class FavouriteAdapter extends BaseAdapter {
                     }
                     mReceiveAudioHolder.bindHolder(mContext, mMessage, mUserID);
 
-//                    if (mFavouriteMessageActivity.getSelectedPosition() == position) {
-//                        mReceiveAudioHolder.llReceiveAudio.setBackgroundColor(mContext.getResources().getColor(R.color.view_line_color_orange));
-//                    } else {
-//                        mReceiveAudioHolder.llReceiveAudio.setBackgroundColor(Color.TRANSPARENT);
-//                    }
-//
-//                    mReceiveAudioHolder.llReceiveMessage.setOnLongClickListener(new View.OnLongClickListener() {
-//                        @Override
-//                        public boolean onLongClick(View v) {
-//                            if (/*!mMessage.attachment_status.equals(Constants.FILE_EREROR) &&*/ !mMessage.attachment_status.equals(Constants.FILE_UPLOADING)) {
-//                                if (play_seekbar != null) {
-//                                    remocecall();
-//                                }
-//                                mFavouriteMessageActivity.is_options_visible();
-//                                mFavouriteMessageActivity.make_options_visible(position, mMessage.message_id, 2);
-//                                notifyDataSetChanged();
-//                            }
-//                            return true;
-//                        }
-//                    });
+                    mReceiveAudioHolder.imgFavouriteAudioReceive.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mFavouriteMessageActivity.removeFavouriteMessage(mMessage.message_id);
+                        }
+                    });
 
                     mReceiveAudioHolder.imgPlay.setOnClickListener(new View.OnClickListener() {
 

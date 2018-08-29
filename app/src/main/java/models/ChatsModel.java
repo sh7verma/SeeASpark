@@ -61,9 +61,13 @@ public class ChatsModel implements Serializable {
         };
         chat.user_type = dataSnapshot.child("user_type").getValue(gtType);
 
-//        GenericTypeIndicator<HashMap<String, String>> gtRating = new GenericTypeIndicator<HashMap<String, String>>() {
-//        };
-//        chat.rating = dataSnapshot.child("rating").getValue(gtRating);
+        GenericTypeIndicator<HashMap<String, String>> gtRating = new GenericTypeIndicator<HashMap<String, String>>() {
+        };
+        chat.rating = dataSnapshot.child("rating").getValue(gtRating);
+
+        if(chat.rating == null){
+            chat.rating = new HashMap<>();
+        }
 
         String otherUserId = "";
         for (String id : chat.user_type.keySet()) {

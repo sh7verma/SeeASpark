@@ -127,12 +127,23 @@ public class FirebaseListeners {
                     if (mMessageInterface != null) {
                         message = mDb.getSingleMessage(message.message_id, util.getString("user_id", ""));
                         mMessageInterface.onMessageAdd(message);
+                    }else{
+                        if (!message.sender_id.equals(util.getString("user_id", ""))) {
+                            if (message.message_status == Constants.STATUS_MESSAGE_SENT) {
+                                mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_DELIVERED);
+                            }
+                        }
                     }
                 } else {
                     if (!message.sender_id.equals(util.getString("user_id", ""))) {
                         if (message.message_status == Constants.STATUS_MESSAGE_SENT) {
                             mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_DELIVERED);
                         }
+                    }
+                }
+                if (message.sender_id.equals(util.getString("user_id", ""))) {
+                    if (message.message_status == Constants.STATUS_MESSAGE_SEEN) {
+                        mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).removeValue();
                     }
                 }
             }
@@ -148,12 +159,23 @@ public class FirebaseListeners {
                     if (mMessageInterface != null) {
                         message = mDb.getSingleMessage(message.message_id, util.getString("user_id", ""));
                         mMessageInterface.onMessageChanged(message);
+                    }else{
+                        if (!message.sender_id.equals(util.getString("user_id", ""))) {
+                            if (message.message_status == Constants.STATUS_MESSAGE_SENT) {
+                                mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_DELIVERED);
+                            }
+                        }
                     }
                 } else {
                     if (!message.sender_id.equals(util.getString("user_id", ""))) {
                         if (message.message_status == Constants.STATUS_MESSAGE_SENT) {
                             mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_DELIVERED);
                         }
+                    }
+                }
+                if (message.sender_id.equals(util.getString("user_id", ""))) {
+                    if (message.message_status == Constants.STATUS_MESSAGE_SEEN) {
+                        mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).removeValue();
                     }
                 }
             }

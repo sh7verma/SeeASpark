@@ -27,12 +27,9 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.view.animation.*
 import android.widget.*
-import com.firebase.client.Firebase
-import com.firebase.client.FirebaseError
 import com.google.firebase.database.*
 import com.ipaulpro.afilechooser.utils.FileUtils
 import com.squareup.picasso.Picasso
@@ -45,7 +42,9 @@ import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import services.DeleteMessageApi
 import services.DownloadFileService
+import services.FavouriteMessageApi
 import services.UploadFileService
 import utils.Constants
 import java.io.File
@@ -53,7 +52,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListenerInterfaceForChat, FirebaseListeners.MessageListenerInterface, UploadFileService.FileUploadInterface, DownloadFileService.FileDownloadInterface {
+class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListenerInterfaceForChat, FirebaseListeners.MessageListenerInterface, UploadFileService.FileUploadInterface, DownloadFileService.FileDownloadInterface, FavouriteMessageActivity.ChangeFavouriteInterface {
 
     internal val ATTACHMENT = 12
     internal val OPTIONS = 13
@@ -109,6 +108,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     internal var mFirebaseConfigProfile = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
     internal var mFirebaseConfigChats = FirebaseDatabase.getInstance().getReference().child(Constants.CHATS)
     internal var mFirebaseConfigMessages = FirebaseDatabase.getInstance().getReference().child(Constants.MESSAGES)
+    internal var mFirebaseConfigNotifications = FirebaseDatabase.getInstance().getReference().child(Constants.NOTIFICATIONS)
 
     internal var chat_date_format = SimpleDateFormat("dd-MM-yyyy", Locale.US)
     internal var today_date_format = SimpleDateFormat("hh:mm aa", Locale.US)
@@ -123,6 +123,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     var mMessageIds: ArrayList<String> = ArrayList()
 
     var selectedPosition = 0
+    var noResultsinPagination = false
 
     override fun getContentView() = R.layout.activity_conversation
 
@@ -743,11 +744,17 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         }
                     }
                 }
+                if (!message.sender_id.equals(mCurrentUser!!.user_id)) {
+                    // message has been received by me
+                    if (message.message_status != Constants.STATUS_MESSAGE_SEEN) {
+                        mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_SEEN)
+                    }
+                }
             }
+        }
 
-            if (mPrivateChat!!.unread_count.get(mCurrentUser!!.user_id) != 0) {
-                mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("unread_count").child(mCurrentUser!!.user_id).setValue(0)
-            }
+        if (mPrivateChat!!.unread_count.get(mCurrentUser!!.user_id) != 0) {
+            mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("unread_count").child(mCurrentUser!!.user_id).setValue(0)
         }
     }
 
@@ -761,6 +768,42 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         imgCopy.setOnClickListener(this)
         imgAttachment.setOnClickListener(this)
         imgSendMessage.setOnClickListener(this)
+
+        lvChatList.setOnScrollListener(object : AbsListView.OnScrollListener {
+
+            override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
+                // TODO Auto-generated method stub
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    if (lvChatList.firstVisiblePosition == 0 && mMessagesMap!!.size > 20 && !noResultsinPagination) {
+                        loadMore()
+                    }
+                }
+            }
+
+            override fun onScroll(view: AbsListView, firstVisibleItem: Int,
+                                  visibleItemCount: Int, totalItemCount: Int) {
+                // TODO Auto-generated method stub
+            }
+        })
+
+    }
+
+    internal fun loadMore() {
+        limit = mMessagesMap!!.size + Constants.LOAD_MORE_VALUE
+        val deletetime = mPrivateChat!!.delete_dialog_time.get(mUtils!!.getString("user_id", ""))
+        val local = db!!.getAllMessages(mPrivateChat!!.chat_dialog_id, mCurrentUser!!.user_id, limit, deletetime!!, mOpponentUserId)
+        if (local.size <= mMessagesMap!!.size) {
+            // nothing new
+            noResultsinPagination = true
+        } else {
+            noResultsinPagination = false
+            val pos = mMessagesMap!!.size
+            mMessagesMap = local
+            makeHeaders()
+            val pp = mMessagesMap!!.size - pos
+            mConversationAdapter!!.notifyDataSetChanged()
+            lvChatList.setSelection(pp)
+        }
     }
 
     override fun getContext() = this
@@ -795,24 +838,42 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mConversationAdapter!!.remove_selection()
             }
             imgFavourite -> {
+                if (connectedToInternet()) {
+                    if (mMessagesMap!![msgId]!!.favourite_message.get(mCurrentUser!!.user_id).equals("0")) {
+                        db!!.changFavouriteStatus(msgId, "1")
+                        mMessagesMap!![msgId]!!.favourite_message.set(mCurrentUser!!.user_id, "1")
+                    } else {
+                        db!!.changFavouriteStatus(msgId, "0")
+                        mMessagesMap!![msgId]!!.favourite_message.set(mCurrentUser!!.user_id, "0")
+                    }
+                    FavouriteMessageApi(this, msgId)
+                } else {
+                    showInternetAlert(txtName)
+                }
+                selectedPosition = 0
+                llDefaultActionbar.setVisibility(View.VISIBLE)
+                llOptionActionbar.setVisibility(View.GONE)
+                mConversationAdapter!!.remove_selection()
             }
             imgDelete -> {
-//                if (connectedToInternet()) {
-//                    mFirebaseConfigMessages.child(msgId).child("message_deleted").child(mCurrentUser!!.user_id).setValue("1")
-//                    db!!.deleteSingleMessage(msgId)
-//                    mMessagesMap!!.remove(msgId)
-//                    mMessageIds.remove(msgId)
-//                    limit = mMessagesMap!!.size
-//                    val deletetime1 = mPrivateChat!!.delete_dialog_time.get(mCurrentUser!!.user_id)
-//                    mMessagesMap = db!!.getAllMessages(mPrivateChat!!.chat_dialog_id, mCurrentUser!!.user_id, limit, deletetime1, mOpponentUserId)
-//                    makeHeaders()
-//                } else {
-//                    showInternetAlert(txtName)
-//                }
-//                selectedPosition = 0
-//                llDefaultActionbar.setVisibility(View.VISIBLE)
-//                llOptionActionbar.setVisibility(View.GONE)
-//                mConversationAdapter!!.remove_selection()
+                if (connectedToInternet()) {
+                    if (mMessagesMap!![msgId]!!.message_status < Constants.STATUS_MESSAGE_SEEN)
+                        mFirebaseConfigMessages.child(msgId).child("message_deleted").child(mCurrentUser!!.user_id).setValue("1")
+                    DeleteMessageApi(this, msgId)
+                    db!!.deleteSingleMessage(msgId)
+                    mMessagesMap!!.remove(msgId)
+                    mMessageIds.remove(msgId)
+                    limit = mMessagesMap!!.size
+                    val deletetime1 = mPrivateChat!!.delete_dialog_time.get(mCurrentUser!!.user_id)
+                    mMessagesMap = db!!.getAllMessages(mPrivateChat!!.chat_dialog_id, mCurrentUser!!.user_id, limit, deletetime1!!, mOpponentUserId)
+                    makeHeaders()
+                } else {
+                    showInternetAlert(txtName)
+                }
+                selectedPosition = 0
+                llDefaultActionbar.setVisibility(View.VISIBLE)
+                llOptionActionbar.setVisibility(View.GONE)
+                mConversationAdapter!!.remove_selection()
             }
             imgCopy -> {
                 val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
@@ -890,6 +951,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 OPTIONS -> {
                     var type = data!!.getStringExtra("type")
                     if (type.equals("favourite_message")) {
+                        FavouriteMessageActivity.setUploadingListener(this)
                         var intent = Intent(this, FavouriteMessageActivity::class.java)
                         intent.putExtra("participantIDs", mParticpantIDS)
                         intent.putExtra("opponentUserId", mOpponentUserId)
@@ -947,8 +1009,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         dialog1.setMessage(getString(R.string.sure_to_unmatch)).create()
                         dialog1.setPositiveButton(getString(R.string.unmatch)) { dialog, which ->
                             // TODO Auto-generated method stub
-                            showLoader()
-                            unMatchUser()
+                            hitUnmatchAPI()
                             dialog.dismiss()
                         }
                         dialog1.setNegativeButton(resources.getString(R.string.cancel), null)
@@ -961,6 +1022,22 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         overridePendingTransition(0, 0)
                     } else if (type.equals("report")) {
                         var intent = Intent(this, ReportActivity::class.java)
+                        startActivity(intent)
+                        overridePendingTransition(0, 0)
+                    } else if (type.equals("rating")) {
+                        var intent = Intent(this, RatingActivity::class.java)
+                        intent.putExtra("user_id", mOpponentUserId)
+                        intent.putExtra("user_name", mOpponentUser!!.user_name)
+                        intent.putExtra("chatDialogId", mPrivateChat!!.chat_dialog_id)
+                        if (mPrivateChat!!.rating == null) {
+                            intent.putExtra("status", "")
+                        } else {
+                            if (TextUtils.isEmpty(mPrivateChat!!.rating.get(mCurrentUser!!.user_id)) || mPrivateChat!!.rating.get(mCurrentUser!!.user_id).equals("null")) {
+                                intent.putExtra("status", "")
+                            } else {
+                                intent.putExtra("status", mPrivateChat!!.rating.get(mCurrentUser!!.user_id))
+                            }
+                        }
                         startActivity(intent)
                         overridePendingTransition(0, 0)
                     }
@@ -1131,6 +1208,32 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             dismissLoader()
             moveBack()
         }
+    }
+
+    fun hitUnmatchAPI() {
+        showLoader()
+        val call = RetrofitClient.getInstance().unmatch(mUtils!!.getString("access_token", ""),
+                mOpponentUserId)
+        call.enqueue(object : Callback<BaseSuccessModel> {
+
+            override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>) {
+                if (response.body().response != null) {
+                    unMatchUser()
+                } else {
+                    dismissLoader()
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+                        moveToSplash()
+                    } else
+                        showAlert(txtName, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<BaseSuccessModel>?, t: Throwable?) {
+                dismissLoader()
+                showAlert(txtName, t!!.localizedMessage)
+            }
+        })
     }
 
     fun hitShareNotesAPI(noteId: String, noteName: String) {
@@ -1708,6 +1811,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         if (usersQuery != null) {
             usersQuery!!.removeEventListener(mOpponentUserListener)
         }
+        FirebaseListeners.setChatDialogListenerForChat(null, "")
+        FirebaseListeners.setMessageListener(null, "")
 //        if (ActivityGroupChat.mContext == null) {
 //            DownloadGifReceived.setListener(null)
 //            DownloadImageReceived.setListener(null)
@@ -1751,6 +1856,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     mMessage.sender_id = mCurrentUser!!.user_id
                     mMessage.message_status = Constants.STATUS_MESSAGE_SENT
                     mMessage.attachment_url = ""
+                    mMessage.receiver_id = mOpponentUserId
 
                     val delete = HashMap<String, String>()
                     delete.put(mCurrentUser!!.user_id, "0")
@@ -1777,6 +1883,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     msgHashMap.put("attachment_url", mMessage.attachment_url)
                     msgHashMap.put("message_deleted", mMessage.message_deleted)
                     msgHashMap.put("favourite_message", mMessage.favourite_message)
+                    msgHashMap.put("receiver_id", mMessage.receiver_id)
+                    msgHashMap.put("sender_name", mUtils!!.getString("user_name", ""))
 
                     if (edMessage.text.toString().trim().length > Constants.TEXT_LENGTH) {
                         val dialog1 = AlertDialog.Builder(this)
@@ -1824,6 +1932,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         mFirebaseConfigMessages.child(mPrivateChat!!.chat_dialog_id).child(mMessage.message_id).setValue(msgHashMap)
                         edMessage.setText("")
                     }
+
+                    mFirebaseConfigNotifications.child(mMessage.message_id).setValue(msgHashMap)
                 }
             }
         }
@@ -1858,6 +1968,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mMessage.sender_id = mCurrentUser!!.user_id
                 mMessage.message_status = Constants.STATUS_MESSAGE_SENT
                 mMessage.attachment_url = ""
+                mMessage.receiver_id = mOpponentUserId
 
                 val delete = HashMap<String, String>()
                 delete.put(mCurrentUser!!.user_id, "0")
@@ -1884,6 +1995,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 msgHashMap.put("attachment_url", mMessage.attachment_url)
                 msgHashMap.put("message_deleted", mMessage.message_deleted)
                 msgHashMap.put("favourite_message", mMessage.favourite_message)
+                msgHashMap.put("receiver_id", mMessage.receiver_id)
+                msgHashMap.put("sender_name", mUtils!!.getString("user_name", ""))
 
                 if (mp != null) {
                     mp!!.stop()
@@ -1897,6 +2010,9 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 val time = Constants.getUtcTime((Calendar.getInstance()).timeInMillis)
                 msgHashMap.put("message_time", "" + time)
                 mFirebaseConfigMessages.child(mPrivateChat!!.chat_dialog_id).child(mMessage.message_id).setValue(msgHashMap)
+
+                mFirebaseConfigNotifications.child(mMessage.message_id).setValue(msgHashMap)
+
                 dismissLoader()
             }
         }
@@ -1932,6 +2048,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mMessage.sender_id = mCurrentUser!!.user_id
                 mMessage.message_status = Constants.STATUS_MESSAGE_PENDING
                 mMessage.attachment_url = ""
+                mMessage.receiver_id = mOpponentUserId
 
                 val delete = HashMap<String, String>()
                 delete.put(mCurrentUser!!.user_id, "0")
@@ -1995,6 +2112,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mMessage.sender_id = mCurrentUser!!.user_id
                 mMessage.message_status = Constants.STATUS_MESSAGE_PENDING
                 mMessage.attachment_url = ""
+                mMessage.receiver_id = mOpponentUserId
 
                 val delete = HashMap<String, String>()
                 delete.put(mCurrentUser!!.user_id, "0")
@@ -2059,6 +2177,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mMessage.sender_id = mCurrentUser!!.user_id
                 mMessage.message_status = Constants.STATUS_MESSAGE_PENDING
                 mMessage.attachment_url = ""
+                mMessage.receiver_id = mOpponentUserId
 
                 val delete = HashMap<String, String>()
                 delete.put(mCurrentUser!!.user_id, "0")
@@ -2123,6 +2242,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mMessage.sender_id = mCurrentUser!!.user_id
                 mMessage.message_status = Constants.STATUS_MESSAGE_PENDING
                 mMessage.attachment_url = ""
+                mMessage.receiver_id = mOpponentUserId
 
                 val delete = HashMap<String, String>()
                 delete.put(mCurrentUser!!.user_id, "0")
@@ -2221,14 +2341,14 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             mChatUpdate.put("last_message_id", message.message_id)
             mChatUpdate.put("last_message_type", message.message_type)
             val unread = mPrivateChat!!.unread_count
-            if (unread != null && unread.containsKey(mOpponentUserId) && message.sender_id.equals(mCurrentUser!!.user_id)) {
+            if (unread != null && unread.containsKey(mOpponentUserId)) {
                 var lastUnreadCount: Int = unread.get(mOpponentUserId)!!
                 if (mPrivateChat!!.block_status.get(mOpponentUserId).equals("0")) {
                     lastUnreadCount++
                 }
                 unread!!.put(mOpponentUserId, lastUnreadCount)
                 unread!!.put(mCurrentUser!!.user_id, 0)
-                mChatUpdate.put("unread_map", unread)
+                mChatUpdate.put("unread_count", unread)
             }
             mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).updateChildren(mChatUpdate)
         }
@@ -2246,6 +2366,11 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 }
             }
         }
+
+        if (lastMessageTime < newMessageTime && message.sender_id.equals(mOpponentUserId)) {
+            mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("unread_count").child(mCurrentUser!!.user_id).setValue(0)
+        }
+
 //        if (!mMessageIds.contains(message!!.message_id)) {
 //            if (mp != null) {
 //                mp!!.stop()
@@ -2391,6 +2516,11 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         mMessagesMap!!.put(mMessage.message_id, mMessage)
         mConversationAdapter!!.notifyDataSetChanged()
         lvChatList.post { lvChatList.setSelection(lvChatList.count - 1) }
+    }
+
+    override fun onChange(message_id: String) {
+        mMessagesMap!![message_id]!!.favourite_message.set(mCurrentUser!!.user_id, "0")
+        mConversationAdapter!!.notifyDataSetChanged()
     }
 
 }

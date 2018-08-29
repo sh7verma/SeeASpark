@@ -33,6 +33,7 @@ public class MessagesModel implements Serializable {
     public String show_message_datetime;
     public String show_header_text;
     public String custom_data;
+    public String receiver_id;
 
     public static MessagesModel parseMessage(DataSnapshot dataSnapshot) {
 //        MessagesModel msg = dataSnapshot.getValue(MessagesModel.class);
@@ -45,7 +46,7 @@ public class MessagesModel implements Serializable {
         msg.firebase_message_time = dataSnapshot.child("firebase_message_time").getValue(Long.class);
         msg.chat_dialog_id = dataSnapshot.child("chat_dialog_id").getValue(String.class);
         msg.sender_id = dataSnapshot.child("sender_id").getValue(String.class);
-        if (dataSnapshot.child("message_status").getValue(Integer.class) != null) {
+        if (dataSnapshot.child("message_status").getValue(Integer.class) == null) {
             msg.message_status = Constants.STATUS_MESSAGE_SENT;
         } else {
             msg.message_status = dataSnapshot.child("message_status").getValue(Integer.class);
@@ -59,6 +60,12 @@ public class MessagesModel implements Serializable {
         GenericTypeIndicator<HashMap<String, String>> gtFavourite = new GenericTypeIndicator<HashMap<String, String>>() {
         };
         msg.favourite_message = dataSnapshot.child("favourite_message").getValue(gtFavourite);
+
+        msg.receiver_id = dataSnapshot.child("receiver_id").getValue(String.class);
+
+        if (TextUtils.isEmpty(msg.receiver_id)) {
+            msg.receiver_id = "";
+        }
 
         msg.is_header = false;
         msg.attachment_progress = "0";

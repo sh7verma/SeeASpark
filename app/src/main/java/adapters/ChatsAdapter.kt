@@ -37,7 +37,7 @@ class ChatsAdapter(mContext: Context, mChatFragment: ChatFragment, width: Int, c
     var mChats: LinkedHashMap<String, ChatsModel>? = null
     var mKeys: ArrayList<String> = ArrayList()
     var mUserID = ""
-    internal var date_format = SimpleDateFormat("dd-MM-yyyy", Locale.US)
+    internal var date_format = SimpleDateFormat("dd MMM hh:mm a", Locale.US)
     internal var today_format = SimpleDateFormat("hh:mm a", Locale.US)
     internal var state = false
 

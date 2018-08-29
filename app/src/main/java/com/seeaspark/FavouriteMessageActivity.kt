@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.widget.Toast
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -22,6 +23,9 @@ import kotlinx.android.synthetic.main.activity_favourite_message.*
 import models.ChatsModel
 import models.MessagesModel
 import models.ProfileModel
+import services.DownloadFileService
+import services.FavouriteMessageApi
+import services.UploadFileService
 import utils.Constants
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,7 +33,7 @@ import java.util.*
 /**
  * Created by dev on 31/7/18.
  */
-class FavouriteMessageActivity : BaseActivity() {
+class FavouriteMessageActivity : BaseActivity(), DownloadFileService.FileDownloadFavouriteInterface, UploadFileService.FileUploadFavouriteInterface {
 
     internal var usersQuery: Query? = null
     internal var mFirebaseConfigProfile = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
@@ -96,6 +100,8 @@ class FavouriteMessageActivity : BaseActivity() {
 
         setOnlineFlag(mOpponentUser!!)
         listenUser()
+        DownloadFileService.setFavouriteDownloadingListener(this)
+        UploadFileService.setFavouriteUploadingListener(this)
     }
 
     internal fun makeHeaders() {
@@ -315,6 +321,97 @@ class FavouriteMessageActivity : BaseActivity() {
             }
         }
         return true
+    }
+
+    override fun onStartUploading(message_id: String?) {
+        if (mMessageIds.contains(message_id)) {
+            mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_UPLOADING
+            mFavouriteAdapter!!.notifyDataSetChanged()
+        }
+    }
+
+    override fun onSuccessUploading(message_id: String?, attachment_data: String?) {
+        if (mMessageIds.contains(message_id)) {
+            mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_SUCCESS
+            mMessagesMap!![message_id]!!.attachment_url = attachment_data
+            mMessagesMap!![message_id]!!.message_status = Constants.STATUS_MESSAGE_SENT
+            mFavouriteAdapter!!.notifyDataSetChanged()
+        }
+    }
+
+    override fun onErrorUploading(message_id: String?, exception: java.lang.Exception?) {
+        if (mMessageIds.contains(message_id)) {
+            mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_EREROR
+            mFavouriteAdapter!!.notifyDataSetChanged()
+            Toast.makeText(this, "" + exception, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onProgressUpdate(message_id: String?, progress: Int) {
+        if (mMessageIds!!.contains(message_id)) {
+            mMessagesMap!![message_id]!!.attachment_progress = "" + progress
+            mFavouriteAdapter!!.notifyDataSetChanged()
+        }
+    }
+
+    override fun onDownloadProgressUpdate(message_id: String?, progress: Int) {
+        if (mMessageIds!!.contains(message_id)) {
+            mMessagesMap!![message_id]!!.attachment_progress = "" + progress
+            mFavouriteAdapter!!.notifyDataSetChanged()
+        }
+    }
+
+    override fun onStartDownloading(message_id: String?) {
+        if (mMessagesMap != null && mMessagesMap!!.containsKey(message_id)) {
+            mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_UPLOADING
+            mFavouriteAdapter!!.notifyDataSetChanged()
+        }
+    }
+
+    override fun onSuccessDownloading(message_id: String?, path: String?, thumbPath: String?) {
+        if (mMessageIds.contains(message_id)) {
+            mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_SUCCESS
+            mMessagesMap!![message_id]!!.attachment_progress = "100"
+            mMessagesMap!![message_id]!!.attachment_path = path
+            mMessagesMap!![message_id]!!.custom_data = thumbPath
+            mFavouriteAdapter!!.notifyDataSetChanged()
+        }
+    }
+
+    override fun onErrorDownloading(message_id: String?, exception: java.lang.Exception?) {
+        if (mMessageIds.contains(message_id)) {
+            mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_EREROR
+            mFavouriteAdapter!!.notifyDataSetChanged()
+        }
+    }
+
+    fun removeFavouriteMessage(msgId: String) {
+        db!!.changFavouriteStatus(msgId, "0")
+        FavouriteMessageApi(this, msgId)
+        val deletetime = mPrivateChat!!.delete_dialog_time.get(mUtils!!.getString("user_id", ""))
+        mMessagesMap = db!!.getAllFavouriteMessages(
+                mPrivateChat!!.chat_dialog_id,
+                mCurrentUser!!.user_id,
+                deletetime!!,
+                mOpponentUserId,
+                "1"
+        )
+        makeHeaders()
+        mFavouriteAdapter!!.notifyDataSetChanged()
+        if (mChangeFavouriteInterface != null) {
+            mChangeFavouriteInterface!!.onChange(msgId)
+        }
+    }
+
+    interface ChangeFavouriteInterface {
+        fun onChange(message_id: String)
+    }
+
+    companion object {
+        var mChangeFavouriteInterface: ChangeFavouriteInterface? = null
+        fun setUploadingListener(listsner: ChangeFavouriteInterface) {
+            mChangeFavouriteInterface = listsner
+        }
     }
 
 }

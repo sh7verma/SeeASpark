@@ -54,11 +54,22 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
         return itemView
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         getDefaults()
+        initUi()
         onCreateStuff()
         initListener()
         super.onActivityCreated(savedInstanceState)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+    fun initUi(){
+        mUtils = Utils(activity)
+        if (mUtils!!.getInt("nightMode", 0) == 1)
+            displayNightMode()
+        else
+            displayDayMode()
     }
 
     fun getDefaults() {

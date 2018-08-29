@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.activity_my_notes.*
@@ -53,7 +54,7 @@ class MyNotesActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
-        llOuterNotes.setBackgroundResource(R.drawable.background_gradient)
+        llOuterNotes.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
         txtSendNotes.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         txtName.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         txtNoMyNotes.setTextColor(ContextCompat.getColor(this, R.color.white_color))
@@ -158,12 +159,20 @@ class MyNotesActivity : BaseActivity() {
     }
 
     fun moveToDetail(notesData: NotesListingModel.ResponseBean) {
-        val intent = Intent()
-        intent.putExtra("note_id", ""+notesData.id)
-        intent.putExtra("note_name", ""+notesData.name)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        val dialog1 = AlertDialog.Builder(this)
+        dialog1.setMessage(getString(R.string.sure_this_note)).create()
+        dialog1.setPositiveButton(getString(R.string.share)) { dialog, which ->
+            // TODO Auto-generated method stub
+            val intent = Intent()
+            intent.putExtra("note_id", "" + notesData.id)
+            intent.putExtra("note_name", "" + notesData.name)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+            dialog.dismiss()
+        }
+        dialog1.setNegativeButton(resources.getString(R.string.cancel), null)
+        dialog1.show()
     }
 
 }

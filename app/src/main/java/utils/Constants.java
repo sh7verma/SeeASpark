@@ -404,6 +404,7 @@ public class Constants {
     public final static String USERS = "Users";
     public final static String CHATS = "Chats";
     public final static String MESSAGES = "Messages";
+    public final static String NOTIFICATIONS = "Notifications";
     public final static Long ONLINE_LONG = 123L;
     public final static String ONLINE = "Online";
     public final static int TEXT_LENGTH = 2000;
@@ -413,6 +414,7 @@ public class Constants {
     public final static String FILTER_MENTOR = "0";
     public final static String FILTER_BOTH = "2";
 
-    public static final String SHARE_URL = RetrofitClient.BASE_URL+"share_user?id=";
+    public static final String SHARE_URL = RetrofitClient.BASE_URL + "share_user?id=";
+    public final static int LOAD_MORE_VALUE = 20;
 
 }

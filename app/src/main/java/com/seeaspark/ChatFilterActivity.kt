@@ -12,6 +12,8 @@ import utils.Constants
  */
 class ChatFilterActivity : BaseActivity() {
 
+    var status = 0;
+
     override fun getContentView(): Int {
         this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
         return R.layout.activity_chat_filter
@@ -36,40 +38,55 @@ class ChatFilterActivity : BaseActivity() {
 
     override fun displayDayMode() {
         llOuterFilter.setBackgroundResource(R.drawable.white_short_profile_background)
-        if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
-            txtBoth.setTextColor(blackColor)
-            txtMentor.setTextColor(lightGrey)
-            txtMentee.setTextColor(lightGrey)
-        } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTOR)) {
-            txtBoth.setTextColor(lightGrey)
+        if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTOR)) {
+            txtBoth.setTextColor(viewLineColor)
             txtMentor.setTextColor(blackColor)
-            txtMentee.setTextColor(lightGrey)
+            txtMentee.setTextColor(viewLineColor)
         } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
-            txtBoth.setTextColor(lightGrey)
-            txtMentor.setTextColor(lightGrey)
+            txtBoth.setTextColor(viewLineColor)
+            txtMentor.setTextColor(viewLineColor)
             txtMentee.setTextColor(blackColor)
+        } else {
+            txtBoth.setTextColor(blackColor)
+            txtMentor.setTextColor(viewLineColor)
+            txtMentee.setTextColor(viewLineColor)
         }
     }
 
     override fun displayNightMode() {
+        status = 1
         llOuterFilter.setBackgroundResource(R.drawable.dark_short_profile_background)
-        if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
-            txtBoth.setTextColor(whiteColor)
-            txtMentor.setTextColor(transperent)
-            txtMentee.setTextColor(transperent)
-        } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTOR)) {
-            txtBoth.setTextColor(transperent)
+        if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTOR)) {
+            txtBoth.setTextColor(viewLineColor)
             txtMentor.setTextColor(whiteColor)
-            txtMentee.setTextColor(transperent)
+            txtMentee.setTextColor(viewLineColor)
         } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
-            txtBoth.setTextColor(transperent)
-            txtMentor.setTextColor(transperent)
+            txtBoth.setTextColor(viewLineColor)
+            txtMentor.setTextColor(viewLineColor)
             txtMentee.setTextColor(whiteColor)
+        } else {
+            txtBoth.setTextColor(whiteColor)
+            txtMentor.setTextColor(viewLineColor)
+            txtMentee.setTextColor(viewLineColor)
         }
     }
 
     override fun onCreateStuff() {
-
+        if (status == 0) {
+            if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTOR)) {
+                txtBoth.setTextColor(viewLineColor)
+                txtMentor.setTextColor(blackColor)
+                txtMentee.setTextColor(viewLineColor)
+            } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
+                txtBoth.setTextColor(viewLineColor)
+                txtMentor.setTextColor(viewLineColor)
+                txtMentee.setTextColor(blackColor)
+            } else {
+                txtBoth.setTextColor(blackColor)
+                txtMentor.setTextColor(viewLineColor)
+                txtMentee.setTextColor(viewLineColor)
+            }
+        }
     }
 
     override fun initListener() {

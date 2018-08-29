@@ -105,12 +105,12 @@ class ShareNotesAdapter (mNotesArray: ArrayList<NotesListingModel.ResponseBean>,
         }
 
         private fun displayDayMode() {
-            llClickNotes.setBackgroundResource(R.drawable.notes_background)
+//            llClickNotes.setBackgroundResource(R.drawable.notes_background)
             imgShare.setVisibility(View.GONE)
         }
 
         private fun displayNightMode() {
-            llClickNotes.setBackgroundResource(R.drawable.black_notes_background)
+//            llClickNotes.setBackgroundResource(R.drawable.black_notes_background)
             imgShare.setVisibility(View.GONE)
         }
     }

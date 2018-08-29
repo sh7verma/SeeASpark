@@ -238,6 +238,7 @@
     <string name="share_note">Share Note</string>
     <string name="share_event">Share Event</string>
     <string name="share_community">Share Community</string>
+    <string name="rate_user">Rate User</string>
     <string name="invalid_access_token_message">Someone else login on another device with your credentials.</string>
 
     <string name="search">Search...</string>
@@ -308,5 +309,11 @@
     <string name="report_an_issue">Report An Issue</string>
     <string name="enter_your_details">Enter Your Details:</string>
     <string name="file_not_found">File not found</string>
+    <string name="rate">Rate</string>
+    <string name="rate_des">Lorem ipsum dolor sit Lorem ipsum dolor sit Lorem ipsum dolor sit</string>
+    <string name="media">Media</string>
+    <string name="error_desc">Please enter descrption</string>
+    <string name="please_rate">Please rate user</string>
+    <string name="sure_this_note">Are you sure you want to share this note?</string>
 
 </resources>
