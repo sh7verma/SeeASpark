@@ -351,6 +351,7 @@ class LoginSignupActivity : BaseActivity() {
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
                 dismissLoader()
+                signInAnonymously()
                 if (response.body().code == Constants.PROCEED_AS_OTHER
                         && response.body().response != null) {
                     /// user enter as different user Type as comapred to signup
@@ -471,7 +472,7 @@ class LoginSignupActivity : BaseActivity() {
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
                 dismissLoader()
-
+                signInAnonymously()
                 if (response.body().response != null) {
                     if (response.body().response.user_type != mUserType) {
                         addDataToSharedPreferences(response.body())

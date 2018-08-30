@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.firebase.client.Firebase;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.FirebaseApp;
@@ -32,13 +33,12 @@ public class MainApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         MultiDex.install(this);
+        Firebase.setAndroidContext(this);
+        Firebase.getDefaultConfig().setPersistenceEnabled(true);
         FirebaseApp.initializeApp(this);
         Foreground.init(this);
         sAnalytics = GoogleAnalytics.getInstance(this);
         instance = this;
-        if (!FirebaseApp.getApps(this).isEmpty()) {
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        }
 
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheInMemory(false).cacheOnDisk(true)
@@ -78,4 +78,5 @@ public class MainApplication extends MultiDexApplication {
         }
         return sTracker;
     }
+
 }

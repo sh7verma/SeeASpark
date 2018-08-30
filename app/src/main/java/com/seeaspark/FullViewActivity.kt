@@ -67,9 +67,9 @@ class FullViewActivity : BaseActivity() {
 
             override fun onPageSelected(arg0: Int) {
                 // TODO Auto-generated method stub
-                val title = "" + (viewPager.currentItem + 1) + "/" + paths.size
-
-                supportActionBar!!.setTitle(title)
+//                val title = "" + (viewPager.currentItem + 1) + "/" + paths.size
+//
+//                supportActionBar!!.setTitle(title)
             }
 
             override fun onPageScrolled(arg0: Int, arg1: Float, arg2: Int) {

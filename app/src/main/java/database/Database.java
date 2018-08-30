@@ -1619,7 +1619,7 @@ public class Database extends SQLiteOpenHelper {
         MessagesModel mMessage = null;
         try {
             String qry = "select * from " + MESSAGES_TABLE + " where "
-                    + ATTACHMENT_STATUS + " = '" + Constants.FILE_EREROR + "' and "
+                    + ATTACHMENT_STATUS + " = '" + Constants.FILE_UPLOADING + "' and "
                     + SENDER_ID + " = '" + userId
                     + "' order by " + MESSAGE_TIME + " desc limit 1";
             cur = db_read.rawQuery(qry, null);
@@ -1763,6 +1763,23 @@ public class Database extends SQLiteOpenHelper {
         try {
             ContentValues values = new ContentValues();
             values.put(ATTACHMENT_PROGRESS, progress);
+
+            db_write.update(MESSAGES_TABLE, values, MESSAGE_ID + " = '" + messageId + "'", null);
+
+            db_write.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db_write.endTransaction();
+        }
+    }
+
+    public void changDeleteStatus(String messageId, String status) {
+        SQLiteDatabase db_write = this.getWritableDatabase();
+        db_write.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(MESSAGE_DELETED, status);
 
             db_write.update(MESSAGES_TABLE, values, MESSAGE_ID + " = '" + messageId + "'", null);
 

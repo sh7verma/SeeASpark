@@ -21,6 +21,11 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.gson.Gson
 import database.Database
 import helper.FirebaseListeners
@@ -58,7 +63,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
 
     var mReceiverFunction: ReceiverFunctions? = null
     var currentCalendar: Calendar? = null
-
+    var mAuth: FirebaseAuth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,9 +149,11 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         mHeight = display.heightPixels
         mUtils!!.setInt("width", mWidth)
         mUtils!!.setInt("height", mHeight)
+        mAuth = FirebaseAuth.getInstance();
     }
 
     fun moveToSplash() {
+
         FirebaseListeners.getListenerClass(this).RemoveAllListeners()
 //        FirebaseListeners.getListenerClass(this).clearApplicationData(this)
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -154,12 +161,12 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
             jobScheduler.cancelAll()
         }
         stopService(Intent(applicationContext, ListenerService::class.java))
-
         val notificationManager = mContext!!
                 .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
         mUtils!!.clear_shf()
         db!!.deleteAllTables()
+        signOut()
         val inSplash = Intent(mContext, AfterWalkThroughActivity::class.java)
         inSplash.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         inSplash.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -205,5 +212,14 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         super.onDestroy()
     }
 
+    private fun signOut() {
+        mAuth!!.signOut()
+    }
+
+    fun signInAnonymously() {
+        mAuth!!.signInAnonymously().addOnCompleteListener {
+//            var user = mAuth!!.currentUser
+        }
+    }
 
 }

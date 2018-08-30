@@ -88,9 +88,12 @@ public class DownloadFileService extends Service {
         mDb = new Database(getApplicationContext());
         util = new Utils(getApplicationContext());
         MessagesModel mMessage = null;
+        Log.e("service1","service");
         try {
             if (intent != null) {
+                Log.e("service2","service");
                 if (intent.hasExtra("message_id")) {
+                    Log.e("service3","service");
                     String message_id = intent.getStringExtra("message_id");
                     mMessage = mDb.getSingleMessage(message_id, util.getString("user_id", ""));
                 }
@@ -99,6 +102,7 @@ public class DownloadFileService extends Service {
             e.printStackTrace();
         }
         if (mMessage != null) {
+            Log.e("service4","service");
             downloadFile(mMessage);
         }
         return START_REDELIVER_INTENT;
@@ -106,6 +110,7 @@ public class DownloadFileService extends Service {
 
     void downloadFile(final MessagesModel mMessage) {
         mProgress = 0;
+        Log.e("service5","service");
         String root = Environment.getExternalStorageDirectory().getPath();
         File myDir = null;
         final Calendar cal = Calendar.getInstance();
@@ -154,6 +159,7 @@ public class DownloadFileService extends Service {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     // Local temp file has been created
+                    Log.e("service6","service");
                     if (mMessage.message_type.equals(Constants.TYPE_VIDEO)) {
                         try {
                             LoadJNI vk = new LoadJNI();
@@ -234,6 +240,7 @@ public class DownloadFileService extends Service {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     // Handle any errors
+                    Log.e("service7","service");
                     if (mFileDownloadInterface != null) {
                         mFileDownloadInterface.onErrorDownloading(mMessage.message_id, exception);
                     }
@@ -245,6 +252,7 @@ public class DownloadFileService extends Service {
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Log.e("service8","service");
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                     if (((int) progress) - mProgress > 9 || progress == 100) {
                         if (mFileDownloadInterface != null) {
@@ -255,6 +263,7 @@ public class DownloadFileService extends Service {
                         }
                         mProgress = (int) progress;
                         mDb.changProgress(mMessage.message_id, "" + ((int) progress));
+                        Log.e("service9","service"+progress);
                     }
                 }
             });

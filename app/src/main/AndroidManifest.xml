@@ -431,9 +431,10 @@
         <activity
             android:name=".ConversationActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
             android:name=".FavouriteMessageActivity"
@@ -519,10 +520,17 @@
             android:screenOrientation="portrait"
             android:theme="@style/TransparentActivity" />
 
-        <service android:name="services.UploadFileService" />
-        <service android:name="services.DownloadFileService" />
-        <service android:name="services.ListenerService"
-            android:enabled="true"/>
+        <service
+            android:name="services.UploadFileService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name="services.DownloadFileService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name="services.ListenerService"
+            android:enabled="true" />
 
         <service
             android:name="services.JobSchedulerService"

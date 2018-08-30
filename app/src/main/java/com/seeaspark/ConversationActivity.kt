@@ -487,7 +487,13 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("unread_count").child(mCurrentUser!!.user_id).setValue(0)
         }
         setReadMessages.clear()
+        mUtils!!.setString("chat_dialog_id",mParticpantIDS)
         super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mUtils!!.setString("chat_dialog_id","")
     }
 
     fun chatSetUp() {

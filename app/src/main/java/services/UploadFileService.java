@@ -1,6 +1,8 @@
 package services;
 
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -8,6 +10,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.firebase.client.Firebase;
@@ -25,6 +28,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.seeaspark.R;
 
 import java.io.File;
 import java.util.Calendar;
@@ -42,6 +46,8 @@ public class UploadFileService extends Service {
 
     Database mDb;
     Utils mUtil;
+//    NotificationManager mNotificationManager;
+//    NotificationCompat.Builder mBuilder;
 
     public interface FileUploadInterface {
         void onStartUploading(String message_id);
@@ -89,9 +95,6 @@ public class UploadFileService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Firebase.setAndroidContext(this);
-//        if (!FirebaseApp.getApps(this).isEmpty()) {
-//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-//        }
         mDb = new Database(getApplicationContext());
         mUtil = new Utils(getApplicationContext());
         String mAttachmentPath = "";
@@ -112,9 +115,12 @@ public class UploadFileService extends Service {
         }
 
         if (mMessage != null) {
+//            mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//            mBuilder = new NotificationCompat.Builder(this);
+//            mBuilder.setContentTitle("Uploading file").setSmallIcon(R.mipmap.ic_upload_s).setOngoing(true);
             uploadFile(mAttachmentPath, mMessage);
         }
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
 
     void uploadFile(String mAttachmentPath, final MessagesModel mMessage) {
@@ -162,6 +168,8 @@ public class UploadFileService extends Service {
             } else {
                 uploadTask = imagesRef.putFile(file, metadata);
             }
+//            mBuilder.setProgress(100, (0), false);
+//            mNotificationManager.notify(0, mBuilder.build());
             mDb.changeUploadStatus(mMessage.message_id, Constants.FILE_UPLOADING, Constants.STATUS_MESSAGE_PENDING);
             if (mFileUploadInterface != null) {
                 mFileUploadInterface.onStartUploading(mMessage.message_id);
@@ -231,6 +239,10 @@ public class UploadFileService extends Service {
                         DatabaseReference mFirebaseConfigNotification = FirebaseDatabase.getInstance().getReference().child(Constants.NOTIFICATIONS);
                         mFirebaseConfigNotification.child(mMessage.message_id).setValue(msgHashMap);
 
+//                        mBuilder.setContentText("Success").setProgress(0, 0, false);
+//                        mNotificationManager.notify(0, mBuilder.build());
+//                        mNotificationManager.cancel(0);
+
                         stopSelf();
                     } else {
                         // Handle failures
@@ -243,11 +255,13 @@ public class UploadFileService extends Service {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
+//                    mBuilder.setContentText("Decline").setProgress(0, 0, false);
+//                    mNotificationManager.notify(0, mBuilder.build());
+//                    mNotificationManager.cancel(0);
                     if (mFileUploadInterface != null) {
                         mFileUploadInterface.onErrorUploading(mMessage.message_id, exception);
                     }
@@ -269,6 +283,8 @@ public class UploadFileService extends Service {
                             mFileUploadFavouriteInterface.onProgressUpdate(mMessage.message_id, (int) progress);
                         }
                     }
+//                    mBuilder.setProgress(100, ((int) progress), false);
+//                    mNotificationManager.notify(0, mBuilder.build());
                     mDb.changProgress(mMessage.attachment_path, "" + ((int) progress));
                 }
             });
