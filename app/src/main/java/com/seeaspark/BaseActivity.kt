@@ -186,6 +186,4 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(nightModeReceiver)
         super.onDestroy()
     }
-
-
 }
