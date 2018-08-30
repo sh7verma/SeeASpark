@@ -1,5 +1,6 @@
 package com.seeaspark
 
+import android.content.Intent
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
@@ -16,6 +17,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
+import utils.MainApplication
 
 class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -40,8 +42,6 @@ class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListe
         }
 
         displayDayMode()
-//        displayNightMode()
-
     }
 
     override fun onCreateStuff() {
@@ -56,45 +56,44 @@ class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListe
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayDayMode() {
 
-        txtTitleCustom.setTextColor(ContextCompat.getColor(this,R.color.black_color))
+        txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
-        llMainNotifications.setBackgroundColor(ContextCompat.getColor(this,R.color.white_color))
+        llMainNotifications.setBackgroundColor(ContextCompat.getColor(this, R.color.white_color))
 
-        llMessage.background=ContextCompat.getDrawable(this,R.drawable.white_ripple)
-        txtMessages.setTextColor(ContextCompat.getColor(this,R.color.black_color))
+        llMessage.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtMessages.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
-        llCommunity.background=ContextCompat.getDrawable(this,R.drawable.white_ripple)
-        txtCommunityPosts.setTextColor(ContextCompat.getColor(this,R.color.black_color))
+        llCommunity.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtCommunityPosts.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
-        llInspirational.background=ContextCompat.getDrawable(this,R.drawable.white_ripple)
-        txtInspirational.setTextColor(ContextCompat.getColor(this,R.color.black_color))
+        llInspirational.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtInspirational.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
-        llNotes.background=ContextCompat.getDrawable(this,R.drawable.white_ripple)
-        txtNotes.setTextColor(ContextCompat.getColor(this,R.color.black_color))
+        llNotes.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtNotes.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
 
-        txtTitleCustom.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+        txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))
 
-        llMainNotifications.setBackgroundColor(ContextCompat.getColor(this,R.color.black_color))
+        llMainNotifications.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
 
-        llMessage.background=ContextCompat.getDrawable(this,R.drawable.black_ripple)
-        txtMessages.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+        llMessage.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtMessages.setTextColor(ContextCompat.getColor(this, R.color.white_color))
 
-        llCommunity.background=ContextCompat.getDrawable(this,R.drawable.black_ripple)
-        txtCommunityPosts.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+        llCommunity.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtCommunityPosts.setTextColor(ContextCompat.getColor(this, R.color.white_color))
 
-        llInspirational.background=ContextCompat.getDrawable(this,R.drawable.black_ripple)
-        txtInspirational.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+        llInspirational.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtInspirational.setTextColor(ContextCompat.getColor(this, R.color.white_color))
 
-        llNotes.background=ContextCompat.getDrawable(this,R.drawable.black_ripple)
-        txtNotes.setTextColor(ContextCompat.getColor(this,R.color.white_color))
+        llNotes.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtNotes.setTextColor(ContextCompat.getColor(this, R.color.white_color))
 
     }
-
 
 
     private fun hitNotificationSettings() {
@@ -159,7 +158,6 @@ class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListe
     private fun hitAPI() {
         showLoader()
         val call = RetrofitClient.getInstance().updateNotifications(mUtils!!.getString("access_token", ""), mMessages, mPosts, mQuotes, mNotes)
-
         call.enqueue(object : Callback<BaseSuccessModel> {
 
             override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>?) {
@@ -184,8 +182,15 @@ class NotificationActivity : BaseActivity(), CompoundButton.OnCheckedChangeListe
     }
 
     private fun moveBack() {
-        finish()
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        if (MainApplication.isLandingAvailable) {
+            finish()
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        } else {
+            val intent = Intent(mContext, LandingActivity::class.java)
+            startActivity(intent)
+            finish()
+            overridePendingTransition(0, 0)
+        }
     }
 
     override fun onCheckedChanged(view: CompoundButton?, status: Boolean) {

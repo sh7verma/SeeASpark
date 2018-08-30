@@ -20,6 +20,7 @@ import com.seeaspark.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_avatar.*
 import models.AvatarModel
+import utils.Constants
 
 
 class AvatarFragment : Fragment(), View.OnClickListener {
@@ -61,7 +62,10 @@ class AvatarFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
-
+        if (mCreateProfileInstance!!.userData!!.response.user_type == Constants.MENTOR)
+            txtUserType.text = getString(R.string.mentor)
+        else
+            txtUserType.text = getString(R.string.mentee)
     }
 
     override fun onClick(view: View?) {

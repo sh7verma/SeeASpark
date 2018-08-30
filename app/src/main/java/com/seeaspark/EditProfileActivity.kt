@@ -124,9 +124,18 @@ class EditProfileActivity : BaseActivity() {
         txtExperienceEditProfile.setBackgroundResource(whiteRipple)
         llLanguageEditProfile.setBackgroundResource(whiteRipple)
         llSkillEditProfile.setBackgroundResource(whiteRipple)
+
         edNameProfile.setBackgroundColor(whiteColor)
         edBioEditProfile.setBackgroundColor(whiteColor)
         edDescriptionEditProfile.setBackgroundColor(whiteColor)
+
+        edNameProfile.setTextColor(darkGrey)
+        txtAgeEditProfile.setTextColor(darkGrey)
+        txtGenderEditProfile.setTextColor(darkGrey)
+        txtProfessionEditProfile.setTextColor(darkGrey)
+        txtExperienceEditProfile.setTextColor(darkGrey)
+        edBioEditProfile.setTextColor(darkGrey)
+        edDescriptionEditProfile.setTextColor(darkGrey)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -138,9 +147,18 @@ class EditProfileActivity : BaseActivity() {
         txtExperienceEditProfile.setBackgroundResource(blackRipple)
         llLanguageEditProfile.setBackgroundResource(blackRipple)
         llSkillEditProfile.setBackgroundResource(blackRipple)
+
         edNameProfile.setBackgroundColor(blackColor)
         edBioEditProfile.setBackgroundColor(blackColor)
         edDescriptionEditProfile.setBackgroundColor(blackColor)
+
+        edNameProfile.setTextColor(whiteColor)
+        txtAgeEditProfile.setTextColor(whiteColor)
+        txtGenderEditProfile.setTextColor(whiteColor)
+        txtProfessionEditProfile.setTextColor(whiteColor)
+        txtExperienceEditProfile.setTextColor(whiteColor)
+        edBioEditProfile.setTextColor(whiteColor)
+        edDescriptionEditProfile.setTextColor(whiteColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -355,14 +373,14 @@ class EditProfileActivity : BaseActivity() {
         interestChip.llMainAddSkills.layoutParams = innerParms
 
         if (mUtils!!.getInt("nightMode", 0) == 1) {
-            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.white_default)
-            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+            interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.skill_card_outer)
+            interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         } else {
             if (showBlackBackground) {
-                interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.selected_skills)
-                interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+                interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.skill_card_outer)
+                interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
             } else {
-                interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.answer_background)
+                interestChip.txtAddSkillChip.background = ContextCompat.getDrawable(this, R.drawable.skill_card_outer)
                 interestChip.txtAddSkillChip.setTextColor(ContextCompat.getColor(this, R.color.black_color))
             }
         }

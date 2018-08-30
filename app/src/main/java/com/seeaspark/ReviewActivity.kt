@@ -1,12 +1,13 @@
 package com.seeaspark
 
-import android.app.Activity
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Typeface
 import android.os.Build
+import android.os.Handler
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.util.Log
@@ -22,8 +23,14 @@ import retrofit2.Response
 import utils.Constants
 
 class ReviewActivity : BaseActivity() {
+
     private var userData: SignupModel? = null
     private var isSwitched = false
+    private var mQuotesArrayList = ArrayList<String>()
+    private var mQuotesAuthorArrayList = ArrayList<String>()
+    private var count = 1
+    private var countAuthor = 1
+    private var reviewActivity: ReviewActivity? = null
 
     override fun getContentView() = R.layout.activity_review
 
@@ -31,17 +38,22 @@ class ReviewActivity : BaseActivity() {
         if (intent.hasExtra("isSwitched")) {
             isSwitched = true
             imgBackReview.visibility = View.VISIBLE
-            txtLogoutReviewScreen.visibility = View.INVISIBLE
+            imgLogoutReview.visibility = View.INVISIBLE
         }
     }
 
     override fun displayDayMode() {
+
     }
 
     override fun displayNightMode() {
+
     }
 
     override fun onCreateStuff() {
+
+        loadQuotesData()
+
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
         if (!isSwitched && mUtils!!.getString("profileReview", "").isEmpty())
@@ -55,10 +67,42 @@ class ReviewActivity : BaseActivity() {
         } else {
             showInternetAlert(imgBackReview)
         }
+
+        if (mUtils!!.getInt("document_verified", 0) == 2) {
+            txtUnderReview.text = getString(R.string.in_review_message)
+        }
+
+        val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
+        val typefaceBold = Typeface.createFromAsset(assets, "fonts/bold.otf")
+
+        txtQuote.typeface = typeface
+        txtQuoteAuthor.typeface = typefaceBold
+
+        txtQuote.setText(mQuotesArrayList[0])
+        txtQuote.show()
+        txtQuote.setValueUpdateListener {
+            if (reviewActivity != null) {
+                if (reviewActivity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                    displayQuotesWithAnimationNougat(it)
+                else
+                    displayQuotesWithAnimation(it)
+            }
+        }
+
+        txtQuoteAuthor.setText(mQuotesAuthorArrayList[0])
+        txtQuoteAuthor.show()
+        txtQuoteAuthor.setValueUpdateListener {
+            if (reviewActivity != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                    displayQuotesWithAnimationNougatAuthor(it)
+                else
+                    displayQuotesWithAnimation(it)
+            }
+        }
     }
 
     override fun initListener() {
-        txtLogoutReviewScreen.setOnClickListener(this)
+        imgLogoutReview.setOnClickListener(this)
         imgBackReview.setOnClickListener(this)
     }
 
@@ -66,11 +110,11 @@ class ReviewActivity : BaseActivity() {
 
     override fun onClick(view: View?) {
         when (view) {
-            txtLogoutReviewScreen -> {
+            imgLogoutReview -> {
                 if (connectedToInternet())
                     alertLogoutDialog()
                 else
-                    showInternetAlert(txtLogoutReviewScreen)
+                    showInternetAlert(imgLogoutReview)
             }
             imgBackReview -> {
                 if (isSwitched) {
@@ -89,9 +133,7 @@ class ReviewActivity : BaseActivity() {
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
                 if (response.body().response != null) {
                     dismissLoader()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        updateProfileDatabase(response.body().response)
-                    }
+                    updateProfileDatabase(response.body().response)
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
@@ -106,6 +148,92 @@ class ReviewActivity : BaseActivity() {
                 showAlert(imgBackReview, t!!.localizedMessage)
             }
         })
+    }
+
+    private fun loadQuotesData() {
+        mQuotesArrayList.add(getString(R.string.quote_1))
+        mQuotesArrayList.add(getString(R.string.quote_2))
+        mQuotesArrayList.add(getString(R.string.quote_3))
+        mQuotesArrayList.add(getString(R.string.quote_4))
+        mQuotesArrayList.add(getString(R.string.quote_5))
+        mQuotesArrayList.add(getString(R.string.quote_6))
+        mQuotesArrayList.add(getString(R.string.quote_7))
+        mQuotesArrayList.add(getString(R.string.quote_8))
+        mQuotesArrayList.add(getString(R.string.quote_9))
+        mQuotesArrayList.add(getString(R.string.quote_10))
+
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner1))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner2))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner3))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner4))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner5))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner6))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner7))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner8))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner9))
+        mQuotesAuthorArrayList.add(getString(R.string.quote_owner10))
+    }
+
+    private fun displayQuotesWithAnimationNougat(isVisible: Boolean) {
+        Log.e("Count  = ", count.toString())
+        if (isVisible) {
+            /// turn to hide
+            Handler().postDelayed({
+                if (count < 9) {
+                    txtQuote.hide()
+                }
+            }, 3000)
+        } else {
+            /// turn to visible
+            Handler().postDelayed({
+                if (count < 10) {
+                    txtQuote.setText(mQuotesArrayList[count])
+                    txtQuote.show()
+                }
+            }, 100)
+            count++
+        }
+    }
+
+    private fun displayQuotesWithAnimationNougatAuthor(isVisible: Boolean) {
+        Log.e("Count  = ", countAuthor.toString())
+        if (isVisible) {
+            /// turn to hide
+            Handler().postDelayed({
+                if (countAuthor < 9) {
+                    txtQuoteAuthor.hide()
+                }
+            }, 3000)
+        } else {
+            /// turn to visible
+            Handler().postDelayed({
+                if (countAuthor < 10) {
+                    txtQuoteAuthor.setText(mQuotesAuthorArrayList[countAuthor])
+                    txtQuoteAuthor.show()
+                }
+            }, 100)
+            countAuthor++
+        }
+    }
+
+    private fun displayQuotesWithAnimation(isVisible: Boolean) {
+        Log.e("Count  = ", count.toString())
+        if (count < 10) {
+            if (isVisible) {
+                /// turn to hide
+                Handler().postDelayed({
+                    txtQuote.hide()
+                    txtQuoteAuthor.hide()
+                }, 3000)
+            } else {
+                /// turn to visible
+                txtQuote.setText(mQuotesArrayList[count])
+                txtQuote.show()
+                txtQuoteAuthor.setText(mQuotesAuthorArrayList[count])
+                txtQuoteAuthor.show()
+                count++
+            }
+        }
     }
 
     private fun updateProfileDatabase(response: SignupModel.ResponseBean?) {
@@ -134,6 +262,7 @@ class ReviewActivity : BaseActivity() {
     }
 
     override fun onStart() {
+        reviewActivity = this
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
                 IntentFilter(Constants.REVIEW))
         LocalBroadcastManager.getInstance(this).registerReceiver(receiverUnverified,
@@ -143,6 +272,7 @@ class ReviewActivity : BaseActivity() {
 
     override fun onStop() {
         mUtils!!.setInt("inside_reviewFull", 0)
+        reviewActivity = null
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverUnverified)
         super.onStop()
@@ -150,20 +280,24 @@ class ReviewActivity : BaseActivity() {
 
 
     var receiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            var intent: Intent? = null
-            if (isSwitched) {
-                intent = Intent(mContext!!, QuestionnariesActivity::class.java)
-                intent.putExtra("newUserType", Constants.MENTOR)
-                startActivity(intent)
-                finish()
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        override fun onReceive(context: Context, data: Intent) {
+            val intent: Intent?
+            if (data.hasExtra("type")) {
+                txtUnderReview.text = data.getStringExtra("displayMessage")
             } else {
-                intent = Intent(mContext, QuestionnariesActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                if (isSwitched) {
+                    intent = Intent(mContext!!, QuestionnariesActivity::class.java)
+                    intent.putExtra("newUserType", Constants.MENTOR)
+                    startActivity(intent)
+                    finish()
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                } else {
+                    intent = Intent(mContext, QuestionnariesActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                }
             }
         }
     }

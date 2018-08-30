@@ -157,9 +157,9 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
 
                 holder.cvEventsListing.setOnClickListener {
                     when {
-                        mEventFragment != null -> mEventFragment!!.moveToEventDetail(mEventsArray[position].id,holder.imgEventsListing)
-                        mSearchInstance != null -> mSearchInstance!!.moveToEventDetail(mEventsArray[position].id,holder.imgEventsListing)
-                        mBookmarkInstance != null -> mBookmarkInstance!!.moveToEventDetail(mEventsArray[position].id,holder.imgEventsListing)
+                        mEventFragment != null -> mEventFragment!!.moveToEventDetail(mEventsArray[position].id, holder.imgEventsListing)
+                        mSearchInstance != null -> mSearchInstance!!.moveToEventDetail(mEventsArray[position].id, holder.imgEventsListing)
+                        mBookmarkInstance != null -> mBookmarkInstance!!.moveToEventDetail(mEventsArray[position].id, holder.imgEventsListing)
                     }
                 }
             }
@@ -186,6 +186,7 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
     }
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var llEventsListing = itemView.llEventsListing!!
         var cvEventsListing = itemView.cvEventsListing!!
         var imgEventsListing = itemView.imgEventsListing!!
         var imgBookmarkEventsListing = itemView.imgBookmarkEventsListing!!
@@ -206,6 +207,7 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
 
         private fun displayNightMode() {
             cvEventsListing.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.cardview_dark_background))
+            llEventsListing.setBackgroundResource(R.drawable.night_card_background)
             txtTitleEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
             txtDescEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
             txtLocationEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
@@ -216,6 +218,7 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
 
         private fun displayDayMode() {
             cvEventsListing.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            llEventsListing.setBackgroundResource(0)
             txtTitleEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
             txtDescEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.greyTextColor))
             txtLocationEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))

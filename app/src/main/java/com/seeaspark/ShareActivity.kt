@@ -44,7 +44,7 @@ class ShareActivity : BaseActivity() {
     }
 
     override fun displayNightMode() {
-        llInnerShare.setBackgroundResource(R.drawable.dark_short_profile_background)
+        llInnerShare.setBackgroundResource(R.drawable.share_night_background)
         txtShare.setTextColor(whiteColor)
     }
 

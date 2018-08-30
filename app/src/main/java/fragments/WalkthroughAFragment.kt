@@ -17,10 +17,12 @@ class WalkthroughAFragment : Fragment() {
 
     var count: Int = 0
     var itemView: View? = null
-    private val walkArray = intArrayOf(R.mipmap.walk1, R.mipmap.walk1a, R.mipmap.walk1b)
+    private val walkArray = intArrayOf(R.mipmap.walk1a, R.mipmap.walk1, R.mipmap.walk1c, R.mipmap.walk1b)
     private val textArray = arrayListOf<String>("Go through thousands of mentor or mentee profiles",
+            "You can also view it in Night mode.",
             "Swipe right to handshake with the mentor or mentee you want to connect.",
             "Swipe left to pass or move on to other profile")
+
     val mHandler = Handler()
     var runnable: Runnable? = null
     var temp = 0
@@ -47,32 +49,33 @@ class WalkthroughAFragment : Fragment() {
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
         if (menuVisible) {
-            var runnable: Runnable = object : Runnable {
+            val runnable: Runnable = object : Runnable {
                 override fun run() {
                     count++
-                    if (count < 3) {
+                    if (count < 4) {
                         itemView!!.txtWalk.text = textArray[count]
                         if (count == 1)
-                            Picasso.with(activity).load(walkArray!![count]).placeholder(walkArray!![0]).into(itemView!!.imgWalk)
-                        else
-                            Picasso.with(activity).load(walkArray!![count]).placeholder(walkArray!![1]).into(itemView!!.imgWalk)
-                        mHandler.postDelayed(this, 3000)
+                            Picasso.with(activity).load(walkArray[count]).placeholder(walkArray[0]).into(itemView!!.imgWalk)
+                        else if (count == 2)
+                            Picasso.with(activity).load(walkArray[count]).placeholder(walkArray[1]).into(itemView!!.imgWalk)
+                        else if (count == 3)
+                            Picasso.with(activity).load(walkArray[count]).placeholder(walkArray[2]).into(itemView!!.imgWalk)
+                        mHandler.postDelayed(this, 4000)
                     }
                 }
             }
-            mHandler.postDelayed(runnable, 3000)
+            mHandler.postDelayed(runnable, 4000)
         } else {
             if (runnable != null)
                 mHandler.removeCallbacks(runnable)
             if (temp == 1) {
                 count = 0
-                Picasso.with(activity!!).load(walkArray!![count]).into(itemView!!.imgWalk)
+                Picasso.with(activity!!).load(walkArray[count]).into(itemView!!.imgWalk)
             }
         }
     }
 
     override fun onDestroyView() {
-
         super.onDestroyView()
     }
 

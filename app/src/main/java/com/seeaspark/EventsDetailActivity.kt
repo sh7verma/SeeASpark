@@ -54,9 +54,9 @@ class EventsDetailActivity : BaseActivity() {
         imgOption1Custom.visibility = View.VISIBLE
         imgOption2Custom.visibility = View.VISIBLE
 
+        imgBackCustom.setImageResource(R.mipmap.ic_back_white)
         imgOption1Custom.setImageResource(R.mipmap.ic_share_white)
         imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_border)
-
 
         val cd = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
         llCustomToolbar.background = cd
@@ -140,7 +140,6 @@ class EventsDetailActivity : BaseActivity() {
         txtLocationEvents.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         txtTimeEvent.setTextColor(ContextCompat.getColor(this, R.color.white_color))
         txtGoingCount.setTextColor(ContextCompat.getColor(this, R.color.white_color))
-        txtEventLink.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         txtDescEvents.setTextColor(darkGrey)
 
         llGoingEvents.setBackgroundResource(blackRipple)
@@ -224,7 +223,6 @@ class EventsDetailActivity : BaseActivity() {
         txtLocationEvents.text = mEventData!!.address
         txtTimeEvent.text = Constants.displayDateTime(mEventData!!.date_time)
         txtDescEvents.text = mEventData!!.description
-        txtEventLink.text = mEventData!!.url
 
         if (mEventData!!.liked == 1) isLiked = 1
 
@@ -467,7 +465,6 @@ class EventsDetailActivity : BaseActivity() {
     private fun showInterestedOptions() {
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.dialog_interested)
-
 
         var dialogParms = CoordinatorLayout.LayoutParams(mWidth - (mWidth / 16), mHeight / 6)
         dialogParms.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL

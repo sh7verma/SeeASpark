@@ -48,6 +48,7 @@ public class Constants {
     public static int PROCEED_NORMAL = 200;
     public static int PROCEED_AS_OTHER = 2001;
     public static int PROFILE_UNDER_REVIEW = 3001;
+    public static int PROFILE_IN_REVIEW = 2005;
     public static final String EMAIL_VERIFY = "email_verify";
     public static final String REVIEW = "review";
     public static final String UNVERIFIED = "unverified";
@@ -83,6 +84,9 @@ public class Constants {
     public static final String AUTODAYMODE = "autoDay";
     public static final String MYNOTES = "1";
     public static final String RECEIVEDNOTES = "2";
+    public static final int MALE=1;
+    public static final int FEMALE=2;
+    public static final int OTHER=3;
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

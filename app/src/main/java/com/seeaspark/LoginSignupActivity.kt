@@ -6,6 +6,8 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.util.Patterns
 import android.view.KeyEvent
@@ -13,7 +15,6 @@ import android.view.View
 import android.view.animation.TranslateAnimation
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -152,12 +153,22 @@ class LoginSignupActivity : BaseActivity() {
             }
         })
 
-        edPassword.setOnEditorActionListener(TextView.OnEditorActionListener { v, actionId, event ->
+        edPassword.setOnEditorActionListener({ v, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER || actionId == EditorInfo.IME_ACTION_DONE) {
                 verifyDetails()
             }
             true
         })
+
+        cbShowPassword.setOnCheckedChangeListener { p0, isChecked ->
+            if (!isChecked) {
+                edPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                edPassword.setSelection(edPassword.text.toString().length)
+            } else {
+                edPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                edPassword.setSelection(edPassword.text.toString().length)
+            }
+        }
     }
 
     override fun initListener() {
@@ -206,6 +217,7 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     private fun setLogin() {
+        cbShowPassword.isChecked = false
         edEmail.isFocusable = true
         edEmail.setText(Constants.EMPTY)
         edPassword.setText(Constants.EMPTY)
@@ -215,6 +227,7 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     private fun setRegister() {
+        cbShowPassword.isChecked = false
         edEmail.setText(Constants.EMPTY)
         edPassword.setText(Constants.EMPTY)
         txtForgotPassword.visibility = View.INVISIBLE
@@ -271,12 +284,12 @@ class LoginSignupActivity : BaseActivity() {
     }
 
     fun getuserData() {
-        var url = "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,headline,public-profile-url,picture-url,email-address,picture-urls::(original))";
-        var apiHelper = APIHelper.getInstance(getApplicationContext())
+        val url = "https://api.linkedin.com/v1/people/~:(id,first-name,last-name,headline,public-profile-url,picture-url,email-address,picture-urls::(original))";
+        val apiHelper = APIHelper.getInstance(getApplicationContext())
 
         apiHelper.getRequest(this, url, object : ApiListener {
             override fun onApiSuccess(apiResponse: ApiResponse?) {
-                var jsonObject = apiResponse!!.responseDataAsJson
+                val jsonObject = apiResponse!!.responseDataAsJson
                 try {
                     if (connectedToInternet()) {
                         Log.e("Response", "Linkedin apiResponse JSON " + apiResponse.getResponseDataAsString());
@@ -353,9 +366,7 @@ class LoginSignupActivity : BaseActivity() {
                         && response.body().response != null) {
                     /// user enter as different user Type as comapred to signup
                     // but didn't setuped profile yet
-
                     /// changing userType
-
                     val signupModel = response.body()
 
                     if (signupModel.response.user_type == Constants.MENTOR)
@@ -364,39 +375,38 @@ class LoginSignupActivity : BaseActivity() {
                         signupModel.response.user_type = Constants.MENTOR
 
                     signupModel.response.full_name = mName
-
                     /// add data to shared preference
                     addDataToSharedPreferences(signupModel)
 
                     alertContinueDialog(response.body().message, signupModel)
-
                 } else if (response.body().code == Constants.PROFILE_UNDER_REVIEW
                         && response.body().response != null) {
-
                     /// add data to shared preference
                     addDataToSharedPreferences(response.body())
-
                     /// navigate to review screen
                     moveToReview(response.body())
-
+                } else if (response.body().code == Constants.PROFILE_IN_REVIEW
+                        && response.body().response != null) {
+                    /// add data to shared preference
+                    addDataToSharedPreferences(response.body())
+                    /// profile moved toin review by admin
+                    mUtils!!.setInt("document_verified", 2)
+                    /// navigate to review screen
+                    moveToReview(response.body())
                 } else if (response.body().code == Constants.PROCEED_NORMAL
                         && response.body().response != null) {
                     if (response.body().response.email_verified == 0 &&
                             response.body().response.profile_status == 0) {
-
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
-
                         /// navigate to email verification screen
                         moveToEmailVerification(response.body())
-
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 0 &&
                             response.body().response.profile_status == 0) {
-
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
-
+                        mUtils!!.setBoolean("addEmailFragment", false)
                         /// navigate to create profile screen
                         moveToCreateProfile(response.body())
 
@@ -406,27 +416,26 @@ class LoginSignupActivity : BaseActivity() {
 
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
-
+                        mUtils!!.setBoolean("addEmailFragment", false)
                         /// navigate to create profile screen
                         moveToCreateProfile(response.body())
 
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 1) {
-
+                        mUtils!!.setString("user_type", response.body().response.user_type.toString())
                         mUtils!!.setString("access_token", response.body().response.access_token)
                         mUtils!!.setString("user_id", response.body().response.id.toString())
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
-
                         /// navigate to questionarrie
                         moveToQuestionnaire()
 
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 2) {
-
+                        mUtils!!.setString("user_type", response.body().response.user_type.toString())
                         mUtils!!.setString("access_token", response.body().response.access_token)
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
                         mUtils!!.setString("user_id", response.body().response.id.toString())
@@ -496,6 +505,14 @@ class LoginSignupActivity : BaseActivity() {
                             addDataToSharedPreferences(response.body())
                             /// navigate to review screen
                             moveToReview(response.body())
+                        } else if (response.body().code == Constants.PROFILE_IN_REVIEW
+                                && response.body().response != null) {
+                            /// add data to shared preference
+                            addDataToSharedPreferences(response.body())
+                            /// profile moved toin review by admin
+                            mUtils!!.setInt("document_verified", 2)
+                            /// navigate to review screen
+                            moveToReview(response.body())
                         } else if (response.body().code == Constants.PROCEED_NORMAL
                                 && response.body().response != null) {
                             if (response.body().response.email_verified == 0 &&
@@ -547,7 +564,7 @@ class LoginSignupActivity : BaseActivity() {
                             } else if (response.body().response.email_verified == 1 &&
                                     response.body().response.document_verified == 1 &&
                                     response.body().response.profile_status == 1) {
-
+                                mUtils!!.setString("user_type", response.body().response.user_type.toString())
                                 mUtils!!.setString("access_token", response.body().response.access_token)
                                 mUtils!!.setInt("profile_status", response.body().response.profile_status)
                                 mUtils!!.setString("user_id", response.body().response.id.toString())
@@ -558,7 +575,7 @@ class LoginSignupActivity : BaseActivity() {
                             } else if (response.body().response.email_verified == 1 &&
                                     response.body().response.document_verified == 1 &&
                                     response.body().response.profile_status == 2) {
-
+                                mUtils!!.setString("user_type", response.body().response.user_type.toString())
                                 mUtils!!.setString("access_token", response.body().response.access_token)
                                 mUtils!!.setInt("profile_status", response.body().response.profile_status)
                                 mUtils!!.setString("user_id", response.body().response.id.toString())
@@ -597,9 +614,12 @@ class LoginSignupActivity : BaseActivity() {
         if (docVerified == 0 && profileStatus == 1) {
             /// Review Screen
             moveToReview(response)
+        } else if (docVerified == 2 && profileStatus == 1) {
+            /// issue with the provided Id Move to review screen with updated message
+            mUtils!!.setInt("document_verified", 2)
+            moveToReview(response)
         } else if (docVerified == 1 && profileStatus == 1) {
             /// Questionarrie Screen
-
             moveToQuestionnaire()
         } else if (docVerified == 0 && profileStatus == 1) {
             /// Landing Screen

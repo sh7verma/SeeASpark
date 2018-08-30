@@ -32,7 +32,6 @@ class SettingsActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_settings
     private var userData: SignupModel? = null
 
-
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
         imgBackCustom.setImageResource(R.mipmap.ic_back_org)
@@ -151,6 +150,9 @@ class SettingsActivity : BaseActivity() {
         llDeactivate.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         txtDeactivate.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
+        llTutorial.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
+        txtTutorial.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+
         llDeleteAccount.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         txtDeleteAccount.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
@@ -190,6 +192,9 @@ class SettingsActivity : BaseActivity() {
 
         llChangePassword.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         txtChangePassword.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+
+        llTutorial.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
+        txtTutorial.setTextColor(ContextCompat.getColor(this, R.color.white_color))
 
         llLogout.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         txtLogout.setTextColor(ContextCompat.getColor(this, R.color.white_color))
@@ -232,22 +237,26 @@ class SettingsActivity : BaseActivity() {
         llDeactivate.setOnClickListener(this)
         llDeleteAccount.setOnClickListener(this)
         llLogout.setOnClickListener(this)
+        llTutorial.setOnClickListener(this)
     }
 
     override fun getContext() = this
 
     override fun onClick(view: View?) {
-        var intent: Intent? = null
+        val intent: Intent
         when (view) {
-
+            llTutorial -> {
+                intent = Intent(mContext!!, WalkthroughActivity::class.java)
+                intent.putExtra("settings", true)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
             llDeactivate -> {
                 alertDeactivateAccountDialog()
             }
-
             llDeleteAccount -> {
                 alertDeleteAccountDialog()
             }
-
             imgBackCustom -> {
                 moveBack()
             }

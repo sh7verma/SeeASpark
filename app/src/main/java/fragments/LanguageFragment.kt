@@ -36,6 +36,12 @@ class LanguageFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
+
+        if (mCreateProfileInstance!!.userData!!.response.user_type == Constants.MENTOR)
+            txtUserType.text = getString(R.string.mentor)
+        else
+            txtUserType.text = getString(R.string.mentee)
+
         rvLanguage.layoutManager = LinearLayoutManager(activity)
 
         tempArray.clear()

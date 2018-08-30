@@ -11,12 +11,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.cocosw.bottomsheet.BottomSheet
 import customviews.FlowLayout
-import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.activity_preferences.*
 import kotlinx.android.synthetic.main.activity_preferences.view.*
 import kotlinx.android.synthetic.main.add_skills.view.*
@@ -76,9 +74,7 @@ class PreferencesActivity : BaseActivity() {
                 txtDistanceCount.text = "100+ Mile(s)"
             } else {
                 llDisableDistance.visibility = View.GONE
-              /*  mMaxDistanceValue = 15
-                rsbDistance.selectedMaxValue = 15
-                txtDistanceCount.text = "15 Mile(s)"*/
+                mMaxDistanceValue = 101
             }
         }
     }
@@ -99,8 +95,14 @@ class PreferencesActivity : BaseActivity() {
         txtGenderHint.setTextColor(blackColor)
         txtGenderPrefer.setTextColor(blackColor)
 
+        llLanguageSelection.setBackgroundResource(whiteRipple)
+        txtLanguageHint.setTextColor(blackColor)
+
         llSkillSelection.setBackgroundResource(whiteRipple)
         txtSkillHint.setTextColor(blackColor)
+
+        cbNoDistance.setTextColor(blackColor)
+        cbNoExperience.setTextColor(blackColor)
     }
 
     override fun displayNightMode() {
@@ -119,8 +121,14 @@ class PreferencesActivity : BaseActivity() {
         txtGenderHint.setTextColor(whiteColor)
         txtGenderPrefer.setTextColor(whiteColor)
 
+        llLanguageSelection.setBackgroundResource(blackRipple)
+        txtLanguageHint.setTextColor(whiteColor)
+
         llSkillSelection.setBackgroundResource(blackRipple)
         txtSkillHint.setTextColor(whiteColor)
+
+        cbNoDistance.setTextColor(whiteColor)
+        cbNoExperience.setTextColor(whiteColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -185,7 +193,7 @@ class PreferencesActivity : BaseActivity() {
                 }
                 else -> {
                     mGenderValue = 3
-                    txtGenderPrefer.text = getString(R.string.other)
+                    txtGenderPrefer.text = getString(R.string.don_t_mind)
                 }
             }
         } else {
@@ -203,7 +211,7 @@ class PreferencesActivity : BaseActivity() {
                 txtGenderPrefer.text = getString(R.string.male)
             } else {
                 mGenderValue = 3
-                txtGenderPrefer.text = getString(R.string.other)
+                txtGenderPrefer.text = getString(R.string.don_t_mind)
             }
         }
 
@@ -247,7 +255,8 @@ class PreferencesActivity : BaseActivity() {
     private fun addNoProfessionData() {
         val professionData = ProfessionModel()
         professionData.name = "No Preferences"
-        professionData.isSelected = true
+        if (mSelectedProfessionsArray.isEmpty())
+            professionData.isSelected = true
         professionData.id = 0
         mProfessionArray.add(professionData)
     }
@@ -498,7 +507,7 @@ class PreferencesActivity : BaseActivity() {
     private fun optionGender() {
         BottomSheet.Builder(this, R.style.BottomSheet_Dialog)
                 .title(getString(R.string.select_gender))
-                .sheet(R.menu.menu_gender).listener { dialog, which ->
+                .sheet(R.menu.menu_preferences_gender).listener { dialog, which ->
                     when (which) {
                         R.id.item_male -> {
                             txtGenderPrefer.setText(R.string.male)
@@ -509,7 +518,7 @@ class PreferencesActivity : BaseActivity() {
                             mGenderValue = 2
                         }
                         R.id.item_other -> {
-                            txtGenderPrefer.setText(R.string.other)
+                            txtGenderPrefer.setText(R.string.don_t_mind)
                             mGenderValue = 3
                         }
                     }

@@ -25,140 +25,157 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_75sdp"
                 android:background="@drawable/white_short_profile_background"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/_24sdp"
-                android:paddingRight="@dimen/_24sdp">
+                android:orientation="vertical">
 
-                <customviews.MediumTextView
-                    android:id="@+id/txtRatingViewProfile"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:paddingTop="@dimen/_8sdp"
-                    android:text="Not Rated"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_24sdp"
+                    android:paddingRight="@dimen/_24sdp">
+
+                    <customviews.MediumTextView
+                        android:id="@+id/txtRatingViewProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:paddingTop="@dimen/_8sdp"
+                        android:text="Not Rated"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <customviews.BoldTextView
+                        android:id="@+id/txtNameViewProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_3sdp"
+                        android:paddingTop="@dimen/_24sdp"
+                        android:text="John Appleased"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_18ssp" />
+
+                    <customviews.MediumTextView
+                        android:id="@+id/txtGenderViewProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Male . 25 Years"
+                        android:textColor="@color/darkGreyText"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <customviews.BoldTextView
+                        android:id="@+id/txtProfessionViewProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_3sdp"
+                        android:paddingTop="@dimen/_8sdp"
+                        android:text="Psychologist"
+                        android:textColor="@color/darkGreyText"
+                        android:textSize="@dimen/_13ssp" />
+
+                    <customviews.MediumTextView
+                        android:id="@+id/txtExperienceViewProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_8sdp"
+                        android:text="5.2 Years of Experience"
+                        android:textColor="@color/darkGreyText"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/greyLine" />
+
+                    <customviews.BoldTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_16sdp"
+                        android:paddingTop="@dimen/_16sdp"
+                        android:text="@string/languages"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <customviews.FlowLayout
+                        android:id="@+id/flLanguagesViewProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_12sdp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/greyLine" />
+
+                    <customviews.BoldTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_16sdp"
+                        android:paddingTop="@dimen/_16sdp"
+                        android:text="@string/skills"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <customviews.FlowLayout
+                        android:id="@+id/flSkillsViewProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_12sdp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/greyLine" />
+
+                    <customviews.BoldTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_16sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:text="@string/bio"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <customviews.MediumTextView
+                        android:id="@+id/txtBioViewProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_12sdp"
+                        android:textColor="@color/darkGreyText"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/greyLine" />
+
+                    <customviews.BoldTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_16sdp"
+                        android:paddingTop="@dimen/_5sdp"
+                        android:text="@string/description"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <customviews.MediumTextView
+                        android:id="@+id/txtDescriptionViewProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_46sdp"
+                        android:textColor="@color/darkGreyText"
+                        android:textSize="@dimen/_12ssp" />
+                </LinearLayout>
+
+                <customviews.BoldTextView
+                    android:id="@+id/txtChangeUserType"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_42sdp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@drawable/user_option_ripple"
+                    android:gravity="center"
+                    android:textAllCaps="true"
                     android:textColor="@color/black_color"
-                    android:textSize="@dimen/_12ssp" />
-
-                <customviews.BoldTextView
-                    android:id="@+id/txtNameViewProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_3sdp"
-                    android:paddingTop="@dimen/_24sdp"
-                    android:text="John Appleased"
-                    android:textColor="@color/black_color"
-                    android:textSize="@dimen/_18ssp" />
-
-                <customviews.MediumTextView
-                    android:id="@+id/txtGenderViewProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Male . 25 Years"
-                    android:textColor="@color/darkGreyText"
-                    android:textSize="@dimen/_12ssp" />
-
-                <customviews.BoldTextView
-                    android:id="@+id/txtProfessionViewProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_3sdp"
-                    android:paddingTop="@dimen/_8sdp"
-                    android:text="Psychologist"
-                    android:textColor="@color/darkGreyText"
-                    android:textSize="@dimen/_13ssp" />
-
-                <customviews.MediumTextView
-                    android:id="@+id/txtExperienceViewProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_8sdp"
-                    android:text="5.2 Years of Experience"
-                    android:textColor="@color/darkGreyText"
-                    android:textSize="@dimen/_12ssp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/greyLine" />
-
-                <customviews.BoldTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_16sdp"
-                    android:paddingTop="@dimen/_16sdp"
-                    android:text="@string/languages"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/_12ssp" />
-
-                <customviews.FlowLayout
-                    android:id="@+id/flLanguagesViewProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_12sdp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/greyLine" />
-
-                <customviews.BoldTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_16sdp"
-                    android:paddingTop="@dimen/_16sdp"
-                    android:text="@string/skills"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/_12ssp" />
-
-                <customviews.FlowLayout
-                    android:id="@+id/flSkillsViewProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_12sdp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/greyLine" />
-
-                <customviews.BoldTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_16sdp"
-                    android:paddingTop="@dimen/_5sdp"
-                    android:text="@string/bio"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/_12ssp" />
-
-                <customviews.MediumTextView
-                    android:id="@+id/txtBioViewProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_12sdp"
-                    android:textColor="@color/darkGreyText"
-                    android:textSize="@dimen/_12ssp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/greyLine" />
-
-                <customviews.BoldTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_16sdp"
-                    android:paddingTop="@dimen/_5sdp"
-                    android:text="@string/description"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/_12ssp" />
-
-                <customviews.MediumTextView
-                    android:id="@+id/txtDescriptionViewProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/_46sdp"
-                    android:textColor="@color/darkGreyText"
-                    android:textSize="@dimen/_12ssp" />
+                    android:textSize="@dimen/_14ssp" />
 
             </LinearLayout>
 
@@ -169,9 +186,9 @@
                 android:layout_marginLeft="@dimen/_24sdp"
                 android:layout_marginStart="@dimen/_24sdp"
                 android:layout_marginTop="@dimen/_50sdp"
-                android:transitionName="@string/transition_image"
                 android:elevation="@dimen/_5sdp"
-                android:src="@drawable/placeholder_image" />
+                android:src="@drawable/placeholder_image"
+                android:transitionName="@string/transition_image" />
 
         </RelativeLayout>
 
@@ -179,15 +196,5 @@
 
     <include layout="@layout/custom_toolbar" />
 
-    <customviews.BoldTextView
-        android:id="@+id/txtChangeUserType"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_42sdp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/user_option_ripple"
-        android:gravity="center"
-        android:textAllCaps="true"
-        android:textColor="@color/black_color"
-        android:textSize="@dimen/_14ssp" />
 
 </RelativeLayout>

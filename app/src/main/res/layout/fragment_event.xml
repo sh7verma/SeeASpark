@@ -42,7 +42,6 @@
             android:textSize="@dimen/_14ssp"
             android:visibility="gone" />
 
-
     </RelativeLayout>
 
 </LinearLayout>

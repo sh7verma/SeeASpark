@@ -43,8 +43,6 @@ class BoostDialog : Activity() {
             finish()
             overridePendingTransition(0, R.anim.slidedown_out)
         }
-
-
     }
 
     private fun getDefaults() {

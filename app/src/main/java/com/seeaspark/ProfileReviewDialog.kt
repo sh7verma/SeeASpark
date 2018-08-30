@@ -83,7 +83,6 @@ class ProfileReviewDialog : Activity() {
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
             }
         }
-
         txtLogoutReview.setOnClickListener {
             if ((Connection_Detector(this).isConnectingToInternet))
                 alertLogoutDialog()
@@ -154,12 +153,16 @@ class ProfileReviewDialog : Activity() {
     }
 
     var receiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val inStarted = Intent(mContext, QuestionnariesActivity::class.java)
-            inStarted.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-            inStarted.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(inStarted)
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        override fun onReceive(context: Context, data: Intent) {
+            if (data.hasExtra("type")) {
+                txtMsgReview.text = data.getStringExtra("displayMessage")
+            } else {
+                val inStarted = Intent(mContext, QuestionnariesActivity::class.java)
+                inStarted.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                inStarted.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(inStarted)
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            }
         }
     }
 

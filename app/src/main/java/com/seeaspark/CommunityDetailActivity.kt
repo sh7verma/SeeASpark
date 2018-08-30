@@ -50,6 +50,7 @@ class CommunityDetailActivity : BaseActivity() {
         imgOption1Custom.visibility = View.VISIBLE
         imgOption2Custom.visibility = View.VISIBLE
 
+        imgBackCustom.setImageResource(R.mipmap.ic_back_white)
         imgOption1Custom.setImageResource(R.mipmap.ic_share_white)
         imgOption2Custom.setImageResource(R.mipmap.ic_bookmark_border)
 
@@ -116,7 +117,6 @@ class CommunityDetailActivity : BaseActivity() {
         txtCommentCountCommunity.setTextColor(ContextCompat.getColor(this, R.color.black_color))
 
         llMainCommunityParent.setBackgroundColor(whiteColor)
-
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -136,7 +136,6 @@ class CommunityDetailActivity : BaseActivity() {
         txtCommentCountCommunity.setTextColor(ContextCompat.getColor(this, R.color.white_color))
 
         llMainCommunityParent.setBackgroundColor(blackColor)
-
     }
 
     override fun onCreateStuff() {

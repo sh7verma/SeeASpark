@@ -1,5 +1,6 @@
 package fragments
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -37,8 +38,12 @@ class AgeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
-        txtSelectAge.text = mCreateProfileInstance!!.mAge
+        if (mCreateProfileInstance!!.userData!!.response.user_type == Constants.MENTOR)
+            txtUserType.text = getString(R.string.mentor)
+        else
+            txtUserType.text = getString(R.string.mentee)
 
+        txtSelectAge.text = mCreateProfileInstance!!.mAge
     }
 
     private fun initListener() {
@@ -82,20 +87,18 @@ class AgeFragment : Fragment(), View.OnClickListener {
         datePickerDOB.show()
     }
 
-    private val dobPickerListener = object : DatePickerDialog.OnDateSetListener {
-
-        override fun onDateSet(view: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int) {
-            mCreateProfileInstance!!.calDOB!!.set(Calendar.YEAR, selectedYear)
-            mCreateProfileInstance!!.calDOB!!.set(Calendar.MONTH, selectedMonth)
-            mCreateProfileInstance!!.calDOB!!.set(Calendar.DATE, selectedDay)
-            try {
-                calculate_age(mShowStartDate.format(mCreateProfileInstance!!.calDOB!!.time))
-            } catch (e: ParseException) {
-                e.printStackTrace()
-            }
+    private val dobPickerListener = DatePickerDialog.OnDateSetListener { view, selectedYear, selectedMonth, selectedDay ->
+        mCreateProfileInstance!!.calDOB!!.set(Calendar.YEAR, selectedYear)
+        mCreateProfileInstance!!.calDOB!!.set(Calendar.MONTH, selectedMonth)
+        mCreateProfileInstance!!.calDOB!!.set(Calendar.DATE, selectedDay)
+        try {
+            calculate_age(mShowStartDate.format(mCreateProfileInstance!!.calDOB!!.time))
+        } catch (e: ParseException) {
+            e.printStackTrace()
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Throws(ParseException::class)
     fun calculate_age(birthdate: String): Int {
         val birth_format = SimpleDateFormat("dd MMMM, yyyy", Locale.US)
@@ -103,9 +106,6 @@ class AgeFragment : Fragment(), View.OnClickListener {
         val cal = Calendar.getInstance()
         val today = cal.time
         val diff = today.time - birth_date.time
-        val diffSeconds = diff / 1000 % 60
-        val diffMinutes = diff / (60 * 1000) % 60
-        val diffHours = diff / (60 * 60 * 1000) % 24
         val diffDays = diff / (24 * 60 * 60 * 1000)
         val diffyears = (diffDays / 365).toInt()
         txtSelectAge.text = "$diffyears years"

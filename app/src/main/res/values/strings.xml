@@ -212,8 +212,8 @@
     <string name="not_interested">Not Interested</string>
     <string name="write_a_comment">Write a Comment...</string>
     <string name="comments">Comments</string>
-    <string name="no_events_available">No Events Available</string>
-    <string name="no_community_available">No Community Available</string>
+    <string name="no_events_available">No events available…yet!</string>
+    <string name="no_community_available">No community available…yet!</string>
     <string name="error_comment">Please enter comment</string>
     <string name="no_community_bookmarked">No Community Bookmarked</string>
     <string name="no_event_bookmarked">No Event Bookmarked</string>
@@ -239,5 +239,35 @@
     <string name="share_event">Share Event</string>
     <string name="share_community">Share Community</string>
     <string name="invalid_access_token_message">Someone else login on another device with your credentials.</string>
+    <string name="preferences">preferences</string>
+    <string name="avatar">avatar</string>
+    <string name="get_cards">Get Cards</string>
+    <string name="error_note">Please add text in your note</string>
+    <string name="quote_1">“Rivers know this: there is no hurry. We shall get there some day.”</string>
+    <string name="quote_owner1">― A.A. Milne, Winnie-the-Pooh</string>
+    <string name="quote_2">“Why is patience so important?\n"Because it makes us pay attention.”</string>
+    <string name="quote_owner2">― Paulo Coelho</string>
+    <string name="quote_3">“Well, we must wait for the future to show.”</string>
+    <string name="quote_owner3">― Virginia Woolf, To the Lighthouse</string>
+    <string name="quote_4">“Some people can never understand that you have to wait, even for the best of things, until the right time comes.”</string>
+    <string name="quote_owner4">― Franklin D. Roosevelt</string>
+    <string name="quote_5">“Someone is sitting in the shade today because someone planted a tree a long time ago.”</string>
+    <string name="quote_owner5">― Warren Buffett</string>
+    <string name="quote_6">“Have patience. All things are difficult before they become easy.” </string>
+    <string name="quote_owner6">― Saadi</string>
+    <string name="quote_7">“You don’t have to see the whole staircase, just take the first step”</string>
+    <string name="quote_owner7">― Martin Luther King, Jr.</string>
+    <string name="quote_8">“Do the hard jobs first. The easy jobs will take care of themselves”</string>
+    <string name="quote_owner8">― Dale Carnegie</string>
+    <string name="quote_9">“A small key can open big doors”</string>
+    <string name="quote_owner9">― Kurdish Proverb</string>
+    <string name="quote_10">“A tree begins with a seed”</string>
+    <string name="quote_owner10">― Arabic Proverb</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="show_password">Show Password</string>
+    <string name="book_now">Book Now</string>
+    <string name="don_t_mind">Don\'t Mind</string>
+    <string name="you_can_always_get_more_cards_by_subscribing_to_our_service">You can always get more cards by subscribing to our service</string>
+    <string name="in_review_message">Your Profile has been put On Hold. Kindly Check your email for further Instructions.</string>
 
 </resources>

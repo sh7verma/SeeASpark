@@ -4,6 +4,7 @@
     android:id="@+id/llMainEventsParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layerType="software"
     android:background="@color/white_color"
     android:orientation="vertical">
 
@@ -154,13 +155,13 @@
 
                 <customviews.MediumTextView
                     android:id="@+id/txtEventLink"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/white_ripple"
-                    android:paddingBottom="@dimen/_5sdp"
-                    android:paddingTop="@dimen/_5sdp"
-                    android:text="www.google.com"
-                    android:textColor="@color/link_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_42sdp"
+                    android:background="@drawable/user_option_ripple"
+                    android:gravity="center"
+                    android:text="@string/book_now"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black_color"
                     android:textSize="@dimen/_14ssp" />
 
                 <android.support.v4.widget.Space
@@ -171,6 +172,11 @@
 
         </RelativeLayout>
     </customviews.ScrollViewX>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_48sdp"
+        android:background="@drawable/toolbar_dropshadow" />
 
     <include layout="@layout/custom_toolbar" />
 

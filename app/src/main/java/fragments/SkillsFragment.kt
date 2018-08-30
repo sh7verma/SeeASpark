@@ -45,6 +45,10 @@ class SkillsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun onCreateStuff() {
+        if (mCreateProfileInstance!!.userData!!.response.user_type == Constants.MENTOR)
+            txtUserType.text = getString(R.string.mentor)
+        else
+            txtUserType.text = getString(R.string.mentee)
         for (skillValue: SkillsModel in mCreateProfileInstance!!.mSkillsArray) {
             flSkills.addView(inflateView(skillValue))
         }

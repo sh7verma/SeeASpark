@@ -30,7 +30,7 @@
                 <LinearLayout
                     android:id="@+id/llMain"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_280sdp"
+                    android:layout_height="@dimen/_300sdp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -162,7 +162,17 @@
                         android:layout_marginRight="@dimen/_16sdp"
                         android:layout_marginTop="@dimen/_3sdp"
                         android:background="@color/colorLine"
-                        android:visibility="invisible" />
+                        android:visibility="gone" />
+
+                    <CheckBox
+                        android:id="@+id/cbShowPassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:text="@string/show_password"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_12ssp"
+                        android:theme="@style/checkBoxStyle" />
 
                     <customviews.MediumTextView
                         android:id="@+id/txtForgotPassword"
@@ -196,7 +206,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_270sdp">
+                    android:layout_marginTop="@dimen/_300sdp">
 
                     <ImageView
                         android:id="@+id/imgFacebook"
