@@ -236,7 +236,6 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
                 csvUsers.setAdapter(mAdapterCards)
 
 //                addCardWithAnimation(response.response)
-
             } else {
                 if (response.response.isNotEmpty()) {
                     mLandingInstance!!.mArrayCards.addAll(response.response)
@@ -320,7 +319,6 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
             startActivity(intent)
             activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
         }
-
     }
 
     fun swipeRightLeft(swiped: Int, id: Int) {
@@ -391,7 +389,6 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
         activity.overridePendingTransition(R.anim.slide_in_up, 0)
     }
 
-
     override fun onResume() {
         // register connection status listener
         MainApplication.getInstance().setConnectivityListener(this)
@@ -402,13 +399,6 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
         if (llMainHomeFrag != null) {
             if (isConnected) {
                 // Todo set Adapter here
-            }
-        }
-
-        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
-        fun resetData() {
-            if (mAdapterCards != null) {
-                // Todo set card Adapter
             }
         }
     }

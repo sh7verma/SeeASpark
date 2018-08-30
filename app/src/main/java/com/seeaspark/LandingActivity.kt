@@ -56,7 +56,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     private var width = 0
     private var height = 0
 
-    private var homeFragment: HomeCardSwipeFragment?= null
+    private var homeFragment: HomeCardSwipeFragment? = null
 
     private var mTracker: Tracker? = null
     var mArrayCards = ArrayList<CardsDisplayModel>()
@@ -126,6 +126,9 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
         userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
 
+        if (userData!!.response.document_verified == 1)
+            mUtils!!.setInt("document_verified", 0)
+
         val drawable = ContextCompat.getDrawable(mContext!!, R.mipmap.ic_ava_ob)
 
         width = drawable!!.intrinsicWidth
@@ -135,6 +138,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 .resize(width, height).into(imgProfileTip)
 
         checkUserType()
+
 
         homeFragment = HomeCardSwipeFragment()
         /// adding home fragment

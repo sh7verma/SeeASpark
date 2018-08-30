@@ -42,7 +42,6 @@ class SplashActivity : Activity() {
         }
 
         Handler().postDelayed({
-
             if (mUtils.getString("profileReview", "").equals("yes")) {
                 startActivity(Intent(this@SplashActivity, ReviewActivity::class.java))
                 finish()
