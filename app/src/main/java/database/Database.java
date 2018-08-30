@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import models.ChatsModel;
+import models.MessageHistoryModel;
 import models.MessagesModel;
 import models.NotesListingModel;
 import models.NotesModel;
@@ -1460,6 +1461,61 @@ public class Database extends SQLiteOpenHelper {
                 }
                 values.put(CUSTOM_DATA, msg.custom_data);
                 db_write.insertOrThrow(MESSAGES_TABLE, null, values);
+            }
+            db_write.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed()) {
+                cur.close();
+            }
+            db_write.endTransaction();
+        }
+    }
+
+    public void addMessagesHistory(List<MessageHistoryModel.ResponseBean> messages, String userId) {
+        SQLiteDatabase db_write = this.getWritableDatabase();
+        SQLiteDatabase db_read = this.getReadableDatabase();
+        db_write.beginTransaction();
+        Cursor cur = null;
+        try {
+            for (int i = 0; i < messages.size(); i++) {
+                MessageHistoryModel.ResponseBean msg = messages.get(i);
+                ContentValues values = new ContentValues();
+                values.put(MESSAGE, msg.getMessage());
+                values.put(MESSAGE_TYPE, msg.getMessage_type());
+                values.put(MESSAGE_TIME, msg.getMessage_time()); // comment for show local time
+                values.put(FIRBASE_MESSAGE_TIME, msg.getFirebase_message_time());
+                values.put(CHAT_DIALOG_ID, msg.getChat_dialog_id());
+                values.put(SENDER_ID, msg.getSender_id());
+                values.put(MESSAGE_STATUS, msg.getMessage_status());
+                values.put(ATTACHMENT_URL, msg.getAttachment_url());
+                values.put(RECEIVER_ID, msg.getReceiver_id());
+
+                String qry = "select * from " + MESSAGES_TABLE + " where " + MESSAGE_ID + " = '" + msg.getMessage_id() + "'";
+                cur = db_read.rawQuery(qry, null);
+                if (cur.getCount() > 0) {
+                    db_write.update(MESSAGES_TABLE, values, MESSAGE_ID + " = '" + msg.getMessage_id() + "'", null);
+                } else {
+                    for (int j = 0; j < msg.getMessage_deleted().size(); j++) {
+                        if (msg.getMessage_deleted().get(j).getKey().equals(userId)) {
+                            values.put(MESSAGE_DELETED, msg.getMessage_deleted().get(j).getValue());
+                            break;
+                        }
+                    }
+                    for (int j = 0; j < msg.getFavourite_message().size(); j++) {
+                        if (msg.getFavourite_message().get(j).getKey().equals(userId)) {
+                            values.put(FAVOURITE_MESSAGE, msg.getFavourite_message().get(j).getValue());
+                            break;
+                        }
+                    }
+                    values.put(MESSAGE_ID, msg.getMessage_id());
+                    values.put(ATTACHMENT_PATH, "");
+                    values.put(ATTACHMENT_STATUS, Constants.FILE_EREROR);
+                    values.put(ATTACHMENT_PROGRESS, "0");
+                    values.put(CUSTOM_DATA, "");
+                    db_write.insertOrThrow(MESSAGES_TABLE, null, values);
+                }
             }
             db_write.setTransactionSuccessful();
         } catch (Exception e) {

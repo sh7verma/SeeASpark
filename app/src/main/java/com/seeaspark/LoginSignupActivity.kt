@@ -14,6 +14,7 @@ import android.view.animation.TranslateAnimation
 import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -30,8 +31,7 @@ import com.linkedin.platform.listeners.ApiResponse
 import com.linkedin.platform.listeners.AuthListener
 import com.linkedin.platform.utils.Scope
 import kotlinx.android.synthetic.main.activity_signup.*
-import models.ProfileModel
-import models.SignupModel
+import models.*
 import network.RetrofitClient
 import org.json.JSONException
 import retrofit2.Call
@@ -350,7 +350,6 @@ class LoginSignupActivity : BaseActivity() {
 
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
-                dismissLoader()
                 signInAnonymously()
                 if (response.body().code == Constants.PROCEED_AS_OTHER
                         && response.body().response != null) {
@@ -358,6 +357,8 @@ class LoginSignupActivity : BaseActivity() {
                     // but didn't setuped profile yet
 
                     /// changing userType
+
+                    dismissLoader()
 
                     val signupModel = response.body()
 
@@ -376,6 +377,8 @@ class LoginSignupActivity : BaseActivity() {
                 } else if (response.body().code == Constants.PROFILE_UNDER_REVIEW
                         && response.body().response != null) {
 
+                    dismissLoader()
+
                     /// add data to shared preference
                     addDataToSharedPreferences(response.body())
 
@@ -386,7 +389,7 @@ class LoginSignupActivity : BaseActivity() {
                         && response.body().response != null) {
                     if (response.body().response.email_verified == 0 &&
                             response.body().response.profile_status == 0) {
-
+                        dismissLoader()
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
@@ -396,7 +399,7 @@ class LoginSignupActivity : BaseActivity() {
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 0 &&
                             response.body().response.profile_status == 0) {
-
+                        dismissLoader()
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
@@ -406,7 +409,7 @@ class LoginSignupActivity : BaseActivity() {
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 0) {
-
+                        dismissLoader()
                         /// add data to shared preference
                         addDataToSharedPreferences(response.body())
 
@@ -416,7 +419,7 @@ class LoginSignupActivity : BaseActivity() {
                     } else if (response.body().response.email_verified == 1 &&
                             response.body().response.document_verified == 1 &&
                             response.body().response.profile_status == 1) {
-
+                        dismissLoader()
                         mUtils!!.setString("access_token", response.body().response.access_token)
                         mUtils!!.setString("user_id", response.body().response.id.toString())
                         mUtils!!.setInt("profile_status", response.body().response.profile_status)
@@ -443,10 +446,11 @@ class LoginSignupActivity : BaseActivity() {
                         addDataToSharedPreferences(response.body())
 
                         /// navigate to landing Screen
-                        moveToLanding()
+                        hitHistoryApi()
 
                     }
                 } else if (response.body().response == null) {
+                    dismissLoader()
                     if (response.body().error!!.code == Constants.PROCEED_AS_OTHER_UNDER_REVIEW)
                         alertProfileSubmittedDialog(response.body().error!!.message!!)
                     else
@@ -471,7 +475,6 @@ class LoginSignupActivity : BaseActivity() {
 
         call.enqueue(object : Callback<SignupModel> {
             override fun onResponse(call: Call<SignupModel>, response: Response<SignupModel>) {
-                dismissLoader()
                 signInAnonymously()
                 if (response.body().response != null) {
                     if (response.body().response.user_type != mUserType) {
@@ -484,7 +487,7 @@ class LoginSignupActivity : BaseActivity() {
                                 && response.body().response != null) {
                             /// user enter as different user Type as comapred to signup
                             // but didn't setuped profile yet
-
+                            dismissLoader()
                             val signupModel = response.body()
 
                             if (signupModel.response.user_type == Constants.MENTOR)
@@ -502,6 +505,7 @@ class LoginSignupActivity : BaseActivity() {
                         } else if (response.body().code == Constants.PROFILE_UNDER_REVIEW
                                 && response.body().response != null) {
                             /// add data to shared preference
+                            dismissLoader()
                             addDataToSharedPreferences(response.body())
                             /// navigate to review screen
                             moveToReview(response.body())
@@ -510,7 +514,7 @@ class LoginSignupActivity : BaseActivity() {
                             if (response.body().response.email_verified == 0 &&
                                     response.body().response.profile_status == 0 &&
                                     (response.body().response.account_type == Constants.EMAIL_LOGIN)) {
-
+                                dismissLoader()
                                 addDataToSharedPreferences(response.body())
                                 /// navigate to email verification screen
                                 moveToEmailVerification(response.body())
@@ -520,7 +524,7 @@ class LoginSignupActivity : BaseActivity() {
                                     response.body().response.document_verified == 0 &&
                                     (response.body().response.account_type == Constants.FACEBOOK_LOGIN ||
                                             response.body().response.account_type == Constants.LIKENDIN_LOGIN)) {
-
+                                dismissLoader()
                                 response.body().response.full_name = mName
                                 addDataToSharedPreferences(response.body())
 
@@ -536,7 +540,7 @@ class LoginSignupActivity : BaseActivity() {
                             } else if (response.body().response.email_verified == 1 &&
                                     response.body().response.document_verified == 0 &&
                                     response.body().response.profile_status == 0) {
-
+                                dismissLoader()
                                 mUtils!!.setBoolean("addEmailFragment", false)
                                 response.body().response.full_name = mName
                                 addDataToSharedPreferences(response.body())
@@ -546,7 +550,7 @@ class LoginSignupActivity : BaseActivity() {
                             } else if (response.body().response.email_verified == 1 &&
                                     response.body().response.document_verified == 1 &&
                                     response.body().response.profile_status == 0) {
-
+                                dismissLoader()
                                 mUtils!!.setBoolean("addEmailFragment", false)
                                 response.body().response.full_name = mName
                                 addDataToSharedPreferences(response.body())
@@ -556,7 +560,7 @@ class LoginSignupActivity : BaseActivity() {
                             } else if (response.body().response.email_verified == 1 &&
                                     response.body().response.document_verified == 1 &&
                                     response.body().response.profile_status == 1) {
-
+                                dismissLoader()
                                 mUtils!!.setString("access_token", response.body().response.access_token)
                                 mUtils!!.setInt("profile_status", response.body().response.profile_status)
                                 mUtils!!.setString("user_id", response.body().response.id.toString())
@@ -579,11 +583,12 @@ class LoginSignupActivity : BaseActivity() {
                                 mUtils!!.setString("user_pic", response.body().response.avatar.avtar_url)
                                 addDataToSharedPreferences(response.body())
                                 /// navigate to landing Screen
-                                moveToLanding()
+                                hitHistoryApi()
                             }
                         }
                     }
                 } else {
+                    dismissLoader()
                     if (response.body().error!!.code == Constants.PROCEED_AS_OTHER_UNDER_REVIEW)
                         alertProfileSubmittedDialog(response.body().error!!.message!!)
                     else
@@ -610,14 +615,15 @@ class LoginSignupActivity : BaseActivity() {
         }
         if (docVerified == 0 && profileStatus == 1) {
             /// Review Screen
+            dismissLoader()
             moveToReview(response)
         } else if (docVerified == 1 && profileStatus == 1) {
             /// Questionarrie Screen
-
+            dismissLoader()
             moveToQuestionnaire()
         } else if (docVerified == 0 && profileStatus == 1) {
             /// Landing Screen
-            moveToLanding()
+            hitHistoryApi()
         }
     }
 
@@ -653,6 +659,31 @@ class LoginSignupActivity : BaseActivity() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+    }
+
+    internal fun hitHistoryApi() {
+        val call = RetrofitClient.getInstance().getChatHistory(mUtils!!.getString("access_token", ""))
+        call.enqueue(object : Callback<MessageHistoryModel> {
+
+            override fun onResponse(call: Call<MessageHistoryModel>, response: Response<MessageHistoryModel>) {
+                if (response.body().response != null) {
+                    db!!.addMessagesHistory(response.body().response, mUtils!!.getString("user_id", ""))
+                    dismissLoader()
+                    moveToLanding()
+                } else {
+                    dismissLoader()
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+                        moveToSplash()
+                    } else
+                        showAlert(txtDone, response.body().error!!.message!!)
+                }
+            }
+
+            override fun onFailure(call: Call<MessageHistoryModel>, t: Throwable) {
+                dismissLoader()
+            }
+        })
     }
 
     private fun moveToLanding() {

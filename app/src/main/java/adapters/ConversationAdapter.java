@@ -11,6 +11,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -71,6 +73,8 @@ public class ConversationAdapter extends BaseAdapter {
     ChatsModel mPrivateChat = null;
 
     String mUserID, mOpponentUserId, mParticipantIds;
+    int lastPosition = -1;
+    boolean flag = false;
 
     public ConversationAdapter(Context con, ConversationActivity mActivity, int width, String userId,
                                String otherUserId, String participantIds, ChatsModel mChat) {
@@ -87,6 +91,10 @@ public class ConversationAdapter extends BaseAdapter {
 
     public void remove_selection() {
         notifyDataSetChanged();
+    }
+
+    public void animationStatus(boolean status) {
+//        flag = status;
     }
 
     @Override
@@ -183,7 +191,8 @@ public class ConversationAdapter extends BaseAdapter {
                             return true;
                         }
                     });
-
+                    if (flag)
+                        setAnimation(mSentTextHolder.llSentMessage, position);
                 } else {
                     ChatHolderReceiverText mReceiveTextHolder;
                     if (convertView == null) {
@@ -239,6 +248,8 @@ public class ConversationAdapter extends BaseAdapter {
                             return true;
                         }
                     });
+                    if (flag)
+                        setAnimation(mReceiveTextHolder.llReceiveMessage, position);
                 }
             } else if (mMessage.message_type.equals(Constants.TYPE_IMAGE)) {
 
@@ -325,6 +336,8 @@ public class ConversationAdapter extends BaseAdapter {
                             }
                         }
                     });
+                    if (flag)
+                        setAnimation(mSentImageHolder.rlSentMessage, position);
                 } else {
                     final ChatHolderReceiverImage mReceiveImageHolder;
                     if (convertView == null) {
@@ -400,6 +413,8 @@ public class ConversationAdapter extends BaseAdapter {
                             }
                         }
                     });
+                    if (flag)
+                        setAnimation(mReceiveImageHolder.rlReceiveMessage, position);
                 }
             } else if (mMessage.message_type.equals(Constants.TYPE_VIDEO)) {
                 if (mMessage.sender_id.equalsIgnoreCase(mUserID)) {
@@ -491,6 +506,8 @@ public class ConversationAdapter extends BaseAdapter {
                             }
                         }
                     });
+                    if (flag)
+                        setAnimation(mSentVideoHolder.rlSentMessage, position);
                 } else {
                     final ChatHolderReceiverVideo mReceiveVideoHolder;
                     if (convertView == null) {
@@ -576,6 +593,8 @@ public class ConversationAdapter extends BaseAdapter {
                             }
                         }
                     });
+                    if (flag)
+                        setAnimation(mReceiveVideoHolder.rlReceiveMessage, position);
                 }
             } else if (mMessage.message_type.equals(Constants.TYPE_DOCUMENT)) {
 
@@ -671,7 +690,8 @@ public class ConversationAdapter extends BaseAdapter {
                             }
                         }
                     });
-
+                    if (flag)
+                        setAnimation(mSentDocumentHolder.llSentMessage, position);
                 } else {
                     ChatHolderReceiverDocument mReceiveDocumentHolder;
                     if (convertView == null) {
@@ -761,7 +781,8 @@ public class ConversationAdapter extends BaseAdapter {
                             }
                         }
                     });
-
+                    if (flag)
+                        setAnimation(mReceiveDocumentHolder.llReceiveMessage, position);
                 }
             } else if (mMessage.message_type.equals(Constants.TYPE_NOTES)) {
                 if (mMessage.sender_id.equalsIgnoreCase(mUserID)) {
@@ -810,7 +831,8 @@ public class ConversationAdapter extends BaseAdapter {
                             mContext.startActivity(in);
                         }
                     });
-
+                    if (flag)
+                        setAnimation(mSentNotesHolder.llSentMessage, position);
                 } else {
                     ChatHolderReceiverNotes mReceiveNotesHolder;
                     if (convertView == null) {
@@ -857,6 +879,8 @@ public class ConversationAdapter extends BaseAdapter {
                             mContext.startActivity(in);
                         }
                     });
+                    if (flag)
+                        setAnimation(mReceiveNotesHolder.llReceiveMessage, position);
                 }
             } else if (mMessage.message_type.equals(Constants.TYPE_AUDIO)) {
                 if (mMessage.sender_id.equalsIgnoreCase(mUserID)) {
@@ -953,7 +977,8 @@ public class ConversationAdapter extends BaseAdapter {
                             }
                         }
                     });
-
+                    if (flag)
+                        setAnimation(mSentAudioHolder.llSentMessage, position);
                 } else {
                     final ChatHolderReceiverAudio mReceiveAudioHolder;
                     if (convertView == null) {
@@ -1046,6 +1071,8 @@ public class ConversationAdapter extends BaseAdapter {
                             }
                         }
                     });
+                    if (flag)
+                        setAnimation(mReceiveAudioHolder.llReceiveMessage, position);
                 }
             }
         }
@@ -1155,5 +1182,13 @@ public class ConversationAdapter extends BaseAdapter {
 
         }
     };
+
+    private void setAnimation(View viewToAnimate, int position) {
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.push_up_in);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
+    }
 
 }

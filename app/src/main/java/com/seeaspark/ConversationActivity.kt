@@ -487,13 +487,13 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("unread_count").child(mCurrentUser!!.user_id).setValue(0)
         }
         setReadMessages.clear()
-        mUtils!!.setString("chat_dialog_id",mParticpantIDS)
+        mUtils!!.setString("chat_dialog_id", mParticpantIDS)
         super.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mUtils!!.setString("chat_dialog_id","")
+        mUtils!!.setString("chat_dialog_id", "")
     }
 
     fun chatSetUp() {
@@ -642,6 +642,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     override fun onStartUploading(message_id: String?) {
         if (mMessageIds.contains(message_id)) {
             mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_UPLOADING
+            mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
         }
     }
@@ -651,6 +652,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_SUCCESS
             mMessagesMap!![message_id]!!.attachment_url = attachment_data
             mMessagesMap!![message_id]!!.message_status = Constants.STATUS_MESSAGE_SENT
+            mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
         }
     }
@@ -658,6 +660,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     override fun onErrorUploading(message_id: String?, exception: java.lang.Exception?) {
         if (mMessageIds.contains(message_id)) {
             mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_EREROR
+            mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
             Toast.makeText(this, "" + exception, Toast.LENGTH_SHORT).show()
         }
@@ -666,6 +669,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     override fun onProgressUpdate(message_id: String?, progress: Int) {
         if (mMessageIds!!.contains(message_id)) {
             mMessagesMap!![message_id]!!.attachment_progress = "" + progress
+            mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
         }
     }
@@ -673,6 +677,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     override fun onDownloadProgressUpdate(message_id: String?, progress: Int) {
         if (mMessageIds!!.contains(message_id)) {
             mMessagesMap!![message_id]!!.attachment_progress = "" + progress
+            mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
         }
     }
@@ -680,6 +685,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     override fun onStartDownloading(message_id: String?) {
         if (mMessagesMap != null && mMessagesMap!!.containsKey(message_id)) {
             mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_UPLOADING
+            mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
         }
     }
@@ -690,6 +696,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             mMessagesMap!![message_id]!!.attachment_progress = "100"
             mMessagesMap!![message_id]!!.attachment_path = path
             mMessagesMap!![message_id]!!.custom_data = thumbPath
+            mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
         }
     }
@@ -697,6 +704,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     override fun onErrorDownloading(message_id: String?, exception: java.lang.Exception?) {
         if (mMessageIds.contains(message_id)) {
             mMessagesMap!![message_id]!!.attachment_status = Constants.FILE_EREROR
+            mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
         }
     }
@@ -714,6 +722,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 
         mConversationAdapter = ConversationAdapter(this, mConversationActivity, mWidth, mCurrentUser!!.user_id,
                 mOpponentUserId, mPrivateChat!!.participant_ids, mPrivateChat)
+        mConversationAdapter!!.animationStatus(false)
         lvChatList.adapter = mConversationAdapter
     }
 
@@ -807,6 +816,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             mMessagesMap = local
             makeHeaders()
             val pp = mMessagesMap!!.size - pos
+            mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
             lvChatList.setSelection(pp)
         }
@@ -2395,6 +2405,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 if (mMessageIds.contains(message.message_id)) { // already
                     mMessagesMap!!.put(message.message_id, message)
                 }
+                mConversationAdapter!!.animationStatus(false)
                 mConversationAdapter!!.notifyDataSetChanged()
                 if (message.sender_id != mCurrentUser!!.user_id) {
                     if (message.message_status != Constants.STATUS_MESSAGE_SEEN) {
@@ -2463,6 +2474,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mMessageIds.add(message.message_id)
             }
         }
+        mConversationAdapter!!.animationStatus(true)
         mConversationAdapter!!.notifyDataSetChanged()
     }
 
@@ -2520,6 +2532,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 
         mMessageIds.add(mMessage.message_id)
         mMessagesMap!!.put(mMessage.message_id, mMessage)
+        mConversationAdapter!!.animationStatus(true)
         mConversationAdapter!!.notifyDataSetChanged()
         lvChatList.post { lvChatList.setSelection(lvChatList.count - 1) }
     }

@@ -3,6 +3,7 @@ package network;
 import models.CardModel;
 import models.CommentModel;
 import models.LanguageListingModel;
+import models.MessageHistoryModel;
 import models.NotesListingModel;
 import models.NotesModel;
 import models.OtherProfileModel;
@@ -358,5 +359,9 @@ public interface ApiInterface {
     @POST("/api/v1/chats/delete_messages")
     Call<BaseSuccessModel> deleteMessage(@Field("access_token") String access_token,
                                          @Field("message_id") String message_id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/chats/chat_history")
+    Call<MessageHistoryModel> getChatHistory(@Field("access_token") String access_token);
 
 }
