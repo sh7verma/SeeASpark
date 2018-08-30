@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.add_skills.view.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
 import models.ProfileModel
 import models.SignupModel
+import models.ViewProfileModel
 import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -162,11 +163,12 @@ class ViewProfileActivity : BaseActivity() {
     }
 
     private fun hitProfileAPI() {
-        val call = RetrofitClient.getInstance().getProfile(mUtils!!.getString("access_token", ""),
-                userData!!.response.id.toString())
-        call.enqueue(object : Callback<ProfileModel> {
+        val call = RetrofitClient.getInstance()
+                .getProfile(mUtils!!.getString("access_token", ""),
+                        userData!!.response.id.toString())
+        call.enqueue(object : Callback<ViewProfileModel> {
 
-            override fun onResponse(call: Call<ProfileModel>?, response: Response<ProfileModel>) {
+            override fun onResponse(call: Call<ViewProfileModel>?, response: Response<ViewProfileModel>) {
                 if (response.body().response != null) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         updateProfileDatabase(response.body().response)
@@ -181,7 +183,7 @@ class ViewProfileActivity : BaseActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<ProfileModel>?, t: Throwable?) {
+            override fun onFailure(call: Call<ViewProfileModel>?, t: Throwable?) {
                 showAlert(llMainViewProfile, t!!.localizedMessage)
             }
         })

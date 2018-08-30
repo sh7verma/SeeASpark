@@ -7,8 +7,12 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/cardstackview/cardstackview.iml" filepath="$PROJECT_DIR$/cardstackview/cardstackview.iml" />
       <module fileurl="file://$PROJECT_DIR$/cropLib/cropLib.iml" filepath="$PROJECT_DIR$/cropLib/cropLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ffmpeg4android_lib/ffmpeg4android_lib.iml" filepath="$PROJECT_DIR$/ffmpeg4android_lib/ffmpeg4android_lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ffmpeg4android_lib/ffmpeg4android_lib.iml" filepath="$PROJECT_DIR$/ffmpeg4android_lib/ffmpeg4android_lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/linkedin-sdk/linkedin-sdk.iml" filepath="$PROJECT_DIR$/linkedin-sdk/linkedin-sdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rangeBar1/rangeBar1.iml" filepath="$PROJECT_DIR$/rangeBar1/rangeBar1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rangeBar1/rangeBar1.iml" filepath="$PROJECT_DIR$/rangeBar1/rangeBar1.iml" />
       <module fileurl="file://$PROJECT_DIR$/rangeseekbar/rangeseekbar.iml" filepath="$PROJECT_DIR$/rangeseekbar/rangeseekbar.iml" />
       <module fileurl="file://$PROJECT_DIR$/richeditor/richeditor.iml" filepath="$PROJECT_DIR$/richeditor/richeditor.iml" />
     </modules>

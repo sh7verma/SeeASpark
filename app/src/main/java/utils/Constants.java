@@ -1,5 +1,6 @@
 package utils;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ import java.util.TimeZone;
 
 import database.Database;
 import models.SkillsModel;
+import network.RetrofitClient;
 
 
 public class Constants {
@@ -87,6 +89,90 @@ public class Constants {
     public static final int MALE=1;
     public static final int FEMALE=2;
     public static final int OTHER=3;
+
+    /// Hunny Constants
+    public final static String KEY_SELECTED_MEDIA = "SELECTED_PHOTOS";
+    public final static String KEY_SELECTED_DOCS = "SELECTED_DOCS";
+
+    public final static String EXTRA_PICKER_TYPE = "EXTRA_PICKER_TYPE";
+    public final static String EXTRA_SHOW_GIF = "SHOW_GIF";
+    public final static String EXTRA_FILE_TYPE = "EXTRA_FILE_TYPE";
+    public final static String EXTRA_BUCKET_ID = "EXTRA_BUCKET_ID";
+    public final static String ALL_PHOTOS_BUCKET_ID = "ALL_PHOTOS_BUCKET_ID";
+    public final static int DOC_PICKER = 0x12;
+    public final static String PERMISSIONS_FILE_PICKER =
+            Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+    public enum FILE_TYPE {
+        PDF, WORD, EXCEL, PPT, TXT, UNKNOWN
+    }
+
+    public final static String PDF = "PDF";
+    public final static String PPT = "PPT";
+    public final static String DOC = "DOC";
+    public final static String XLS = "XLS";
+    public final static String TXT = "TXT";
+    public static final int REQUEST_CODE_DOC = 234;
+    public final static int DEFAULT_MAX_COUNT = -1;
+    public final static int FILE_TYPE_MEDIA = 1;
+    public final static int FILE_TYPE_DOCUMENT = 2;
+    public final static int MEDIA_PICKER = 0x11;
+
+    public final static String DEFAULT_MESSAGE_REGEX = "<*&^(SeeASpark)^&*>";
+    public final static String USERS = "Users";
+    public final static String CHATS = "Chats";
+    public final static String MESSAGES = "Messages";
+    public final static String NOTIFICATIONS = "Notifications";
+    public final static Long ONLINE_LONG = 123L;
+    public final static String ONLINE = "Online";
+    public final static int TEXT_LENGTH = 2000;
+    public final static int SHOW_TEXT_LENGTH = 500;
+
+    public final static String FILTER_MENTEE = "1";
+    public final static String FILTER_MENTOR = "0";
+    public final static String FILTER_BOTH = "2";
+
+    public static final String SHARE_URL = RetrofitClient.BASE_URL + "share_user?id=";
+    public final static int LOAD_MORE_VALUE = 20;
+
+
+    public final static String AUDIO_PERMISSION = "audio_permission";
+    public final static String CAMRA_PERMISSION = "camera_permission";
+    public final static String GALLERY_PERMISSION = "gallery_permission";
+
+    public final static String TYPE_TEXT = "1";
+    public final static String TYPE_IMAGE = "2";
+    public final static String TYPE_VIDEO = "3";
+    public final static String TYPE_DOCUMENT = "4";
+    public final static String TYPE_NOTES = "5";
+    public final static String TYPE_AUDIO = "6";
+
+    public final static String FILE_SUCCESS = "2";
+    public final static String FILE_UPLOADING = "1";
+    public final static String FILE_EREROR = "0";
+
+    public final static String SERVICE_RUNNING = "service_running";
+
+    public final static int STATUS_MESSAGE_PENDING = 0;
+    public final static int STATUS_MESSAGE_SENT = 1;
+    public final static int STATUS_MESSAGE_DELIVERED = 2;
+    public final static int STATUS_MESSAGE_SEEN = 3;
+
+    public static final String FIRBASE_STORAGE_DIRECTRY = "chat_uploads/";
+
+    // public static final String fireBase_Database_Url= "https://seeaspark-96ec8.firebaseio.com/"; // report@applify.co //pass: w3lc0m3@!@#
+    public static final String FIREBASE_SERVER_kEY = "AIzaSyC2znGBwGZQUfFQCmVa5fIIRZZEjlomNLc";
+    public static final String FIREBASE_SENDER_ID = "367374373614";
+    public static final String FIREBASE_STORAGE_URL = "gs://seeaspark-96ec8.appspot.com";
+
+    public static boolean contains(String[] types, String path) {
+        for (String string : types) {
+            if (path.toLowerCase().endsWith(string)) return true;
+        }
+        return false;
+    }
+
+    ////
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

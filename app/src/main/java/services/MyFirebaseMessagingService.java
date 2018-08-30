@@ -16,6 +16,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.seeaspark.BroadcastActivity;
+import com.seeaspark.ConversationActivity;
 import com.seeaspark.CreateProfileActivity;
 import com.seeaspark.HandshakeActivity;
 import com.seeaspark.LandingActivity;
@@ -148,6 +149,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationIntent.putExtra("type", "inReview");
                 notificationIntent.putExtra("displayMessage", messageBody.get("message"));
                 broadcaster.sendBroadcast(notificationIntent);
+            }
+        }
+        else if (messageBody.get("push_type").equalsIgnoreCase("8")) {
+            if (utils.getString("access_token", "").equals(messageBody.get("access_token"))) {
+                if (!utils.getString("chat_dialog_id", "").equals(messageBody.get("chat_dialog_id"))) {
+                    utils.setString("participant_ids",messageBody.get("chat_dialog_id"));
+                    intent = new Intent(this, ConversationActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    ringNotification(intent, message, 0, messageBody.get("sender_name"));
+                }
             }
         }
     }

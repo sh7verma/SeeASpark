@@ -1,16 +1,16 @@
 package com.seeaspark
 
+import android.content.Intent
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_handshake.*
-import kotlinx.android.synthetic.main.dialog_short_profile.*
 import models.SignupModel
 import pl.droidsonroids.gif.GifDrawable
 import utils.Constants
+import java.util.*
 
 class HandshakeActivity : BaseActivity() {
 
@@ -95,7 +95,15 @@ class HandshakeActivity : BaseActivity() {
                 moveBack()
             }
             txtStartChat -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                val intent = Intent(this, ConversationActivity::class.java)
+                val mParticpantIDSList = ArrayList<String>()
+                mParticpantIDSList.add(mOtherProfileData!!.id.toString() + "_" + mOtherProfileData!!.user_type)
+                mParticpantIDSList.add(userProfileData!!.response.id.toString() + "_" + userProfileData!!.response.user_type)
+                Collections.sort(mParticpantIDSList)
+                val mParticpantIDS = "" + mParticpantIDSList
+                val participants = mParticpantIDS.substring(1, mParticpantIDS.length - 1)
+                intent.putExtra("participantIDs", participants)
+                startActivity(intent)
                 moveBack()
             }
         }

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llMainAttachment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_marginLeft="@dimen/_12sdp"
+    android:layout_marginRight="@dimen/_12sdp"
+    android:background="@drawable/white_short_profile_background"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <customviews.MediumTextView
+        android:id="@+id/txtShareChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_8sdp"
+        android:paddingLeft="@dimen/_16sdp"
+        android:paddingTop="@dimen/_16sdp"
+        android:text="@string/share"
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_14ssp" />
+
+    <LinearLayout
+        android:id="@+id/llShareOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/_16sdp"
+        android:paddingLeft="@dimen/_16sdp">
+
+        <LinearLayout
+            android:id="@+id/llCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_camera" />
+
+            <customviews.RegularTextView
+                android:id="@+id/txtCamera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/camera"
+                android:paddingTop="@dimen/_2sdp"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_11ssp" />
+
+        </LinearLayout>
+
+        <android.support.v4.widget.Space
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/llGallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_gallery" />
+
+            <customviews.RegularTextView
+                android:id="@+id/txtGallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gallery"
+                android:paddingTop="@dimen/_2sdp"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_11ssp" />
+
+        </LinearLayout>
+
+        <android.support.v4.widget.Space
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/llNotes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_notes_chat" />
+
+            <customviews.RegularTextView
+                android:id="@+id/txtNotes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/notes"
+                android:paddingTop="@dimen/_2sdp"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_11ssp" />
+
+        </LinearLayout>
+
+        <android.support.v4.widget.Space
+            android:layout_width="@dimen/_8sdp"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/llDocument"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_document" />
+
+            <customviews.RegularTextView
+                android:id="@+id/txtDocument"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/document"
+                android:paddingTop="@dimen/_2sdp"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_11ssp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

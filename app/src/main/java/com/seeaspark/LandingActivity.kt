@@ -2,7 +2,12 @@ package com.seeaspark
 
 import adapters.TipsAdapter
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.Fragment
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -21,10 +26,7 @@ import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.squareup.picasso.Picasso
-import fragments.CommunityFragment
-import fragments.EventsFragment
-import fragments.HomeCardSwipeFragment
-import fragments.NotesFragment
+import fragments.*
 import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.activity_verify_id.*
 import models.BaseSuccessModel
@@ -34,10 +36,13 @@ import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import services.JobSchedulerService
+import services.ListenerService
 import utils.Constants
 import utils.GpsStatusDetector
 import utils.MainApplication
 
+@Suppress("DEPRECATION")
 class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         LocationListener, GpsStatusDetector.GpsStatusDetectorCallBack, GoogleApiClient.OnConnectionFailedListener {
 
@@ -95,6 +100,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     }
 
     override fun onCreateStuff() {
+        callService()
         if (intent.hasExtra("matchData")) {
             val matchData: String = intent.getStringExtra("matchData")
             intent = Intent(this, HandshakeActivity::class.java)
@@ -219,7 +225,17 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                 mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llChat -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                imgHome.setImageResource(R.mipmap.ic_home)
+                imgEvents.setImageResource(R.mipmap.ic_events)
+                imgNotes.setImageResource(R.mipmap.ic_notes)
+                imgChat.setImageResource(R.mipmap.ic_speach_s)
+                if (userData!!.response.user_type == Constants.MENTEE)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost)
+                else
+                    imgCommunity.setImageResource(R.mipmap.ic_community)
+                replaceFragment(ChatFragment())
+                mTracker!!.setScreenName(getString(R.string.chat))
+                mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
             }
             llEvents -> {
                 imgHome.setImageResource(R.mipmap.ic_home)
@@ -470,4 +486,35 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         super.onDestroy()
     }
 
+    @SuppressLint("NewApi")
+    internal fun callService() {
+// get job api service
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
+            val jobService = ComponentName(packageName, JobSchedulerService::class.java!!.getName())
+            val jobInfo: JobInfo
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                jobInfo = JobInfo.Builder(1, jobService).setMinimumLatency(5000).build()
+            } else {
+                jobInfo = JobInfo.Builder(1, jobService).setPeriodic(5000).build()
+            }
+            jobScheduler.schedule(jobInfo)
+        } else {
+            if (checkServiceRunning()) {
+
+            } else {
+                startService(Intent(applicationContext, ListenerService::class.java))
+            }
+        }
+    }
+
+    fun checkServiceRunning(): Boolean {
+        val manager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("services.ListenerService" == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
 }

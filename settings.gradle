@@ -1,1 +1,1 @@
-include ':app', ':linkedin-sdk', ':rangeseekbar', ':library', ':aFileChooser', ':cropLib', 'richeditor','cardstackview'
+include ':app', ':linkedin-sdk', ':rangeseekbar', ':library', ':aFileChooser', ':cropLib', 'richeditor','cardstackview',':ffmpeg4android_lib', ':rangeBar1'

@@ -1,31 +1,27 @@
 {
   "project_info": {
-    "project_number": "50613425906",
-    "firebase_url": "https://seeaspark-241eb.firebaseio.com",
-    "project_id": "seeaspark-241eb",
-    "storage_bucket": "seeaspark-241eb.appspot.com"
+    "project_number": "367374373614",
+    "firebase_url": "https://seeaspark-96ec8.firebaseio.com",
+    "project_id": "seeaspark-96ec8",
+    "storage_bucket": "seeaspark-96ec8.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:50613425906:android:0b86e71c84007208",
+        "mobilesdk_app_id": "1:367374373614:android:0b86e71c84007208",
         "android_client_info": {
           "package_name": "com.seeaspark"
         }
       },
       "oauth_client": [
         {
-          "client_id": "50613425906-7f1nke24s72lj7m63lfk21fiegu4dgm2.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "50613425906-7f1nke24s72lj7m63lfk21fiegu4dgm2.apps.googleusercontent.com",
+          "client_id": "367374373614-nrf3qm6cvg1gfarc0nnqtauof64h1509.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAqVzPeCGWk2HRp5nmCQMFATeXkw1OzMJA"
+          "current_key": "AIzaSyCtgxvA0ZumNF_QyZfgkS4foRmnqcjYesc"
         }
       ],
       "services": {
