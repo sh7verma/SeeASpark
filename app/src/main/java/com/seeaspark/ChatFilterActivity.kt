@@ -93,12 +93,17 @@ class ChatFilterActivity : BaseActivity() {
         llBoth.setOnClickListener(this)
         llMentor.setOnClickListener(this)
         llMentee.setOnClickListener(this)
+        llMainFilter.setOnClickListener(this)
     }
 
     override fun getContext() = this
 
     override fun onClick(view: View?) {
         when (view) {
+            llMainFilter -> {
+                finish()
+                overridePendingTransition(0, 0)
+            }
             llBoth -> {
                 mUtils!!.setString("filter_type", Constants.FILTER_BOTH)
                 val intent = Intent()

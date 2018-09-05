@@ -29,6 +29,7 @@
         android:gravity="center"
         android:padding="@dimen/_5sdp"
         android:text="@string/ok_ngot_it"
+        android:textSize="@dimen/_12ssp"
         android:textAllCaps="true"
         android:textColor="@color/black_color"
         app:layout_constraintTop_toTopOf="parent"

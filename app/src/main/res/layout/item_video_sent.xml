@@ -38,7 +38,7 @@
                 android:id="@+id/rlSentMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/chat_gradiyant_bubble">
+                android:background="@drawable/chat_gradient_bubble">
 
                 <ImageView
                     android:id="@+id/imgVideoSent"

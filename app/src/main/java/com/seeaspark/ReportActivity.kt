@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
@@ -76,9 +77,15 @@ class ReportActivity : BaseActivity() {
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
                 } else {
-                    if (connectedToInternet())
-                        hitAPI()
-                    else
+                    if (connectedToInternet()) {
+                        val alertDialog = AlertDialog.Builder(this)
+                        alertDialog.setMessage("Are you sure you want to Report?")
+                        alertDialog.setPositiveButton("REPORT") { dialog, which ->
+                            hitAPI()
+                        }
+                        alertDialog.setNegativeButton("CANCEL") { dialog, which -> dialog.cancel() }
+                        alertDialog.show()
+                    } else
                         showInternetAlert(imgDoneIdea)
                 }
             }

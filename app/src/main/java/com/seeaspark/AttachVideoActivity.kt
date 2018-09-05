@@ -29,6 +29,10 @@ import com.squareup.picasso.Picasso
 import helper.VideoCompressionHelper
 import kotlinx.android.synthetic.main.activity_attach_video.*
 import utils.TimeUtilsTrim
+import video.VideoCompressListener
+import video.VideoCompressor
+import videoUtils.SGLog
+import videoUtils.Worker
 import java.io.*
 import java.util.*
 
@@ -202,7 +206,7 @@ class AttachVideoActivity : BaseActivity() {
         rangeSeekbar.setOnRangeBarChangeListener(RangeBar.OnRangeBarChangeListener { rangeBar, leftThumbIndex, rightThumbIndex ->
             // TODO Auto-generated method stub
             leftThumb = leftThumbIndex
-            rightThumb = rightThumbIndex
+            rightThumb = rightThumbIndex+1
             videoView.pause()
             imgPlayVideo.setVisibility(View.VISIBLE)
             handleProgress.removeCallbacks(onEverySecond)
@@ -350,6 +354,7 @@ class AttachVideoActivity : BaseActivity() {
                 // thumb not moved
                 VideoCompressionHelper.initCompressor()
                         .startCompression(this, select_path, camerapathVideo)
+//                compressVideo(select_path)
             } else {
                 (CropVideo()).execute()
             }
@@ -422,6 +427,8 @@ class AttachVideoActivity : BaseActivity() {
                     if (croppd!!.isShowing) {
                         croppd!!.dismiss()
                     }
+//                compressVideo(saved_video)
+
                 VideoCompressionHelper.initCompressor()
                         .startCompression(this@AttachVideoActivity, saved_video, camerapathVideo)
             } catch (e: Exception) {
@@ -531,5 +538,37 @@ class AttachVideoActivity : BaseActivity() {
         }
 
     }
+
+
+    ////
+
+    private fun compressVideo(path: String) {
+
+        val progDailog = ProgressDialog.show(this, "Please wait ...", "Compressing Video ...", true)
+        progDailog.setCancelable(false)
+
+        VideoCompressor.compress(this, path, object : VideoCompressListener {
+            override fun onSuccess(outputFile: String, filename: String, duration: Long) {
+                Worker.postMain {
+                    SGLog.e("video compress success:$outputFile")
+                    progDailog.dismiss()
+                    afterCompressionSuccesful(outputFile)
+                }
+            }
+
+            override fun onFail(reason: String) {
+                Worker.postMain {
+                    Toast.makeText(mContext, "video compress failed:$reason", Toast.LENGTH_SHORT).show()
+                    SGLog.e("video compress failed:$reason")
+                    progDailog.dismiss()
+                }
+            }
+
+            override fun onProgress(progress: Int) {
+                Worker.postMain { SGLog.e("video compress progress:$progress") }
+            }
+        })
+    }
+
 
 }

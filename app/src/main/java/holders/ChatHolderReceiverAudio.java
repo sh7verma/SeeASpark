@@ -96,6 +96,7 @@ public class ChatHolderReceiverAudio {
             cpbProgress.setVisibility(View.GONE);
             imgPlay.setVisibility(View.VISIBLE);
             imgDownload.setVisibility(View.GONE);
+            audioSeekReceive.setProgress(0);
         }
     }
 }

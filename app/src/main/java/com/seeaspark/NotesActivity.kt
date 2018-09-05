@@ -21,6 +21,7 @@ import retrofit2.Response
 import utils.Constants
 import utils.MainApplication
 
+
 class NotesActivity : BaseActivity() {
 
     var isBold = false
@@ -50,7 +51,8 @@ class NotesActivity : BaseActivity() {
         mEditor.focusEditor()
         mEditor.setTextColor(Color.BLACK)
 
-        if (intent.hasExtra("notesData")) {/// getting data from previous activity
+        if (intent.hasExtra("notesData")) {
+            /// getting data from previous activity
             mNotesData = intent.getParcelableExtra("notesData")
             if (mNotesData!!.user_id.toString() == mUtils!!.getString("user_id", "")) {/// own Note
                 setEditorData()
@@ -58,9 +60,8 @@ class NotesActivity : BaseActivity() {
                 isDoneEnabled = true
             } else
                 setNonEditableMode()
-        }
-
-        if (intent.hasExtra("noteId")) {/// getting data from deep Linking
+        } else if (intent.hasExtra("noteId")) {
+            /// getting data from deep Linking
             noteId = intent.getStringExtra("noteId")
             noteFileName = intent.getStringExtra("noteFileName")
 
@@ -68,6 +69,8 @@ class NotesActivity : BaseActivity() {
                 hitFetchNotesDetailAPI()
             else
                 showInternetAlert(llUnderline)
+        } else {
+            Constants.showKeyboard(mContext!!,llMainNotes)
         }
 
         mEditor.setOnDecorationChangeListener { text, types ->
@@ -332,10 +335,15 @@ class NotesActivity : BaseActivity() {
                 if (response!!.body().response != null) {
                     mNotesData = response.body().response
                     if (mNotesData!!.user_id.toString() == mUtils!!.getString("user_id", "")) {
-                        setEditorData()
-                        mNotesData!!.note_type = Constants.MYNOTES
-                        isEdit = true
-                        isDoneEnabled = true
+                        if (intent.hasExtra("chat")) {
+                            setNonEditableMode()
+                        } else {
+                            setEditorData()
+                            mNotesData!!.note_type = Constants.MYNOTES
+                            isEdit = true
+                            isDoneEnabled = true
+                            Constants.showKeyboard(mContext!!, llMainNotes);
+                        }
                     } else {
                         setNonEditableMode()
                     }
@@ -360,11 +368,11 @@ class NotesActivity : BaseActivity() {
     private fun setNonEditableMode() {
         txtTitleCustom.text = getString(R.string.note)
         mNotesData!!.note_type = Constants.RECEIVEDNOTES
-        Constants.closeKeyboard(mContext!!, llCustomToolbar)
         mEditor.html = mNotesData!!.description
         mEditor.setInputEnabled(false)
         txtOptionCustom.visibility = View.INVISIBLE
         llOptions.visibility = View.GONE
+        Constants.closeKeyboard(mContext!!, llMainNotes)
     }
 
     private fun resetEditior() {

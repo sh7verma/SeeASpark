@@ -66,7 +66,8 @@ public class ChatHolderSenderVideo {
             if (!TextUtils.isEmpty(mMessage.custom_data)) {
                 File file = new File(mMessage.custom_data);
                 if (file.exists()) {
-                    Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoSent);
+                    Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72)-1,
+                            (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoSent);
                 }
             }
             imgPlayVideoSent.setVisibility(View.VISIBLE);
@@ -75,7 +76,8 @@ public class ChatHolderSenderVideo {
         } else {
             File file = new File(mMessage.custom_data);
             if (file.exists()) {
-                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoSent);
+                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72)-1,
+                        (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoSent);
             }
             if (mMessage.attachment_status.equals("" + Constants.FILE_UPLOADING)) {
                 imgUpload.setVisibility(View.GONE);

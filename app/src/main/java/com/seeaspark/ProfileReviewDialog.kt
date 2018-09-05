@@ -92,7 +92,6 @@ class ProfileReviewDialog : Activity() {
             else
                 Toast.makeText(this, R.string.internet, Toast.LENGTH_SHORT).show()
         }
-        setDataOnFirebase()
     }
 
     internal fun getDefaults() {
@@ -167,25 +166,6 @@ class ProfileReviewDialog : Activity() {
                 startActivity(inStarted)
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
             }
-        }
-    }
-
-    internal fun setDataOnFirebase() {
-        val model = ProfileModel()
-        model.access_token = userProfileData!!.access_token
-        model.user_id = userProfileData!!.id.toString()
-        model.online_status = Constants.ONLINE_LONG
-        model.user_name = userProfileData!!.full_name
-        model.user_pic = userProfileData!!.avatar.avtar_url
-        val mFirebaseConfigProfile = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
-        mFirebaseConfigProfile.child("id_" + model.user_id).setValue(model).addOnSuccessListener {
-            try {
-                mDb!!.addProfile(model)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }.addOnFailureListener {
-
         }
     }
 

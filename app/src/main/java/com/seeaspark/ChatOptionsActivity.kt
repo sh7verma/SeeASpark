@@ -27,7 +27,7 @@ class ChatOptionsActivity : BaseActivity() {
     }
 
     override fun displayDayMode() {
-        llOuterChatOptions.setBackgroundResource(R.drawable.white_short_profile_background)
+        llinnerChatOptions.setBackgroundResource(R.drawable.white_short_profile_background)
         txtShareProfile.setTextColor(blackColor)
         txtRating.setTextColor(blackColor)
         txtFavouriteMessage.setTextColor(blackColor)
@@ -38,7 +38,7 @@ class ChatOptionsActivity : BaseActivity() {
     }
 
     override fun displayNightMode() {
-        llOuterChatOptions.setBackgroundResource(R.drawable.dark_short_profile_background)
+        llinnerChatOptions.setBackgroundResource(R.drawable.dark_short_profile_background)
         txtShareProfile.setTextColor(whiteColor)
         txtRating.setTextColor(whiteColor)
         txtFavouriteMessage.setTextColor(whiteColor)
@@ -53,6 +53,7 @@ class ChatOptionsActivity : BaseActivity() {
     }
 
     override fun initListener() {
+        llOuterChatOptions.setOnClickListener(this)
         txtShareProfile.setOnClickListener(this)
         txtRating.setOnClickListener(this)
         txtFavouriteMessage.setOnClickListener(this)
@@ -66,6 +67,10 @@ class ChatOptionsActivity : BaseActivity() {
 
     override fun onClick(view: View?) {
         when (view) {
+            llOuterChatOptions -> {
+                finish()
+                overridePendingTransition(0, 0)
+            }
             txtShareProfile -> {
                 val intent = Intent()
                 intent.putExtra("type", "share_profile")
@@ -74,11 +79,12 @@ class ChatOptionsActivity : BaseActivity() {
                 overridePendingTransition(0, 0)
             }
             txtRating -> {
-                val intent = Intent()
-                intent.putExtra("type", "rating")
-                setResult(Activity.RESULT_OK, intent)
-                finish()
-                overridePendingTransition(0, 0)
+//                val intent = Intent()
+//                intent.putExtra("type", "rating")
+//                setResult(Activity.RESULT_OK, intent)
+//                finish()
+//                overridePendingTransition(0, 0)
+                showToast(mContext!!, getString(R.string.work_in_progress))
             }
             txtFavouriteMessage -> {
                 val intent = Intent()

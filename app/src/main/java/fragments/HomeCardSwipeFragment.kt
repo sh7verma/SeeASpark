@@ -42,7 +42,7 @@ import utils.MainApplication
 import utils.Utils
 import java.util.*
 
-class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityReceiver.ConnectivityReceiverListener {
+class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
 
     private val PREFERENCES: Int = 2
     private val VIEWPROFILE: Int = 4
@@ -97,6 +97,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun displayDayMode() {
         llHomeToolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.white_color))
+        llInnerOutCards.setBackgroundResource(R.drawable.background_out_of_card)
         imgPreferHome.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
         txtTitleHome.setTextColor(ContextCompat.getColor(activity, R.color.black_color))
         imgProfileHome.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
@@ -111,6 +112,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun displayNightMode() {
         llHomeToolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.black_color))
+        llInnerOutCards.setBackgroundResource(R.drawable.dark_background_out_of_cards)
         imgPreferHome.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
         txtTitleHome.setTextColor(ContextCompat.getColor(activity, R.color.white_color))
         imgProfileHome.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
@@ -183,15 +185,16 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
                 openProfile(mLandingInstance!!.mArrayCards[index],
                         csvUsers.topView.contentContainer.imgAvatarCard)
             }
-
         })
     }
 
     private fun checkVisibility() {
-        if (mLandingInstance!!.mArrayTempCards.isEmpty()) {
-            llOutOfCards.visibility = View.VISIBLE
-        } else {
-            llOutOfCards.visibility = View.GONE
+        if (mHomeFragment != null) {
+            if (mLandingInstance!!.mArrayTempCards.isEmpty()) {
+                llOutOfCards.visibility = View.VISIBLE
+            } else {
+                llOutOfCards.visibility = View.GONE
+            }
         }
     }
 
@@ -392,16 +395,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
 
     override fun onResume() {
         // register connection status listener
-        MainApplication.getInstance().setConnectivityListener(this)
         super.onResume()
-    }
-
-    override fun onNetworkConnectionChanged(isConnected: Boolean) {
-        if (llMainHomeFrag != null) {
-            if (isConnected) {
-                // Todo set Adapter here
-            }
-        }
     }
 
     override fun onStart() {
@@ -462,16 +456,12 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
         mParticpantIDSList.add(othetUser!!.id.toString() + "_" + othetUser!!.user_type)
         mParticpantIDSList.add(mLandingInstance!!.userData!!.response.id.toString() + "_" + mLandingInstance!!.userData!!.response.user_type)
         Collections.sort(mParticpantIDSList)
-        var mParticpantIDS = "" + mParticpantIDSList
+        var mParticpantIDS = mParticpantIDSList.toString()
         var participants = mParticpantIDS.substring(1, mParticpantIDS.length - 1)
+        participants = participants.replace(" ", "")
         val mChat = ChatsModel()
         mChat.chat_dialog_id = participants
         mChat.last_message = Constants.DEFAULT_MESSAGE_REGEX
-
-        val lastTime = HashMap<String, Long>()
-        lastTime.put(mLandingInstance!!.userData!!.response.id.toString(), 0L)
-        lastTime.put(othetUser.id.toString(), 0L)
-        mChat.last_message_time = lastTime
 
         mChat.last_message_sender_id = mLandingInstance!!.userData!!.response.id.toString()
         mChat.last_message_id = "0"
@@ -499,6 +489,11 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
         deleteTime.put(othetUser.id.toString(), utcTime)
         mChat.delete_dialog_time = deleteTime
 
+        val lastTime = HashMap<String, Long>()
+        lastTime.put(mLandingInstance!!.userData!!.response.id.toString(), utcTime)
+        lastTime.put(othetUser.id.toString(), utcTime)
+        mChat.last_message_time = lastTime
+
         val block = HashMap<String, String>()
         block.put(mLandingInstance!!.userData!!.response.id.toString(), "0")
         block.put(othetUser.id.toString(), "0")
@@ -524,8 +519,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener, ConnectivityRece
             mFirebaseConfigUser = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
             mFirebaseConfigUser.child("id_" + othetUser.id).child("chat_dialog_ids").child(participants)
                     .setValue(participants)
-            mFirebaseConfigUser.child("id_" + mLandingInstance!!.userData!!.response.id.toString()).child("chat_dialog_ids").child(participants)
-                    .setValue(participants)
+            mFirebaseConfigUser.child("id_" + mLandingInstance!!.userData!!.response.id.toString())
+                    .child("chat_dialog_ids").child(participants).setValue(participants)
 
             val intent = Intent(mContext!!, HandshakeActivity::class.java)
             intent.putExtra("otherProfileData", response)

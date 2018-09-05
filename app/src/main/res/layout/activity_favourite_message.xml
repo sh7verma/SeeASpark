@@ -91,7 +91,20 @@
             android:scrollbars="none"
             android:scrollingCache="false"
             android:stackFromBottom="true"
-            android:transcriptMode="normal"></ListView>
+            android:transcriptMode="normal"/>
+
+        <customviews.MediumTextView
+            android:id="@+id/txtNoFavourite"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/no_favourite_messages"
+            android:layout_gravity="center"
+            android:drawablePadding="@dimen/_8sdp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_14ssp" />
+
 
     </LinearLayout>
 

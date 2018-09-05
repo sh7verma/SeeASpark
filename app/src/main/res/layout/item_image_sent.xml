@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.18"
             android:gravity="center_vertical"
-            android:orientation="horizontal"></LinearLayout>
+            android:orientation="horizontal"/>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:background="@drawable/chat_gradiyant_bubble">
+                android:background="@drawable/chat_gradient_bubble">
 
                 <ImageView
                     android:id="@+id/imgImageSent"

@@ -42,7 +42,7 @@ class HandshakeActivity : BaseActivity() {
         populateData()
 
         val animation1 = AlphaAnimation(0f, 1f)
-        animation1.duration = 1500
+        animation1.duration = 1000
         animation1.fillAfter = true
 
         val existingOriginalDrawable = gifHandshake.drawable as GifDrawable?
@@ -97,10 +97,18 @@ class HandshakeActivity : BaseActivity() {
             txtStartChat -> {
                 val intent = Intent(this, ConversationActivity::class.java)
                 val mParticpantIDSList = ArrayList<String>()
-                mParticpantIDSList.add(mOtherProfileData!!.id.toString() + "_" + mOtherProfileData!!.user_type)
+
+                val otherUserType: String
+                if (userProfileData!!.response.user_type == Constants.MENTOR)
+                    otherUserType = Constants.MENTEE.toString()
+                else
+                    otherUserType = Constants.MENTOR.toString()
+
+                mParticpantIDSList.add(mOtherProfileData!!.id.toString() + "_" + otherUserType)
                 mParticpantIDSList.add(userProfileData!!.response.id.toString() + "_" + userProfileData!!.response.user_type)
-                Collections.sort(mParticpantIDSList)
-                val mParticpantIDS = "" + mParticpantIDSList
+                mParticpantIDSList.sort()
+                var mParticpantIDS = mParticpantIDSList.toString()
+                mParticpantIDS = mParticpantIDS.replace(" ", "")
                 val participants = mParticpantIDS.substring(1, mParticpantIDS.length - 1)
                 intent.putExtra("participantIDs", participants)
                 startActivity(intent)

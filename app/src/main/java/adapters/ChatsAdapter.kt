@@ -36,6 +36,7 @@ class ChatsAdapter(mContext: Context, mChatFragment: ChatFragment, width: Int, c
     var mUserID = ""
     internal var date_format = SimpleDateFormat("dd MMM hh:mm a", Locale.US)
     internal var today_format = SimpleDateFormat("hh:mm a", Locale.US)
+    internal var only_date_format = SimpleDateFormat("dd-MM-yyyy", Locale.US)
     internal var state = false
 
     init {
@@ -96,11 +97,26 @@ class ChatsAdapter(mContext: Context, mChatFragment: ChatFragment, width: Int, c
                 val cal = Calendar.getInstance()
                 cal.timeInMillis = Constants.getLocalTime(mPrivateChat.last_message_time.get(mUserID)!!)
                 val today = Calendar.getInstance()
-                if (date_format.format(today.time) == date_format.format(cal.time)) {
-                    // today
-                    holder.txtTime.text = today_format.format(cal.time)
+                var time = mDb!!.getMessageTime(mPrivateChat.chat_dialog_id)
+                if (time > 0) {
+                    val calLocal = Calendar.getInstance()
+//                    val values = mUtils!!.getString("offset", "0.0").split(".\\").toTypedArray()
+                    calLocal.timeInMillis = time /*+ values[0].toLong()*/
+                    if (only_date_format.format(today.time) == only_date_format.format(cal.time)) {
+                        // today
+                        holder.txtTime.text = today_format.format(calLocal.time)
+                    } else {
+
+                        holder.txtTime.text = date_format.format(calLocal.time)
+                    }
                 } else {
-                    holder.txtTime.text = date_format.format(cal.time)
+                    if (only_date_format.format(today.time) == only_date_format.format(cal.time)) {
+                        // today
+                        holder.txtTime.text = today_format.format(cal.time)
+                    } else {
+
+                        holder.txtTime.text = date_format.format(cal.time)
+                    }
                 }
             } catch (e: Exception) {
                 holder.txtTime.text = ""

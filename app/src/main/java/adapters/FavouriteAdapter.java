@@ -17,7 +17,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.seeaspark.ConversationActivity;
 import com.seeaspark.FavouriteMessageActivity;
 import com.seeaspark.FullViewActivity;
 import com.seeaspark.FullViewMessageActivity;
@@ -257,7 +256,7 @@ public class FavouriteAdapter extends BaseAdapter {
                                 File ff = new File(mMessage.attachment_path);
                                 if (ff.exists()) {
                                     ArrayList<String> paths = new ArrayList<>();
-                                    paths = mDb.getImageVideoAttachments(mMessage.chat_dialog_id);
+                                    paths = mDb.getFavouriteImageVideoAttachments(mMessage.chat_dialog_id);
                                     Intent in = new Intent(mContext, FullViewActivity.class);
                                     in.putExtra("paths", paths);
                                     in.putExtra("display", mMessage.attachment_path);
@@ -323,7 +322,7 @@ public class FavouriteAdapter extends BaseAdapter {
                                 File ff = new File(mMessage.attachment_path);
                                 if (ff.exists()) {
                                     ArrayList<String> paths = new ArrayList<>();
-                                    paths = mDb.getImageVideoAttachments(mMessage.chat_dialog_id);
+                                    paths = mDb.getFavouriteImageVideoAttachments(mMessage.chat_dialog_id);
                                     Intent in = new Intent(mContext, FullViewActivity.class);
                                     in.putExtra("paths", paths);
                                     in.putExtra("display", mMessage.attachment_path);

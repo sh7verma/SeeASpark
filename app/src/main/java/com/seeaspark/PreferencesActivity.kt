@@ -2,10 +2,12 @@ package com.seeaspark
 
 import adapters.PreferProfessionAdapter
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.design.widget.BottomSheetBehavior
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -103,6 +105,9 @@ class PreferencesActivity : BaseActivity() {
 
         cbNoDistance.setTextColor(blackColor)
         cbNoExperience.setTextColor(blackColor)
+
+        llDisableDistance.setBackgroundColor(ContextCompat.getColor(mContext!!,R.color.disabled))
+        llDisableExperience.setBackgroundColor(ContextCompat.getColor(mContext!!,R.color.disabled))
     }
 
     override fun displayNightMode() {
@@ -129,6 +134,9 @@ class PreferencesActivity : BaseActivity() {
 
         cbNoDistance.setTextColor(whiteColor)
         cbNoExperience.setTextColor(whiteColor)
+
+        llDisableDistance.setBackgroundColor(ContextCompat.getColor(mContext!!,R.color.light_white_transparent))
+        llDisableExperience.setBackgroundColor(ContextCompat.getColor(mContext!!,R.color.light_white_transparent))
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)

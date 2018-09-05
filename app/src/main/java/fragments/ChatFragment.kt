@@ -33,7 +33,8 @@ import java.util.*
 /**
  * Created by dev on 23/7/18.
  */
-class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDialogsListenerInterface {
+class ChatFragment : Fragment(), View.OnClickListener,
+        FirebaseListeners.ChatDialogsListenerInterface{
 
     var itemView: View? = null
     var mWidth: Int = 0
@@ -64,7 +65,7 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
-    fun initUi(){
+    fun initUi() {
         mUtils = Utils(activity)
         if (mUtils!!.getInt("nightMode", 0) == 1)
             displayNightMode()
@@ -106,7 +107,7 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
             for (key in mChats!!.keys) {
                 mKeys.add(key)
             }
-            mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth!!, mChats!!, mKeys!!,
+            mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth, mChats!!, mKeys,
                     mCurrentUser!!.user_id, false)
             rvChats.adapter = mChatsAdapter
         }
@@ -115,11 +116,11 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
             llNoHandshake.setVisibility(View.GONE)
         } else {
             llNoHandshake.setVisibility(View.VISIBLE)
-            if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
+            if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
                 txtNoChat.text = getString(R.string.chat_available)
-            }else if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)){
+            } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
                 txtNoChat.text = getString(R.string.no_mentee)
-            }else{
+            } else {
                 txtNoChat.text = getString(R.string.no_mentor)
             }
         }
@@ -235,10 +236,14 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
     override fun onStart() {
         LocalBroadcastManager.getInstance(activity).registerReceiver(nightModeReceiver,
                 IntentFilter(Constants.NIGHT_MODE))
+        LocalBroadcastManager.getInstance(activity).registerReceiver(unMatchReceiver,
+                IntentFilter(Constants.UNMATCH))
         super.onStart()
     }
 
     override fun onDestroy() {
+        FirebaseListeners.setChatDialogListener(null)
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(unMatchReceiver)
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(nightModeReceiver)
         super.onDestroy()
     }
@@ -251,6 +256,19 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
             } else {
                 displayNightMode()
             }
+        }
+    }
+
+    var unMatchReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
+        override fun onReceive(context: Context, intent: Intent) {
+            mChats!!.clear()
+            mKeys.clear()
+            mChats = mDb!!.getAllChats(mCurrentUser!!.user_id, mUtils!!.getString("filter_type", Constants.FILTER_BOTH))
+            for (key in mChats!!.keys) {
+                mKeys.add(key)
+            }
+            mChatsAdapter!!.notifyDataSetChanged()
         }
     }
 
@@ -292,11 +310,11 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                         llNoHandshake.setVisibility(View.GONE)
                     } else {
                         llNoHandshake.setVisibility(View.VISIBLE)
-                        if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
+                        if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
                             txtNoChat.text = getString(R.string.chat_available)
-                        }else if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)){
+                        } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
                             txtNoChat.text = getString(R.string.no_mentee)
-                        }else{
+                        } else {
                             txtNoChat.text = getString(R.string.no_mentor)
                         }
                     }
@@ -336,14 +354,14 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                 mChats!!.put(mChat.chat_dialog_id, mChat)
                 mChats!!.putAll(newmap)
                 if (mChats != null && mChats!!.size > 0) {
-                    llNoHandshake.setVisibility(View.GONE)
+                    llNoHandshake.visibility = View.GONE
                 } else {
                     llNoHandshake.setVisibility(View.VISIBLE)
-                    if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
+                    if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
                         txtNoChat.text = getString(R.string.chat_available)
-                    }else if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)){
+                    } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
                         txtNoChat.text = getString(R.string.no_mentee)
-                    }else{
+                    } else {
                         txtNoChat.text = getString(R.string.no_mentor)
                     }
                 }
@@ -382,8 +400,8 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                         mChats!!.put(mChat.chat_dialog_id, mChat)
                         mChats!!.putAll(newmap)
                     } else {
-                        val msgTime = mChats!![mChat!!.chat_dialog_id]!!.last_message_time.get(mUtils!!.getString("user_id",""))
-                        if (mChat.last_message_time.get(mUtils!!.getString("user_id",""))!! > msgTime!!) {
+                        val msgTime = mChats!![mChat!!.chat_dialog_id]!!.last_message_time.get(mUtils!!.getString("user_id", ""))
+                        if (mChat.last_message_time.get(mUtils!!.getString("user_id", ""))!! > msgTime!!) {
                             mChats!!.remove(mChat.chat_dialog_id)
                             val newmap = mChats!!.clone() as LinkedHashMap<String, ChatsModel>
                             mChats!!.clear()
@@ -409,11 +427,11 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                 llNoHandshake.setVisibility(View.GONE)
             } else {
                 llNoHandshake.setVisibility(View.VISIBLE)
-                if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
+                if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
                     txtNoChat.text = getString(R.string.chat_available)
-                }else if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)){
+                } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
                     txtNoChat.text = getString(R.string.no_mentee)
-                }else{
+                } else {
                     txtNoChat.text = getString(R.string.no_mentor)
                 }
             }
@@ -431,11 +449,11 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
 //        }
         var status = 0
         if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH) == Constants.FILTER_MENTOR) {
-            if (ch!!.opponent_user_id == Constants.FILTER_MENTOR) {
+            if (ch!!.user_type.get(ch.opponent_user_id) == Constants.FILTER_MENTOR) {
                 status = 1
             }
         } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH) == Constants.FILTER_MENTEE) {
-            if (ch!!.opponent_user_id == Constants.FILTER_MENTEE) {
+            if (ch!!.user_type.get(ch.opponent_user_id) == Constants.FILTER_MENTEE) {
                 status = 1
             }
         } else {
@@ -449,15 +467,14 @@ class ChatFragment : Fragment(), View.OnClickListener, FirebaseListeners.ChatDia
                 llNoHandshake.setVisibility(View.GONE)
             } else {
                 llNoHandshake.setVisibility(View.VISIBLE)
-                if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
+                if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
                     txtNoChat.text = getString(R.string.chat_available)
-                }else if(mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)){
+                } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
                     txtNoChat.text = getString(R.string.no_mentee)
-                }else{
+                } else {
                     txtNoChat.text = getString(R.string.no_mentor)
                 }
             }
         }
     }
-
 }

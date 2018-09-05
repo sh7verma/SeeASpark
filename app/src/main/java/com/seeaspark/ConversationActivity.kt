@@ -11,7 +11,10 @@ import android.graphics.Typeface
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Environment
+import android.os.Handler
+import android.os.SystemClock
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.provider.Settings
@@ -28,9 +31,15 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.*
+import android.view.GestureDetector
+import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
 import android.view.animation.*
-import android.widget.*
+import android.widget.AbsListView
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
+import android.widget.Toast
 import com.google.firebase.database.*
 import com.ipaulpro.afilechooser.utils.FileUtils
 import com.squareup.picasso.Picasso
@@ -54,7 +63,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListenerInterfaceForChat, FirebaseListeners.MessageListenerInterface, UploadFileService.FileUploadInterface, DownloadFileService.FileDownloadInterface, FavouriteMessageActivity.ChangeFavouriteInterface {
+class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListenerInterfaceForChat,
+        FirebaseListeners.MessageListenerInterface, UploadFileService.FileUploadInterface,
+        DownloadFileService.FileDownloadInterface, FavouriteMessageActivity.ChangeFavouriteInterface {
 
     internal val ATTACHMENT = 12
     internal val OPTIONS = 13
@@ -93,33 +104,34 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     private var mConversationActivity: ConversationActivity? = null
     private var mConversationAdapter: ConversationAdapter? = null
 
-    internal var camerapath = ""
-    internal var camerapathVideo = ""
-    internal var status = 0
+    private var camerapath = ""
+    private var camerapathVideo = ""
+    private var status = 0
 
-    internal var docPath = ""
+    private var docPath = ""
 
-    internal var mOpponentUser: ProfileModel? = null
-    internal var mCurrentUser: ProfileModel? = null
-    internal var mPrivateChat: ChatsModel? = null
+    private var mOpponentUser: ProfileModel? = null
+    private var mCurrentUser: ProfileModel? = null
+    private var mPrivateChat: ChatsModel? = null
     var mParticpantIDS = ""
-    internal var mOpponentUserId = ""
-    internal var msgId = ""
+    private var mOpponentUserId = ""
+    private var msgId = ""
 
-    internal var usersQuery: Query? = null
-    internal var mFirebaseConfigProfile = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
-    internal var mFirebaseConfigChats = FirebaseDatabase.getInstance().getReference().child(Constants.CHATS)
-    internal var mFirebaseConfigMessages = FirebaseDatabase.getInstance().getReference().child(Constants.MESSAGES)
-    internal var mFirebaseConfigNotifications = FirebaseDatabase.getInstance().getReference().child(Constants.NOTIFICATIONS)
+    private var usersQuery: Query? = null
+    private var mFirebaseConfigProfile = FirebaseDatabase.getInstance().reference.child(Constants.USERS)
+    private var mFirebaseConfigChats = FirebaseDatabase.getInstance().reference.child(Constants.CHATS)
+    private var mFirebaseConfigMessages = FirebaseDatabase.getInstance().reference.child(Constants.MESSAGES)
+    private var mFirebaseConfigNotifications = FirebaseDatabase.getInstance().reference.child(Constants.NOTIFICATIONS)
+    private var mFirebaseConfigReadStatus = FirebaseDatabase.getInstance().reference.child(Constants.READ_STATUS)
 
-    internal var chat_date_format = SimpleDateFormat("dd-MM-yyyy", Locale.US)
-    internal var today_date_format = SimpleDateFormat("hh:mm aa", Locale.US)
-    internal var only_date_format = SimpleDateFormat("dd MMMM", Locale.US)
-    internal var mTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
-    internal var show_dateheader_format = SimpleDateFormat("dd MMM yyyy", Locale.US)
+    private var chat_date_format = SimpleDateFormat("dd-MM-yyyy", Locale.US)
+    private var today_date_format = SimpleDateFormat("hh:mm aa", Locale.US)
+    private var only_date_format = SimpleDateFormat("dd MMMM", Locale.US)
+    private var mTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+    private var show_dateheader_format = SimpleDateFormat("dd MMM yyyy", Locale.US)
 
     internal var limit = 20
-    internal var setReadMessages: ArrayList<MessagesModel> = ArrayList()
+    private var setReadMessages: ArrayList<MessagesModel> = ArrayList()
 
     var mMessagesMap: HashMap<String, MessagesModel>? = null
     var mMessageIds: ArrayList<String> = ArrayList()
@@ -127,11 +139,13 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     var selectedPosition = 0
     var noResultsinPagination = false
 
+    var clearTime = 0L
+
     override fun getContentView() = R.layout.activity_conversation
 
     override fun initUI() {
         mMessagesMap = HashMap()
-        mMessageIds = ArrayList<String>()
+        mMessageIds = ArrayList()
         mConversationActivity = this
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
         edMessage.typeface = typeface
@@ -273,9 +287,9 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         edMessage.requestFocus()
                         // send audio message
                         if (mPrivateChat != null) {
-                            addAudioMessage(audioFile!!.getAbsolutePath(), showAudioTime)
+                            addAudioMessage(audioFile!!.absolutePath, showAudioTime)
                             val inSend = Intent(this, UploadFileService::class.java)
-                            inSend.putExtra("attachment_path", "" + audioFile!!.getAbsolutePath())
+                            inSend.putExtra("attachment_path", "" + audioFile!!.absolutePath)
                             startService(inSend)
                         }
                     }
@@ -395,7 +409,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     override fun onNewIntent(intent: Intent?) {
-        var parIds = ""
+        var parIds: String
         if (intent!!.hasExtra("participantIDs")) {
             parIds = intent.getStringExtra("participantIDs")
         } else {
@@ -410,8 +424,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             if (usersQuery != null) {
                 usersQuery!!.removeEventListener(mOpponentUserListener)
             }
-            llDefaultActionbar.setVisibility(View.VISIBLE)
-            llOptionActionbar.setVisibility(View.GONE)
+            llDefaultActionbar.visibility = View.VISIBLE
+            llOptionActionbar.visibility = View.GONE
             edMessage.setText("")
             val inp = arrayOf<InputFilter>(InputFilter.LengthFilter(4000))
             edMessage.filters = inp
@@ -436,17 +450,17 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         }
     }
 
-    fun is_options_visible() {
-        if (llDefaultActionbar.getVisibility() == View.VISIBLE) {
+    fun isOptionsVisible() {
+        if (llDefaultActionbar.visibility == View.VISIBLE) {
             selectedPosition = 0
         } else {
             selectedPosition = 0
-            llDefaultActionbar.setVisibility(View.VISIBLE)
-            llOptionActionbar.setVisibility(View.GONE)
+            llDefaultActionbar.visibility = View.VISIBLE
+            llOptionActionbar.visibility = View.GONE
         }
     }
 
-    fun make_options_visible(pos: Int, messageId: String, type: Int) {
+    fun makeOptionsVisible(pos: Int, messageId: String, type: Int) {
         selectedPosition = pos
         msgId = messageId
 //        TYPE_TEXT = "1"
@@ -468,8 +482,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             imgFavourite.setImageResource(R.mipmap.ic_heart_red)
         }
 
-        llDefaultActionbar.setVisibility(View.GONE)
-        llOptionActionbar.setVisibility(View.VISIBLE)
+        llDefaultActionbar.visibility = View.GONE
+        llOptionActionbar.visibility = View.VISIBLE
     }
 
     override fun onResume() {
@@ -482,6 +496,10 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 // message has been received by me
                 if (message.message_status != Constants.STATUS_MESSAGE_SEEN) {
                     mFirebaseConfigMessages.child(mPrivateChat!!.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_SEEN)
+                    val msgHashMap = HashMap<String, Any>()
+                    msgHashMap.put("message_id", message.message_id)
+                    msgHashMap.put("message_status", Constants.STATUS_MESSAGE_SEEN)
+                    mFirebaseConfigReadStatus.child(message.message_id).setValue(msgHashMap)
                 }
             }
         }
@@ -526,9 +544,11 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         // add value to db
                         for (postSnapshot in dataSnapshot.children) {
                             val mChat = ChatsModel.parseChat(postSnapshot, mUtils!!.getString("user_id", ""))
-                            mChat.chat_dialog_id = postSnapshot.key
-                            db!!.addNewChat(mChat, mUtils!!.getString("user_id", ""), mOpponentUserId)
-                            mPrivateChat = mChat
+                            if (mChat != null) {
+                                mChat.chat_dialog_id = postSnapshot.key
+                                db!!.addNewChat(mChat, mUtils!!.getString("user_id", ""), mOpponentUserId)
+                                mPrivateChat = mChat
+                            }
                         }
                         if (mPrivateChat == null) {
 //                            createNewChat()
@@ -557,6 +577,11 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             db!!.addProfile(user)
             mOpponentUser = db!!.getProfile(user.user_id)
             setOnlineFlag(user)
+
+            txtName.text = user.user_name
+//            if (!user.user_pic.equals(mOpponentUser!!.user_pic)) {
+//                Picasso.with(mContext).load(mOpponentUser!!.user_pic).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
+//            }
         }
 
         override fun onChildChanged(dataSnapshot: com.google.firebase.database.DataSnapshot, s: String?) {
@@ -564,6 +589,11 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             db!!.addProfile(user)
             mOpponentUser = db!!.getProfile(user.user_id)
             setOnlineFlag(user)
+
+            txtName.text = user.user_name
+//            if (!user.user_pic.equals(mOpponentUser!!.user_pic)) {
+//                Picasso.with(mContext).load(mOpponentUser!!.user_pic).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
+//            }
         }
 
         override fun onChildRemoved(dataSnapshot: com.google.firebase.database.DataSnapshot) {
@@ -582,7 +612,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     internal fun setOnlineFlag(mUser: ProfileModel) {
         val online_format = SimpleDateFormat("HH:mm", Locale.US)
         if (mUser.online_status == Constants.ONLINE_LONG) {
-            txtActive.setText("" + Constants.ONLINE)
+            txtActive.text = Constants.ONLINE
         } else {
             var last_seen_status = ""
             try {
@@ -617,7 +647,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            txtActive.setText("Offline")
+            txtActive.text = getString(R.string.offline)
 //            txtActive.setText(last_seen_status)
         }
     }
@@ -626,9 +656,9 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         try {
             if (value == 0) {
                 if (mPrivateChat!!.chat_dialog_id.equals(mChat!!.chat_dialog_id)) {
-                    txtName.setText(mPrivateChat!!.name.get(mOpponentUserId))
-                    if (!mPrivateChat!!.profile_pic.get(mOpponentUserId).equals(mChat!!.profile_pic.get(mOpponentUserId))) {
-                        Picasso.with(this).load(mChat!!.profile_pic.get(mOpponentUserId)).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
+                    txtName.text = mPrivateChat!!.name.get(mOpponentUserId)
+                    if (!mPrivateChat!!.profile_pic.get(mOpponentUserId).equals(mChat.profile_pic.get(mOpponentUserId))) {
+                        Picasso.with(this).load(mChat.profile_pic.get(mOpponentUserId)).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
                     }
                     mPrivateChat = mChat
                 }
@@ -669,7 +699,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     override fun onProgressUpdate(message_id: String?, progress: Int) {
-        if (mMessageIds!!.contains(message_id)) {
+        if (mMessageIds.contains(message_id)) {
             mMessagesMap!![message_id]!!.attachment_progress = "" + progress
             mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
@@ -677,7 +707,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     override fun onDownloadProgressUpdate(message_id: String?, progress: Int) {
-        if (mMessageIds!!.contains(message_id)) {
+        if (mMessageIds.contains(message_id)) {
             mMessagesMap!![message_id]!!.attachment_progress = "" + progress
             mConversationAdapter!!.animationStatus(false)
             mConversationAdapter!!.notifyDataSetChanged()
@@ -712,7 +742,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     fun setHeaderData() {
-        txtName.setText(mPrivateChat!!.name.get(mOpponentUserId))
+        txtName.text = mPrivateChat!!.name.get(mOpponentUserId)
         Picasso.with(this).load(mPrivateChat!!.profile_pic.get(mOpponentUserId)).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
     }
 
@@ -765,6 +795,10 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     // message has been received by me
                     if (message.message_status != Constants.STATUS_MESSAGE_SEEN) {
                         mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_SEEN)
+                        val msgHashMap = HashMap<String, Any>()
+                        msgHashMap.put("message_id", message.message_id)
+                        msgHashMap.put("message_status", Constants.STATUS_MESSAGE_SEEN)
+                        mFirebaseConfigReadStatus.child(message.message_id).setValue(msgHashMap)
                     }
                 }
             }
@@ -848,6 +882,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 val intent = Intent(this, ChatOptionsActivity::class.java)
                 intent.putExtra("block_status", mPrivateChat!!.block_status.get(mCurrentUser!!.user_id))
                 startActivityForResult(intent, OPTIONS)
+                overridePendingTransition(0, 0)
             }
             imgBackOption -> {
                 selectedPosition = 0
@@ -869,19 +904,21 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     showInternetAlert(txtName)
                 }
                 selectedPosition = 0
-                llDefaultActionbar.setVisibility(View.VISIBLE)
-                llOptionActionbar.setVisibility(View.GONE)
+                llDefaultActionbar.visibility = View.VISIBLE
+                llOptionActionbar.visibility = View.GONE
                 mConversationAdapter!!.remove_selection()
             }
             imgDelete -> {
                 if (connectedToInternet()) {
+                    var status = 0
                     if (mMessagesMap!![msgId]!!.message_status < Constants.STATUS_MESSAGE_SEEN)
-                        mFirebaseConfigMessages.child(msgId).child("message_deleted").child(mCurrentUser!!.user_id).setValue("1")
+                        mFirebaseConfigMessages.child(mPrivateChat!!.chat_dialog_id).child(msgId).child("message_deleted").child(mCurrentUser!!.user_id).setValue("1")
                     if (msgId.equals(mMessageIds.get(mMessageIds.size - 1))) {
                         if (mMessageIds.size > 2) {
-                            for (i in mMessageIds.size - 2..0) {
+                            for (i in mMessageIds.size - 2 downTo 0) {
                                 if (!mMessagesMap!![mMessageIds.get(i)]!!.is_header) {
-                                    mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("last_message_time").child(mCurrentUser!!.user_id).setValue(mMessagesMap!![mMessageIds.get(i)]!!.firebase_message_time);
+                                    mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("last_message_time").child(mCurrentUser!!.user_id).setValue(mMessagesMap!![mMessageIds.get(i)]!!.firebase_message_time)
+                                    status = 1
                                     break
                                 }
                             }
@@ -895,12 +932,15 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     val deletetime1 = mPrivateChat!!.delete_dialog_time.get(mCurrentUser!!.user_id)
                     mMessagesMap = db!!.getAllMessages(mPrivateChat!!.chat_dialog_id, mCurrentUser!!.user_id, limit, deletetime1!!, mOpponentUserId)
                     makeHeaders()
+                    if(status == 1){
+                        sendUnmatchBroadcast()
+                    }
                 } else {
                     showInternetAlert(txtName)
                 }
                 selectedPosition = 0
-                llDefaultActionbar.setVisibility(View.VISIBLE)
-                llOptionActionbar.setVisibility(View.GONE)
+                llDefaultActionbar.visibility = View.VISIBLE
+                llOptionActionbar.visibility = View.GONE
                 mConversationAdapter!!.remove_selection()
             }
             imgCopy -> {
@@ -908,8 +948,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 val clip = ClipData.newPlainText("simple text", mMessagesMap!![msgId]!!.message)
                 clipboard.primaryClip = clip
                 selectedPosition = 0
-                llDefaultActionbar.setVisibility(View.VISIBLE)
-                llOptionActionbar.setVisibility(View.GONE)
+                llDefaultActionbar.visibility = View.VISIBLE
+                llOptionActionbar.visibility = View.GONE
                 mConversationAdapter!!.remove_selection()
                 Toast.makeText(this, getString(R.string.text_copied), Toast.LENGTH_SHORT).show()
             }
@@ -964,30 +1004,29 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 ATTACHMENT -> {
-                    var type = data!!.getStringExtra("type")
-                    if (type.equals("gallery")) {
-                        showMediaDialog(2)
-                    } else if (type.equals("camera")) {
-                        showMediaDialog(1)
-                    } else if (type.equals("notes")) {
-                        var intent = Intent(this, MyNotesActivity::class.java)
-                        startActivityForResult(intent, NOTES)
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
-                    } else if (type.equals("document")) {
-                        openFileChooser()
+                    val type = data!!.getStringExtra("type")
+                    when {
+                        type.equals("gallery") -> showMediaDialog(2)
+                        type.equals("camera") -> showMediaDialog(1)
+                        type.equals("notes") -> {
+                            val intent = Intent(this, MyNotesActivity::class.java)
+                            startActivityForResult(intent, NOTES)
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                        }
+                        type.equals("document") -> openFileChooser()
                     }
                 }
                 NOTES -> {
-                    var noteId = data!!.getStringExtra("note_id")
-                    var noteName = data!!.getStringExtra("note_name")
+                    val noteId = data!!.getStringExtra("note_id")
+                    val noteName = data.getStringExtra("note_name")
                     // Hit share note api
                     hitShareNotesAPI(noteId, noteName)
                 }
                 OPTIONS -> {
-                    var type = data!!.getStringExtra("type")
+                    val type = data!!.getStringExtra("type")
                     if (type.equals("favourite_message")) {
                         FavouriteMessageActivity.setUploadingListener(this)
-                        var intent = Intent(this, FavouriteMessageActivity::class.java)
+                        val intent = Intent(this, FavouriteMessageActivity::class.java)
                         intent.putExtra("participantIDs", mParticpantIDS)
                         intent.putExtra("opponentUserId", mOpponentUserId)
                         startActivity(intent)
@@ -1034,6 +1073,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                             // TODO Auto-generated method stub
                             showLoader()
                             clearConversation()
+                            clearTime = Calendar.getInstance().timeInMillis
                             dialog.dismiss()
                         }
                         dialog1.setNegativeButton(
@@ -1050,17 +1090,17 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         dialog1.setNegativeButton(resources.getString(R.string.cancel), null)
                         dialog1.show()
                     } else if (type.equals("share_profile")) {
-                        var intent = Intent(this, ShareActivity::class.java)
+                        val intent = Intent(this, ShareActivity::class.java)
                         intent.putExtra("path", 1)
                         intent.putExtra("postUrl", Constants.SHARE_URL + mOpponentUserId)
                         startActivity(intent)
                         overridePendingTransition(0, 0)
                     } else if (type.equals("report")) {
-                        var intent = Intent(this, ReportActivity::class.java)
+                        val intent = Intent(this, ReportActivity::class.java)
                         startActivity(intent)
                         overridePendingTransition(0, 0)
                     } else if (type.equals("rating")) {
-                        var intent = Intent(this, RatingActivity::class.java)
+                        val intent = Intent(this, RatingActivity::class.java)
                         intent.putExtra("user_id", mOpponentUserId)
                         intent.putExtra("user_name", mOpponentUser!!.user_name)
                         intent.putExtra("chatDialogId", mPrivateChat!!.chat_dialog_id)
@@ -1183,20 +1223,20 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     if (mPrivateChat != null) {
                         addImageMessage(data!!.getStringExtra("selected_image"))
                         val intent = Intent(this, UploadFileService::class.java)
-                        intent.putExtra("attachment_path", "" + data!!.getStringExtra("selected_image"))
+                        intent.putExtra("attachment_path", "" + data.getStringExtra("selected_image"))
                         startService(intent)
                     }
                 }
                 GETVIDEO -> {
                     if (mPrivateChat != null) {
-                        addVideoMessage(data!!.getStringExtra("selected_video"), data!!.getStringExtra("selected_video_thumb"))
+                        addVideoMessage(data!!.getStringExtra("selected_video"), data.getStringExtra("selected_video_thumb"))
                         val intent = Intent(this, UploadFileService::class.java)
-                        intent.putExtra("attachment_path", "" + data!!.getStringExtra("selected_video"))
+                        intent.putExtra("attachment_path", "" + data.getStringExtra("selected_video"))
                         startService(intent)
                     }
                 }
                 Constants.REQUEST_CODE_DOC -> {
-                    var docPaths = ArrayList<String>()
+                    val docPaths = ArrayList<String>()
                     docPaths.addAll(data!!.getStringArrayListExtra(Constants.KEY_SELECTED_DOCS))
                     docPath = docPaths.get(0)
                     if (mPrivateChat != null) {
@@ -1219,7 +1259,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    internal fun clearConversation() {
+    private fun clearConversation() {
         db!!.clearConversation(mPrivateChat!!.chat_dialog_id)
         mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("unread_count").child(mUtils!!.getString("user_id", "")).setValue(0)
         mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("delete_dialog_time").child(mUtils!!.getString("user_id", "")).setValue(ServerValue.TIMESTAMP).addOnSuccessListener {
@@ -1228,25 +1268,26 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             mMessagesMap!!.clear()
             limit = 20
             val time = Constants.getUtcTime(Calendar.getInstance().timeInMillis)
-            mMessagesMap = db!!.getAllMessages(mPrivateChat!!.chat_dialog_id, mCurrentUser!!.user_id, limit, time!!, mOpponentUserId)
+            mMessagesMap = db!!.getAllMessages(mPrivateChat!!.chat_dialog_id, mCurrentUser!!.user_id, limit, time, mOpponentUserId)
             makeHeaders()
             mConversationAdapter!!.notifyDataSetChanged()
         }
     }
 
-    internal fun unMatchUser() {
-        mFirebaseConfigProfile.child("id_" + mCurrentUser!!.user_id).child("chat_dialog_ids").child(mPrivateChat!!.chat_dialog_id).removeValue()
-        mFirebaseConfigProfile.child("id_" + mOpponentUser!!.user_id).child("chat_dialog_ids").child(mPrivateChat!!.chat_dialog_id).removeValue()
-        mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).removeValue().addOnSuccessListener {
+    private fun unMatchUser() {
+        mFirebaseConfigProfile.child("id_" + mCurrentUser!!.user_id).child("chat_dialog_ids").child(mParticpantIDS).removeValue()
+        mFirebaseConfigProfile.child("id_" + mOpponentUser!!.user_id).child("chat_dialog_ids").child(mParticpantIDS).removeValue()
+        mFirebaseConfigChats.child(mParticpantIDS).removeValue().addOnSuccessListener {
             db!!.deleteDialogData(mPrivateChat!!.chat_dialog_id)
-            FirebaseListeners.getListenerClass(this).removeMessageListener(mPrivateChat!!.chat_dialog_id)
-            FirebaseListeners.getListenerClass(this).removeChatsListener(mPrivateChat!!.chat_dialog_id)
+            sendUnmatchBroadcast()
+            FirebaseListeners.getListenerClass(this).removeMessageListener(mParticpantIDS)
+            FirebaseListeners.getListenerClass(this).removeChatsListener(mParticpantIDS)
             dismissLoader()
             moveBack()
         }
     }
 
-    fun hitUnmatchAPI() {
+    private fun hitUnmatchAPI() {
         showLoader()
         val call = RetrofitClient.getInstance().unmatch(mUtils!!.getString("access_token", ""),
                 mOpponentUserId)
@@ -1272,7 +1313,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         })
     }
 
-    fun hitShareNotesAPI(noteId: String, noteName: String) {
+    private fun hitShareNotesAPI(noteId: String, noteName: String) {
         showLoader()
         val call = RetrofitClient.getInstance().shareNotes(mUtils!!.getString("access_token", ""),
                 noteId,
@@ -1303,7 +1344,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     private fun openFileChooser() {
-        var selectedPhotos = ArrayList<String>()
+        val selectedPhotos = ArrayList<String>()
         FilePickerBuilder.getInstance()
                 .setMaxCount(1)
                 .setSelectedFiles(selectedPhotos)
@@ -1344,7 +1385,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.media_options_dialog)
 
-        var dialogParms = CoordinatorLayout.LayoutParams(mWidth - (mWidth / 16), mHeight / 6)
+        val dialogParms = CoordinatorLayout.LayoutParams(mWidth - (mWidth / 16), mHeight / 6)
         dialogParms.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
         val bottomSheet = dialog.window.findViewById(android.support.design.R.id.design_bottom_sheet) as FrameLayout
         bottomSheet.setBackgroundResource(R.drawable.white_short_profile_background)
@@ -1411,7 +1452,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         }
     }
 
-    protected fun startCameraActivity() {
+    private fun startCameraActivity() {
         try {
             val c = Calendar.getInstance()
             camerapath = Environment.getExternalStorageDirectory().toString() + "/SeeASpark/Image/Sent/" + "IMG" + c.timeInMillis + ".jpg"
@@ -1439,12 +1480,17 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             val c = Calendar.getInstance()
             camerapathVideo = Environment.getExternalStorageDirectory().toString() + "/SeeASpark/Video/Sent/" + "VID" + c.timeInMillis + ".mp4"
             val file = File(camerapathVideo)
-            file.getParentFile().mkdirs()
-            val outputFileUri = Uri.fromFile(file)
+            file.parentFile.mkdirs()
             val intent = Intent(
                     MediaStore.ACTION_VIDEO_CAPTURE)
-            intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 15)
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri)
+            intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20)
+            if (android.os.Build.VERSION.SDK_INT >= 24) {
+                val photoURI = FileProvider.getUriForFile(this,
+                        BuildConfig.APPLICATION_ID + ".provider", file)
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+            } else {
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file))
+            }
 
             startActivityForResult(intent, CAMERAVIDEO)
         } catch (e: ActivityNotFoundException) {
@@ -1650,7 +1696,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     var listAudioPermissionsNeeded = ArrayList<String>()
-    internal var audioPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO)
+    internal var audioPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO)
     private val AUDIO_PERMISSION_REQUEST_CODE = 15
     fun checkAudioPermissions(): Boolean {
         var result: Int
@@ -1674,11 +1721,13 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             showSnackbar(text,
                     android.R.string.ok, View.OnClickListener {
                 // Request permission
-                ActivityCompat.requestPermissions(this, listAudioPermissionsNeeded.toTypedArray(), AUDIO_PERMISSION_REQUEST_CODE)
+                ActivityCompat.requestPermissions(this, listAudioPermissionsNeeded
+                        .toTypedArray(), AUDIO_PERMISSION_REQUEST_CODE)
             })
         } else {
             if (!mUtils!!.getBoolean(Constants.AUDIO_PERMISSION, false))
-                ActivityCompat.requestPermissions(this, listAudioPermissionsNeeded.toTypedArray(), AUDIO_PERMISSION_REQUEST_CODE)
+                ActivityCompat.requestPermissions(this, listAudioPermissionsNeeded
+                        .toTypedArray(), AUDIO_PERMISSION_REQUEST_CODE)
             if (mUtils!!.getBoolean(Constants.AUDIO_PERMISSION, false)) {
                 showSnackbar(text,
                         android.R.string.ok, View.OnClickListener {
@@ -1687,7 +1736,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     val intent = Intent()
                     intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                     intent.addCategory(Intent.CATEGORY_DEFAULT)
-                    intent.data = Uri.parse("package:" + getPackageName())
+                    intent.data = Uri.parse("package:" + packageName)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                     intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
@@ -1718,13 +1767,13 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         when (requestCode) {
             AUDIO_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.size == 3) {
-                    if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                            && grantResults.size > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                            && grantResults.size > 0 && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                    if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                            && grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                            && grantResults.isNotEmpty() && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
                     }
                 } else if (grantResults.size == 2) {
-                    if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                            && grantResults.size > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                            && grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
 
                     }
                 } else if (grantResults.size == 1) {
@@ -1736,12 +1785,12 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             }
             GALLERY_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.size == 2) {
-                    if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                            && grantResults.size > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                            && grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
 
                     }
                 } else if (grantResults.size == 1) {
-                    if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     }
                 }
@@ -1798,7 +1847,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     val intent = Intent()
                     intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                     intent.addCategory(Intent.CATEGORY_DEFAULT)
-                    intent.data = Uri.parse("package:" + getPackageName())
+                    intent.data = Uri.parse("package:" + packageName)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                     intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
@@ -1880,10 +1929,10 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 } else {
                     status = 0
                 }
-                if (llDefaultActionbar.getVisibility() != View.VISIBLE) {
+                if (llDefaultActionbar.visibility != View.VISIBLE) {
                     selectedPosition = 0
-                    llDefaultActionbar.setVisibility(View.VISIBLE)
-                    llOptionActionbar.setVisibility(View.GONE)
+                    llDefaultActionbar.visibility = View.VISIBLE
+                    llOptionActionbar.visibility = View.GONE
                     mConversationAdapter!!.remove_selection()
                 }
                 if (status != 2) {
@@ -1992,10 +2041,10 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             } else {
                 status = 0
             }
-            if (llDefaultActionbar.getVisibility() != View.VISIBLE) {
+            if (llDefaultActionbar.visibility != View.VISIBLE) {
                 selectedPosition = 0
-                llDefaultActionbar.setVisibility(View.VISIBLE)
-                llOptionActionbar.setVisibility(View.GONE)
+                llDefaultActionbar.visibility = View.VISIBLE
+                llOptionActionbar.visibility = View.GONE
                 mConversationAdapter!!.remove_selection()
             }
             if (status != 2) {
@@ -2073,10 +2122,10 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             } else {
                 status = 0
             }
-            if (llDefaultActionbar.getVisibility() != View.VISIBLE) {
+            if (llDefaultActionbar.visibility != View.VISIBLE) {
                 selectedPosition = 0
-                llDefaultActionbar.setVisibility(View.VISIBLE)
-                llOptionActionbar.setVisibility(View.GONE)
+                llDefaultActionbar.visibility = View.VISIBLE
+                llOptionActionbar.visibility = View.GONE
                 mConversationAdapter!!.remove_selection()
             }
             if (status != 2) {
@@ -2137,10 +2186,10 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             } else {
                 status = 0
             }
-            if (llDefaultActionbar.getVisibility() != View.VISIBLE) {
+            if (llDefaultActionbar.visibility != View.VISIBLE) {
                 selectedPosition = 0
-                llDefaultActionbar.setVisibility(View.VISIBLE)
-                llOptionActionbar.setVisibility(View.GONE)
+                llDefaultActionbar.visibility = View.VISIBLE
+                llOptionActionbar.visibility = View.GONE
                 mConversationAdapter!!.remove_selection()
             }
             if (status != 2) {
@@ -2202,10 +2251,10 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             } else {
                 status = 0
             }
-            if (llDefaultActionbar.getVisibility() != View.VISIBLE) {
+            if (llDefaultActionbar.visibility != View.VISIBLE) {
                 selectedPosition = 0
-                llDefaultActionbar.setVisibility(View.VISIBLE)
-                llOptionActionbar.setVisibility(View.GONE)
+                llDefaultActionbar.visibility = View.VISIBLE
+                llOptionActionbar.visibility = View.GONE
                 mConversationAdapter!!.remove_selection()
             }
             if (status != 2) {
@@ -2266,10 +2315,10 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             } else {
                 status = 0
             }
-            if (llDefaultActionbar.getVisibility() != View.VISIBLE) {
+            if (llDefaultActionbar.visibility != View.VISIBLE) {
                 selectedPosition = 0
-                llDefaultActionbar.setVisibility(View.VISIBLE)
-                llOptionActionbar.setVisibility(View.GONE)
+                llDefaultActionbar.visibility = View.VISIBLE
+                llOptionActionbar.visibility = View.GONE
                 mConversationAdapter!!.remove_selection()
             }
 
@@ -2337,25 +2386,35 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     override fun onMessageAdd(message: MessagesModel?) {
-        var lastMessageTime: Long
-        var newMessageTime: Long
-        try {
-            newMessageTime = message!!.firebase_message_time
-        } catch (e: Exception) {
-            newMessageTime = Calendar.getInstance().timeInMillis
-        }
+        if(message != null){
+            var lastMessageTime: Long
+            var newMessageTime: Long
+            try {
+                newMessageTime = message.firebase_message_time
+            } catch (e: Exception) {
+                newMessageTime = Calendar.getInstance().timeInMillis
+            }
 
-        try {
-            lastMessageTime = mPrivateChat!!.last_message_time.get(mCurrentUser!!.user_id)!!
-        } catch (e: Exception) {
-            lastMessageTime = newMessageTime - 1
-        }
+            try {
+                lastMessageTime = mPrivateChat!!.last_message_time.get(mCurrentUser!!.user_id)!!
+            } catch (e: Exception) {
+                lastMessageTime = newMessageTime - 1
+            }
 
-        if (!message!!.sender_id.equals(mCurrentUser!!.user_id) && !message.is_header && (message.message_type.equals(Constants.TYPE_IMAGE) ||
-                        message.message_type.equals(Constants.TYPE_AUDIO) || message.message_type.equals(Constants.TYPE_VIDEO) ||
-                        message.message_type.equals(Constants.TYPE_DOCUMENT))) {
-            if (mMessageIds.contains(message.message_id)) {
-                if (TextUtils.isEmpty(message.attachment_path) && (TextUtils.isEmpty(message.attachment_status) || message.attachment_status.equals(Constants.FILE_EREROR))) {
+            if (!message.sender_id.equals(mCurrentUser!!.user_id) && !message.is_header && (message.message_type.equals(Constants.TYPE_IMAGE) ||
+                            message.message_type.equals(Constants.TYPE_AUDIO) || message.message_type.equals(Constants.TYPE_VIDEO) ||
+                            message.message_type.equals(Constants.TYPE_DOCUMENT))) {
+                if (mMessageIds.contains(message.message_id)) {
+                    if (TextUtils.isEmpty(message.attachment_path) && (TextUtils.isEmpty(message.attachment_status) || message.attachment_status.equals(Constants.FILE_EREROR))) {
+                        if (connectedToInternet()) {
+                            if (!TextUtils.isEmpty(message.attachment_url)) {
+                                val intent = Intent(this, DownloadFileService::class.java)
+                                intent.putExtra("message_id", "" + message.message_id)
+                                startService(intent)
+                            }
+                        }
+                    }
+                } else {
                     if (connectedToInternet()) {
                         if (!TextUtils.isEmpty(message.attachment_url)) {
                             val intent = Intent(this, DownloadFileService::class.java)
@@ -2364,60 +2423,55 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         }
                     }
                 }
-            } else {
-                if (connectedToInternet()) {
-                    if (!TextUtils.isEmpty(message.attachment_url)) {
-                        val intent = Intent(this, DownloadFileService::class.java)
-                        intent.putExtra("message_id", "" + message.message_id)
-                        startService(intent)
+            }
+
+            if (lastMessageTime < newMessageTime && message.sender_id.equals(mCurrentUser!!.user_id)) {
+                // last message in chat dialog is less than current message
+                val mChatUpdate = HashMap<String, Any>()
+                mChatUpdate.put("last_message", message.message)
+
+                val lastTime = HashMap<String, Long>()
+                lastTime.put(mCurrentUser!!.user_id, message.firebase_message_time)
+                lastTime.put(mOpponentUserId, message.firebase_message_time)
+
+                mChatUpdate.put("last_message_time", lastTime)
+                mChatUpdate.put("last_message_sender_id", message.sender_id)
+                mChatUpdate.put("last_message_id", message.message_id)
+                mChatUpdate.put("last_message_type", message.message_type)
+                val unread = mPrivateChat!!.unread_count
+                if (unread != null && unread.containsKey(mOpponentUserId)) {
+                    var lastUnreadCount: Int = unread.get(mOpponentUserId)!!
+                    if (mPrivateChat!!.block_status.get(mOpponentUserId).equals("0")) {
+                        lastUnreadCount++
+                    }
+                    unread.put(mOpponentUserId, lastUnreadCount)
+                    unread.put(mCurrentUser!!.user_id, 0)
+                    mChatUpdate.put("unread_count", unread)
+                }
+                mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).updateChildren(mChatUpdate)
+            }
+
+            if (mPrivateChat!!.chat_dialog_id.equals(message.chat_dialog_id)) {
+                if (mUtils!!.getInt("Background", 0) == 1) {
+                    // Add message in list
+                    setReadMessages.add(message)
+                } else {
+                    if (!message.sender_id.equals(mCurrentUser!!.user_id)) {
+                        // message has been received by me
+                        if (message.message_status != Constants.STATUS_MESSAGE_SEEN) {
+                            mFirebaseConfigMessages.child(mPrivateChat!!.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_SEEN)
+                            val msgHashMap = HashMap<String, Any>()
+                            msgHashMap.put("message_id", message.message_id)
+                            msgHashMap.put("message_status", Constants.STATUS_MESSAGE_SEEN)
+                            mFirebaseConfigReadStatus.child(message.message_id).setValue(msgHashMap)
+                        }
                     }
                 }
             }
-        }
 
-        if (lastMessageTime < newMessageTime && message.sender_id.equals(mCurrentUser!!.user_id)) {
-            // last message in chat dialog is less than current message
-            val mChatUpdate = HashMap<String, Any>()
-            mChatUpdate.put("last_message", message.message)
-
-            val lastTime = HashMap<String, Long>()
-            lastTime.put(mCurrentUser!!.user_id, message.firebase_message_time)
-            lastTime.put(mOpponentUserId, message.firebase_message_time)
-
-            mChatUpdate.put("last_message_time", lastTime)
-            mChatUpdate.put("last_message_sender_id", message.sender_id)
-            mChatUpdate.put("last_message_id", message.message_id)
-            mChatUpdate.put("last_message_type", message.message_type)
-            val unread = mPrivateChat!!.unread_count
-            if (unread != null && unread.containsKey(mOpponentUserId)) {
-                var lastUnreadCount: Int = unread.get(mOpponentUserId)!!
-                if (mPrivateChat!!.block_status.get(mOpponentUserId).equals("0")) {
-                    lastUnreadCount++
-                }
-                unread!!.put(mOpponentUserId, lastUnreadCount)
-                unread!!.put(mCurrentUser!!.user_id, 0)
-                mChatUpdate.put("unread_count", unread)
+            if (lastMessageTime < newMessageTime && message.sender_id.equals(mOpponentUserId)) {
+                mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("unread_count").child(mCurrentUser!!.user_id).setValue(0)
             }
-            mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).updateChildren(mChatUpdate)
-        }
-
-        if (mPrivateChat!!.chat_dialog_id.equals(message.chat_dialog_id)) {
-            if (mUtils!!.getInt("Background", 0) == 1) {
-                // Add message in list
-                setReadMessages.add(message)
-            } else {
-                if (!message.sender_id.equals(mCurrentUser!!.user_id)) {
-                    // message has been received by me
-                    if (message.message_status != Constants.STATUS_MESSAGE_SEEN) {
-                        mFirebaseConfigMessages.child(mPrivateChat!!.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_SEEN)
-                    }
-                }
-            }
-        }
-
-        if (lastMessageTime < newMessageTime && message.sender_id.equals(mOpponentUserId)) {
-            mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("unread_count").child(mCurrentUser!!.user_id).setValue(0)
-        }
 
 //        if (!mMessageIds.contains(message!!.message_id)) {
 //            if (mp != null) {
@@ -2428,7 +2482,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 //            mp = MediaPlayer.create(applicationContext, R.raw.message_received)
 //            mp!!.start()
 //        }
-        createHeader(message)
+            createHeader(message)
+        }
     }
 
     override fun onMessageChanged(message: MessagesModel?) {
@@ -2442,6 +2497,10 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 if (message.sender_id != mCurrentUser!!.user_id) {
                     if (message.message_status != Constants.STATUS_MESSAGE_SEEN) {
                         mFirebaseConfigMessages.child(message.chat_dialog_id).child(message.message_id).child("message_status").setValue(Constants.STATUS_MESSAGE_SEEN)
+                        val msgHashMap = HashMap<String, Any>()
+                        msgHashMap.put("message_id", message.message_id)
+                        msgHashMap.put("message_status", Constants.STATUS_MESSAGE_SEEN)
+                        mFirebaseConfigReadStatus.child(message.message_id).setValue(msgHashMap)
                     }
                 }
             }
@@ -2478,32 +2537,47 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 lastMessageDate = chat_date_format.format(calDb.time)
             }
             if (!mMessageIds.contains(message.message_id)) {
-
-                val cal = Calendar.getInstance()
-                val today = chat_date_format.format(cal.time)
-
-                val cal1 = Calendar.getInstance()
-                cal1.add(Calendar.DATE, -1)
-                val yesterday = chat_date_format.format(cal1.time)
-
-                if (!TextUtils.equals(lastMessageDate, newMessageDate)) {
-                    val mMessage = MessagesModel()
-                    mMessage.is_header = true
-                    if (newMessageDate == today) {
-                        mMessage.show_header_text = "Today"
-                        mMessage.show_message_datetime = today_date_format.format(calNew.time)
-                    } else if (newMessageDate == yesterday) {
-                        mMessage.show_header_text = "Yesterday"
-                        mMessage.show_message_datetime = today_date_format.format(calNew.time)
-                    } else {
-                        mMessage.show_header_text = show_dateheader_format.format(calNew.time)
-                        mMessage.show_message_datetime = today_date_format.format(calNew.time)
+                var state = 0
+                if (message.sender_id.equals(mCurrentUser!!.user_id)) {
+                    var newMessageTime: Long
+                    try {
+                        newMessageTime = message.message_time.toLong()
+                    } catch (e: Exception) {
+                        newMessageTime = Calendar.getInstance().timeInMillis
                     }
-                    mMessagesMap!!.put(newMessageDate, mMessage)
-                    mMessageIds.add(newMessageDate)
+
+                    if (clearTime > newMessageTime) {
+                        state = 1
+                    }
                 }
-                mMessagesMap!!.put(message.message_id, message)
-                mMessageIds.add(message.message_id)
+
+                if (state == 0) {
+                    val cal = Calendar.getInstance()
+                    val today = chat_date_format.format(cal.time)
+
+                    val cal1 = Calendar.getInstance()
+                    cal1.add(Calendar.DATE, -1)
+                    val yesterday = chat_date_format.format(cal1.time)
+
+                    if (!TextUtils.equals(lastMessageDate, newMessageDate)) {
+                        val mMessage = MessagesModel()
+                        mMessage.is_header = true
+                        if (newMessageDate == today) {
+                            mMessage.show_header_text = "Today"
+                            mMessage.show_message_datetime = today_date_format.format(calNew.time)
+                        } else if (newMessageDate == yesterday) {
+                            mMessage.show_header_text = "Yesterday"
+                            mMessage.show_message_datetime = today_date_format.format(calNew.time)
+                        } else {
+                            mMessage.show_header_text = show_dateheader_format.format(calNew.time)
+                            mMessage.show_message_datetime = today_date_format.format(calNew.time)
+                        }
+                        mMessagesMap!!.put(newMessageDate, mMessage)
+                        mMessageIds.add(newMessageDate)
+                    }
+                    mMessagesMap!!.put(message.message_id, message)
+                    mMessageIds.add(message.message_id)
+                }
             }
         }
         mConversationAdapter!!.animationStatus(true)
@@ -2566,7 +2640,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         mMessagesMap!!.put(mMessage.message_id, mMessage)
         mConversationAdapter!!.animationStatus(true)
         mConversationAdapter!!.notifyDataSetChanged()
-        lvChatList.post { lvChatList.setSelection(lvChatList.count - 1) }
+
+        lvChatList.setSelection(lvChatList.count - 1)
     }
 
     override fun onChange(message_id: String) {
@@ -2574,4 +2649,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         mConversationAdapter!!.notifyDataSetChanged()
     }
 
+    private fun sendUnmatchBroadcast() {
+        val broadCastIntent = Intent(Constants.UNMATCH)
+        broadcaster!!.sendBroadcast(broadCastIntent)
+    }
 }

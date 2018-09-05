@@ -80,6 +80,7 @@ public class ChatHolderSenderAudio {
                 imgPlay.setVisibility(View.VISIBLE);
                 cpbProgress.setVisibility(View.GONE);
                 imgUpload.setVisibility(View.GONE);
+                audioSeekSent.setProgress(0);
             }
         }
 

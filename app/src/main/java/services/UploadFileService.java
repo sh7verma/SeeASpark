@@ -224,7 +224,7 @@ public class UploadFileService extends Service {
                         }
                         msgHashMap.put("message_deleted", delete);
                         msgHashMap.put("favourite_message", favourite);
-                        Long time = Constants.getUtcTime(Calendar.getInstance().getTimeInMillis());
+                        Long time = Constants.getUtcTime(Long.parseLong(mMessage.message_time));
                         msgHashMap.put("message_time", "" + time);
 
                         DatabaseReference mFirebaseConfigMessages = FirebaseDatabase.getInstance().getReference().child(Constants.MESSAGES);

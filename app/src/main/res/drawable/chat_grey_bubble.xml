@@ -6,4 +6,8 @@
     <solid android:color="@color/greyLine" />
     <corners android:radius="@dimen/_10sdp" />
 
+    <stroke
+        android:width="@dimen/_1sdp"
+        android:color="@color/greyLine" />
+
 </shape>

@@ -22,6 +22,9 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.gson.Gson
 import database.Database
 import helper.FirebaseListeners
@@ -150,6 +153,9 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun moveToSplash() {
+        val mFirebaseConfig = FirebaseDatabase.getInstance().reference.child(Constants.USERS)
+        mFirebaseConfig.child("id_" + mUtils!!.getString("user_id", "")!!)
+                .child("online_status").setValue(ServerValue.TIMESTAMP)
         FirebaseListeners.getListenerClass(this).RemoveAllListeners()
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler

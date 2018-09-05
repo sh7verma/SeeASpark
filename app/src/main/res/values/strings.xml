@@ -275,7 +275,7 @@
     <string name="search">Search...</string>
     <string name="chat_available">Chat is available after Handshake</string>
     <string name="both">Both</string>
-    <string name="favourite_message">Favourite Message</string>
+    <string name="favourite_message">Favourite Messages</string>
     <string name="clear_chat">Clear Chat</string>
     <string name="unmatch">Unmatch</string>
     <string name="block">Block</string>
@@ -320,10 +320,10 @@
     <string name="character_sent">characters will be sent.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="shared_notes">shared notes with you</string>
-    <string name="shared_document">shared documents with you</string>
-    <string name="you_shared_notes">You shared notes with</string>
-    <string name="you_shared_document">You shared documents with</string>
+    <string name="shared_notes">shared a note with you</string>
+    <string name="shared_document">shared a document with you</string>
+    <string name="you_shared_notes">You shared a note with</string>
+    <string name="you_shared_document">You shared a document with</string>
     <string name="unmatch_message">unmatch with you</string>
     <string name="text_copied">Text copied</string>
     <string name="message">Message</string>
@@ -346,6 +346,8 @@
     <string name="error_desc">Please enter descrption</string>
     <string name="please_rate">Please rate user</string>
     <string name="sure_this_note">Are you sure you want to share this note?</string>
+    <string name="no_favourite_messages">No Favourite Messages Yet</string>
+    <string name="offline">Offline</string>
     ////
 
 </resources>

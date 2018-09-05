@@ -73,7 +73,8 @@ public class ChatHolderReceiverVideo {
             if (!TextUtils.isEmpty(mMessage.custom_data)) {
                 File file = new File(mMessage.custom_data);
                 if (file.exists()) {
-                    Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoReceive);
+                    Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72)-1,
+                            (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoReceive);
                 }
             }
             if (mMessage.attachment_status.equals("" + Constants.FILE_UPLOADING)) {
@@ -93,7 +94,8 @@ public class ChatHolderReceiverVideo {
         } else {
             File file = new File(mMessage.custom_data);
             if (file.exists()) {
-                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoReceive);
+                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72)-1,
+                        (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoReceive);
             }
             cpbProgress.setVisibility(View.GONE);
             imgDownload.setVisibility(View.GONE);

@@ -106,9 +106,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:drawablePadding="@dimen/_8sdp"
-            android:drawableTop="@mipmap/ic_notes_chat"
+            android:drawableTop="@mipmap/ill_notes_share"
             android:gravity="center"
-            android:text="@string/no_notes_yet"
             android:textColor="@color/black_color"
             android:textSize="@dimen/_14ssp"
             android:visibility="visible" />

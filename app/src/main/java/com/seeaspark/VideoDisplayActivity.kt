@@ -48,7 +48,7 @@ class VideoDisplayActivity : BaseActivity() {
     override fun onCreateStuff() {
         val mediaController = MediaController(this)
         mediaController.setAnchorView(videoView)
-        videoView.setMediaController(MediaController(this))
+        videoView.setMediaController(mediaController)
         handler.sendEmptyMessage(1)
 
         ViewCompat.setTransitionName(videoView, "VideoView")

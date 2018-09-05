@@ -63,17 +63,20 @@ public class ChatHolderSenderImage {
         if (TextUtils.isEmpty(mMessage.attachment_path)) {
             //attachment not download yet
             if (!TextUtils.isEmpty(mMessage.attachment_url)) {
-                Picasso.with(mContext).load(mMessage.attachment_url).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageSent);
+                Picasso.with(mContext).load(mMessage.attachment_url).resize((int) (mWidth * 0.72)-1,
+                        (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageSent);
             }
             cpbProgress.setVisibility(View.GONE);
             imgUpload.setVisibility(View.GONE);
         } else {
             File file = new File(mMessage.attachment_path);
             if (file.exists()) {
-                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageSent);
+                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72)-1,
+                        (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageSent);
             } else {
                 if (!TextUtils.isEmpty(mMessage.attachment_url)) {
-                    Picasso.with(mContext).load(mMessage.attachment_url).resize((int) (mWidth * 0.72), (int) (mWidth * 0.72)).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageSent);
+                    Picasso.with(mContext).load(mMessage.attachment_url).resize((int) (mWidth * 0.72)-1,
+                            (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageSent);
                 }
             }
             if (mMessage.attachment_status.equals("" + Constants.FILE_UPLOADING)) {

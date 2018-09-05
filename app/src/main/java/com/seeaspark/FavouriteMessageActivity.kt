@@ -94,6 +94,14 @@ class FavouriteMessageActivity : BaseActivity(), DownloadFileService.FileDownloa
         )
         makeHeaders()
 
+        if (mMessagesMap!!.size == 0) {
+            txtNoFavourite.visibility = View.VISIBLE
+            lvFavouriteList.visibility = View.GONE
+        } else {
+            txtNoFavourite.visibility = View.GONE
+            lvFavouriteList.visibility = View.VISIBLE
+        }
+
         mFavouriteAdapter = FavouriteAdapter(this, mFavouriteMessageActivity, mWidth, mCurrentUser!!.user_id,
                 mOpponentUserId, mPrivateChat!!.participant_ids, mPrivateChat)
         lvFavouriteList.adapter = mFavouriteAdapter
@@ -398,6 +406,15 @@ class FavouriteMessageActivity : BaseActivity(), DownloadFileService.FileDownloa
         )
         makeHeaders()
         mFavouriteAdapter!!.notifyDataSetChanged()
+
+        if (mMessagesMap!!.size == 0) {
+            txtNoFavourite.visibility = View.VISIBLE
+            lvFavouriteList.visibility = View.GONE
+        } else {
+            txtNoFavourite.visibility = View.GONE
+            lvFavouriteList.visibility = View.VISIBLE
+        }
+
         if (mChangeFavouriteInterface != null) {
             mChangeFavouriteInterface!!.onChange(msgId)
         }

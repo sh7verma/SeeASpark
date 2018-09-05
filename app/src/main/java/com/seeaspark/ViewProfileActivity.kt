@@ -80,7 +80,7 @@ class ViewProfileActivity : BaseActivity() {
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun displayNightMode() {
         populateData()
-        llMainViewProfile.background = ContextCompat.getDrawable(this, R.drawable.dark_short_profile_background)
+        llMainViewProfile.background = ContextCompat.getDrawable(this, R.drawable.dark_view_profile_background)
         txtRatingViewProfile.setTextColor(whiteColor)
         txtNameViewProfile.setTextColor(whiteColor)
         txtGenderViewProfile.setTextColor(whiteColor)

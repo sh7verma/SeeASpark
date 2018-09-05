@@ -24,6 +24,12 @@ android {
         multiDexEnabled true
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {// 设置支持的SO库架构
+        }
+    }
+    sourceSets.main {
+        jniLibs.srcDir 'src/main/jniLibs'
+        jni.srcDirs = []//不编译jni
     }
     buildTypes {
         release {

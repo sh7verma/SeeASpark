@@ -77,7 +77,7 @@ public class Constants {
     public static final int LIKE = 3;
     public static final int UNLIKED = 0;
     public static final String POST_BROADCAST = "event_like";
-    public static final String Community_BROADCAST = "community";
+    public static final String UNMATCH = "unmatch";
     public static final Integer BOOKMARK = 2;
     public static final Integer COMMENT = 3;
     public static final Integer DELETE = 4;
@@ -122,6 +122,7 @@ public class Constants {
     public final static String USERS = "Users";
     public final static String CHATS = "Chats";
     public final static String MESSAGES = "Messages";
+    public final static String READ_STATUS = "ReadStatus";
     public final static String NOTIFICATIONS = "Notifications";
     public final static Long ONLINE_LONG = 123L;
     public final static String ONLINE = "Online";

@@ -27,6 +27,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.squareup.picasso.Picasso
 import fragments.*
+import helper.FirebaseListeners
 import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.activity_verify_id.*
 import models.BaseSuccessModel
@@ -44,7 +45,7 @@ import utils.MainApplication
 
 @Suppress("DEPRECATION")
 class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
-        LocationListener, GpsStatusDetector.GpsStatusDetectorCallBack, GoogleApiClient.OnConnectionFailedListener {
+        LocationListener, GpsStatusDetector.GpsStatusDetectorCallBack, GoogleApiClient.OnConnectionFailedListener, FirebaseListeners.ProfileListenerInterface {
 
     private val LOCATION_CHECK: Int = 1
 
@@ -101,6 +102,8 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
     override fun onCreateStuff() {
         callService()
+        FirebaseListeners.setProfileDataListener(this)
+        FirebaseListeners.getListenerClass(this).setProfileListener(mUtils!!.getString("user_id", ""))
         if (intent.hasExtra("matchData")) {
             val matchData: String = intent.getStringExtra("matchData")
             intent = Intent(this, HandshakeActivity::class.java)
@@ -516,5 +519,10 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             }
         }
         return false
+    }
+
+    override fun onProfileChanged(value: String?) {
+        if (mUtils!!.getString("user_id", "") == value)
+            moveToSplash()
     }
 }

@@ -295,12 +295,12 @@ class EditProfileActivity : BaseActivity() {
                 userData!!.response = response.body().response
                 mUtils!!.setString("userDataLocal", mGson.toJson(userData))
 
-//                var mFirebaseConfigChats = FirebaseDatabase.getInstance().getReference().child(Constants.CHATS)
-//                val ids = db!!.getDialogs(userData!!.response.id.toString())
-//                for (dialogId in ids.keys) {
-//                    mFirebaseConfigChats.child(dialogId).child("name").child(userData!!.response.id.toString()).setValue(userData!!.response.full_name)
-//                    mFirebaseConfigChats.child(dialogId).child("profile_pic").child(userData!!.response.id.toString()).setValue(userData!!.response.avatar.avtar_url)
-//                }
+                val mFirebaseConfigChats = FirebaseDatabase.getInstance().getReference().child(Constants.CHATS)
+                val ids = db!!.getDialogs(userData!!.response.id.toString())
+                for (dialogId in ids.keys) {
+                    mFirebaseConfigChats.child(dialogId).child("name").child(userData!!.response.id.toString()).setValue(userData!!.response.full_name)
+                    mFirebaseConfigChats.child(dialogId).child("profile_pic").child(userData!!.response.id.toString()).setValue(userData!!.response.avatar.avtar_url)
+                }
 
                 val values = HashMap<String, Any>()
                 values.put("online_status", Constants.ONLINE_LONG)
