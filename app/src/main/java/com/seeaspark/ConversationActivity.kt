@@ -1107,7 +1107,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         if (mPrivateChat!!.rating == null) {
                             intent.putExtra("status", "")
                         } else {
-                            if (TextUtils.isEmpty(mPrivateChat!!.rating.get(mCurrentUser!!.user_id)) || mPrivateChat!!.rating.get(mCurrentUser!!.user_id).equals("null")) {
+                            if (TextUtils.isEmpty(mPrivateChat!!.rating.get(mCurrentUser!!.user_id))
+                                    || mPrivateChat!!.rating.get(mCurrentUser!!.user_id).equals("null")) {
                                 intent.putExtra("status", "")
                             } else {
                                 intent.putExtra("status", mPrivateChat!!.rating.get(mCurrentUser!!.user_id))
@@ -1288,6 +1289,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     private fun hitUnmatchAPI() {
+
         showLoader()
         val call = RetrofitClient.getInstance().unmatch(mUtils!!.getString("access_token", ""),
                 mOpponentUserId)

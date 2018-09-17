@@ -44,7 +44,7 @@ class PreferProfessionAdapter(mConetxt: Context,
                 holder.imgSelectedProfession.visibility = View.INVISIBLE
         }
 
-        holder.txtProfessionData.setOnClickListener {
+        holder.llProfessionData.setOnClickListener {
             if (holder.adapterPosition == 0) {
                 mPreferActivity!!.clearProfessionPreferences()
             } else {
@@ -70,5 +70,7 @@ class PreferProfessionAdapter(mConetxt: Context,
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtProfessionData = itemView.txtProfessionData
         val imgSelectedProfession = itemView.imgSelectedProfession
+        val llProfessionData = itemView.llProfessionData
+
     }
 }

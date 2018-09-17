@@ -66,12 +66,12 @@ class AttachVideoActivity : BaseActivity() {
         name = intent.getStringExtra("name")
         mPic = intent.extras!!.getString("pic")
         Picasso.with(this).load(mPic).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
-        txtName.setText(name)
-        rangeSeekbar.setEnabled(false)
+        txtName.text = name
+        rangeSeekbar.isEnabled = false
 
         val thumb_lay_pams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (mWidth * 0.13).toInt())
         thumb_lay_pams.addRule(RelativeLayout.CENTER_IN_PARENT)
-        thumbLay.setLayoutParams(thumb_lay_pams)
+        thumbLay.layoutParams = thumb_lay_pams
 
         val thumb_img_pams = LinearLayout.LayoutParams(((mWidth - mWidth / 32) / 7).toInt(), (mWidth * 0.11).toInt())
         thumb1.layoutParams = thumb_img_pams
@@ -106,7 +106,7 @@ class AttachVideoActivity : BaseActivity() {
     override fun onCreateStuff() {
         try {
             duartion_sec = MediaPlayer.create(this, Uri.fromFile(File(select_path))).duration
-            rangeSeekbar.setEnabled(true)
+            rangeSeekbar.isEnabled = true
             if (duartion_sec < 2000) {
                 Toast.makeText(this, resources.getString(R.string.video_size_limit), Toast.LENGTH_SHORT).show()
                 finish()
@@ -118,8 +118,8 @@ class AttachVideoActivity : BaseActivity() {
             rangeSeekbar.setTickCount((duartion_sec / 1000).toInt())
             stopIt = (duartion_sec / 1000).toInt()
 
-            showSelectedDuration.setText("00:00 - " + TimeUtilsTrim.toFormattedTime(duartion_sec))
-            maxDuration.setText(TimeUtilsTrim.toFormattedTime(duartion_sec))
+            showSelectedDuration.text = "00:00 - " + TimeUtilsTrim.toFormattedTime(duartion_sec)
+            maxDuration.text = TimeUtilsTrim.toFormattedTime(duartion_sec)
             getFrames()
         } catch (e: Exception) {
             // TODO Auto-generated catch block
@@ -148,21 +148,21 @@ class AttachVideoActivity : BaseActivity() {
         imgSend.setOnClickListener(this)
         imgPlayVideo.setOnClickListener(this)
         videoView.setOnPreparedListener(MediaPlayer.OnPreparedListener {
-            rangeSeekbar.setEnabled(true)
+            rangeSeekbar.isEnabled = true
             save_video_thumbnail()
-            duartion_sec = videoView.getDuration()
+            duartion_sec = videoView.duration
             if (duartion_sec < 2000) {
                 Toast.makeText(this, resources.getString(R.string.video_size_limit), Toast.LENGTH_SHORT).show()
                 finish()
                 return@OnPreparedListener
             }
             rightThumb = duartion_sec / 1000
-            videoSeek.setTickCount((videoView.getDuration() / 1000).toInt())
-            rangeSeekbar.setTickCount((videoView.getDuration() / 1000).toInt())
-            stopIt = (videoView.getDuration() / 1000).toInt()
+            videoSeek.setTickCount((videoView.duration / 1000).toInt())
+            rangeSeekbar.setTickCount((videoView.duration / 1000).toInt())
+            stopIt = (videoView.duration / 1000).toInt()
 
-            showSelectedDuration.setText("00:00 - " + TimeUtilsTrim.toFormattedTime(videoView.getDuration()))
-            maxDuration.setText(TimeUtilsTrim.toFormattedTime(videoView.getDuration()))
+            showSelectedDuration.text = "00:00 - " + TimeUtilsTrim.toFormattedTime(videoView.duration)
+            maxDuration.text = TimeUtilsTrim.toFormattedTime(videoView.duration)
             getFrames()
         })
 
@@ -194,13 +194,13 @@ class AttachVideoActivity : BaseActivity() {
 
         videoView.setOnCompletionListener(MediaPlayer.OnCompletionListener {
             // TODO Auto-generated method stub
-            imgPlayVideo.setVisibility(View.VISIBLE)
+            imgPlayVideo.visibility = View.VISIBLE
             handleProgress.removeCallbacks(onEverySecond)
             handleStop.removeCallbacks(stopVideo)
 
             videoView.seekTo(leftThumb * 1000)
-            if (videoView.getCurrentPosition() / 1000 < duartion_sec / 1000)
-                videoSeek.setThumbIndices(leftThumb, videoView.getCurrentPosition() / 1000)
+            if (videoView.currentPosition / 1000 < duartion_sec / 1000)
+                videoSeek.setThumbIndices(leftThumb, videoView.currentPosition / 1000)
         })
 
         rangeSeekbar.setOnRangeBarChangeListener(RangeBar.OnRangeBarChangeListener { rangeBar, leftThumbIndex, rightThumbIndex ->
@@ -208,14 +208,14 @@ class AttachVideoActivity : BaseActivity() {
             leftThumb = leftThumbIndex
             rightThumb = rightThumbIndex+1
             videoView.pause()
-            imgPlayVideo.setVisibility(View.VISIBLE)
+            imgPlayVideo.visibility = View.VISIBLE
             handleProgress.removeCallbacks(onEverySecond)
 
             videoView.seekTo(leftThumbIndex * 1000)
-            if (videoView.getCurrentPosition() / 1000 < duartion_sec / 1000)
-                videoSeek.setThumbIndices(leftThumbIndex, videoView.getCurrentPosition() / 1000)
-            showSelectedDuration.setText(TimeUtilsTrim.toFormattedTime(leftThumbIndex * 1000) + " - " + TimeUtilsTrim.toFormattedTime(rightThumbIndex * 1000))
-            maxDuration.setText(TimeUtilsTrim.toFormattedTime((rightThumbIndex - leftThumbIndex) * 1000))
+            if (videoView.currentPosition / 1000 < duartion_sec / 1000)
+                videoSeek.setThumbIndices(leftThumbIndex, videoView.currentPosition / 1000)
+            showSelectedDuration.text = TimeUtilsTrim.toFormattedTime(leftThumbIndex * 1000) + " - " + TimeUtilsTrim.toFormattedTime(rightThumbIndex * 1000)
+            maxDuration.text = TimeUtilsTrim.toFormattedTime((rightThumbIndex - leftThumbIndex) * 1000)
 
             stopIt = rightThumbIndex - leftThumbIndex
         })
@@ -230,9 +230,9 @@ class AttachVideoActivity : BaseActivity() {
             }
             imgPlayVideo -> {
                 videoView.start()
-                imgPlayVideo.setVisibility(View.GONE)
-                if (videoView.getCurrentPosition() / 1000 < duartion_sec / 1000)
-                    videoSeek.setThumbIndices(leftThumb, videoView.getCurrentPosition() / 1000)
+                imgPlayVideo.visibility = View.GONE
+                if (videoView.currentPosition / 1000 < duartion_sec / 1000)
+                    videoSeek.setThumbIndices(leftThumb, videoView.currentPosition / 1000)
                 handleProgress.postDelayed(onEverySecond, 1000)
                 handleStop.postDelayed(stopVideo, ((stopIt + 1) * 1000).toLong())
             }
@@ -252,16 +252,16 @@ class AttachVideoActivity : BaseActivity() {
 
     private fun moveBack() {
         try {
-            if (videoView.isPlaying()) {
+            if (videoView.isPlaying) {
                 videoView.pause()
-                imgPlayVideo.setVisibility(View.VISIBLE)
+                imgPlayVideo.visibility = View.VISIBLE
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
         if (mgetFramesAsync != null) {
-            if (mgetFramesAsync!!.getStatus() == AsyncTask.Status.RUNNING) {
+            if (mgetFramesAsync!!.status == AsyncTask.Status.RUNNING) {
                 mgetFramesAsync!!.cancel(true)
             }
         }
@@ -275,15 +275,15 @@ class AttachVideoActivity : BaseActivity() {
             file.setReadable(true, false)
             videoView.setVideoURI(Uri.fromFile(file))
             videoView.requestFocus()
-            imgPlayVideo.setVisibility(View.VISIBLE)
+            imgPlayVideo.visibility = View.VISIBLE
 
             val length = file.length()
             if (length < 1024) {
-                fileSize.setText(length.toString() + "Bytes")
+                fileSize.text = length.toString() + "Bytes"
             } else if (length / 1024 >= 1 && length / 1024 < 1024) {
-                fileSize.setText((length / 1024).toString() + "KB")
+                fileSize.text = (length / 1024).toString() + "KB"
             } else if (length / 1024 >= 1024) {
-                fileSize.setText((length / 1024 / 1024).toString() + "MB")
+                fileSize.text = (length / 1024 / 1024).toString() + "MB"
             }
 
         }
@@ -292,19 +292,19 @@ class AttachVideoActivity : BaseActivity() {
     private val stopVideo = Runnable {
         // TODO Auto-generated method stub
         videoView.pause()
-        imgPlayVideo.setVisibility(View.VISIBLE)
+        imgPlayVideo.visibility = View.VISIBLE
 
         videoView.seekTo(leftThumb * 1000)
-        if (videoView.getCurrentPosition() / 1000 < duartion_sec / 1000)
-            videoSeek.setThumbIndices(leftThumb, videoView.getCurrentPosition() / 1000)
+        if (videoView.currentPosition / 1000 < duartion_sec / 1000)
+            videoSeek.setThumbIndices(leftThumb, videoView.currentPosition / 1000)
     }
     private val onEverySecond = object : Runnable {
 
         override fun run() {
-            if (videoSeek != null && videoView.getCurrentPosition() / 1000 < duartion_sec / 1000) {
-                videoSeek.setThumbIndices(leftThumb, videoView.getCurrentPosition() / 1000)
+            if (videoSeek != null && videoView.currentPosition / 1000 < duartion_sec / 1000) {
+                videoSeek.setThumbIndices(leftThumb, videoView.currentPosition / 1000)
             }
-            if (videoView.isPlaying()) {
+            if (videoView.isPlaying) {
                 handleProgress.postDelayed(this, 1000)
             }
         }
@@ -335,22 +335,22 @@ class AttachVideoActivity : BaseActivity() {
 
     internal fun sendMessage(message: String) {
         try {
-            if (videoView.isPlaying()) {
+            if (videoView.isPlaying) {
                 videoView.pause()
-                videoView.setVisibility(View.VISIBLE)
+                videoView.visibility = View.VISIBLE
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
         if (mgetFramesAsync != null) {
-            if (mgetFramesAsync!!.getStatus() == AsyncTask.Status.RUNNING) {
+            if (mgetFramesAsync!!.status == AsyncTask.Status.RUNNING) {
                 mgetFramesAsync!!.cancel(true)
             }
         }
 
         if (rightThumb - leftThumb > 1) {
-            if (leftThumb == 0 && rightThumb >= ((videoView.getDuration() / 1000).toInt() - 1)) {
+            if (leftThumb == 0 && rightThumb >= ((videoView.duration / 1000) - 1)) {
                 // thumb not moved
                 VideoCompressionHelper.initCompressor()
                         .startCompression(this, select_path, camerapathVideo)

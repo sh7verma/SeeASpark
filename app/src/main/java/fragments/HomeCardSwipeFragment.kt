@@ -508,24 +508,28 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
         mFirebaseConfig.child(participants).setValue(mChat).addOnSuccessListener {
             mChat.opponent_user_id = othetUser.id.toString()
             mDb!!.addNewChat(mChat, mLandingInstance!!.userData!!.response.id.toString(), othetUser.id.toString())
-            var mFirebaseConfigChat: DatabaseReference
+            val mFirebaseConfigChat: DatabaseReference
             mFirebaseConfigChat = FirebaseDatabase.getInstance().getReference().child(Constants.CHATS)
             mFirebaseConfigChat.child(participants).child("delete_dialog_time").child(mLandingInstance!!.userData!!.response.id.toString())
                     .setValue(ServerValue.TIMESTAMP)
             mFirebaseConfigChat.child(participants).child("delete_dialog_time").child(othetUser.id.toString())
                     .setValue(ServerValue.TIMESTAMP)
 
-            var mFirebaseConfigUser: DatabaseReference
+            val mFirebaseConfigUser: DatabaseReference
             mFirebaseConfigUser = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
             mFirebaseConfigUser.child("id_" + othetUser.id).child("chat_dialog_ids").child(participants)
                     .setValue(participants)
             mFirebaseConfigUser.child("id_" + mLandingInstance!!.userData!!.response.id.toString())
                     .child("chat_dialog_ids").child(participants).setValue(participants)
 
-            val intent = Intent(mContext!!, HandshakeActivity::class.java)
-            intent.putExtra("otherProfileData", response)
-            startActivity(intent)
-            activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+            try {
+                val intent = Intent(mContext!!, HandshakeActivity::class.java)
+                intent.putExtra("otherProfileData", response)
+                startActivity(intent)
+                activity.overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+            } catch (e: Exception) {
+                Log.e("e", e.localizedMessage);
+            }
         }.addOnFailureListener {
 
         }

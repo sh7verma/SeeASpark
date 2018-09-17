@@ -38,7 +38,7 @@ class ChatOptionsActivity : BaseActivity() {
     }
 
     override fun displayNightMode() {
-        llinnerChatOptions.setBackgroundResource(R.drawable.dark_short_profile_background)
+        llinnerChatOptions.setBackgroundResource(R.drawable.share_night_background)
         txtShareProfile.setTextColor(whiteColor)
         txtRating.setTextColor(whiteColor)
         txtFavouriteMessage.setTextColor(whiteColor)
@@ -79,12 +79,11 @@ class ChatOptionsActivity : BaseActivity() {
                 overridePendingTransition(0, 0)
             }
             txtRating -> {
-//                val intent = Intent()
-//                intent.putExtra("type", "rating")
-//                setResult(Activity.RESULT_OK, intent)
-//                finish()
-//                overridePendingTransition(0, 0)
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                val intent = Intent()
+                intent.putExtra("type", "rating")
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+                overridePendingTransition(0, 0)
             }
             txtFavouriteMessage -> {
                 val intent = Intent()

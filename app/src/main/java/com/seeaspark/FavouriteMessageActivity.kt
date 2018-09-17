@@ -188,22 +188,18 @@ class FavouriteMessageActivity : BaseActivity(), DownloadFileService.FileDownloa
             val user = ProfileModel.parseProfile(dataSnapshot)
             db!!.addProfile(user)
             mOpponentUser = db!!.getProfile(user.user_id)
-            txtName.setText(mOpponentUser!!.user_name)
-            if (!mOpponentUser!!.user_pic.equals(user.user_pic)) {
-                Picasso.with(this@FavouriteMessageActivity).load(mOpponentUser!!.user_pic).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
-            }
             setOnlineFlag(user)
+
+            txtName.text = user.user_name
         }
 
         override fun onChildChanged(dataSnapshot: com.google.firebase.database.DataSnapshot, s: String?) {
             val user = ProfileModel.parseProfile(dataSnapshot)
             db!!.addProfile(user)
             mOpponentUser = db!!.getProfile(user.user_id)
-            txtName.setText(mOpponentUser!!.user_name)
-            if (!mOpponentUser!!.user_pic.equals(user.user_pic)) {
-                Picasso.with(this@FavouriteMessageActivity).load(mOpponentUser!!.user_pic).placeholder(R.drawable.placeholder_image).into(imgProfileAvatar)
-            }
             setOnlineFlag(user)
+
+            txtName.text = user.user_name
         }
 
         override fun onChildRemoved(dataSnapshot: com.google.firebase.database.DataSnapshot) {

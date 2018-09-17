@@ -27,13 +27,13 @@ public class ChatHolderReceiverVideo {
     public ImageView imgVideoReceive, imgFavouriteVideoReceive, imgDownload, imgPlayVideoReceive;
     public TextView txtTime;
     public RelativeLayout rlReceiveMessage;
-    CircularProgressBar cpbProgress;
-    int mWidth;
+    private CircularProgressBar cpbProgress;
+    private int imageWidth;
 
-    public ChatHolderReceiverVideo(Context con, View view, int width) {
+    public ChatHolderReceiverVideo(Context con, View view, int mWidth) {
         // TODO Auto-generated constructor stub
 
-        mWidth = width;
+        imageWidth = (int) (mWidth * 0.72) - 4;
 
         llReceiveVideo = (LinearLayout) view.findViewById(R.id.llReceiveVideo);
 
@@ -43,7 +43,10 @@ public class ChatHolderReceiverVideo {
         rlReceiveMessage = (RelativeLayout) view.findViewById(R.id.rlReceiveMessage);
         rlReceiveMessage.setLayoutParams(relativePam);
 
+        RelativeLayout.LayoutParams imageParms = new RelativeLayout.LayoutParams(imageWidth, imageWidth);
+        imageParms.addRule(RelativeLayout.CENTER_IN_PARENT);
         imgVideoReceive = (ImageView) view.findViewById(R.id.imgVideoReceive);
+        imgVideoReceive.setLayoutParams(imageParms);
 
         RelativeLayout.LayoutParams cpbParams = new RelativeLayout.LayoutParams((mWidth / 5), (mWidth / 5));
         cpbParams.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -73,8 +76,10 @@ public class ChatHolderReceiverVideo {
             if (!TextUtils.isEmpty(mMessage.custom_data)) {
                 File file = new File(mMessage.custom_data);
                 if (file.exists()) {
-                    Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72)-1,
-                            (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoReceive);
+                    Picasso.with(mContext).load(file).resize(imageWidth, imageWidth)
+                            .centerCrop()
+                            .transform(new RoundedTransformation(Constants.dpToPx(8), 0))
+                            .into(imgVideoReceive);
                 }
             }
             if (mMessage.attachment_status.equals("" + Constants.FILE_UPLOADING)) {
@@ -94,8 +99,11 @@ public class ChatHolderReceiverVideo {
         } else {
             File file = new File(mMessage.custom_data);
             if (file.exists()) {
-                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72)-1,
-                        (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoReceive);
+                Picasso.with(mContext).load(file)
+                        .resize(imageWidth, imageWidth)
+                        .centerCrop()
+                        .transform(new RoundedTransformation(Constants.dpToPx(8), 0))
+                        .into(imgVideoReceive);
             }
             cpbProgress.setVisibility(View.GONE);
             imgDownload.setVisibility(View.GONE);

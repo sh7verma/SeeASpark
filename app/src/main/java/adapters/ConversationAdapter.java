@@ -93,7 +93,7 @@ public class ConversationAdapter extends BaseAdapter {
     }
 
     public void animationStatus(boolean status) {
-//        flag = status;
+        flag = status;
     }
 
     @Override

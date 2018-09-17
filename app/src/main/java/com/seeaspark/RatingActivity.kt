@@ -57,9 +57,11 @@ class RatingActivity : BaseActivity() {
         txtRate.text = getString(R.string.rate) + " " + userName + "!"
 
         if (status.equals("1")) {
+            edComment.isEnabled = false
+            ratingBar.setIsIndicator(true)
             getRatingAPI()
             txtDone.visibility = View.GONE
-        }else{
+        } else {
             txtDone.visibility = View.VISIBLE
         }
     }
@@ -75,10 +77,6 @@ class RatingActivity : BaseActivity() {
             txtDone -> {
                 if (ratingBar.getRating() <= 0) {
                     val toast = Toast.makeText(this, getString(R.string.please_rate), Toast.LENGTH_LONG)
-                    toast.setGravity(Gravity.CENTER, 0, 0)
-                    toast.show()
-                } else if (edComment.text.toString().trim().isEmpty()) {
-                    val toast = Toast.makeText(this, getString(R.string.error_desc), Toast.LENGTH_LONG)
                     toast.setGravity(Gravity.CENTER, 0, 0)
                     toast.show()
                 } else {
@@ -103,11 +101,13 @@ class RatingActivity : BaseActivity() {
         call.enqueue(object : Callback<BaseSuccessModel> {
             override fun onResponse(call: Call<BaseSuccessModel>?, response: Response<BaseSuccessModel>) {
                 if (response.body().response != null) {
-                    mFirebaseConfigChats.child(chatDialogId).child("rating").child(mUtils!!.getString("user_id", "")).setValue("1").addOnSuccessListener {
-                        dismissLoader()
-                        showToast(mContext!!, response.body().response.message)
-                        finish()
-                    }
+                    mFirebaseConfigChats.child(chatDialogId).child("rating")
+                            .child(mUtils!!.getString("user_id", ""))
+                            .setValue("1").addOnSuccessListener {
+                                dismissLoader()
+                                showToast(mContext!!, response.body().response.message)
+                                finish()
+                            }
                 } else {
                     dismissLoader()
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {

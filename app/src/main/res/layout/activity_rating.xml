@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight=".8"
-        android:background="@drawable/dark_short_profile_background"
+        android:background="@drawable/share_night_background"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 

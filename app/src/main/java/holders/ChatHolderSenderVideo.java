@@ -27,12 +27,13 @@ public class ChatHolderSenderVideo {
     public ImageView imgVideoSent, imgFavouriteVideoSent, imgRead, imgUpload, imgPlayVideoSent;
     public TextView txtTime;
     public RelativeLayout rlSentMessage;
-    CircularProgressBar cpbProgress;
-    int mWidth;
+    private CircularProgressBar cpbProgress;
+    private int imageWidth;
 
-    public ChatHolderSenderVideo(Context con, View view, int width) {
+    public ChatHolderSenderVideo(Context con, View view, int mWidth) {
         // TODO Auto-generated constructor stub
-        mWidth = width;
+
+        imageWidth = (int) (mWidth * 0.72)-4;
 
         llSentVideo = (LinearLayout) view.findViewById(R.id.llSentVideo);
 
@@ -42,7 +43,10 @@ public class ChatHolderSenderVideo {
         rlSentMessage = (RelativeLayout) view.findViewById(R.id.rlSentMessage);
         rlSentMessage.setLayoutParams(relativePam);
 
+        RelativeLayout.LayoutParams imageParms = new RelativeLayout.LayoutParams(imageWidth, imageWidth);
+        imageParms.addRule(RelativeLayout.CENTER_IN_PARENT);
         imgVideoSent = (ImageView) view.findViewById(R.id.imgVideoSent);
+        imgVideoSent.setLayoutParams(imageParms);
 
         RelativeLayout.LayoutParams cpbParams = new RelativeLayout.LayoutParams((mWidth / 5), (mWidth / 5));
         cpbParams.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -66,8 +70,11 @@ public class ChatHolderSenderVideo {
             if (!TextUtils.isEmpty(mMessage.custom_data)) {
                 File file = new File(mMessage.custom_data);
                 if (file.exists()) {
-                    Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72)-1,
-                            (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoSent);
+                    Picasso.with(mContext).load(file)
+                            .resize(imageWidth, imageWidth)
+                            .centerCrop()
+                            .transform(new RoundedTransformation(Constants.dpToPx(8), 0))
+                            .into(imgVideoSent);
                 }
             }
             imgPlayVideoSent.setVisibility(View.VISIBLE);
@@ -76,8 +83,11 @@ public class ChatHolderSenderVideo {
         } else {
             File file = new File(mMessage.custom_data);
             if (file.exists()) {
-                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72)-1,
-                        (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgVideoSent);
+                Picasso.with(mContext).load(file).resize(imageWidth, imageWidth)
+                        .centerCrop()
+                        .placeholder(R.drawable.placeholder_image)
+                        .transform(new RoundedTransformation(Constants.dpToPx(8), 0))
+                        .into(imgVideoSent);
             }
             if (mMessage.attachment_status.equals("" + Constants.FILE_UPLOADING)) {
                 imgUpload.setVisibility(View.GONE);

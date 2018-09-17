@@ -43,14 +43,12 @@
             android:paddingTop="@dimen/_12sdp"
             android:text="@string/rate_user"
             android:textAllCaps="true"
-            android:textColor="@color/black_color"
-            android:visibility="gone" />
+            android:textColor="@color/black_color" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/greyLine"
-            android:visibility="gone" />
+            android:background="@color/greyLine" />
 
         <customviews.MediumTextView
             android:id="@+id/txtFavouriteMessage"

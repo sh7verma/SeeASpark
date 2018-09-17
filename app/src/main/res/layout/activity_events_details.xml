@@ -157,7 +157,7 @@
                     android:id="@+id/txtEventLink"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_42sdp"
-                    android:background="@drawable/user_option_ripple"
+                    android:background="@drawable/primary_ripple"
                     android:gravity="center"
                     android:text="@string/book_now"
                     android:textAllCaps="true"

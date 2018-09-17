@@ -28,12 +28,12 @@ public class ChatHolderSenderImage {
     public ImageView imgImageSent, imgFavouriteImageSent, imgRead, imgUpload;
     public TextView txtTime;
     public RelativeLayout rlSentMessage;
-    CircularProgressBar cpbProgress;
-    int mWidth;
+    private CircularProgressBar cpbProgress;
+    private int imageWidth;
 
-    public ChatHolderSenderImage(Context con, View view, int width) {
-        // TODO Auto-generated constructor stub
-        mWidth = width;
+    public ChatHolderSenderImage(Context con, View view, int mWidth) {
+
+        imageWidth = (int) (mWidth * 0.72)-4;
 
         llSentImage = (LinearLayout) view.findViewById(R.id.llSentImage);
 
@@ -43,7 +43,10 @@ public class ChatHolderSenderImage {
         rlSentMessage = (RelativeLayout) view.findViewById(R.id.rlSentMessage);
         rlSentMessage.setLayoutParams(relativePam);
 
+        RelativeLayout.LayoutParams imageParms = new RelativeLayout.LayoutParams(imageWidth, imageWidth);
+        imageParms.addRule(RelativeLayout.CENTER_IN_PARENT);
         imgImageSent = (ImageView) view.findViewById(R.id.imgImageSent);
+        imgImageSent.setLayoutParams(imageParms);
 
         RelativeLayout.LayoutParams cpbParams = new RelativeLayout.LayoutParams((mWidth / 5), (mWidth / 5));
         cpbParams.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -63,32 +66,45 @@ public class ChatHolderSenderImage {
         if (TextUtils.isEmpty(mMessage.attachment_path)) {
             //attachment not download yet
             if (!TextUtils.isEmpty(mMessage.attachment_url)) {
-                Picasso.with(mContext).load(mMessage.attachment_url).resize((int) (mWidth * 0.72)-1,
-                        (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageSent);
+                Picasso.with(mContext).load(mMessage.attachment_url)
+                        .resize(imageWidth, imageWidth)
+                        .centerCrop()
+                        .transform(new RoundedTransformation(Constants.dpToPx(8), 0))
+                        .into(imgImageSent);
             }
             cpbProgress.setVisibility(View.GONE);
             imgUpload.setVisibility(View.GONE);
         } else {
             File file = new File(mMessage.attachment_path);
             if (file.exists()) {
-                Picasso.with(mContext).load(file).resize((int) (mWidth * 0.72)-1,
-                        (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageSent);
+                Picasso.with(mContext).load(file)
+                        .resize(imageWidth, imageWidth)
+                        .centerCrop()
+                        .transform(new RoundedTransformation(Constants.dpToPx(8), 0))
+                        .into(imgImageSent);
             } else {
                 if (!TextUtils.isEmpty(mMessage.attachment_url)) {
-                    Picasso.with(mContext).load(mMessage.attachment_url).resize((int) (mWidth * 0.72)-1,
-                            (int) (mWidth * 0.72)-1).centerCrop().transform(new RoundedTransformation(10, 0)).into(imgImageSent);
+                    Picasso.with(mContext).load(mMessage.attachment_url)
+                            .resize(imageWidth, imageWidth)
+                            .centerCrop()
+                            .transform(new RoundedTransformation(Constants.dpToPx(8), 0))
+                            .into(imgImageSent);
                 }
             }
-            if (mMessage.attachment_status.equals("" + Constants.FILE_UPLOADING)) {
-                imgUpload.setVisibility(View.GONE);
-                cpbProgress.setVisibility(View.VISIBLE);
-                cpbProgress.setProgress(Integer.parseInt(mMessage.attachment_progress));
-            } else if (mMessage.attachment_status.equals("" + Constants.FILE_EREROR)) {
-                imgUpload.setVisibility(View.VISIBLE);
-                cpbProgress.setVisibility(View.GONE);
-            } else {//Success
-                imgUpload.setVisibility(View.GONE);
-                cpbProgress.setVisibility(View.GONE);
+            switch (mMessage.attachment_status) {
+                case "" + Constants.FILE_UPLOADING:
+                    imgUpload.setVisibility(View.GONE);
+                    cpbProgress.setVisibility(View.VISIBLE);
+                    cpbProgress.setProgress(Integer.parseInt(mMessage.attachment_progress));
+                    break;
+                case "" + Constants.FILE_EREROR:
+                    imgUpload.setVisibility(View.VISIBLE);
+                    cpbProgress.setVisibility(View.GONE);
+                    break;
+                default: //Success
+                    imgUpload.setVisibility(View.GONE);
+                    cpbProgress.setVisibility(View.GONE);
+                    break;
             }
         }
 

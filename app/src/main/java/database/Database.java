@@ -1527,7 +1527,6 @@ public class Database extends SQLiteOpenHelper {
             values.put(MESSAGE_DELETED, msg.message_deleted.get(userId));
             values.put(FAVOURITE_MESSAGE, msg.favourite_message.get(userId));
             values.put(FIRBASE_MESSAGE_TIME, msg.firebase_message_time);
-            values.put(CUSTOM_DATA, msg.custom_data);
 
             String qry = "select * from " + MESSAGES_TABLE + " where " + MESSAGE_ID + " = '" + msg.message_id + "'";
             cur = db_read.rawQuery(qry, null);

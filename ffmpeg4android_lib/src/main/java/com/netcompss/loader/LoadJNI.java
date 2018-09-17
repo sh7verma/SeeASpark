@@ -1,13 +1,13 @@
 package com.netcompss.loader;
 
-import java.io.File;
+import android.content.Context;
+import android.util.Log;
 
 import com.netcompss.ffmpeg4android.CommandValidationException;
 import com.netcompss.ffmpeg4android.GeneralUtils;
 import com.netcompss.ffmpeg4android.Prefs;
 
-import android.content.Context;
-import android.util.Log;
+import java.io.File;
 
 public final class LoadJNI {
 

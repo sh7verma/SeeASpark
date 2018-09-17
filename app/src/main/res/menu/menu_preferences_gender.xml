@@ -9,5 +9,10 @@
 
     <item
         android:id="@+id/item_other"
+        android:title="@string/other" />
+
+    <item
+        android:id="@+id/item_dont_mind"
         android:title="@string/don_t_mind" />
+
 </menu>

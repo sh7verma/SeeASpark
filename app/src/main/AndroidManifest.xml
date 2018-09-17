@@ -413,11 +413,10 @@
             android:theme="@style/MainActionBarTheme" />
 
         <activity
-            android:name=".PaymentDemo"
+            android:name=".PaymentPlanActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/MainActionBarTheme" />
-        >
+            android:theme="@style/MainActionBarTheme"/>
 
         <activity
             android:name=".AnimationDemo"
