@@ -210,7 +210,6 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
 
         private fun displayDayMode() {
             cvCommunityListing.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.white_color))
-            rlCommunityListing.setBackgroundResource(0)
             txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
             txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
             txtLikeCountCommunityListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
@@ -219,7 +218,6 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
 
         private fun displayNightMode() {
             cvCommunityListing.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.cardview_dark_background))
-            rlCommunityListing.setBackgroundResource(R.drawable.night_card_background)
             txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
             txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
             txtLikeCountCommunityListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))

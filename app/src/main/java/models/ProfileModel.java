@@ -1,31 +1,43 @@
 package models;
 
-import java.util.List;
 
-public class ProfileModel extends BaseModel {
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.GenericTypeIndicator;
 
+import java.io.Serializable;
+import java.util.HashMap;
 
-    /**
-     * response : {"id":115,"full_name":"दिलीप चौहान","email":"defectlifecycle@gmail.com","age":"02-08-2002","gender":"1","access_token":"5056d38dd3f6d6764718d1c6b12bbb86","account_type":1,"facebook_id":"2052072875118340","profile_status":2,"linkedin_id":"","user_type":1,"email_verified":1,"skills":["Leadership","Decision Making","Adaptability "],"languages":[{"id":106,"name":"Albanian"}],"avatar":"https://s3.ap-south-1.amazonaws.com/kittydev/see_a_spark/avatars/ic_male_6.png","profession":{"id":7,"name":"Engineer","created_at":"2018-06-01T05:57:39.000Z","updated_at":"2018-06-01T05:57:39.000Z"},"bio":"Ynunj","pro_description":"7j7j","experience_year":2,"experience_month":0,"document_verified":1,"submitted_document":0,"mentor_verified":0,"preferences":{"gender":2,"distance":0,"experience_year":3,"experience_month":0,"languages":[],"skills":[],"professions":[]},"tip":1,"mentor_question_status":0,"mentee_question_status":1,"can_switch":0,"mentor_profile_status":0,"mentee_profile_status":2,"switch_status":0}
-     * code : 111
-     */
+/**
+ * Created by Applify on 8/17/2016.
+ */
+public class ProfileModel implements Serializable {
 
-    private SignupModel.ResponseBean response;
-    private int code;
+    private static final long serialVersionUID = 1L;
 
-    public SignupModel.ResponseBean getResponse() {
-        return response;
+    public String user_id;
+    public Long online_status;
+    public String access_token;
+    public String user_name;
+    public String user_pic;
+    public HashMap<String, String> chat_dialog_ids;
+//    public HashMap<String, String> blocked_by_me;
+//    public HashMap<String, String> blocked_by_others;
+
+    public static ProfileModel parseProfile(DataSnapshot dataSnapshot) {
+
+//        ProfileModel profile = dataSnapshot.getValue(ProfileModel.class);
+        ProfileModel profile = new ProfileModel();
+        profile.user_id = dataSnapshot.child("user_id").getValue(String.class);
+        profile.online_status = dataSnapshot.child("online_status").getValue(Long.class);
+        profile.access_token = dataSnapshot.child("access_token").getValue(String.class);
+        profile.user_name = dataSnapshot.child("user_name").getValue(String.class);
+        profile.user_pic = dataSnapshot.child("user_pic").getValue(String.class);
+        GenericTypeIndicator<HashMap<String, String>> gtDialogs = new GenericTypeIndicator<HashMap<String, String>>() {
+        };
+        profile.chat_dialog_ids = dataSnapshot.child("chat_dialog_ids").getValue(gtDialogs);
+//        profile.blocked_by_me = dataSnapshot.child("blocked_by_me").getValue(HashMap.class);
+//        profile.blocked_by_others = dataSnapshot.child("blocked_by_others").getValue(HashMap.class);
+        return profile;
     }
 
-    public void setResponse(SignupModel.ResponseBean response) {
-        this.response = response;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
 }

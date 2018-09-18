@@ -1,16 +1,16 @@
 package com.seeaspark
 
+import android.content.Intent
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_handshake.*
-import kotlinx.android.synthetic.main.dialog_short_profile.*
 import models.SignupModel
 import pl.droidsonroids.gif.GifDrawable
 import utils.Constants
+import java.util.*
 
 class HandshakeActivity : BaseActivity() {
 
@@ -42,7 +42,7 @@ class HandshakeActivity : BaseActivity() {
         populateData()
 
         val animation1 = AlphaAnimation(0f, 1f)
-        animation1.duration = 1500
+        animation1.duration = 1000
         animation1.fillAfter = true
 
         val existingOriginalDrawable = gifHandshake.drawable as GifDrawable?
@@ -95,7 +95,23 @@ class HandshakeActivity : BaseActivity() {
                 moveBack()
             }
             txtStartChat -> {
-                showToast(mContext!!, getString(R.string.work_in_progress))
+                val intent = Intent(this, ConversationActivity::class.java)
+                val mParticpantIDSList = ArrayList<String>()
+
+                val otherUserType: String
+                if (userProfileData!!.response.user_type == Constants.MENTOR)
+                    otherUserType = Constants.MENTEE.toString()
+                else
+                    otherUserType = Constants.MENTOR.toString()
+
+                mParticpantIDSList.add(mOtherProfileData!!.id.toString() + "_" + otherUserType)
+                mParticpantIDSList.add(userProfileData!!.response.id.toString() + "_" + userProfileData!!.response.user_type)
+                mParticpantIDSList.sort()
+                var mParticpantIDS = mParticpantIDSList.toString()
+                mParticpantIDS = mParticpantIDS.replace(" ", "")
+                val participants = mParticpantIDS.substring(1, mParticpantIDS.length - 1)
+                intent.putExtra("participantIDs", participants)
+                startActivity(intent)
                 moveBack()
             }
         }

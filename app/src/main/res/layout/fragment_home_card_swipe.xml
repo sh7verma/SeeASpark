@@ -65,6 +65,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/llInnerOutCards"
                 android:layout_width="@dimen/_240sdp"
                 android:layout_height="@dimen/_240sdp"
                 android:layout_marginBottom="@dimen/_24sdp"
@@ -89,7 +90,7 @@
                 android:textColor="@color/black_color"
                 android:textSize="@dimen/_16ssp" />
 
-            <customviews.LightTextView
+            <customviews.MediumTextView
                 android:id="@+id/txtOutOfCardsHint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

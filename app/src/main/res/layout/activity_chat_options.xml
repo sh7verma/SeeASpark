@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llOuterChatOptions"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llinnerChatOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="@dimen/_12sdp"
+        android:layout_marginRight="@dimen/_12sdp"
+        android:background="@drawable/white_short_profile_background"
+        android:orientation="vertical">
+
+        <customviews.MediumTextView
+            android:id="@+id/txtSearchMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/search_message"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyLine" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtShareProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/share_profile"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyLine" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtRating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/rate_user"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color" />
+
+        <View
+            android:id="@+id/viewRating"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyLine" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtFavouriteMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/favourite_message"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyLine" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtClearChat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/clear_chat"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyLine" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtUnmatch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/unmatch"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyLine" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtBlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/block"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyLine" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/transparent_ripple"
+            android:gravity="center"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_12sdp"
+            android:text="@string/report"
+            android:textAllCaps="true"
+            android:textColor="@color/black_color" />
+    </LinearLayout>
+</LinearLayout>

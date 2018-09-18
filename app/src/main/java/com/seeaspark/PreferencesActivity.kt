@@ -2,10 +2,12 @@ package com.seeaspark
 
 import adapters.PreferProfessionAdapter
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.design.widget.BottomSheetBehavior
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -60,10 +62,7 @@ class PreferencesActivity : BaseActivity() {
                 mMaxExperienceValue = -1
             } else {
                 llDisableExperience.visibility = View.GONE
-                mMaxExperienceValue = 3
             }
-            rsbExperience.selectedMaxValue = 3
-            txtExperienceCount.text = "3 Year(s)"
         }
 
         cbNoDistance.setOnCheckedChangeListener { p0, isChecked ->
@@ -97,12 +96,17 @@ class PreferencesActivity : BaseActivity() {
 
         llLanguageSelection.setBackgroundResource(whiteRipple)
         txtLanguageHint.setTextColor(blackColor)
+        txtNoLanguages.setTextColor(blackColor)
 
         llSkillSelection.setBackgroundResource(whiteRipple)
         txtSkillHint.setTextColor(blackColor)
+        txtNoSkills.setTextColor(blackColor)
 
         cbNoDistance.setTextColor(blackColor)
         cbNoExperience.setTextColor(blackColor)
+
+        llDisableDistance.setBackgroundColor(ContextCompat.getColor(mContext!!, R.color.disabled))
+        llDisableExperience.setBackgroundColor(ContextCompat.getColor(mContext!!, R.color.disabled))
     }
 
     override fun displayNightMode() {
@@ -123,12 +127,17 @@ class PreferencesActivity : BaseActivity() {
 
         llLanguageSelection.setBackgroundResource(blackRipple)
         txtLanguageHint.setTextColor(whiteColor)
+        txtNoLanguages.setTextColor(whiteColor)
 
         llSkillSelection.setBackgroundResource(blackRipple)
         txtSkillHint.setTextColor(whiteColor)
+        txtNoSkills.setTextColor(whiteColor)
 
         cbNoDistance.setTextColor(whiteColor)
         cbNoExperience.setTextColor(whiteColor)
+
+        llDisableDistance.setBackgroundColor(ContextCompat.getColor(mContext!!, R.color.light_white_transparent))
+        llDisableExperience.setBackgroundColor(ContextCompat.getColor(mContext!!, R.color.light_white_transparent))
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -191,8 +200,12 @@ class PreferencesActivity : BaseActivity() {
                     mGenderValue = 2
                     txtGenderPrefer.text = getString(R.string.female)
                 }
-                else -> {
+                userData!!.response.preferences.gender == 3 -> {
                     mGenderValue = 3
+                    txtGenderPrefer.text = getString(R.string.other)
+                }
+                userData!!.response.preferences.gender == 4 -> {
+                    mGenderValue = 4
                     txtGenderPrefer.text = getString(R.string.don_t_mind)
                 }
             }
@@ -211,7 +224,7 @@ class PreferencesActivity : BaseActivity() {
                 txtGenderPrefer.text = getString(R.string.male)
             } else {
                 mGenderValue = 3
-                txtGenderPrefer.text = getString(R.string.don_t_mind)
+                txtGenderPrefer.text = getString(R.string.other)
             }
         }
 
@@ -518,8 +531,12 @@ class PreferencesActivity : BaseActivity() {
                             mGenderValue = 2
                         }
                         R.id.item_other -> {
-                            txtGenderPrefer.setText(R.string.don_t_mind)
+                            txtGenderPrefer.setText(R.string.other)
                             mGenderValue = 3
+                        }
+                        R.id.item_dont_mind -> {
+                            txtGenderPrefer.setText(R.string.don_t_mind)
+                            mGenderValue = 4
                         }
                     }
                 }.show()

@@ -13,8 +13,10 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_questionaires.*
 import kotlinx.android.synthetic.main.activity_view_profile.*
+import models.ProfileModel
 import models.QuestionAnswerModel
 import models.QuestionListingModel
 import models.SignupModel
@@ -64,12 +66,12 @@ class QuestionnariesActivity : BaseActivity() {
 
         if (intent.hasExtra("newUserType")) {
             mNewUserType = intent.getIntExtra("newUserType", 0)
-            imgBackQuestion.visibility=View.VISIBLE
+            imgBackQuestion.visibility = View.VISIBLE
             isSwitchAccount = true
             hitFetchSwitchQuestionAPI(mNewUserType)
         } else {
             if (mUtils!!.getInt("switchMode", 0) == 1) {
-                imgBackQuestion.visibility=View.VISIBLE
+                imgBackQuestion.visibility = View.VISIBLE
                 isSwitchAccount = true
                 mNewUserType = Constants.MENTOR
                 hitFetchSwitchQuestionAPI(mNewUserType)
@@ -78,7 +80,7 @@ class QuestionnariesActivity : BaseActivity() {
                     mArrayQuestions.addAll(userData!!.answers)
                     populateData()
                 } else {
-                    imgBackQuestion.visibility=View.VISIBLE
+                    imgBackQuestion.visibility = View.VISIBLE
                     isSwitchAccount = true
                     mNewUserType = Constants.MENTOR
                     hitFetchSwitchQuestionAPI(mNewUserType)
@@ -145,16 +147,17 @@ class QuestionnariesActivity : BaseActivity() {
         call.enqueue(object : Callback<SignupModel> {
 
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
-                dismissLoader()
                 if (response.body().response != null) {
                     if (mUtils!!.getInt("switchMode", 0) == 1) {
                         moveToPreferences(response.body().response)
                     } else {
+                        dismissLoader()
                         updateProfileDatabase(response.body().response)
                         finish()
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
                     }
                 } else {
+                    dismissLoader()
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
@@ -211,10 +214,10 @@ class QuestionnariesActivity : BaseActivity() {
         call.enqueue(object : Callback<SignupModel> {
 
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
-                dismissLoader()
                 if (response.body().response != null) {
                     moveToPreferences(response.body().response)
                 } else {
+                    dismissLoader()
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
@@ -235,12 +238,35 @@ class QuestionnariesActivity : BaseActivity() {
         userData!!.response = response
         mUtils!!.setString("access_token", userData!!.response.access_token)
         mUtils!!.setInt("profile_status", userData!!.response.profile_status)
+        mUtils!!.setString("user_name", userData!!.response.full_name)
+        mUtils!!.setString("user_pic", userData!!.response.avatar.avtar_url)
         mUtils!!.setString("user_id", response.id.toString())
-        val intent = Intent(mContext!!, PreferencesActivity::class.java)
-        startActivity(intent)
-        finish()
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
 
+        setDataOnFirebase()
+    }
+
+    internal fun setDataOnFirebase() {
+        val model = ProfileModel()
+        model.access_token = userData!!.response.access_token
+        model.user_id = userData!!.response.id.toString()
+        model.online_status = Constants.ONLINE_LONG
+        model.user_name = userData!!.response.full_name
+        model.user_pic = userData!!.response.avatar.avtar_url
+        val mFirebaseConfigProfile = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
+        mFirebaseConfigProfile.child("id_" + model.user_id).setValue(model).addOnSuccessListener {
+            try {
+                dismissLoader()
+                db!!.addProfile(model)
+                val intent = Intent(mContext!!, PreferencesActivity::class.java)
+                startActivity(intent)
+                finish()
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }.addOnFailureListener {
+
+        }
     }
 
     internal var receiver: BroadcastReceiver = object : BroadcastReceiver() {

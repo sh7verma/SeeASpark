@@ -4,11 +4,13 @@ package com.seeaspark
 import android.app.AlarmManager
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.job.JobScheduler
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
@@ -19,9 +21,15 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.gson.Gson
 import database.Database
+import helper.FirebaseListeners
 import services.DayBroadcastReceiver
+import services.ListenerService
 import services.NightBroadCastReceiver
 import services.ReceiverFunctions
 import utils.Connection_Detector
@@ -48,7 +56,10 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var darkGrey = 0
     var blackRipple = 0
     var whiteRipple = 0
-
+    var lightGrey = 0
+    var transperent = 0
+    var viewLineColor = 0
+    var mAuth: FirebaseAuth? = null
     var mReceiverFunction: ReceiverFunctions? = null
     var currentCalendar: Calendar? = null
 
@@ -63,12 +74,17 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         currentCalendar = Calendar.getInstance()
         currentCalendar!!.timeInMillis = System.currentTimeMillis()
 
+        mAuth = FirebaseAuth.getInstance();
+
         mReceiverFunction = ReceiverFunctions()
         getDefaults()
 
         blackColor = ContextCompat.getColor(this, R.color.black_color)
         whiteColor = ContextCompat.getColor(this, R.color.white_color)
         darkGrey = ContextCompat.getColor(this, R.color.darkGreyText)
+        lightGrey = ContextCompat.getColor(this, R.color.light_grey)
+        transperent = ContextCompat.getColor(this, R.color.transperent)
+        viewLineColor = ContextCompat.getColor(this, R.color.view_line_color)
 
         blackRipple = R.drawable.black_ripple
         whiteRipple = R.drawable.white_ripple
@@ -137,16 +153,26 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     fun moveToSplash() {
+        val mFirebaseConfig = FirebaseDatabase.getInstance().reference.child(Constants.USERS)
+        mFirebaseConfig.child("id_" + mUtils!!.getString("user_id", "")!!)
+                .child("online_status").setValue(ServerValue.TIMESTAMP)
+        FirebaseListeners.getListenerClass(this).RemoveAllListeners()
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            val jobScheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+            jobScheduler.cancelAll()
+        }
+        stopService(Intent(applicationContext, ListenerService::class.java))
         val notificationManager = mContext!!
                 .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
         mUtils!!.clear_shf()
         db!!.deleteAllTables()
+        signOut()
         val inSplash = Intent(mContext, AfterWalkThroughActivity::class.java)
         inSplash.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         inSplash.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         mContext!!.startActivity(inSplash)
-//        System.exit(2)
+// System.exit(2)
     }
 
     fun alertLogoutDialog() {
@@ -187,5 +213,13 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
         super.onDestroy()
     }
 
+    private fun signOut() {
+        mAuth!!.signOut()
+    }
 
+    fun signInAnonymously() {
+        mAuth!!.signInAnonymously().addOnCompleteListener {
+            // var user = mAuth!!.currentUser
+        }
+    }
 }

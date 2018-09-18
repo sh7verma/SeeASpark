@@ -20,6 +20,7 @@ class EventsGoingListingActivity : BaseActivity() {
         txtTitleCustom.text = getString(R.string.going)
         mLayoutManager = LinearLayoutManager(mContext)
         rvEventsGoing.layoutManager = mLayoutManager
+        imgBackCustom
     }
 
     override fun displayDayMode() {
@@ -30,7 +31,7 @@ class EventsGoingListingActivity : BaseActivity() {
 
     override fun displayNightMode() {
         llMainEventsListing.setBackgroundColor(ContextCompat.getColor(this, R.color.black_color))
-        imgBackCustom.setImageResource(R.mipmap.ic_back_black)
+        imgBackCustom.setImageResource(R.mipmap.ic_back_org)
         txtTitleCustom.setTextColor(ContextCompat.getColor(this, R.color.white_color))
     }
 

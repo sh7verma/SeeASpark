@@ -4,6 +4,7 @@ import models.CardModel;
 import models.CommentModel;
 import models.LanguageListingModel;
 import models.LanguageModel;
+import models.MessageHistoryModel;
 import models.NotesListingModel;
 import models.NotesModel;
 import models.OtherProfileModel;
@@ -16,10 +17,12 @@ import models.ProfessionListingModel;
 import models.ProfessionModel;
 import models.ProfileModel;
 import models.QuestionListingModel;
+import models.RatingModel;
 import models.SearchSkillModel;
 import models.ServerSkillsModel;
 import models.SignupModel;
 import models.SwipeCardModel;
+import models.ViewProfileModel;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -316,8 +319,8 @@ public interface ApiInterface {
 
 
     @GET("/api/v1/users")
-    Call<ProfileModel> getProfile(@Query("access_token") String access_token,
-                                  @Query("id") String id);
+    Call<ViewProfileModel> getProfile(@Query("access_token") String access_token,
+                                      @Query("id") String id);
 
     @GET("/api/v1/users")
     Call<OtherProfileModel> getOtherProfile(@Query("access_token") String access_token,
@@ -326,5 +329,42 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/api/v1/switches/submit_profile")
     Call<SignupModel> submitProfile(@Field("access_token") String access_token);
+
+    @FormUrlEncoded
+    @POST("/api/v1/shares/share")
+    Call<NotesModel> shareNotes(@Field("access_token") String access_token,
+                                @Field("id") String id,
+                                @Field("receiver_id") String receiver_id,
+                                @Field("name") String file_name);
+
+    @FormUrlEncoded
+    @POST("/api/v1/ratings")
+    Call<BaseSuccessModel> rateUser(@Field("access_token") String access_token,
+                                    @Field("other_user_id") String other_user_id,
+                                    @Field("rating") String rating,
+                                    @Field("comment") String comment);
+
+    @GET("/api/v1/ratings")
+    Call<RatingModel> getRating(@Query("access_token") String access_token,
+                                @Query("other_user_id") String other_user_id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/matches/unmatch")
+    Call<BaseSuccessModel> unmatch(@Field("access_token") String access_token,
+                                   @Field("other_user_id") String other_user_id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/chats/mark_as_favourite")
+    Call<BaseSuccessModel> favouriteMessage(@Field("access_token") String access_token,
+                                            @Field("message_id") String message_id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/chats/delete_messages")
+    Call<BaseSuccessModel> deleteMessage(@Field("access_token") String access_token,
+                                         @Field("message_id") String message_id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/chats/chat_history")
+    Call<MessageHistoryModel> getChatHistory(@Field("access_token") String access_token);
 
 }

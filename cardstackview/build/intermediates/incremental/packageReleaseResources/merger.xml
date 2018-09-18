@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main$Generated" generated="true"><source path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\src\main\res"/><source path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\build\generated\res\rs\release"/><source path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\build\generated\res\resValues\release"/></dataSet><dataSet config="main" generated-set="main$Generated"><source path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\src\main\res"><file name="slide_in_left" path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\src\main\res\anim\slide_in_left.xml" qualifiers="" type="anim"/><file name="card_container" path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\src\main\res\layout\card_container.xml" qualifiers="" type="layout"/><file name="card_frame" path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\src\main\res\layout\card_frame.xml" qualifiers="" type="layout"/><file path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\src\main\res\values\attrs.xml" qualifiers=""><declare-styleable name="CardStackView">
+        <attr format="integer" name="visibleCount"/>
+        <attr format="float" name="swipeThreshold"/>
+        <attr format="float" name="translationDiff"/>
+        <attr format="float" name="scaleDiff"/>
+        <attr format="enum" name="stackFrom">
+            <enum name="bottom" value="0"/>
+            <enum name="top" value="1"/>
+        </attr>
+        <attr format="boolean" name="elevationEnabled"/>
+        <attr format="boolean" name="swipeEnabled"/>
+        <attr format="enum" name="swipeDirection">
+            <enum name="freedom" value="0"/>
+            <enum name="freedom_no_bottom" value="1"/>
+            <enum name="horizontal" value="2"/>
+            <enum name="vertical" value="3"/>
+        </attr>
+        <attr format="reference" name="leftOverlay"/>
+        <attr format="reference" name="rightOverlay"/>
+        <attr format="reference" name="bottomOverlay"/>
+        <attr format="reference" name="topOverlay"/>
+    </declare-styleable></file><file path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\src\main\res\values\strings.xml" qualifiers=""><string name="app_name">CardStackView</string></file></source><source path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\build\generated\res\rs\release"/><source path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\build\generated\res\resValues\release"/></dataSet><dataSet config="release$Generated" generated="true"><source path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\src\release\res"/></dataSet><dataSet config="release" generated-set="release$Generated"><source path="D:\GitLocationSeeASpark\SeeASpark\cardstackview\src\release\res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="CardStackView"><attr format="integer" name="visibleCount"/><attr format="float" name="swipeThreshold"/><attr format="float" name="translationDiff"/><attr format="float" name="scaleDiff"/><attr format="enum" name="stackFrom">
+            <enum name="bottom" value="0"/>
+            <enum name="top" value="1"/>
+        </attr><attr format="boolean" name="elevationEnabled"/><attr format="boolean" name="swipeEnabled"/><attr format="enum" name="swipeDirection">
+            <enum name="freedom" value="0"/>
+            <enum name="freedom_no_bottom" value="1"/>
+            <enum name="horizontal" value="2"/>
+            <enum name="vertical" value="3"/>
+        </attr><attr format="reference" name="leftOverlay"/><attr format="reference" name="rightOverlay"/><attr format="reference" name="bottomOverlay"/><attr format="reference" name="topOverlay"/></declare-styleable></configuration></mergedItems></merger>

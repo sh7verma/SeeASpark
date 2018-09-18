@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main$Generated" generated="true"><source path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\main\res"/><source path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\build\generated\res\rs\release"/><source path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\build\generated\res\resValues\release"/></dataSet><dataSet config="main" generated-set="main$Generated"><source path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\main\res"><file name="seek_thumb_normal" path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\main\res\drawable-xhdpi\seek_thumb_normal.png" qualifiers="xhdpi-v4" type="drawable"/><file name="seek_thumb_pressed" path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\main\res\drawable-xhdpi\seek_thumb_pressed.png" qualifiers="xhdpi-v4" type="drawable"/><file path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\main\res\values\attrs.xml" qualifiers=""><declare-styleable name="RangeBar">
+        <attr format="integer" name="tickCount"/>
+        <attr format="dimension" name="tickHeight"/>
+        <attr format="dimension" name="barWeight"/>
+        <attr format="reference|color" name="barColor"/>
+        <attr format="dimension" name="connectingLineWeight"/>
+        <attr format="reference|color" name="connectingLineColor"/>
+        <attr format="dimension" name="thumbRadius"/>
+        <attr format="reference" name="thumbImageNormal"/>
+        <attr format="reference" name="thumbImagePressed"/>
+        <attr format="reference|color" name="thumbColorNormal"/>
+        <attr format="reference|color" name="thumbColorPressed"/>
+    </declare-styleable></file><file path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\main\res\values\strings.xml" qualifiers=""><string name="app_name">RangeBar</string></file><file path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\main\res\values\styles.xml" qualifiers=""><style name="AppBaseTheme" parent="android:Theme.Light">
+        
+    </style><style name="AppTheme" parent="AppBaseTheme">
+        
+    </style></file><file path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\main\res\values-v11\styles.xml" qualifiers="v11"><style name="AppBaseTheme" parent="android:Theme.Holo.Light">
+        
+    </style></file><file path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\main\res\values-v14\styles.xml" qualifiers="v14"><style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+        
+    </style></file></source><source path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\build\generated\res\rs\release"/><source path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\build\generated\res\resValues\release"/></dataSet><dataSet config="release$Generated" generated="true"><source path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\release\res"/></dataSet><dataSet config="release" generated-set="release$Generated"><source path="D:\GitLocationSeeASpark\SeeASpark\rangeBar1\src\release\res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="RangeBar"><attr format="integer" name="tickCount"/><attr format="dimension" name="tickHeight"/><attr format="dimension" name="barWeight"/><attr format="reference|color" name="barColor"/><attr format="dimension" name="connectingLineWeight"/><attr format="reference|color" name="connectingLineColor"/><attr format="dimension" name="thumbRadius"/><attr format="reference" name="thumbImageNormal"/><attr format="reference" name="thumbImagePressed"/><attr format="reference|color" name="thumbColorNormal"/><attr format="reference|color" name="thumbColorPressed"/></declare-styleable></configuration></mergedItems></merger>

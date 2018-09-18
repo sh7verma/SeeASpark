@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cocosw.bottomsheet.BottomSheet
+import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_edit_profile.*
@@ -91,7 +92,7 @@ class EditProfileActivity : BaseActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (p0!!.isNotEmpty())
-                    txtCountBioCharacter.text = "${320 - p0!!.length} Characters Left"
+                    txtCountBioCharacter.text = "${320 - p0.length} Characters Left"
                 else
                     txtCountBioCharacter.text = "320 Characters Left"
             }
@@ -106,7 +107,7 @@ class EditProfileActivity : BaseActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (p0!!.isNotEmpty())
-                    txtCountDescriptionCharacter.text = "${1024 - p0!!.length} Characters Left"
+                    txtCountDescriptionCharacter.text = "${1024 - p0.length} Characters Left"
                 else
                     txtCountDescriptionCharacter.text = "1024 Characters Left"
             }
@@ -287,13 +288,33 @@ class EditProfileActivity : BaseActivity() {
 
         call.enqueue(object : Callback<SignupModel> {
 
-            override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>?) {
-                dismissLoader()
-                userData!!.response = response!!.body().response
+            override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {
+
+                mUtils!!.setString("user_name", response.body().response.full_name)
+                mUtils!!.setString("user_pic", response.body().response.avatar.avtar_url)
+                userData!!.response = response.body().response
                 mUtils!!.setString("userDataLocal", mGson.toJson(userData))
-                val intent = Intent()
-                setResult(Activity.RESULT_OK, intent)
-                moveBack()
+
+                val mFirebaseConfigChats = FirebaseDatabase.getInstance().getReference().child(Constants.CHATS)
+                val ids = db!!.getDialogs(userData!!.response.id.toString())
+                for (dialogId in ids.keys) {
+                    mFirebaseConfigChats.child(dialogId).child("name").child(userData!!.response.id.toString()).setValue(userData!!.response.full_name)
+                    mFirebaseConfigChats.child(dialogId).child("profile_pic").child(userData!!.response.id.toString()).setValue(userData!!.response.avatar.avtar_url)
+                }
+
+                val values = HashMap<String, Any>()
+                values.put("online_status", Constants.ONLINE_LONG)
+                values.put("access_token", userData!!.response.access_token)
+                values.put("user_name", userData!!.response.full_name)
+                values.put("user_pic", userData!!.response.avatar.avtar_url)
+
+                val mFirebaseConfigProfile = FirebaseDatabase.getInstance().reference.child(Constants.USERS)
+                mFirebaseConfigProfile.child("id_" + userData!!.response.id.toString()).updateChildren(values).addOnCompleteListener {
+                    dismissLoader()
+                    val intent = Intent()
+                    setResult(Activity.RESULT_OK, intent)
+                    moveBack()
+                }
             }
 
             override fun onFailure(call: Call<SignupModel>?, t: Throwable?) {

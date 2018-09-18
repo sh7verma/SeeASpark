@@ -162,7 +162,7 @@
                         android:layout_marginRight="@dimen/_16sdp"
                         android:layout_marginTop="@dimen/_3sdp"
                         android:background="@color/colorLine"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                     <CheckBox
                         android:id="@+id/cbShowPassword"

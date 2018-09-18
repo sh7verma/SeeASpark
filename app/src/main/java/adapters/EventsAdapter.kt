@@ -207,7 +207,6 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
 
         private fun displayNightMode() {
             cvEventsListing.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.cardview_dark_background))
-            llEventsListing.setBackgroundResource(R.drawable.night_card_background)
             txtTitleEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
             txtDescEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
             txtLocationEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
@@ -218,7 +217,6 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
 
         private fun displayDayMode() {
             cvEventsListing.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.white_color))
-            llEventsListing.setBackgroundResource(0)
             txtTitleEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
             txtDescEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.greyTextColor))
             txtLocationEventsListing.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))

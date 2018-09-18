@@ -16,8 +16,11 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
+import database.Database
 import kotlinx.android.synthetic.main.dialog_profile_review.*
+import models.ProfileModel
 import models.SignupModel
 import utils.Connection_Detector
 import utils.Constants
@@ -30,7 +33,7 @@ class ProfileReviewDialog : Activity() {
     var mUtils: Utils? = null
     var userProfileData: SignupModel.ResponseBean? = null
     var mContext: Context? = null
-
+    var mDb: Database? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +48,7 @@ class ProfileReviewDialog : Activity() {
         window.setLayout(mScreenwidth, (mScreenheight * 0.6).toInt())
 
         mContext = this
-
+        mDb = Database(this)
         mUtils = Utils(this)
         userProfileData = intent.getParcelableExtra("userProfileData")
 
@@ -169,5 +172,4 @@ class ProfileReviewDialog : Activity() {
     override fun onBackPressed() {
 
     }
-
 }

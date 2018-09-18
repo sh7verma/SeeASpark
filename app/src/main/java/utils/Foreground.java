@@ -7,16 +7,26 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import helper.FirebaseListeners;
 
 @SuppressLint("NewApi")
 public class Foreground implements Application.ActivityLifecycleCallbacks {
     public static final long CHECK_DELAY = 500;
     public static final String TAG = Foreground.class.getName();
     SharedPreferences sp;
+    DatabaseReference mFirebaseConfig;
+    Utils mUtil;
 
     public interface Listener {
 
@@ -100,6 +110,8 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
     public void onActivityResumed(Activity activity) {
         sp = activity.getSharedPreferences(activity.getPackageName(),
                 Context.MODE_PRIVATE);
+        mFirebaseConfig = FirebaseDatabase.getInstance().getReference().child(Constants.USERS);
+        mUtil = new Utils(activity);
 
         paused = false;
         boolean wasBackground = !foreground;
@@ -131,6 +143,7 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
         sp = activity.getSharedPreferences(activity.getPackageName(),
                 Context.MODE_PRIVATE);
         paused = true;
+        mFirebaseConfig = FirebaseDatabase.getInstance().getReference().child("Users");
 
         if (check != null)
             handler.removeCallbacks(check);
@@ -176,12 +189,18 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityDestroyed(Activity activity) {
+
     }
 
     private void setOnline() {
         //andar hai
         sp.edit().putInt("Background", 0).apply();
         Log.e("Inside ", "Yes");
+        FirebaseListeners.getTime(mUtil);
+        if (!TextUtils.isEmpty(sp.getString("access_token", "")) && sp.getInt("profile_status", 0) == 2) {
+            mFirebaseConfig.child("id_" + sp.getString("user_id", "")).child("online_status").setValue(Constants.ONLINE_LONG);
+//            (new SetOnline(sp.getString("user_access_token", ""), 1)).execute();
+        }
 
     }
 
@@ -189,6 +208,13 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
         /// bhar hai
         sp.edit().putInt("Background", 1).apply();
         Log.e("OutSide  ", "Yes");
-
+        if (!TextUtils.isEmpty(sp.getString("access_token", "")) && sp.getInt("profile_status", 0) == 2) {
+//            long time = Constants.getUtcTime((Calendar.getInstance()).getTimeInMillis());
+//            Log.e("local", "" + time);
+//            Log.e("server", "" + ServerValue.TIMESTAMP);
+            mFirebaseConfig.child("id_" + sp.getString("user_id", "")).child("online_status").setValue(ServerValue.TIMESTAMP);
+//            (new SetOnline(sp.getString("user_access_token", ""), 0)).execute();
+        }
     }
 }
+

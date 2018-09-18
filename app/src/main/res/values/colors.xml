@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#f77a52</color>
     <color name="colorAccent">#f77a52</color>
     <color name="colorPass">#E34561</color>
+    <color name="colorPrimaryRipple">#f7ccbe</color>
 
     <color name="colorMentor">#EDFAE1</color>
     <color name="colorMentorEffect">#EFF7E8</color>
@@ -73,5 +74,12 @@
     <color name="color_secondary_gradient">#FE7973</color>
     <color name="greyTextColor">#727272</color>
     <color name="blue_color">#798ded</color>
+
+    /// hunny
+    <color name="circular_progress_default_background">#a9aaaa</color>
+    <color name="circular_progress_default_title">#ffffff</color>
+    <color name="circular_progress_default_subtitle">#ffffff</color>
+    <color name="checkbox_unchecked_color">#DFDFDF</color>
+    ///
 
 </resources>

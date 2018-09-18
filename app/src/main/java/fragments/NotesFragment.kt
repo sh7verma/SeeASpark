@@ -287,8 +287,10 @@ class NotesFragment : Fragment(), View.OnClickListener {
             }
 
             override fun onFailure(call: Call<NotesListingModel>?, t: Throwable?) {
-                if (isVisible)
-                    pbReceivedNotes.visibility = View.GONE
+                if (pbReceivedNotes != null) {
+                    if (isVisible)
+                        pbReceivedNotes.visibility = View.GONE
+                }
             }
         })
     }

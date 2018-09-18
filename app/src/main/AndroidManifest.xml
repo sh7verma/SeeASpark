@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -343,8 +344,7 @@
             android:name=".NotesActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/MainActionBarTheme"
-            android:windowSoftInputMode="stateVisible" />
+            android:theme="@style/MainActionBarTheme"/>
 
         <activity
             android:name=".DeepLinkingActivity"
@@ -413,18 +413,141 @@
             android:theme="@style/MainActionBarTheme" />
 
         <activity
-            android:name=".PaymentDemo"
+            android:name=".PaymentPlanActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/MainActionBarTheme"/> >
+            android:theme="@style/MainActionBarTheme"/>
 
         <activity
             android:name=".AnimationDemo"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/MainActionBarTheme">
+            android:theme="@style/MainActionBarTheme" />
 
-        </activity>
+        /// hunny code
+        <activity
+            android:name=".ReportActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".ConversationActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <activity
+            android:name=".FavouriteMessageActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".AttachmentActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".DocActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name="filePicker.DocPickerActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".AttachVideoActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".MyNotesActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".SearchNotesActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".FullViewActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".FullViewMessageActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".VideoDisplayActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <activity
+            android:name=".AttachmentSelectionActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity" />
+
+        <activity
+            android:name=".ChatFilterActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity" />
+
+        <activity
+            android:name=".ChatOptionsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity" />
+
+        <activity
+            android:name=".RatingActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/TransparentActivity" />
+
+        <activity
+            android:name=".SearchChatMessagesActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActionBarTheme" />
+
+        <service
+            android:name="services.UploadFileService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name="services.DownloadFileService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name="services.ListenerService"
+            android:enabled="true" />
+
+        <service
+            android:name="services.JobSchedulerService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:stopWithTask="false" />
+        ///
 
         <receiver
             android:name="services.DayBroadcastReceiver"

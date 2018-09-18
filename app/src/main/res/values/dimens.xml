@@ -42,5 +42,10 @@
     <dimen name="facebook_button">240dp</dimen>
     <dimen name="_18">18dp</dimen>
 
+    <dimen name="file_icon_width">40dp</dimen>
+    <dimen name="file_icon_height">40dp</dimen>
+    <dimen name="file_name_textSize">17sp</dimen>
+    <dimen name="file_item_checkbox_size">22dp</dimen>
+
 
 </resources>
