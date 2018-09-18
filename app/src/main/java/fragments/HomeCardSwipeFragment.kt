@@ -463,6 +463,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
         mChat.chat_dialog_id = participants
         mChat.last_message = Constants.DEFAULT_MESSAGE_REGEX
 
+
         mChat.last_message_sender_id = mLandingInstance!!.userData!!.response.id.toString()
         mChat.last_message_id = "0"
         mChat.last_message_type = "0"
@@ -498,6 +499,16 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
         block.put(mLandingInstance!!.userData!!.response.id.toString(), "0")
         block.put(othetUser.id.toString(), "0")
         mChat.block_status = block
+
+        val rating = HashMap<String, String>()
+        rating.put(mLandingInstance!!.userData!!.response.id.toString(), "0")
+        rating.put(othetUser.id.toString(), "0")
+        mChat.rating = rating
+
+        val message_rating_count = HashMap<String, Int>()
+        message_rating_count.put(mLandingInstance!!.userData!!.response.id.toString(), 0)
+        message_rating_count.put(othetUser.id.toString(), 0)
+        mChat.message_rating_count = message_rating_count
 
         val userType = HashMap<String, String>()
         userType.put(mLandingInstance!!.userData!!.response.id.toString(), mLandingInstance!!.userData!!.response.user_type.toString())

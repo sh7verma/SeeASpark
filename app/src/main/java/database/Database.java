@@ -112,6 +112,8 @@ public class Database extends SQLiteOpenHelper {
     static final String OPPONENT_USER_TYPE = "opponent_user_type";
     static final String OPPONENT_USER_ID = "opponent_user_id";
     static final String RATING = "rating";
+    static final String OWN_MESSAGE_RATING_COUNT = "own_message_rating_count";
+    static final String OTHER_MESSAGE_RATING_COUNT = "other_message_rating_count";
 
     /// Unread Count Table
     static final String UNREAD_COUNT_TABLE = "unread_count_table";
@@ -229,7 +231,9 @@ public class Database extends SQLiteOpenHelper {
                 + USER_TYPE + " TEXT ,"
                 + OPPONENT_USER_TYPE + " TEXT ,"
                 + OPPONENT_USER_ID + " TEXT ,"
-                + RATING + " TEXT )";
+                + RATING + " TEXT ,"
+                + OWN_MESSAGE_RATING_COUNT + " TEXT ,"
+                + OTHER_MESSAGE_RATING_COUNT + " TEXT )";
         db.execSQL(chatsQuery);
 
         String unreadCountQuery = "create table if not exists " + UNREAD_COUNT_TABLE
@@ -908,6 +912,8 @@ public class Database extends SQLiteOpenHelper {
             values.put(OPPONENT_USER_TYPE, chat.user_type.get(otherUserId));
             values.put(OPPONENT_USER_ID, otherUserId);
             values.put(RATING, chat.rating.get(userId));
+            values.put(OWN_MESSAGE_RATING_COUNT, chat.rating.get(userId));
+            values.put(OTHER_MESSAGE_RATING_COUNT, chat.rating.get(otherUserId));
 
             db_write.insertOrThrow(CHATS_TABLE, null, values);
 
@@ -939,6 +945,8 @@ public class Database extends SQLiteOpenHelper {
             values.put(PROFILE_PIC, chat.profile_pic.get(otherUserId));
             values.put(DELETE_DIALOG_TIME, "" + chat.delete_dialog_time.get(userId));
             values.put(RATING, chat.rating.get(userId));
+            values.put(OWN_MESSAGE_RATING_COUNT, chat.rating.get(userId));
+            values.put(OTHER_MESSAGE_RATING_COUNT, chat.rating.get(otherUserId));
 
             addUnreadCount(chat.unread_count, chat.chat_dialog_id);
 
@@ -1083,6 +1091,10 @@ public class Database extends SQLiteOpenHelper {
                 mChats.rating.put(userId, cur.getString(14));
                 mChats.rating.put(otherUserId, "0");
 
+                mChats.message_rating_count = new HashMap<>();
+                mChats.message_rating_count.put(userId, Integer.parseInt(cur.getString(15)));
+                mChats.message_rating_count.put(otherUserId, Integer.parseInt(cur.getString(16)));
+
                 mChats.unread_count = getUnreadCount(cur.getString(1));
                 mChats.block_status = getBlockStatus(cur.getString(1));
 
@@ -1171,6 +1183,11 @@ public class Database extends SQLiteOpenHelper {
 
                     mChats.unread_count = getUnreadCount(cur.getString(1));
                     mChats.block_status = getBlockStatus(cur.getString(1));
+
+                    mChats.message_rating_count = new HashMap<>();
+                    mChats.message_rating_count.put(userId, Integer.parseInt(cur.getString(15)));
+                    mChats.message_rating_count.put(otherUserId, Integer.parseInt(cur.getString(16)));
+
                     cur.moveToNext();
                 }
             }
@@ -1324,6 +1341,77 @@ public class Database extends SQLiteOpenHelper {
         return mMessageList;
     }
 
+    public List<MessagesModel> getAllMessagesArray(String chatDialogId, String userId, String type,
+                                                   long dialogDeleteTime, String otherUserId) {
+        SQLiteDatabase db_read = this.getReadableDatabase();
+        Cursor cur = null;
+        SimpleDateFormat today_date_format = new SimpleDateFormat("hh:mm aa", Locale.US);
+        List<MessagesModel> localMessage = new ArrayList<>();
+        try {
+
+            String qry = "select * from " + MESSAGES_TABLE + " where " + CHAT_DIALOG_ID
+                    + " = '" + chatDialogId + "' and " + MESSAGE_TYPE + " = '" + type + "'";
+            cur = db_read.rawQuery(qry, null);
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                if (!("" + cur.getString(10)).equals("1")) {
+                    Calendar calDb = Calendar.getInstance();
+                    long timeinMillis;
+                    try {
+                        timeinMillis = Long.parseLong(cur.getString(4));
+                    } catch (Exception e) {
+                        timeinMillis = calDb.getTimeInMillis();
+                    }
+                    calDb.setTimeInMillis(timeinMillis);
+
+                    MessagesModel mMessage = new MessagesModel();
+                    mMessage.message_id = cur.getString(1);
+                    mMessage.message = cur.getString(2);
+                    mMessage.message_type = cur.getString(3);
+                    mMessage.message_time = cur.getString(4);
+                    mMessage.firebase_message_time = Long.parseLong(cur.getString(5));
+                    mMessage.chat_dialog_id = cur.getString(6);
+                    mMessage.sender_id = cur.getString(7);
+                    mMessage.message_status = cur.getInt(8);
+                    mMessage.attachment_url = cur.getString(9);
+
+                    mMessage.message_deleted = new HashMap<>();
+                    mMessage.message_deleted.put(userId, cur.getString(10));
+                    mMessage.message_deleted.put(otherUserId, "");
+
+                    mMessage.favourite_message = new HashMap<>();
+                    mMessage.favourite_message.put(userId, cur.getString(11));
+                    mMessage.favourite_message.put(otherUserId, "");
+
+                    mMessage.is_header = false;
+                    mMessage.attachment_progress = cur.getString(12);
+                    mMessage.attachment_path = cur.getString(13);
+                    mMessage.attachment_status = cur.getString(14);
+                    mMessage.show_message_datetime = today_date_format.format(calDb.getTime());
+                    mMessage.custom_data = cur.getString(15);
+                    mMessage.receiver_id = cur.getString(16);
+
+                    if (!mMessage.message_deleted.get(userId).equals("1")) {
+                        long messageTime = mMessage.firebase_message_time;
+                        if (messageTime >= dialogDeleteTime) {
+                            localMessage.add(mMessage);
+                        }
+                    }
+                }
+                cur.moveToNext();
+            }
+            Collections.reverse(localMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cur != null && !cur.isClosed()) {
+                cur.close();
+            }
+        }
+        return localMessage;
+    }
+
+
     public LinkedHashMap<String, MessagesModel> getAllFavouriteMessages(String chatDialogId, String userId, long dialogDeleteTime, String otherUserId, String status) {
         SQLiteDatabase db_read = this.getReadableDatabase();
         Cursor cur = null;
@@ -1474,7 +1562,7 @@ public class Database extends SQLiteOpenHelper {
                 values.put(MESSAGE_ID, msg.message_id);
                 if (msg.sender_id.equals(userId)) {
                     values.put(MESSAGE_TIME, "" + msg.message_time);
-                }else{
+                } else {
                     values.put(MESSAGE_TIME, "" + (Calendar.getInstance()).getTimeInMillis()); // comment for show local time
                 }
                 values.put(FIRBASE_MESSAGE_TIME, msg.firebase_message_time);

@@ -522,7 +522,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             mOpponentUser!!.user_id = mOpponentUserId
         }
 
-        mPrivateChat = db!!.getChatDialog("" + mParticpantIDS, mUtils!!.getString("user_id", ""), mOpponentUserId)
+        mPrivateChat = db!!.getChatDialog("" + mParticpantIDS,
+                mUtils!!.getString("user_id", ""), mOpponentUserId)
 
         listenUser()
 
@@ -756,6 +757,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mOpponentUserId, mPrivateChat!!.participant_ids, mPrivateChat)
         mConversationAdapter!!.animationStatus(false)
         lvChatList.adapter = mConversationAdapter
+        displayRatingDialog()
     }
 
     internal fun makeHeaders() {
@@ -880,6 +882,12 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             }
             imgOptions -> {
                 val intent = Intent(this, ChatOptionsActivity::class.java)
+
+                val messageCount = mPrivateChat!!.message_rating_count.get(mCurrentUser!!.user_id)!! +
+                        mPrivateChat!!.message_rating_count.get(mOpponentUser!!.user_id)!!
+
+                if (messageCount < 30)
+                    intent.putExtra("visibleRating", 0)
                 intent.putExtra("block_status", mPrivateChat!!.block_status.get(mCurrentUser!!.user_id))
                 startActivityForResult(intent, OPTIONS)
                 overridePendingTransition(0, 0)
@@ -932,7 +940,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     val deletetime1 = mPrivateChat!!.delete_dialog_time.get(mCurrentUser!!.user_id)
                     mMessagesMap = db!!.getAllMessages(mPrivateChat!!.chat_dialog_id, mCurrentUser!!.user_id, limit, deletetime1!!, mOpponentUserId)
                     makeHeaders()
-                    if(status == 1){
+                    if (status == 1) {
                         sendUnmatchBroadcast()
                     }
                 } else {
@@ -1024,98 +1032,117 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 }
                 OPTIONS -> {
                     val type = data!!.getStringExtra("type")
-                    if (type.equals("favourite_message")) {
-                        FavouriteMessageActivity.setUploadingListener(this)
-                        val intent = Intent(this, FavouriteMessageActivity::class.java)
-                        intent.putExtra("participantIDs", mParticpantIDS)
-                        intent.putExtra("opponentUserId", mOpponentUserId)
-                        startActivity(intent)
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
-                    } else if (type.equals("block")) {
-                        var status = mPrivateChat!!.block_status.get(mCurrentUser!!.user_id)
-                        if (status.equals("0")) {
-                            status = "1"
-                            val dialog1 = AlertDialog.Builder(this)
-                            dialog1.setMessage(getString(R.string.sure_to_block)).create()
-                            dialog1.setPositiveButton(getString(R.string.block)) { dialog, which ->
-                                showLoader()
-                                // TODO Auto-generated method stub
-                                mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("block_status").child(mCurrentUser!!.user_id).setValue(status).addOnSuccessListener {
-                                    mPrivateChat!!.block_status.put(mCurrentUser!!.user_id, status)
-                                    dismissLoader()
-                                    dialog.dismiss()
+                    when {
+                        type == "search_message" -> {
+                            val deletetime = mPrivateChat!!.delete_dialog_time.get(mUtils!!.getString("user_id", ""))
+                            val intent = Intent(this, SearchChatMessagesActivity::class.java)
+                            intent.putExtra("dialogId", mPrivateChat!!.chat_dialog_id)
+                            intent.putExtra("opponentUserId", mOpponentUserId)
+                            intent.putExtra("opponentUserPic", mOpponentUser!!.user_pic)
+                            intent.putExtra("opponentName", txtName.text.toString())
+                            intent.putExtra("deleteTime", deletetime)
+                            startActivity(intent)
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                        }
+                        type == "favourite_message" -> {
+                            FavouriteMessageActivity.setUploadingListener(this)
+                            val intent = Intent(this, FavouriteMessageActivity::class.java)
+                            intent.putExtra("participantIDs", mParticpantIDS)
+                            intent.putExtra("opponentUserId", mOpponentUserId)
+                            startActivity(intent)
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+                        }
+                        type == "block" -> {
+                            var status = mPrivateChat!!.block_status.get(mCurrentUser!!.user_id)
+                            if (status.equals("0")) {
+                                status = "1"
+                                val dialog1 = AlertDialog.Builder(this)
+                                dialog1.setMessage(getString(R.string.sure_to_block)).create()
+                                dialog1.setPositiveButton(getString(R.string.block)) { dialog, which ->
+                                    showLoader()
+                                    // TODO Auto-generated method stub
+                                    mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("block_status").child(mCurrentUser!!.user_id).setValue(status).addOnSuccessListener {
+                                        mPrivateChat!!.block_status.put(mCurrentUser!!.user_id, status)
+                                        dismissLoader()
+                                        dialog.dismiss()
+                                    }
                                 }
+                                dialog1.setNegativeButton(
+                                        resources.getString(R.string.cancel), null)
+                                dialog1.show()
+                            } else {
+                                status = "0"
+                                val dialog1 = AlertDialog.Builder(this)
+                                dialog1.setMessage(getString(R.string.sure_to_unblock)).create()
+                                dialog1.setPositiveButton(getString(R.string.unblock)) { dialog, which ->
+                                    showLoader()
+                                    // TODO Auto-generated method stub
+                                    mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("block_status").child(mCurrentUser!!.user_id).setValue(status).addOnSuccessListener {
+                                        mPrivateChat!!.block_status.put(mCurrentUser!!.user_id, status)
+                                        dismissLoader()
+                                        dialog.dismiss()
+                                    }
+                                }
+                                dialog1.setNegativeButton(
+                                        resources.getString(R.string.cancel), null)
+                                dialog1.show()
+                            }
+                        }
+                        type == "clear_chat" -> {
+                            val dialog1 = AlertDialog.Builder(this)
+                            dialog1.setMessage(getString(R.string.sure_to_clear_chat)).create()
+                            dialog1.setPositiveButton(getString(R.string.clear)) { dialog, which ->
+                                // TODO Auto-generated method stub
+                                showLoader()
+                                clearConversation()
+                                clearTime = Calendar.getInstance().timeInMillis
+                                dialog.dismiss()
                             }
                             dialog1.setNegativeButton(
                                     resources.getString(R.string.cancel), null)
                             dialog1.show()
-                        } else {
-                            status = "0"
+                        }
+                        type == "unmatch" -> {
                             val dialog1 = AlertDialog.Builder(this)
-                            dialog1.setMessage(getString(R.string.sure_to_unblock)).create()
-                            dialog1.setPositiveButton(getString(R.string.unblock)) { dialog, which ->
-                                showLoader()
+                            dialog1.setMessage(getString(R.string.sure_to_unmatch)).create()
+                            dialog1.setPositiveButton(getString(R.string.unmatch)) { dialog, which ->
                                 // TODO Auto-generated method stub
-                                mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("block_status").child(mCurrentUser!!.user_id).setValue(status).addOnSuccessListener {
-                                    mPrivateChat!!.block_status.put(mCurrentUser!!.user_id, status)
-                                    dismissLoader()
-                                    dialog.dismiss()
-                                }
+                                hitUnmatchAPI()
+                                dialog.dismiss()
                             }
-                            dialog1.setNegativeButton(
-                                    resources.getString(R.string.cancel), null)
+                            dialog1.setNegativeButton(resources.getString(R.string.cancel), null)
                             dialog1.show()
                         }
-                    } else if (type.equals("clear_chat")) {
-                        val dialog1 = AlertDialog.Builder(this)
-                        dialog1.setMessage(getString(R.string.sure_to_clear_chat)).create()
-                        dialog1.setPositiveButton(getString(R.string.clear)) { dialog, which ->
-                            // TODO Auto-generated method stub
-                            showLoader()
-                            clearConversation()
-                            clearTime = Calendar.getInstance().timeInMillis
-                            dialog.dismiss()
+                        type == "share_profile" -> {
+                            val intent = Intent(this, ShareActivity::class.java)
+                            intent.putExtra("path", 1)
+                            intent.putExtra("postUrl", Constants.SHARE_URL + mOpponentUserId)
+                            startActivity(intent)
+                            overridePendingTransition(0, 0)
                         }
-                        dialog1.setNegativeButton(
-                                resources.getString(R.string.cancel), null)
-                        dialog1.show()
-                    } else if (type.equals("unmatch")) {
-                        val dialog1 = AlertDialog.Builder(this)
-                        dialog1.setMessage(getString(R.string.sure_to_unmatch)).create()
-                        dialog1.setPositiveButton(getString(R.string.unmatch)) { dialog, which ->
-                            // TODO Auto-generated method stub
-                            hitUnmatchAPI()
-                            dialog.dismiss()
+                        type == "report" -> {
+                            val intent = Intent(this, ReportActivity::class.java)
+                            startActivity(intent)
+                            overridePendingTransition(0, 0)
                         }
-                        dialog1.setNegativeButton(resources.getString(R.string.cancel), null)
-                        dialog1.show()
-                    } else if (type.equals("share_profile")) {
-                        val intent = Intent(this, ShareActivity::class.java)
-                        intent.putExtra("path", 1)
-                        intent.putExtra("postUrl", Constants.SHARE_URL + mOpponentUserId)
-                        startActivity(intent)
-                        overridePendingTransition(0, 0)
-                    } else if (type.equals("report")) {
-                        val intent = Intent(this, ReportActivity::class.java)
-                        startActivity(intent)
-                        overridePendingTransition(0, 0)
-                    } else if (type.equals("rating")) {
-                        val intent = Intent(this, RatingActivity::class.java)
-                        intent.putExtra("user_id", mOpponentUserId)
-                        intent.putExtra("user_name", mOpponentUser!!.user_name)
-                        intent.putExtra("chatDialogId", mPrivateChat!!.chat_dialog_id)
-                        if (mPrivateChat!!.rating == null) {
-                            intent.putExtra("status", "")
-                        } else {
-                            if (TextUtils.isEmpty(mPrivateChat!!.rating.get(mCurrentUser!!.user_id))
-                                    || mPrivateChat!!.rating.get(mCurrentUser!!.user_id).equals("null")) {
+                        type == "rating" -> {
+                            val intent = Intent(this, RatingActivity::class.java)
+                            intent.putExtra("user_id", mOpponentUserId)
+                            intent.putExtra("user_name", mOpponentUser!!.user_name)
+                            intent.putExtra("chatDialogId", mPrivateChat!!.chat_dialog_id)
+                            if (mPrivateChat!!.rating == null) {
                                 intent.putExtra("status", "")
                             } else {
-                                intent.putExtra("status", mPrivateChat!!.rating.get(mCurrentUser!!.user_id))
+                                if (TextUtils.isEmpty(mPrivateChat!!.rating.get(mCurrentUser!!.user_id))
+                                        || mPrivateChat!!.rating.get(mCurrentUser!!.user_id).equals("null")) {
+                                    intent.putExtra("status", "")
+                                } else {
+                                    intent.putExtra("status", mPrivateChat!!.rating.get(mCurrentUser!!.user_id))
+                                }
                             }
+                            startActivity(intent)
+                            overridePendingTransition(0, 0)
                         }
-                        startActivity(intent)
-                        overridePendingTransition(0, 0)
                     }
                 }
                 GALLERY -> {
@@ -2027,6 +2054,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     }
                     if (status == 0)
                         mFirebaseConfigNotifications.child(mMessage.message_id).setValue(msgHashMap)
+
                 }
             }
         }
@@ -2172,6 +2200,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 
                 db!!.addMessage(mMessage, mCurrentUser!!.user_id)
                 addMessage(mMessage)
+
             }
         }
     }
@@ -2237,6 +2266,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 
                 db!!.addMessage(mMessage, mCurrentUser!!.user_id)
                 addMessage(mMessage)
+
             }
         }
     }
@@ -2301,6 +2331,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 
                 db!!.addMessage(mMessage, mCurrentUser!!.user_id)
                 addMessage(mMessage)
+
             }
         }
     }
@@ -2366,6 +2397,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 
                 db!!.addMessage(mMessage, mCurrentUser!!.user_id)
                 addMessage(mMessage)
+
             }
         }
     }
@@ -2388,7 +2420,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     override fun onMessageAdd(message: MessagesModel?) {
-        if(message != null){
+        if (message != null) {
             var lastMessageTime: Long
             var newMessageTime: Long
             try {
@@ -2440,6 +2472,19 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mChatUpdate.put("last_message_sender_id", message.sender_id)
                 mChatUpdate.put("last_message_id", message.message_id)
                 mChatUpdate.put("last_message_type", message.message_type)
+
+                val totalMessageCount = mPrivateChat!!.message_rating_count.get(mCurrentUser!!.user_id)!! +
+                        mPrivateChat!!.message_rating_count.get(mOpponentUser!!.user_id)!!
+
+                if (totalMessageCount < 30) {
+
+                    var ownMessageCount = mPrivateChat!!.message_rating_count.get(mCurrentUser!!.user_id)!!
+                    ownMessageCount++
+
+                    mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("message_rating_count")
+                            .child(mCurrentUser!!.user_id).setValue(ownMessageCount)
+                }
+
                 val unread = mPrivateChat!!.unread_count
                 if (unread != null && unread.containsKey(mOpponentUserId)) {
                     var lastUnreadCount: Int = unread.get(mOpponentUserId)!!
@@ -2450,7 +2495,10 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                     unread.put(mCurrentUser!!.user_id, 0)
                     mChatUpdate.put("unread_count", unread)
                 }
-                mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).updateChildren(mChatUpdate)
+                mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id)
+                        .updateChildren(mChatUpdate)
+
+                displayRatingDialog()
             }
 
             if (mPrivateChat!!.chat_dialog_id.equals(message.chat_dialog_id)) {
@@ -2655,4 +2703,33 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         val broadCastIntent = Intent(Constants.UNMATCH)
         broadcaster!!.sendBroadcast(broadCastIntent)
     }
+
+    private fun displayRatingDialog() {
+        val totalMessageCount = mPrivateChat!!.message_rating_count.get(mCurrentUser!!.user_id)!! +
+                mPrivateChat!!.message_rating_count.get(mOpponentUser!!.user_id)!!
+
+        if (totalMessageCount >= 30) {
+            if (mPrivateChat!!.rating.get(mUtils!!.getString("user_id", ""))
+                            .equals("0")) {
+                val intent = Intent(this, RatingActivity::class.java)
+                intent.putExtra("user_id", mOpponentUserId)
+                intent.putExtra("user_name", mOpponentUser!!.user_name)
+                intent.putExtra("chatDialogId", mPrivateChat!!.chat_dialog_id)
+                if (mPrivateChat!!.rating == null) {
+                    intent.putExtra("status", "")
+                } else {
+                    if (TextUtils.isEmpty(mPrivateChat!!.rating.get(mCurrentUser!!.user_id))
+                            || mPrivateChat!!.rating.get(mCurrentUser!!.user_id).equals("null")) {
+                        intent.putExtra("status", "")
+                    } else {
+                        intent.putExtra("status", mPrivateChat!!.rating.get(mCurrentUser!!.user_id))
+                    }
+                }
+                startActivity(intent)
+                overridePendingTransition(0, 0)
+            }
+        }
+    }
+
+
 }

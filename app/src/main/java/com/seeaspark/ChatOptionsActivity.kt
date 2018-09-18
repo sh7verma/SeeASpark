@@ -24,6 +24,11 @@ class ChatOptionsActivity : BaseActivity() {
         } else {
             txtBlock.text = getString(R.string.unblock)
         }
+
+        if (intent.hasExtra("visibleRating")) {
+            txtRating.visibility = View.GONE
+            viewRating.visibility = View.GONE
+        }
     }
 
     override fun displayDayMode() {
@@ -61,6 +66,7 @@ class ChatOptionsActivity : BaseActivity() {
         txtUnmatch.setOnClickListener(this)
         txtBlock.setOnClickListener(this)
         txtReport.setOnClickListener(this)
+        txtSearchMessage.setOnClickListener(this)
     }
 
     override fun getContext() = this
@@ -68,6 +74,13 @@ class ChatOptionsActivity : BaseActivity() {
     override fun onClick(view: View?) {
         when (view) {
             llOuterChatOptions -> {
+                finish()
+                overridePendingTransition(0, 0)
+            }
+            txtSearchMessage -> {
+                val intent = Intent()
+                intent.putExtra("type", "search_message")
+                setResult(Activity.RESULT_OK, intent)
                 finish()
                 overridePendingTransition(0, 0)
             }

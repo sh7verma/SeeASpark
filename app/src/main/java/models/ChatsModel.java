@@ -27,6 +27,7 @@ public class ChatsModel implements Serializable {
     public HashMap<String, String> user_type;
     public HashMap<String, String> rating;
     public String opponent_user_id;
+    public HashMap<String, Integer> message_rating_count;
 
     public static ChatsModel parseChat(DataSnapshot dataSnapshot, String userId) {
 //        ChatsModel chat = dataSnapshot.getValue(ChatsModel.class);
@@ -72,6 +73,10 @@ public class ChatsModel implements Serializable {
             GenericTypeIndicator<HashMap<String, String>> gtRating = new GenericTypeIndicator<HashMap<String, String>>() {
             };
             chat.rating = dataSnapshot.child("rating").getValue(gtRating);
+
+            GenericTypeIndicator<HashMap<String, Integer>> gtRatingCount = new GenericTypeIndicator<HashMap<String, Integer>>() {
+            };
+            chat.message_rating_count = dataSnapshot.child("message_rating_count").getValue(gtRatingCount);
 
             if (chat.rating == null) {
                 chat.rating = new HashMap<>();

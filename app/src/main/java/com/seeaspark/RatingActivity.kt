@@ -1,16 +1,12 @@
 package com.seeaspark
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.activity_rating.*
-import kotlinx.android.synthetic.main.activity_report.*
 import models.BaseSuccessModel
 import models.RatingModel
 import network.RetrofitClient
@@ -57,10 +53,13 @@ class RatingActivity : BaseActivity() {
         txtRate.text = getString(R.string.rate) + " " + userName + "!"
 
         if (status.equals("1")) {
+            txtSkip.visibility = View.INVISIBLE
             edComment.isEnabled = false
             ratingBar.setIsIndicator(true)
             getRatingAPI()
             txtDone.visibility = View.GONE
+        } else if (status.equals("2")) {
+            txtSkip.visibility = View.INVISIBLE
         } else {
             txtDone.visibility = View.VISIBLE
         }
@@ -68,6 +67,7 @@ class RatingActivity : BaseActivity() {
 
     override fun initListener() {
         txtDone.setOnClickListener(this)
+        txtSkip.setOnClickListener(this)
     }
 
     override fun getContext() = this
@@ -83,10 +83,22 @@ class RatingActivity : BaseActivity() {
                     if (connectedToInternet())
                         hitAPI()
                     else
-                        showInternetAlert(imgDoneIdea)
+                        showInternetAlert(txtDone)
                 }
             }
+            txtSkip -> {
+                skipRating()
+            }
         }
+    }
+
+    private fun skipRating() {
+        mFirebaseConfigChats.child(chatDialogId).child("rating")
+                .child(mUtils!!.getString("user_id", ""))
+                .setValue("2").addOnSuccessListener {
+                    finish()
+                    overridePendingTransition(0, 0)
+                }
     }
 
     override fun onBackPressed() {
@@ -114,7 +126,7 @@ class RatingActivity : BaseActivity() {
                         Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
-                        showAlert(llMainIdea, response.body().error!!.message!!)
+                        showAlert(txtDone, response.body().error!!.message!!)
                 }
             }
 
@@ -139,7 +151,7 @@ class RatingActivity : BaseActivity() {
                         Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
                         moveToSplash()
                     } else
-                        showAlert(llMainIdea, response.body().error!!.message!!)
+                        showAlert(txtDone, response.body().error!!.message!!)
                 }
             }
 

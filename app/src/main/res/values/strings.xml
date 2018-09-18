@@ -348,6 +348,7 @@
     <string name="sure_this_note">Are you sure you want to share this note?</string>
     <string name="no_favourite_messages">No Favourite Messages Yet</string>
     <string name="offline">Offline</string>
+    <string name="search_message">Search Message</string>
     ////
 
 </resources>
