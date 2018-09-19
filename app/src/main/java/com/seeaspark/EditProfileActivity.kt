@@ -1,18 +1,23 @@
 package com.seeaspark
 
+import adapters.AvailabilityAdapter
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import com.cocosw.bottomsheet.BottomSheet
 import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
@@ -20,6 +25,8 @@ import customviews.FlowLayout
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 import kotlinx.android.synthetic.main.add_skills.view.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
+import kotlinx.android.synthetic.main.dialog_select_availability.*
+import models.AvailabilityModel
 import models.LanguageModel
 import models.SignupModel
 import network.RetrofitClient
@@ -54,6 +61,7 @@ class EditProfileActivity : BaseActivity() {
     private var mMonths: Int = 0
     private var mSelectedLanguagesArray = ArrayList<LanguageModel>()
     private var mSelectedSkillsArray = ArrayList<String>()
+    private val availabilityArray = ArrayList<AvailabilityModel>()
 
     override fun getContentView() = R.layout.activity_edit_profile
 
@@ -113,6 +121,8 @@ class EditProfileActivity : BaseActivity() {
             }
         })
 
+        rvAvailability.layoutManager = LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false)
 
     }
 
@@ -175,6 +185,7 @@ class EditProfileActivity : BaseActivity() {
         calDOB!!.set(Calendar.MONTH, dateParts[1].toInt() - 1)
         calDOB!!.set(Calendar.DATE, dateParts[0].toInt())
 
+        getAvailabilityData()
         populateData()
     }
 
@@ -191,13 +202,18 @@ class EditProfileActivity : BaseActivity() {
         txtAgeEditProfile.setOnClickListener(this)
         txtSaveEditProfile.setOnClickListener(this)
         txtOptionCustom.setOnClickListener(this)
+        llAvailability.setOnClickListener(this)
     }
 
     override fun getContext() = this
 
+
     override fun onClick(view: View) {
         var intent: Intent? = null
         when (view) {
+            llAvailability -> {
+                selectAvailabilityDialog()
+            }
             imgBackCustom -> {
                 moveBack()
             }
@@ -250,6 +266,34 @@ class EditProfileActivity : BaseActivity() {
         }
     }
 
+    private fun selectAvailabilityDialog() {
+        val tempAvailabilityArray = ArrayList<AvailabilityModel>()
+        tempAvailabilityArray.addAll(availabilityArray)
+
+        val dialog = Dialog(mContext)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_select_availability)
+        dialog.window.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialog.rvAvailabilitySelection.layoutManager = LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false)
+        dialog.rvAvailabilitySelection.adapter = AvailabilityAdapter(tempAvailabilityArray,
+                this, true)
+
+        dialog.txtDoneAvailability.setOnClickListener {
+            availabilityArray.clear()
+            availabilityArray.addAll(tempAvailabilityArray)
+            rvAvailability.adapter = AvailabilityAdapter(availabilityArray,
+                    this, false)
+            dialog.dismiss()
+        }
+
+        dialog.txtClearAvailability.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
     private fun verifyDetails() {
         when {
             mAvatarURL.isEmpty() -> showAlert(txtSaveEditProfile, getString(R.string.error_avatar))
@@ -269,6 +313,15 @@ class EditProfileActivity : BaseActivity() {
             tempLanguagesArray.add(languageValue.id.toString())
         }
 
+        val stringBuilder = StringBuilder()
+        for (availabilityValue in availabilityArray) {
+            if (availabilityValue.isSelected)
+                stringBuilder.append(availabilityValue.dayId).append(",")
+        }
+
+        val tempAvailability = stringBuilder.toString()
+                .substring(0, stringBuilder.toString().length - 1).trim()
+
         val tempLanguages = tempLanguagesArray.toString()
                 .substring(1, tempLanguagesArray.toString().length - 1).trim()
 
@@ -284,7 +337,8 @@ class EditProfileActivity : BaseActivity() {
                 "$mYears,$mMonths",
                 tempSkills,
                 edBioEditProfile.text.toString().trim(),
-                edDescriptionEditProfile.text.toString())
+                edDescriptionEditProfile.text.toString(),
+                tempAvailability)
 
         call.enqueue(object : Callback<SignupModel> {
 
@@ -360,6 +414,9 @@ class EditProfileActivity : BaseActivity() {
         edDescriptionEditProfile.setText(userData!!.response.pro_description)
         edDescriptionEditProfile.setSelection(edDescriptionEditProfile.text.toString().trim().length)
 
+        rvAvailability.adapter = AvailabilityAdapter(availabilityArray,
+                this, false)
+
         mSelectedLanguagesArray.addAll(userData!!.response.languages)
         displayLanguageChips()
 
@@ -417,6 +474,25 @@ class EditProfileActivity : BaseActivity() {
             calculateAge(mShowStartDate.format(calDOB!!.time))
         } catch (e: ParseException) {
             e.printStackTrace()
+        }
+    }
+
+    private fun getAvailabilityData() {
+        var selectedAvailabilityArray = arrayOf<String>()
+        if (userData!!.response.availability.isNotBlank())
+            selectedAvailabilityArray = userData!!.response.availability.split(",").toTypedArray()
+
+        val array = arrayListOf("S", "M", "T", "W", "T", "F", "S")
+        for (i in 1..7) {
+            val availabilityModel = AvailabilityModel()
+            availabilityModel.dayId = i
+            availabilityModel.dayValue = array[i - 1]
+
+            if (selectedAvailabilityArray.isNotEmpty())
+                availabilityModel.isSelected = selectedAvailabilityArray.contains(i.toString())
+            else
+                availabilityModel.isSelected = i < 6
+            availabilityArray.add(availabilityModel)
         }
     }
 

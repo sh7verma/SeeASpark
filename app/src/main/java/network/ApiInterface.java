@@ -147,7 +147,8 @@ public interface ApiInterface {
                                   @Field("experience") String experience,
                                   @Field("skills") String skills,
                                   @Field("bio") String bio,
-                                  @Field("pro_description") String pro_description);
+                                  @Field("pro_description") String pro_description,
+                                  @Field("availability") String availability);
 
     @FormUrlEncoded
     @POST("/api/v1/settings/change_password")

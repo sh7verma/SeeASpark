@@ -349,6 +349,9 @@
     <string name="no_favourite_messages">No Favourite Messages Yet</string>
     <string name="offline">Offline</string>
     <string name="search_message">Search Message</string>
+    <string name="availability">Availability</string>
+    <string name="not_available">Not Available</string>
+    <string name="available">Available</string>
     ////
 
 </resources>

@@ -91,6 +91,25 @@
                         android:layout_height="wrap_content"
                         android:paddingBottom="@dimen/_16sdp"
                         android:paddingTop="@dimen/_16sdp"
+                        android:text="@string/availability"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/_12ssp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rvAvailability"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_48sdp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/greyLine" />
+
+                    <customviews.BoldTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/_16sdp"
+                        android:paddingTop="@dimen/_16sdp"
                         android:text="@string/languages"
                         android:textColor="@color/colorPrimary"
                         android:textSize="@dimen/_12ssp" />

@@ -143,6 +143,7 @@ public class SignupModel extends BaseModel implements Parcelable {
         private int can_switch;
         private int switch_status;
         private int mentor_verified;
+        private String availability;
 
         public int getId() {
             return id;
@@ -238,6 +239,14 @@ public class SignupModel extends BaseModel implements Parcelable {
 
         public void setEmail_verified(int email_verified) {
             this.email_verified = email_verified;
+        }
+
+        public String getAvailability() {
+            return availability;
+        }
+
+        public void setAvailability(String availability) {
+            this.availability = availability;
         }
 
         public AvatarBean getAvatar() {
@@ -720,6 +729,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             dest.writeInt(this.can_switch);
             dest.writeInt(this.switch_status);
             dest.writeInt(this.mentor_verified);
+            dest.writeString(this.availability);
         }
 
         protected ResponseBean(Parcel in) {
@@ -756,6 +766,7 @@ public class SignupModel extends BaseModel implements Parcelable {
             this.can_switch = in.readInt();
             this.switch_status = in.readInt();
             this.mentor_verified = in.readInt();
+            this.availability = in.readString();
         }
 
         public static final Creator<ResponseBean> CREATOR = new Creator<ResponseBean>() {

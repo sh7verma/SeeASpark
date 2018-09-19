@@ -1,5 +1,6 @@
 package com.seeaspark
 
+import adapters.AvailabilityAdapter
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
@@ -13,6 +14,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_questionaires.*
 import kotlinx.android.synthetic.main.activity_view_profile.*
 import kotlinx.android.synthetic.main.add_skills.view.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
-import models.ProfileModel
+import models.AvailabilityModel
 import models.SignupModel
 import models.ViewProfileModel
 import network.RetrofitClient
@@ -34,6 +36,7 @@ import utils.Constants
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ViewProfileActivity : BaseActivity() {
 
@@ -57,6 +60,9 @@ class ViewProfileActivity : BaseActivity() {
         val cd = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
         llCustomToolbar.background = cd
         cd.alpha = 0
+
+        rvAvailability.layoutManager = LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false)
 
         svViewProfile.setOnScrollViewListener { v, l, t, oldl, oldt ->
             cd.alpha = getAlphaforActionBar(v.scrollY)
@@ -270,6 +276,32 @@ class ViewProfileActivity : BaseActivity() {
             else
                 txtChangeUserType.text = getString(R.string.become_mentee)
         }
+
+        rvAvailability.adapter = AvailabilityAdapter(getAvailabilityData(),
+                this, false)
+    }
+
+    private fun getAvailabilityData(): ArrayList<AvailabilityModel> {
+        var selectedAvailabilityArray = arrayOf<String>()
+        if (userData!!.response.availability.isNotBlank())
+            selectedAvailabilityArray = userData!!.response.availability
+                    .split(",").toTypedArray()
+
+        val availabilityArray = ArrayList<AvailabilityModel>()
+        val array = arrayListOf("S", "M", "T", "W", "T", "F", "S")
+        for (i in 1..7) {
+            val availabilityModel = AvailabilityModel()
+            availabilityModel.dayId = i
+            availabilityModel.dayValue = array[i - 1]
+
+            if (selectedAvailabilityArray.isNotEmpty())
+                availabilityModel.isSelected = selectedAvailabilityArray.contains(i.toString())
+            else
+                availabilityModel.isSelected = i < 6
+
+            availabilityArray.add(availabilityModel)
+        }
+        return availabilityArray
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)

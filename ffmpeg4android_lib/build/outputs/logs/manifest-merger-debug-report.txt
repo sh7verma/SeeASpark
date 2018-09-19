@@ -1,41 +1,41 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
+ADDED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
+INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
+INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
+INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
+INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
+INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
+INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:1-14:12
 	package
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:3:7-45
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
+		ADDED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:3:7-45
+		INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
+		INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:5:7-39
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
+		ADDED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:5:7-39
+		INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
+		INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:11-69
+		ADDED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:4:7-36
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
+		ADDED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:4:7-36
+		INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
+		INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
 uses-sdk
-ADDED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:6-75
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:6-75
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:6-75
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:6-75
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:6-75
+ADDED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:6-75
+INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:6-75
+INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:6-75
+INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:6-75
+INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:6-75
 	android:targetSdkVersion
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:43-72
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
+		ADDED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:43-72
+		INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
+		INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:16-42
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
+		ADDED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:7:16-42
+		INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
+		INJECTED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:9:5-80
+ADDED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:9:5-80
 	android:name
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:9:22-78
+		ADDED from F:\Projects\SeeASpark\ffmpeg4android_lib\src\main\AndroidManifest.xml:9:22-78

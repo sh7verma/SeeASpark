@@ -1,25 +1,25 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:1:1-3:12
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:1:1-3:12
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:1:1-3:12
+ADDED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:1:1-3:12
+INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:1:1-3:12
+INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:1:1-3:12
 	package
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:1:11-48
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml
+		ADDED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:1:11-48
+		INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml
+		INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:1:49-107
+		ADDED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:1:49-107
 uses-sdk
-ADDED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
-INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
+ADDED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
+INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
+INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
+INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
+INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
 	android:targetSdkVersion
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml
+		INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml
+		ADDED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:5-43
+		INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		ADDED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:15-41
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml
-		INJECTED from D:\GitLocationSeeASpark\SeeASpark\cropLib\src\main\AndroidManifest.xml
+		ADDED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml:2:15-41
+		INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml
+		INJECTED from F:\Projects\SeeASpark\cropLib\src\main\AndroidManifest.xml

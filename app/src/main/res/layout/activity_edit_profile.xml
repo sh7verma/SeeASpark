@@ -170,6 +170,40 @@
                 <customviews.BoldTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/_16sdp"
+                    android:paddingTop="@dimen/_16sdp"
+                    android:text="@string/availability"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12ssp" />
+
+                <LinearLayout
+                    android:id="@+id/llAvailability"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rvAvailability"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_48sdp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:src="@mipmap/ic_arrow_r" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/greyLine" />
+
+                <customviews.BoldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:paddingTop="@dimen/_16sdp"
                     android:text="@string/languages"
                     android:textColor="@color/colorPrimary"
