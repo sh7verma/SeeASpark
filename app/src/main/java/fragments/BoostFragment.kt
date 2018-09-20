@@ -1,4 +1,5 @@
 package fragments
 
 class BoostFragment {
+
 }
