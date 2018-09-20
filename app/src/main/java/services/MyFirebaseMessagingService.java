@@ -1,5 +1,6 @@
 package services;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -35,6 +36,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "MyFirebaseMsgService";
     Utils utils;
     private LocalBroadcastManager broadcaster;
+    public static final String NOTIFICATION_CHANNEL_ID = "10001";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -150,11 +152,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationIntent.putExtra("displayMessage", messageBody.get("message"));
                 broadcaster.sendBroadcast(notificationIntent);
             }
-        }
-        else if (messageBody.get("push_type").equalsIgnoreCase("8")) {
+        } else if (messageBody.get("push_type").equalsIgnoreCase("8")) {
             if (utils.getString("access_token", "").equals(messageBody.get("access_token"))) {
                 if (!utils.getString("chat_dialog_id", "").equals(messageBody.get("chat_dialog_id"))) {
-                    utils.setString("participant_ids",messageBody.get("chat_dialog_id"));
+                    utils.setString("participant_ids", messageBody.get("chat_dialog_id"));
                     intent = new Intent(this, ConversationActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     ringNotification(intent, message, 0, messageBody.get("sender_name"));
@@ -188,6 +189,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
+            notificationChannel.enableVibration(true);
+            notificationBuilder.setChannelId(NOTIFICATION_CHANNEL_ID);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
 
         notificationManager.notify(notificationId, notificationBuilder.build());
 
