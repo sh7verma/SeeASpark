@@ -912,8 +912,8 @@ public class Database extends SQLiteOpenHelper {
             values.put(OPPONENT_USER_TYPE, chat.user_type.get(otherUserId));
             values.put(OPPONENT_USER_ID, otherUserId);
             values.put(RATING, chat.rating.get(userId));
-            values.put(OWN_MESSAGE_RATING_COUNT, chat.rating.get(userId));
-            values.put(OTHER_MESSAGE_RATING_COUNT, chat.rating.get(otherUserId));
+            values.put(OWN_MESSAGE_RATING_COUNT, chat.message_rating_count.get(userId));
+            values.put(OTHER_MESSAGE_RATING_COUNT, chat.message_rating_count.get(otherUserId));
 
             db_write.insertOrThrow(CHATS_TABLE, null, values);
 
@@ -945,8 +945,8 @@ public class Database extends SQLiteOpenHelper {
             values.put(PROFILE_PIC, chat.profile_pic.get(otherUserId));
             values.put(DELETE_DIALOG_TIME, "" + chat.delete_dialog_time.get(userId));
             values.put(RATING, chat.rating.get(userId));
-            values.put(OWN_MESSAGE_RATING_COUNT, chat.rating.get(userId));
-            values.put(OTHER_MESSAGE_RATING_COUNT, chat.rating.get(otherUserId));
+            values.put(OWN_MESSAGE_RATING_COUNT, chat.message_rating_count.get(userId));
+            values.put(OTHER_MESSAGE_RATING_COUNT, chat.message_rating_count.get(otherUserId));
 
             addUnreadCount(chat.unread_count, chat.chat_dialog_id);
 

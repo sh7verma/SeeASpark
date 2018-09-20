@@ -293,12 +293,7 @@ class ViewProfileActivity : BaseActivity() {
             val availabilityModel = AvailabilityModel()
             availabilityModel.dayId = i
             availabilityModel.dayValue = array[i - 1]
-
-            if (selectedAvailabilityArray.isNotEmpty())
-                availabilityModel.isSelected = selectedAvailabilityArray.contains(i.toString())
-            else
-                availabilityModel.isSelected = i < 6
-
+            availabilityModel.isSelected = selectedAvailabilityArray.contains(i.toString())
             availabilityArray.add(availabilityModel)
         }
         return availabilityArray

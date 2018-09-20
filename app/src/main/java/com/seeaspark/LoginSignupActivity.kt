@@ -491,7 +491,12 @@ class LoginSignupActivity : BaseActivity() {
                     if (response.body().response.user_type != mUserType) {
                         addDataToSharedPreferences(response.body())
                         mUtils!!.setInt("switchMode", 1)
-                        switchAccounts(response.body())
+                        if (response.body().code == Constants.PROCEED_AS_OTHER
+                                && response.body().response != null) {
+                            dismissLoader()
+                            alertAccountDialog(response.body().message)
+                        } else
+                            switchAccounts(response.body())
                     } else {
                         mUtils!!.setInt("switchMode", 0)
                         if (response.body().code == Constants.PROCEED_AS_OTHER
@@ -621,6 +626,17 @@ class LoginSignupActivity : BaseActivity() {
                 showAlert(txtDone, t!!.getLocalizedMessage())
             }
         })
+    }
+
+    private fun alertAccountDialog(message: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.ok) { dialog, id ->
+                    dialog.dismiss()
+                }
+        val alert = builder.create()
+        alert.show()
     }
 
     private fun switchAccounts(response: SignupModel) {

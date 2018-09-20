@@ -319,8 +319,11 @@ class EditProfileActivity : BaseActivity() {
                 stringBuilder.append(availabilityValue.dayId).append(",")
         }
 
-        val tempAvailability = stringBuilder.toString()
-                .substring(0, stringBuilder.toString().length - 1).trim()
+
+        var tempAvailability = Constants.EMPTY
+        if (stringBuilder.toString().isNotBlank())
+            tempAvailability = stringBuilder.toString()
+                    .substring(0, stringBuilder.toString().length - 1).trim()
 
         val tempLanguages = tempLanguagesArray.toString()
                 .substring(1, tempLanguagesArray.toString().length - 1).trim()
@@ -487,11 +490,7 @@ class EditProfileActivity : BaseActivity() {
             val availabilityModel = AvailabilityModel()
             availabilityModel.dayId = i
             availabilityModel.dayValue = array[i - 1]
-
-            if (selectedAvailabilityArray.isNotEmpty())
-                availabilityModel.isSelected = selectedAvailabilityArray.contains(i.toString())
-            else
-                availabilityModel.isSelected = i < 6
+            availabilityModel.isSelected = selectedAvailabilityArray.contains(i.toString())
             availabilityArray.add(availabilityModel)
         }
     }

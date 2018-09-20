@@ -81,7 +81,7 @@ class SearchChatMessagesActivity : BaseActivity() {
                 if (char.toString().isNotEmpty()) {
                     imgCancelSearch.visibility = View.VISIBLE
                     for (messageModel in mMessagesArray) {
-                        if (messageModel.message.contains(char.toString())) {
+                        if (messageModel.message.toLowerCase().contains(char.toString().toLowerCase() )) {
                             tempArray.add(messageModel)
                         }
                     }

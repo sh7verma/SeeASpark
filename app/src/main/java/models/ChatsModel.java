@@ -78,8 +78,24 @@ public class ChatsModel implements Serializable {
             };
             chat.message_rating_count = dataSnapshot.child("message_rating_count").getValue(gtRatingCount);
 
+            if (chat.message_rating_count == null) {
+                chat.message_rating_count = new HashMap<>();
+                chat.message_rating_count.put(userId, 0);
+                chat.message_rating_count.put(chat.opponent_user_id, 0);
+            } else {
+                if (!chat.message_rating_count.containsKey(userId)) {
+                    chat.message_rating_count.put(userId, 0);
+                }
+            }
+
             if (chat.rating == null) {
                 chat.rating = new HashMap<>();
+                chat.rating.put(userId, "0");
+                chat.rating.put(chat.opponent_user_id, "0");
+            } else {
+                if (!chat.rating.containsKey(userId)) {
+                    chat.rating.put(userId, "0");
+                }
             }
 
             String otherUserId = "";
