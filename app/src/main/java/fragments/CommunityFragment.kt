@@ -427,7 +427,7 @@ class CommunityFragment : Fragment(), View.OnClickListener {
             mLandingInstance!!.showInternetAlert(rvCommunityListing)
     }
 
-    var nightModeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private var nightModeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
         override fun onReceive(context: Context, intent: Intent) {
             isLoading = false

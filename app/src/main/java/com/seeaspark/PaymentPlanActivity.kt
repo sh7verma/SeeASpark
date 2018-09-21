@@ -29,7 +29,7 @@ class PaymentPlanActivity : BaseActivity(), BillingManager.BillingUpdatesListene
     }
 
     override fun onCreateStuff() {
-        mBillingManager = BillingManager(this, this)
+        mBillingManager = BillingManager(this, this, ArrayList<String>())
 
         mGooglePayButton.setOnClickListener {
             mBillingManager!!.initiatePurchaseFlow(skuDetailsList[0].sku)
@@ -61,7 +61,7 @@ class PaymentPlanActivity : BaseActivity(), BillingManager.BillingUpdatesListene
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.e("TEst","onActivityResult")
+        Log.e("TEst", "onActivityResult")
         super.onActivityResult(requestCode, resultCode, data)
     }
 }

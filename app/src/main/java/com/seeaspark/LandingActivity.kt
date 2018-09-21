@@ -266,7 +266,12 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
                     mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
                 } else {
                     /// user is menteee
-                    showToast(mContext!!, getString(R.string.work_in_progress))
+                    imgHome.setImageResource(R.mipmap.ic_home)
+                    imgEvents.setImageResource(R.mipmap.ic_events)
+                    imgCommunity.setImageResource(R.mipmap.ic_boost_s)
+                    imgNotes.setImageResource(R.mipmap.ic_notes)
+                    imgChat.setImageResource(R.mipmap.ic_speach)
+                    replaceFragment(BoostFragment())
                     mTracker!!.setScreenName(getString(R.string.boost))
                     mTracker!!.send(HitBuilders.ScreenViewBuilder().build())
                 }

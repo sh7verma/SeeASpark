@@ -7,6 +7,7 @@ import android.util.Log;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
@@ -59,8 +60,9 @@ public class BillingManager implements PurchasesUpdatedListener {
         void productsList(ArrayList<SkuDetails> skuDetailsList);
     }
 
-    public BillingManager(Activity activity, final BillingUpdatesListener updatesListener) {
-        skuList.add("test_1");
+    public BillingManager(Activity activity, final BillingUpdatesListener updatesListener, ArrayList<String> plansIdArray) {
+        skuList.clear();
+        skuList.addAll(plansIdArray);
         Log.d(TAG, "Creating Billing client.");
         mActivity = activity;
         mBillingUpdatesListener = updatesListener;
@@ -203,6 +205,16 @@ public class BillingManager implements PurchasesUpdatedListener {
 
     public void initiatePurchaseFlow(final String skuId) {
         initiatePurchaseFlow(skuId, null, BillingClient.SkuType.INAPP);
+    }
+
+    public void consumeProduct(String purchaseToken) {
+        mBillingClient.consumeAsync(purchaseToken, new ConsumeResponseListener() {
+            @Override
+            public void onConsumeResponse(int responseCode, String purchaseToken) {
+                Log.e("Consume Code = ",responseCode+" Token = "+purchaseToken);
+            }
+        });
+
     }
 
     public void initiatePurchaseFlow(final String skuId, final ArrayList<String> oldSkus,
