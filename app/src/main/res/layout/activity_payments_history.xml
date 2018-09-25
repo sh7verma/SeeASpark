@@ -27,7 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:drawablePadding="@dimen/_8sdp"
-            android:drawableTop="@mipmap/ill_events"
             android:gravity="center"
             android:text="@string/no_payments_yet"
             android:textColor="@color/black_color"

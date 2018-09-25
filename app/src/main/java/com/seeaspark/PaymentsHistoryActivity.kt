@@ -58,7 +58,6 @@ class PaymentsHistoryActivity : BaseActivity() {
             hitAPI()
         else
             showInternetAlert(rvPaymentsHistory)
-
     }
 
     override fun initListener() {
@@ -92,11 +91,19 @@ class PaymentsHistoryActivity : BaseActivity() {
                             } else
                                 showAlert(llPlans, response.body().error!!.message!!)
                         } else {
-                            mPaymentAdapter = PaymentsHistoryAdapter(response.body().response, mContext!!)
-                            rvPaymentsHistory.adapter = mPaymentAdapter
+                            if (response.body().response.isNotEmpty()) {
+                                mPaymentAdapter = PaymentsHistoryAdapter(response.body().response, mContext!!)
+                                rvPaymentsHistory.adapter = mPaymentAdapter
+                            } else {
+                                txtNoPayments.visibility = View.VISIBLE
+                            }
                         }
                     }
                 })
+    }
+
+    override fun onBackPressed() {
+        moveBack()
     }
 
     private fun moveBack() {

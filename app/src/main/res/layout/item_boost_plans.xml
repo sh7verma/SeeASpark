@@ -43,18 +43,30 @@
         <customviews.MediumTextView
             android:id="@+id/txtBuyNow"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_28sdp"
             android:layout_marginBottom="@dimen/_10sdp"
             android:layout_marginLeft="@dimen/_8sdp"
             android:layout_marginRight="@dimen/_8sdp"
             android:background="@drawable/gradient_round_corner"
             android:gravity="center"
-            android:paddingBottom="@dimen/_5sdp"
-            android:paddingTop="@dimen/_5sdp"
             android:text="@string/buy_now"
             android:textAllCaps="true"
+            android:visibility="visible"
             android:textColor="@color/white_color"
             android:textSize="@dimen/_12ssp" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtTimerBoost"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_28sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/_12ssp"
+            android:visibility="gone" />
 
     </LinearLayout>
 </LinearLayout>

@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:text="8"
                 android:textColor="@color/black_color"
-                android:textSize="@dimen/_16ssp" />
+                android:textSize="@dimen/_14ssp" />
 
         </LinearLayout>
 
@@ -56,8 +56,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(5 Pack)"
-            android:textColor="@color/greyTextColor"
-            android:textSize="@dimen/_14ssp" />
+            android:textColor="@color/textGrey"
+            android:textSize="@dimen/_12ssp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,15 +72,15 @@
                 android:layout_weight="1"
                 android:text="@string/success"
                 android:textColor="@color/black_color"
-                android:textSize="@dimen/_14ssp" />
+                android:textSize="@dimen/_12ssp" />
 
             <customviews.LightTextView
                 android:id="@+id/txtPaymentDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="8"
-                android:textColor="@color/greyTextColor"
-                android:textSize="@dimen/_16ssp" />
+                android:textColor="@color/textGrey"
+                android:textSize="@dimen/_12ssp" />
 
         </LinearLayout>
 
