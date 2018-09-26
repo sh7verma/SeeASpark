@@ -104,6 +104,7 @@ public class Database extends SQLiteOpenHelper {
     static final String LAST_MESSAGE_SENDER_ID = "last_message_sender_id";
     static final String LAST_MESSAGE_ID = "last_message_id";
     static final String LAST_MESSAGE_TYPE = "last_message_type";
+    static final String LAST_MESSAGE_DATA = "last_message_data";
     static final String PARTICIPANT_IDS = "participant_id";
     static final String NAME = "name";
     static final String PROFILE_PIC = "profile_pic";
@@ -233,7 +234,8 @@ public class Database extends SQLiteOpenHelper {
                 + OPPONENT_USER_ID + " TEXT ,"
                 + RATING + " TEXT ,"
                 + OWN_MESSAGE_RATING_COUNT + " TEXT ,"
-                + OTHER_MESSAGE_RATING_COUNT + " TEXT )";
+                + OTHER_MESSAGE_RATING_COUNT + " TEXT ,"
+                + LAST_MESSAGE_DATA + " TEXT )";
         db.execSQL(chatsQuery);
 
         String unreadCountQuery = "create table if not exists " + UNREAD_COUNT_TABLE
@@ -903,7 +905,8 @@ public class Database extends SQLiteOpenHelper {
             values.put(LAST_MESSAGE_TIME, "" + chat.last_message_time.get(userId));
             values.put(LAST_MESSAGE_SENDER_ID, chat.last_message_sender_id);
             values.put(LAST_MESSAGE_ID, chat.last_message_id);
-            values.put(LAST_MESSAGE_TYPE, chat.last_message_type);
+            values.put(LAST_MESSAGE_TYPE, chat.last_message_type.get(userId));
+            values.put(LAST_MESSAGE_DATA, chat.last_message_data.get(userId));
             values.put(PARTICIPANT_IDS, chat.participant_ids);
             values.put(NAME, chat.name.get(otherUserId));
             values.put(PROFILE_PIC, chat.profile_pic.get(otherUserId));
@@ -940,7 +943,8 @@ public class Database extends SQLiteOpenHelper {
             values.put(LAST_MESSAGE_TIME, "" + chat.last_message_time.get(userId));
             values.put(LAST_MESSAGE_SENDER_ID, chat.last_message_sender_id);
             values.put(LAST_MESSAGE_ID, chat.last_message_id);
-            values.put(LAST_MESSAGE_TYPE, chat.last_message_type);
+            values.put(LAST_MESSAGE_TYPE, chat.last_message_type.get(userId));
+            values.put(LAST_MESSAGE_DATA, chat.last_message_data.get(userId));
             values.put(NAME, chat.name.get(otherUserId));
             values.put(PROFILE_PIC, chat.profile_pic.get(otherUserId));
             values.put(DELETE_DIALOG_TIME, "" + chat.delete_dialog_time.get(userId));
@@ -1054,7 +1058,6 @@ public class Database extends SQLiteOpenHelper {
                 mChats.last_message = cur.getString(2);
                 mChats.last_message_sender_id = cur.getString(4);
                 mChats.last_message_id = cur.getString(5);
-                mChats.last_message_type = cur.getString(6);
                 mChats.participant_ids = cur.getString(7);
                 mChats.opponent_user_id = cur.getString(13);
                 String otherUserId = cur.getString(13);
@@ -1066,6 +1069,14 @@ public class Database extends SQLiteOpenHelper {
 //                            break;
 //                        }
 //                    }
+
+                mChats.last_message_type=new HashMap<>();
+                mChats.last_message_type.put(userId,cur.getString(6));
+                mChats.last_message_type.put(otherUserId,cur.getString(6));
+
+                mChats.last_message_data=new HashMap<>();
+                mChats.last_message_data.put(userId,cur.getString(17));
+                mChats.last_message_data.put(otherUserId,cur.getString(17));
 
                 mChats.last_message_time = new HashMap<>();
                 mChats.last_message_time.put(otherUserId, Long.parseLong(cur.getString(3)));
@@ -1156,12 +1167,19 @@ public class Database extends SQLiteOpenHelper {
 
                     mChats.last_message_sender_id = cur.getString(4);
                     mChats.last_message_id = cur.getString(5);
-                    mChats.last_message_type = cur.getString(6);
                     mChats.participant_ids = cur.getString(7);
 
                     mChats.name = new HashMap<>();
                     mChats.name.put(otherUserId, cur.getString(8));
                     mChats.name.put(userId, "");
+
+                    mChats.last_message_type=new HashMap<>();
+                    mChats.last_message_type.put(userId,cur.getString(6));
+                    mChats.last_message_type.put(otherUserId,cur.getString(6));
+
+                    mChats.last_message_data=new HashMap<>();
+                    mChats.last_message_data.put(userId,cur.getString(17));
+                    mChats.last_message_data.put(otherUserId,cur.getString(17));
 
                     mChats.profile_pic = new HashMap<>();
                     mChats.profile_pic.put(otherUserId, cur.getString(9));

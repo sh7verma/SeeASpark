@@ -33,10 +33,8 @@ import com.squareup.picasso.Picasso
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.SwipeDirection
 import database.Database
-import kotlinx.android.synthetic.main.fragment_boost.*
 import kotlinx.android.synthetic.main.fragment_event.*
 import kotlinx.android.synthetic.main.fragment_home_card_swipe.*
-import kotlinx.android.synthetic.main.fragment_home_card_swipe.view.*
 import kotlinx.android.synthetic.main.item_swipe_card.view.*
 import models.*
 import network.RetrofitClient
@@ -188,14 +186,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                     }
 
                     if (mCurrentPosition < mLandingInstance.mArrayCards.size) {
-                        if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.EVENT ||
-                                mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.COMMUNITY) {
-                            csvUsers.setLeftOverlay(0)
-                            csvUsers.setRightOverlay(0)
-                        } else {
-                            csvUsers.setLeftOverlay(R.layout.layout_left_overlay)
-                            csvUsers.setRightOverlay(R.layout.layout_right_overlay)
-                        }
+                        checkOverlayVisibility()
                     }
                 } else {
                     csvUsers.reverse()
@@ -304,6 +295,10 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                 mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0,
                         mLandingInstance.mArrayCards)
                 csvUsers.setAdapter(mAdapterCards)
+
+                if (mLandingInstance.mArrayCards.isNotEmpty()) {
+                    checkOverlayVisibility()
+                }
             } else {
                 if (response.response.isNotEmpty()) {
                     mLandingInstance.mArrayCards.addAll(response.response)
@@ -313,6 +308,16 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                 }
             }
             checkVisibility()
+        }
+    }
+
+    private fun checkOverlayVisibility() {
+        if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.CARD) {
+            csvUsers.setRightOverlay(R.layout.layout_right_overlay)
+            csvUsers.setLeftOverlay(R.layout.layout_left_overlay)
+        } else {
+            csvUsers.setRightOverlay(0)
+            csvUsers.setLeftOverlay(0)
         }
     }
 
@@ -660,7 +665,6 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
 
         mChat.last_message_sender_id = mLandingInstance.userData!!.response.id.toString()
         mChat.last_message_id = "0"
-        mChat.last_message_type = "0"
         mChat.participant_ids = participants
         val unread = HashMap<String, Int>()
         unread.put(mLandingInstance.userData!!.response.id.toString(), 0)
@@ -671,6 +675,16 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         name.put(mLandingInstance.userData!!.response.id.toString(), mLandingInstance.userData!!.response.full_name)
         name.put(othetUser.id.toString(), othetUser.full_name)
         mChat.name = name
+
+        val lastMessageType = HashMap<String, String>()
+        lastMessageType.put(mLandingInstance.userData!!.response.id.toString(), "")
+        lastMessageType.put(othetUser.id.toString(), "")
+        mChat.last_message_type = lastMessageType
+
+        val lastMessageData = HashMap<String, String>()
+        lastMessageData.put(mLandingInstance.userData!!.response.id.toString(), Constants.DEFAULT_MESSAGE_REGEX)
+        lastMessageData.put(othetUser.id.toString(), Constants.DEFAULT_MESSAGE_REGEX)
+        mChat.last_message_data = lastMessageData
 
         val pic = HashMap<String, String>()
         pic.put(mLandingInstance.userData!!.response.id.toString(), mLandingInstance.userData!!.response.avatar.avtar_url)
@@ -739,5 +753,5 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
 
         }
     }
-    ///
+///
 }
