@@ -36,6 +36,7 @@ import database.Database
 import kotlinx.android.synthetic.main.fragment_boost.*
 import kotlinx.android.synthetic.main.fragment_event.*
 import kotlinx.android.synthetic.main.fragment_home_card_swipe.*
+import kotlinx.android.synthetic.main.fragment_home_card_swipe.view.*
 import kotlinx.android.synthetic.main.item_swipe_card.view.*
 import models.*
 import network.RetrofitClient
@@ -184,6 +185,17 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                     if (mLandingInstance.mArrayTempCards.size - CARDAPICOUNT == 5) { ///Paging
                         mOffset++
                         hitAPI(false)
+                    }
+
+                    if (mCurrentPosition < mLandingInstance.mArrayCards.size) {
+                        if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.EVENT ||
+                                mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.COMMUNITY) {
+                            csvUsers.setLeftOverlay(0)
+                            csvUsers.setRightOverlay(0)
+                        } else {
+                            csvUsers.setLeftOverlay(R.layout.layout_left_overlay)
+                            csvUsers.setRightOverlay(R.layout.layout_right_overlay)
+                        }
                     }
                 } else {
                     csvUsers.reverse()

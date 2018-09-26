@@ -3,7 +3,6 @@ package adapters
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.seeaspark.R
 import com.squareup.picasso.Picasso
-import fragments.HomeCardSwipeFragment
-import fragments.HomeFragment
-import holders.ChatHolderSenderImage
-import holders.ChatHolderSenderText
-import kotlinx.android.synthetic.main.item_community.view.*
+import kotlinx.android.synthetic.main.item_home_community.view.*
 import kotlinx.android.synthetic.main.item_home_events.view.*
 import models.CardsDisplayModel
 import utils.Constants
@@ -53,17 +48,11 @@ class HomeCardSwipeAdapter(context: Context, resource: Int,
         when (type) {
             Constants.COMMUNITY -> {
                 if (cardView == null) {
-                    cardView = inflater.inflate(R.layout.item_community, parent, false)
+                    cardView = inflater.inflate(R.layout.item_home_community, parent, false)
                     holderCommunity = CommunityViewHolder(cardView)
                     cardView.tag = holderCommunity
                 } else {
-                    if (cardView.tag is CommunityViewHolder)
-                        holderCommunity = cardView.tag as CommunityViewHolder
-                    else {
-                        cardView = inflater.inflate(R.layout.item_community, parent, false)
-                        holderCommunity = CommunityViewHolder(cardView)
-                        cardView.tag = holderCommunity
-                    }
+                    holderCommunity = cardView.tag as CommunityViewHolder
                 }
 
                 holderCommunity.txtCommunityTitle.text = mCardArray[position].title
@@ -74,8 +63,7 @@ class HomeCardSwipeAdapter(context: Context, resource: Int,
                     holderCommunity.txtDateCommunity.text = Constants.displayDateTime(mCardArray[position].date_time)
 
                 Picasso.with(mContext).load(mCardArray[position].images[0].image_url)
-                        .resize(mWidthCommunity, mContext!!.resources.getDimension(R.dimen._161sdp).toInt())
-                        .centerCrop().into(holderCommunity.imgCommunityListing)
+                        .fit().into(holderCommunity.imgCommunityListing)
             }
             Constants.EVENT -> {
                 if (cardView == null) {
@@ -83,13 +71,7 @@ class HomeCardSwipeAdapter(context: Context, resource: Int,
                     holderEvents = EventViewHolder(cardView)
                     cardView.tag = holderEvents
                 } else {
-                    if (cardView.tag is EventViewHolder)
-                        holderEvents = cardView.tag as EventViewHolder
-                    else {
-                        cardView = inflater.inflate(R.layout.item_home_events, parent, false)
-                        holderEvents = EventViewHolder(cardView)
-                        cardView.tag = holderEvents
-                    }
+                    holderEvents = cardView.tag as EventViewHolder
                 }
 
                 holderEvents.txtEventNameCard.text = mCardArray[position].title
@@ -104,13 +86,7 @@ class HomeCardSwipeAdapter(context: Context, resource: Int,
                     holderCard = CardViewHolder(cardView)
                     cardView.tag = holderCard
                 } else {
-                    if (cardView.tag is CardViewHolder)
-                        holderCard = cardView.tag as CardViewHolder
-                    else {
-                        cardView = inflater.inflate(R.layout.item_swipe_card, parent, false)
-                        holderCard = CardViewHolder(cardView)
-                        cardView.tag = holderCard
-                    }
+                    holderCard = cardView.tag as CardViewHolder
                 }
 
                 Picasso.with(mContext).load(mCardArray[position].avatar.avtar_url)
@@ -190,25 +166,24 @@ class HomeCardSwipeAdapter(context: Context, resource: Int,
         val txtCommunityDesc = itemView.txtCommunityDesc!!
         val txtCenterOption = itemView.txtCenterOption!!
 
-        init {
-            if (mUtils!!.getInt("nightMode", 0) == 1)
-                displayNightMode()
-            else
-                displayDayMode()
-        }
+        /* init {
+             if (mUtils!!.getInt("nightMode", 0) == 1)
+                 displayNightMode()
+             else
+                 displayDayMode()
+         }
 
+         private fun displayDayMode() {
+             cvClick.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+             txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+             txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+         }
 
-        private fun displayDayMode() {
-            cvClick.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.white_color))
-            txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
-            txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
-        }
-
-        private fun displayNightMode() {
-            cvClick.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.cardview_dark_background))
-            txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
-            txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
-        }
+         private fun displayNightMode() {
+             cvClick.setCardBackgroundColor(ContextCompat.getColor(mContext!!, R.color.cardview_dark_background))
+             txtCommunityTitle.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+             txtCommunityDesc.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+         }*/
     }
 
     inner class EventViewHolder(itemView: View) {
