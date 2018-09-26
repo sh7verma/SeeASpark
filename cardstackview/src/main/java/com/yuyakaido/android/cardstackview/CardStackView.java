@@ -152,7 +152,6 @@ public class CardStackView extends FrameLayout {
             containers.add(0, view);
             addView(view);
         }
-//        addCardWithAnimation(option.visibleCount,this);
         containers.getFirst().setContainerEventListener(containerEventListener);
         state.isInitialized = true;
     }

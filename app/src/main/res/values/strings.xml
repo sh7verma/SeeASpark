@@ -357,6 +357,7 @@
     <string name="payment_history">Payment History</string>
     <string name="boots_plans"><![CDATA[Boost & Plans]]></string>
     <string name="plans_error">Sorry, but we are experiencing some error while fetching plan details.</string>
+    <string name="plan_already_bought">You have already bought a plan.</string>
     ////
 
 </resources>

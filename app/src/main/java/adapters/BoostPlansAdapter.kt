@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.seeaspark.R
 import fragments.BoostFragment
+import fragments.HomeCardSwipeFragment
 import kotlinx.android.synthetic.main.item_boost_plans.view.*
 import models.PlansModel
 import utils.Constants
@@ -16,14 +17,26 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class BoostPlansAdapter(private var mPlansArray: ArrayList<PlansModel.Response>,
-                        private var boostFragment: BoostFragment)
+                        boostFragment: BoostFragment?)
     : RecyclerView.Adapter<BoostPlansAdapter.ViewHolder>() {
 
     var mTimer: CountDownTimer? = null
     var mTimerTime: Long = 0
     var localFormat = SimpleDateFormat("HH:mm:ss", Locale.US)
-    var mUtils: Utils = Utils(boostFragment.activity)
-    var isBuyNowEnabled = true
+    var boughtPosition = -1
+
+    private var boostFragment: BoostFragment? = null
+    private var homeFragment: HomeCardSwipeFragment? = null
+
+    init {
+        this.boostFragment = boostFragment
+    }
+
+    constructor(mPlansArray: ArrayList<PlansModel.Response>,
+                homeFragment: HomeCardSwipeFragment,
+                boostFragment: BoostFragment?) : this(mPlansArray, boostFragment) {
+        this.homeFragment = homeFragment
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val vhItem: ViewHolder
@@ -39,6 +52,7 @@ class BoostPlansAdapter(private var mPlansArray: ArrayList<PlansModel.Response>,
         holder.txtBoostPlanCost.text = StringBuilder().append(Constants.POUND)
                 .append(mPlansArray[position].amount)
         if (mPlansArray[position].is_expired == 0) {
+            boughtPosition = position
             holder.txtBuyNow.visibility = View.GONE
             holder.txtTimerBoost.visibility = View.VISIBLE
             timer(mPlansArray[position].remaining_time, holder.txtTimerBoost)
@@ -47,17 +61,15 @@ class BoostPlansAdapter(private var mPlansArray: ArrayList<PlansModel.Response>,
             holder.txtTimerBoost.visibility = View.GONE
         }
         holder.txtBuyNow.setOnClickListener {
-            if (isBuyNowEnabled)
-                boostFragment.buyPlan(position,mPlansArray[position])
+            if (homeFragment != null)
+                homeFragment!!.buyPlan(position)
+            else
+                boostFragment!!.buyPlan(position)
         }
     }
 
     override fun getItemCount(): Int {
         return mPlansArray.size
-    }
-
-    fun enableBuyButton(status: Boolean) {
-        isBuyNowEnabled = status
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -80,11 +92,12 @@ class BoostPlansAdapter(private var mPlansArray: ArrayList<PlansModel.Response>,
                     // mTimerTime = millisUntilFinished;
                     val calLocal = Calendar.getInstance()
                     calLocal.timeInMillis = millisUntilFinished
-                    txtTimerHome.text = "${localFormat.format(calLocal.time)}"
+                    txtTimerHome.text = localFormat.format(calLocal.time)
                 }
 
                 override fun onFinish() {
-                    timer("24:00:00", txtTimerHome)
+                    mPlansArray[boughtPosition].is_expired = 1
+                    notifyDataSetChanged()
                 }
             }
             mTimer!!.start()

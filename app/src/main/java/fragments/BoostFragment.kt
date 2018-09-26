@@ -43,8 +43,8 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
     private lateinit var mBillingManager: BillingManager
     private var skuDetailsList = java.util.ArrayList<SkuDetails>()
     private var isPlanBought = false
-    private lateinit var purchasePlan: PlansModel.Response
     private var purchasePlanPosition = -1
+    private var isBuyEnable = true
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -118,13 +118,6 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
         when (view) {
             txtMyPayments -> {
                 if (mLandingInstance.connectedToInternet()) {
-                    mBillingManager.consumeProduct(
-                            "cmcfhchjjmhjlmlhpdhfdgpo.AO-J1Owra3Ug4rB55W1H9AkRod-U2Uowc_IHdYHBo_GrqxneCaWG6dPYhEKqet3f65XxojEdC4eBz3Eg-UUJDako87LUWsilQkfAgMbCxTXrjjwIo0TkUxs")
-                    mBillingManager.consumeProduct(
-                            "iomdimohlmjeiimoogmjoeed.AO-J1OyvYNo28LYa1Y9P8z-swD_k4pYxu3nOonrvI3MYz9TCASXZtDJ3QcdAxuloAYV-yrfvQ0X9a_jTKcYRPNHS6DWcDoR5shRbCrb_VfSI3qLFAMlU4RA")
-                    mBillingManager.consumeProduct(
-                            "okeklehehfjlplefdojbgoki.AO-J1Oz1869EsSvtSELXZKLne8aDLETk525OP0mM53LgpQunRjx7IQofnJ6-ZFRDtTpXKcT1nM6dtqtlRpe7pvdv_Nzcjllyk9w3XUJW5Q1cK4xj12TJ2Ec")
-
                     val paymentIntent = Intent(activity, PaymentsHistoryActivity::class.java)
                     startActivity(paymentIntent)
                     activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
@@ -146,15 +139,14 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
                     } else
                         mLandingInstance.showAlert(llPlans, response.body().error!!.message!!)
                 } else {
+                    mPlansArray.clear()
                     val planIdsArray = ArrayList<String>()
                     for (planData in response.body().response) {
-                        if (planData.plan_type.equals("Boosts")) {
-                            planIdsArray.add(planData.plan_id)
-                            mPlansArray.add(planData)
+                        planIdsArray.add(planData.plan_id)
+                        mPlansArray.add(planData)
 
-                            if (planData.is_expired == 0)
-                                mAdapterBoost.enableBuyButton(false)
-                        }
+                        if (planData.is_expired == 0)
+                            isBuyEnable = false
                     }
                     mBillingManager = BillingManager(activity, this@BoostFragment,
                             planIdsArray)
@@ -178,12 +170,15 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
         super.onDestroy()
     }
 
-    fun buyPlan(position: Int, response: PlansModel.Response) {
+    fun buyPlan(position: Int) {
         if (mLandingInstance.connectedToInternet()) {
-            purchasePlan = response
-            purchasePlanPosition = position
-            isPlanBought = true
-            mBillingManager.initiatePurchaseFlow(skuDetailsList[position].sku)
+            if (isBuyEnable) {
+                purchasePlanPosition = position
+                isPlanBought = true
+                mBillingManager.initiatePurchaseFlow(skuDetailsList[position].sku)
+            } else {
+                mLandingInstance.showToast(activity, getString(R.string.plan_already_bought))
+            }
         } else {
             mLandingInstance.showInternetAlert(llPlans)
         }
@@ -237,9 +232,9 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
                                     mLandingInstance.showAlert(llPlans, response.body().error!!.message!!)
                             } else {
                                 isPlanBought = false
-                                mPlansArray.set(purchasePlanPosition, purchasePlan)
+                                isBuyEnable = false
+                                mPlansArray.set(purchasePlanPosition, response.body().response)
                                 mAdapterBoost.notifyDataSetChanged()
-                                mAdapterBoost.enableBuyButton(false)
                             }
                         }
                     })
