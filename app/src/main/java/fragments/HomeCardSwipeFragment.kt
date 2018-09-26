@@ -192,6 +192,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                                 mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.COMMUNITY) {
                             csvUsers.setLeftOverlay(0)
                             csvUsers.setRightOverlay(0)
+
                         } else {
                             csvUsers.setLeftOverlay(R.layout.layout_left_overlay)
                             csvUsers.setRightOverlay(R.layout.layout_right_overlay)
