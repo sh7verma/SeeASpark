@@ -61,8 +61,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:visibility="gone"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/llInnerOutCards"
@@ -103,6 +103,37 @@
 
             <customviews.MediumTextView
                 android:id="@+id/txtGetCards"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:background="@drawable/black_border_solid_white_round_corner"
+                android:gravity="center"
+                android:text="@string/get_cards"
+                android:textAllCaps="true"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_14ssp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llHomePlans"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvUnlimitedPlans"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/_16sdp" />
+
+            <customviews.MediumTextView
+                android:id="@+id/txtGetCardsPlans"
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_30sdp"
                 android:layout_marginTop="@dimen/_16sdp"

@@ -8,6 +8,9 @@ import models.MessageHistoryModel;
 import models.NotesListingModel;
 import models.NotesModel;
 import models.OtherProfileModel;
+import models.PaymentAdditionModel;
+import models.PaymentsHistoryModel;
+import models.PlansModel;
 import models.PostDetailModel;
 import models.PostModel;
 import models.ForgotPasswordModel;
@@ -367,5 +370,20 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/api/v1/chats/chat_history")
     Call<MessageHistoryModel> getChatHistory(@Field("access_token") String access_token);
+
+    @GET("/api/v1/plans")
+    Call<PlansModel> getPlans(@Query("access_token") String access_token,
+                              @Query("plan_type") String plan_type);
+
+    @FormUrlEncoded
+    @POST("/api/v1/subscription/plan_subscription")
+    Call<PaymentAdditionModel> addPlanSubscription(@Field("access_token") String access_token,
+                                                   @Field("payment_status") String payment_status,
+                                                   @Field("plan_id") String plan_id);
+
+    @FormUrlEncoded
+    @POST("/api/v1/subscription/subscription_histroy")
+    Call<PaymentsHistoryModel> getPaymentHistory(@Field("access_token") String access_token);
+
 
 }

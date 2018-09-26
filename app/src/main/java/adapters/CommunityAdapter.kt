@@ -20,7 +20,9 @@ import utils.Connection_Detector
 import utils.Constants
 import utils.Utils
 
-class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mContext: Context, mCommunityFragment: CommunityFragment?)
+class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>,
+                       mContext: Context,
+                       mCommunityFragment: CommunityFragment?)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var mCommunityArray = ArrayList<PostModel.ResponseBean>()
@@ -40,7 +42,10 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>, mCont
         this.mCommunityFragment = mCommunityFragment
     }
 
-    constructor(mCommunityArray: ArrayList<PostModel.ResponseBean>, mContext: Context, mSearchInstance: SearchActivity, mCommunityFragment: CommunityFragment?)
+    constructor(mCommunityArray: ArrayList<PostModel.ResponseBean>,
+                mContext: Context,
+                mSearchInstance: SearchActivity,
+                mCommunityFragment: CommunityFragment?)
             : this(mCommunityArray, mContext, mCommunityFragment) {
         this.mSearchInstance = mSearchInstance
     }

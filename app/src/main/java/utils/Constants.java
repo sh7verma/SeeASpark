@@ -128,6 +128,7 @@ public class Constants {
     public final static String ONLINE = "Online";
     public final static int TEXT_LENGTH = 2000;
     public final static int SHOW_TEXT_LENGTH = 500;
+    public final static String POUND = "£";
 
     public final static String FILTER_MENTEE = "1";
     public final static String FILTER_MENTOR = "0";
@@ -135,7 +136,6 @@ public class Constants {
 
     public static final String SHARE_URL = RetrofitClient.BASE_URL + "share_user?id=";
     public final static int LOAD_MORE_VALUE = 20;
-
 
     public final static String AUDIO_PERMISSION = "audio_permission";
     public final static String CAMRA_PERMISSION = "camera_permission";

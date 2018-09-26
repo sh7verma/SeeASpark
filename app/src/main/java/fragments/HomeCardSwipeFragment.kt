@@ -1,5 +1,6 @@
 package fragments
 
+import adapters.BoostPlansAdapter
 import adapters.HomeCardSwipeAdapter
 import android.app.Activity
 import android.app.Fragment
@@ -14,12 +15,15 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
+import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.SkuDetails
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
@@ -29,25 +33,26 @@ import com.squareup.picasso.Picasso
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.SwipeDirection
 import database.Database
+import kotlinx.android.synthetic.main.fragment_boost.*
+import kotlinx.android.synthetic.main.fragment_event.*
 import kotlinx.android.synthetic.main.fragment_home_card_swipe.*
+import kotlinx.android.synthetic.main.fragment_home_card_swipe.view.*
 import kotlinx.android.synthetic.main.item_swipe_card.view.*
 import models.*
 import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import utils.ConnectivityReceiver
-import utils.Constants
-import utils.MainApplication
-import utils.Utils
+import utils.*
 import java.util.*
 
-class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
+class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
+        BillingManager.BillingUpdatesListener {
 
     private val PREFERENCES: Int = 2
     private val VIEWPROFILE: Int = 4
 
-    var mLandingInstance: LandingActivity? = null
+    lateinit var mLandingInstance: LandingActivity
     var itemView: View? = null
     var mContext: Context? = null
     private var mAdapterCards: HomeCardSwipeAdapter? = null
@@ -63,6 +68,13 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
     private var mHandler: Handler? = null
     private var mRunnable: Runnable? = null
     private var mDb: Database? = null
+
+    private lateinit var mBillingManager: BillingManager
+    private lateinit var mAdapterBoost: BoostPlansAdapter
+    private var mPlansArray = ArrayList<PlansModel.Response>()
+    private var isBuyEnable = true
+    private var skuDetailsList = ArrayList<SkuDetails>()
+    private var isPlanBought = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_home_card_swipe, container, false)
@@ -82,9 +94,9 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
         else
             displayNightMode()
 
-        if (mLandingInstance!!.mLatitude != 0.0 && mLandingInstance!!.mLatitude != 0.0) {
-            mLandingInstance!!.mArrayCards.clear()
-            mLandingInstance!!.mArrayCards.addAll(mLandingInstance!!.mArrayTempCards)
+        if (mLandingInstance.mLatitude != 0.0 && mLandingInstance.mLatitude != 0.0) {
+            mLandingInstance.mArrayCards.clear()
+            mLandingInstance.mArrayCards.addAll(mLandingInstance.mArrayTempCards)
             displayCards()
         }
         mHandler = Handler()
@@ -103,9 +115,9 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
         imgProfileHome.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
         rlCardBase.setBackgroundColor(ContextCompat.getColor(activity, R.color.background))
 
-        txtOutOfCards.setTextColor(mLandingInstance!!.blackColor)
-        txtOutOfCardsHint.setTextColor(mLandingInstance!!.blackColor)
-        txtGetCards.setTextColor(mLandingInstance!!.blackColor)
+        txtOutOfCards.setTextColor(mLandingInstance.blackColor)
+        txtOutOfCardsHint.setTextColor(mLandingInstance.blackColor)
+        txtGetCards.setTextColor(mLandingInstance.blackColor)
         txtGetCards.setBackgroundResource(R.drawable.black_border_solid_white_round_corner)
     }
 
@@ -118,27 +130,29 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
         imgProfileHome.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
         rlCardBase.setBackgroundColor(ContextCompat.getColor(activity, R.color.black_color))
 
-        txtOutOfCards.setTextColor(mLandingInstance!!.whiteColor)
-        txtOutOfCardsHint.setTextColor(mLandingInstance!!.whiteColor)
-        txtGetCards.setTextColor(mLandingInstance!!.whiteColor)
+        txtOutOfCards.setTextColor(mLandingInstance.whiteColor)
+        txtOutOfCardsHint.setTextColor(mLandingInstance.whiteColor)
+        txtGetCards.setTextColor(mLandingInstance.whiteColor)
         txtGetCards.setBackgroundResource(R.drawable.white_border_solid_trnsperent)
     }
 
     private fun onCreateStuff() {
         mUtils = Utils(mContext)
-        if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTEE)
+        if (mLandingInstance.userData!!.response.user_type == Constants.MENTEE) {
+            if (mLandingInstance.connectedToInternet())
+                hitPlansApi()
             txtTitleHome.text = getString(R.string.mentors)
-        else
+        } else
             txtTitleHome.text = getString(R.string.mentees)
         val drawable = ContextCompat.getDrawable(mContext!!, R.mipmap.ic_ava_ob)
 
         width = drawable!!.intrinsicWidth
         height = drawable.intrinsicHeight
 
-        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar.avtar_url)
+        Picasso.with(mContext).load(mLandingInstance.userData!!.response.avatar.avtar_url)
                 .resize(width, height).into(imgProfileHome)
 
-        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar.avtar_url)
+        Picasso.with(mContext).load(mLandingInstance.userData!!.response.avatar.avtar_url)
                 .into(imgCenterAvatar)
 
         csvUsers.setCardEventListener(object : CardStackView.CardEventListener {
@@ -147,29 +161,45 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
             }
 
             override fun onCardSwiped(direction: SwipeDirection?) {
-                if (mLandingInstance!!.connectedToInternet()) {
+                if (mLandingInstance.connectedToInternet()) {
 
-                    Log.e("Test = ", mCurrentPosition.toString())
-
-                    if (direction == SwipeDirection.Left)
-                        swipeRightLeft(0, mLandingInstance!!.mArrayCards[mCurrentPosition])
-                    else
-                        swipeRightLeft(1, mLandingInstance!!.mArrayCards[mCurrentPosition])
+                    if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.CARD) {
+                        if (direction == SwipeDirection.Left)
+                            swipeRightLeft(0, mLandingInstance.mArrayCards[mCurrentPosition])
+                        else
+                            swipeRightLeft(1, mLandingInstance.mArrayCards[mCurrentPosition])
+                    } else if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.COMMUNITY) {
+                        if (direction == SwipeDirection.Right)
+                            moveToCommunityDetail(mLandingInstance.mArrayCards[mCurrentPosition].id)
+                    } else if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.EVENT) {
+                        if (direction == SwipeDirection.Right)
+                            moveToEventDetail(mLandingInstance.mArrayCards[mCurrentPosition].id)
+                    }
 
                     mCurrentPosition++
+                    mLandingInstance.mArrayTempCards.removeAt(0)
 
-                    mLandingInstance!!.mArrayTempCards.removeAt(0)
-
-                    if (mLandingInstance!!.mArrayTempCards.size == 0)
+                    if (mLandingInstance.mArrayTempCards.size == 0)
                         checkVisibility()
 
-                    if (mLandingInstance!!.mArrayTempCards.size - CARDAPICOUNT == 5) { ///Paging
+                    if (mLandingInstance.mArrayTempCards.size - CARDAPICOUNT == 5) { ///Paging
                         mOffset++
                         hitAPI(false)
                     }
+
+                    if (mCurrentPosition < mLandingInstance.mArrayCards.size) {
+                        if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.EVENT ||
+                                mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.COMMUNITY) {
+                            csvUsers.setLeftOverlay(0)
+                            csvUsers.setRightOverlay(0)
+                        } else {
+                            csvUsers.setLeftOverlay(R.layout.layout_left_overlay)
+                            csvUsers.setRightOverlay(R.layout.layout_right_overlay)
+                        }
+                    }
                 } else {
                     csvUsers.reverse()
-                    mLandingInstance?.showInternetAlert(csvUsers)
+                    mLandingInstance.showInternetAlert(csvUsers)
                 }
             }
 
@@ -182,28 +212,43 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
             }
 
             override fun onCardClicked(index: Int) {
-                openProfile(mLandingInstance!!.mArrayCards[index],
-                        csvUsers.topView.contentContainer.imgAvatarCard)
+                if (mLandingInstance.mArrayCards[index].post_type == Constants.CARD)
+                    openProfile(mLandingInstance.mArrayCards[index],
+                            csvUsers.topView.contentContainer.imgAvatarCard)
             }
         })
+
+        rvUnlimitedPlans.layoutManager = GridLayoutManager(activity, 2)
+        mAdapterBoost = BoostPlansAdapter(mPlansArray, mHomeFragment!!, null)
+        rvUnlimitedPlans.adapter = mAdapterBoost
     }
 
     private fun checkVisibility() {
         if (mHomeFragment != null) {
-            if (mLandingInstance!!.mArrayTempCards.isEmpty()) {
-                llOutOfCards.visibility = View.VISIBLE
+            if (mLandingInstance.mArrayTempCards.isEmpty()) {
+                if (mLandingInstance.userData!!.response.user_type == Constants.MENTEE) {
+                    if (isBuyEnable) {
+                        llOutOfCards.visibility = View.GONE
+                        llHomePlans.visibility = View.VISIBLE
+                    } else {
+                        llHomePlans.visibility = View.GONE
+                        llOutOfCards.visibility = View.VISIBLE
+                    }
+                } else
+                    llOutOfCards.visibility = View.VISIBLE
             } else {
                 llOutOfCards.visibility = View.GONE
+                llHomePlans.visibility = View.GONE
             }
         }
     }
 
     fun hitAPI(visibleLoader: Boolean) {
         if (visibleLoader)
-            mLandingInstance!!.showLoader()
+            mLandingInstance.showLoader()
         val call = RetrofitClient.getInstance().getCards(mUtils!!.getString("access_token", ""),
-                mLandingInstance!!.mLatitude.toString(),
-                mLandingInstance!!.mLongitude.toString(),
+                mLandingInstance.mLatitude.toString(),
+                mLandingInstance.mLongitude.toString(),
                 mOffset.toString())
         call.enqueue(object : Callback<CardModel> {
 
@@ -213,19 +258,19 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
-                        mLandingInstance!!.moveToSplash()
+                        mLandingInstance.moveToSplash()
                     } else {
-                        mLandingInstance!!.showAlert(llMainHomeFrag, response.body().error!!.message!!)
+                        mLandingInstance.showAlert(llMainHomeFrag, response.body().error!!.message!!)
                     }
                 }
                 if (visibleLoader)
-                    mLandingInstance!!.dismissLoader()
+                    mLandingInstance.dismissLoader()
             }
 
             override fun onFailure(call: Call<CardModel>?, t: Throwable?) {
                 if (visibleLoader)
-                    mLandingInstance!!.dismissLoader()
-                mLandingInstance!!.showAlert(llMainHomeFrag, t!!.localizedMessage)
+                    mLandingInstance.dismissLoader()
+                mLandingInstance.showAlert(llMainHomeFrag, t!!.localizedMessage)
             }
         })
     }
@@ -233,20 +278,36 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
     private fun populateData(response: CardModel) {
         if (llMainHomeFrag != null) {
             if (mOffset == 1) {
-                mLandingInstance!!.mArrayCards.clear()
-                mLandingInstance!!.mArrayTempCards.clear()
+                mLandingInstance.mArrayCards.clear()
+                mLandingInstance.mArrayTempCards.clear()
 
-                mLandingInstance!!.mArrayCards.addAll(response.response)
-                mLandingInstance!!.mArrayTempCards.addAll(response.response)
+                mLandingInstance.mArrayCards.addAll(response.response)
+                mLandingInstance.mArrayTempCards.addAll(response.response)
 
-                mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0, mLandingInstance!!.mArrayCards)
+                for (postValue in response.posts) {
+                    mLandingInstance.mArrayCards.add(postValue)
+                    mLandingInstance.mArrayTempCards.add(postValue)
+
+                    val postData = createPostData(postValue)
+                    mLandingInstance.db!!.addPosts(postData)
+                    for (imagesData in postData.images) {
+                        if (postValue.post_type == Constants.EVENT)
+                            mLandingInstance.db!!.addPostImages(imagesData, postData.id.toString(), Constants.EVENT)
+                        else
+                            mLandingInstance.db!!.addPostImages(imagesData, postData.id.toString(), Constants.COMMUNITY)
+                    }
+                    for (goingUserData in postData.going_list) {
+                        mLandingInstance.db!!.addPostGoingUsers(goingUserData, postData.id.toString())
+                    }
+                }
+
+                mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0,
+                        mLandingInstance.mArrayCards)
                 csvUsers.setAdapter(mAdapterCards)
-
-//                addCardWithAnimation(response.response)
             } else {
                 if (response.response.isNotEmpty()) {
-                    mLandingInstance!!.mArrayCards.addAll(response.response)
-                    mLandingInstance!!.mArrayTempCards.addAll(response.response)
+                    mLandingInstance.mArrayCards.addAll(response.response)
+                    mLandingInstance.mArrayTempCards.addAll(response.response)
                     csvUsers.setPaginationReserved()
                     mAdapterCards!!.notifyDataSetChanged()
                 }
@@ -255,24 +316,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun addCardWithAnimation(response: MutableList<CardsDisplayModel>) {
-        var count = 0
-        mRunnable = Runnable {
-            if (count < response.size) {
-                mLandingInstance!!.mArrayCards.add(response[count])
-                mLandingInstance!!.mArrayTempCards.add(response[count])
-                mAdapterCards!!.notifyDataSetChanged()
-                count++
-                mHandler!!.postDelayed(mRunnable, 300)
-            } else {
-                mHandler!!.removeCallbacks(mRunnable)
-            }
-        }
-        mHandler!!.postDelayed(mRunnable, 0)
-    }
-
     private fun displayCards() {
-        mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0, mLandingInstance!!.mArrayCards)
+        mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0, mLandingInstance.mArrayCards)
         csvUsers.setAdapter(mAdapterCards)
         checkVisibility()
     }
@@ -281,18 +326,28 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
         imgPreferHome.setOnClickListener(this)
         imgProfileHome.setOnClickListener(this)
         txtGetCards.setOnClickListener(this)
+        txtGetCardsPlans.setOnClickListener(this)
     }
 
     override fun onClick(view: View) {
         val intent: Intent?
         when (view) {
-            txtGetCards -> {
-                if (mLandingInstance!!.connectedToInternet()) {
+            txtGetCardsPlans -> {
+                if (mLandingInstance.connectedToInternet()) {
                     mOffset = 1
                     mCurrentPosition = 0
                     hitAPI(true)
                 } else {
-                    mLandingInstance!!.showInternetAlert(llMainHomeFrag)
+                    mLandingInstance.showInternetAlert(llMainHomeFrag)
+                }
+            }
+            txtGetCards -> {
+                if (mLandingInstance.connectedToInternet()) {
+                    mOffset = 1
+                    mCurrentPosition = 0
+                    hitAPI(true)
+                } else {
+                    mLandingInstance.showInternetAlert(llMainHomeFrag)
                 }
             }
             imgProfileHome -> {
@@ -329,8 +384,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
     }
 
     fun swipeRightLeft(swiped: Int, otheeUserModel: CardsDisplayModel) {
-        if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTOR) {
-            if (mLandingInstance!!.mArrayCards.size == 0) {
+        if (mLandingInstance.userData!!.response.user_type == Constants.MENTOR) {
+            if (mLandingInstance.mArrayCards.size == 0) {
                 llOutOfCards.visibility = View.VISIBLE
             }
         }
@@ -349,14 +404,14 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
                     }
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        mLandingInstance!!.showToast(mContext!!, response.body().error!!.message!!)
-                        mLandingInstance!!.moveToSplash()
+                        mLandingInstance.showToast(mContext!!, response.body().error!!.message!!)
+                        mLandingInstance.moveToSplash()
                     }
                 }
             }
 
             override fun onFailure(call: Call<SwipeCardModel>?, t: Throwable?) {
-                mLandingInstance!!.showAlert(llHomeToolbar, t!!.localizedMessage)
+                mLandingInstance.showAlert(llHomeToolbar, t!!.localizedMessage)
             }
         })
     }
@@ -379,23 +434,54 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
 
     private fun populateData() {
         val mGson = Gson()
-        mLandingInstance!!.userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
-        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar.avtar_url)
+        mLandingInstance.userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        Picasso.with(mContext).load(mLandingInstance.userData!!.response.avatar.avtar_url)
                 .resize(width, height).into(imgProfileHome)
 
-        Picasso.with(mContext).load(mLandingInstance!!.userData!!.response.avatar.avtar_url)
+        Picasso.with(mContext).load(mLandingInstance.userData!!.response.avatar.avtar_url)
                 .into(imgCenterAvatar)
     }
 
-    fun boostPlan() {
-        val intent = Intent(mContext, BoostDialog::class.java)
-        startActivity(intent)
-        activity.overridePendingTransition(R.anim.slide_in_up, 0)
+    private fun hitPlansApi() {
+        RetrofitClient.getInstance().getPlans(mLandingInstance.mUtils!!.getString("access_token", ""),
+                "Unlimited").enqueue(object : Callback<PlansModel> {
+            override fun onResponse(call: Call<PlansModel>?, response: Response<PlansModel>) {
+                if (response.body().error != null) {
+                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                        Toast.makeText(activity, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+                        mLandingInstance.moveToSplash()
+                    } else
+                        mLandingInstance.showAlert(llHomePlans, response.body().error!!.message!!)
+                } else {
+                    mPlansArray.clear()
+                    val planIdsArray = ArrayList<String>()
+                    for (planData in response.body().response) {
+                        planIdsArray.add(planData.plan_id)
+                        mPlansArray.add(planData)
+                        if (planData.is_expired == 0)
+                            isBuyEnable = false
+                    }
+                    mBillingManager = BillingManager(activity, this@HomeCardSwipeFragment,
+                            planIdsArray)
+                }
+            }
+
+            override fun onFailure(call: Call<PlansModel>?, t: Throwable?) {
+            }
+        })
     }
 
-    override fun onResume() {
-        // register connection status listener
-        super.onResume()
+    fun buyPlan(position: Int) {
+        if (mLandingInstance.connectedToInternet()) {
+            if (isBuyEnable) {
+                isPlanBought = true
+                mBillingManager.initiatePurchaseFlow(skuDetailsList[position].sku)
+            } else {
+                mLandingInstance.showToast(activity, getString(R.string.plan_already_bought))
+            }
+        } else {
+            mLandingInstance.showInternetAlert(llHomePlans)
+        }
     }
 
     override fun onStart() {
@@ -432,10 +518,10 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
             mOffset = 1
             mCurrentPosition = 0
             hitAPI(false)
-            mUtils!!.setString("user_type", mLandingInstance!!.userData!!.response.user_type.toString())
-            mLandingInstance!!.checkUserType()
+            mUtils!!.setString("user_type", mLandingInstance.userData!!.response.user_type.toString())
+            mLandingInstance.checkUserType()
             populateData()
-            if (mLandingInstance!!.userData!!.response.user_type == Constants.MENTEE)
+            if (mLandingInstance.userData!!.response.user_type == Constants.MENTEE)
                 txtTitleHome.text = getString(R.string.mentors)
             else
                 txtTitleHome.text = getString(R.string.mentees)
@@ -445,16 +531,124 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
     fun resetData() {
         mOffset = 1
         mCurrentPosition = 0
-        mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0, mLandingInstance!!.mArrayCards)
+        mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0, mLandingInstance.mArrayCards)
         csvUsers.setAdapter(mAdapterCards)
         checkVisibility()
+    }
+
+    override fun onBillingClientSetupFinished() {
+    }
+
+    override fun onConsumeFinished(token: String?, result: Int) {
+    }
+
+    override fun onPurchasesUpdated(purchases: MutableList<Purchase>) {
+        if (mLandingInstance.connectedToInternet()) {
+            if (isPlanBought && purchases.isNotEmpty()) {
+                mBillingManager.consumeProduct(purchases[purchases.size - 1].purchaseToken)
+                hitAddPlanSuccessApi(purchases[purchases.size - 1].sku)
+            }
+        } else
+            mLandingInstance.showInternetAlert(llHomePlans)
+    }
+
+    override fun productsList(skuDetailsListLocal: ArrayList<SkuDetails>) {
+        skuDetailsList.clear()
+        skuDetailsList.addAll(skuDetailsListLocal)
+        if (skuDetailsListLocal.size == mPlansArray.size) {
+            mAdapterBoost.notifyDataSetChanged()
+        } else {
+            mLandingInstance.showAlert(llHomePlans, getString(R.string.plans_error))
+        }
+    }
+
+    private fun hitAddPlanSuccessApi(planId: String) {
+        if (isPlanBought) {
+            RetrofitClient.getInstance().addPlanSubscription(mUtils!!.getString("access_token", ""),
+                    "Success", planId)
+                    .enqueue(object : Callback<PaymentAdditionModel> {
+                        override fun onFailure(call: Call<PaymentAdditionModel>?, t: Throwable?) {
+                            mLandingInstance.showAlert(llHomePlans, t!!.localizedMessage)
+                            isPlanBought = false
+                        }
+
+                        override fun onResponse(call: Call<PaymentAdditionModel>?,
+                                                response: Response<PaymentAdditionModel>) {
+                            if (response.body().error != null) {
+                                isPlanBought = false
+                                if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                                    Toast.makeText(activity, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+                                    mLandingInstance.moveToSplash()
+                                } else
+                                    mLandingInstance.showAlert(llHomePlans, response.body().error!!.message!!)
+                            } else {
+                                isPlanBought = false
+                                isBuyEnable = false
+                                llHomePlans.visibility = View.GONE
+                                if (mLandingInstance.connectedToInternet()) {
+                                    mOffset = 1
+                                    mCurrentPosition = 0
+                                    hitAPI(true)
+                                } else {
+                                    mLandingInstance.showInternetAlert(llMainHomeFrag)
+                                }
+                            }
+                        }
+                    })
+        }
+    }
+
+    fun moveToCommunityDetail(postId: Int) {
+        if (mLandingInstance.connectedToInternet()) {
+            val intent = Intent(mContext, CommunityDetailActivity::class.java)
+            intent.putExtra("communityId", postId)
+            startActivity(intent)
+            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        } else
+            mLandingInstance.showInternetAlert(rvEventsListing)
+    }
+
+    fun moveToEventDetail(postId: Int) {
+        if (mLandingInstance.connectedToInternet()) {
+            val intent = Intent(mContext, EventsDetailActivity::class.java)
+            intent.putExtra("eventId", postId)
+            startActivity(intent)
+            activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        } else
+            mLandingInstance.showInternetAlert(rvEventsListing)
+    }
+
+    private fun createPostData(postValue: CardsDisplayModel): PostModel.ResponseBean {
+        val postData = PostModel.ResponseBean()
+        postData.id = postValue.id
+        postData.post_type = postValue.post_type
+        postData.title = postValue.title
+        postData.description = postValue.description
+        postData.profession_id = postValue.profession_id
+        postData.address = postValue.address
+        postData.latitude = postValue.latitude
+        postData.longitude = postValue.longitude
+        postData.date_time = postValue.date_time
+        postData.url = postValue.url
+        postData.is_featured = postValue.is_featured
+        postData.like = postValue.like
+        postData.comment = postValue.comment
+        postData.going = postValue.going
+        postData.interested = postValue.interested
+        postData.liked = postValue.liked
+        postData.is_going = postValue.is_going
+        postData.bookmarked = postValue.bookmarked
+        postData.going_list = postValue.going_list
+        postData.images = postValue.images
+        postData.shareable_link = postValue.shareable_link
+        return postData
     }
 
     /// Hunny Code
     internal fun createNewChat(othetUser: CardsDisplayModel, response: SignupModel.ResponseBean) {
         val mParticpantIDSList = ArrayList<String>()
-        mParticpantIDSList.add(othetUser!!.id.toString() + "_" + othetUser!!.user_type)
-        mParticpantIDSList.add(mLandingInstance!!.userData!!.response.id.toString() + "_" + mLandingInstance!!.userData!!.response.user_type)
+        mParticpantIDSList.add(othetUser.id.toString() + "_" + othetUser.user_type)
+        mParticpantIDSList.add(mLandingInstance.userData!!.response.id.toString() + "_" + mLandingInstance.userData!!.response.user_type)
         Collections.sort(mParticpantIDSList)
         var mParticpantIDS = mParticpantIDSList.toString()
         var participants = mParticpantIDS.substring(1, mParticpantIDS.length - 1)
@@ -464,64 +658,64 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
         mChat.last_message = Constants.DEFAULT_MESSAGE_REGEX
 
 
-        mChat.last_message_sender_id = mLandingInstance!!.userData!!.response.id.toString()
+        mChat.last_message_sender_id = mLandingInstance.userData!!.response.id.toString()
         mChat.last_message_id = "0"
         mChat.last_message_type = "0"
         mChat.participant_ids = participants
         val unread = HashMap<String, Int>()
-        unread.put(mLandingInstance!!.userData!!.response.id.toString(), 0)
+        unread.put(mLandingInstance.userData!!.response.id.toString(), 0)
         unread.put(othetUser.id.toString(), 0)
         mChat.unread_count = unread
 
         val name = HashMap<String, String>()
-        name.put(mLandingInstance!!.userData!!.response.id.toString(), mLandingInstance!!.userData!!.response.full_name)
+        name.put(mLandingInstance.userData!!.response.id.toString(), mLandingInstance.userData!!.response.full_name)
         name.put(othetUser.id.toString(), othetUser.full_name)
         mChat.name = name
 
         val pic = HashMap<String, String>()
-        pic.put(mLandingInstance!!.userData!!.response.id.toString(), mLandingInstance!!.userData!!.response.avatar.avtar_url)
+        pic.put(mLandingInstance.userData!!.response.id.toString(), mLandingInstance.userData!!.response.avatar.avtar_url)
         pic.put(othetUser.id.toString(), othetUser.avatar.avtar_url)
         mChat.profile_pic = pic
 
 // val time = ServerValue.TIMESTAMP
         val utcTime = Constants.getUtcTime(Calendar.getInstance().timeInMillis)
         val deleteTime = HashMap<String, Long>()
-        deleteTime.put(mLandingInstance!!.userData!!.response.id.toString(), utcTime)
+        deleteTime.put(mLandingInstance.userData!!.response.id.toString(), utcTime)
         deleteTime.put(othetUser.id.toString(), utcTime)
         mChat.delete_dialog_time = deleteTime
 
         val lastTime = HashMap<String, Long>()
-        lastTime.put(mLandingInstance!!.userData!!.response.id.toString(), utcTime)
+        lastTime.put(mLandingInstance.userData!!.response.id.toString(), utcTime)
         lastTime.put(othetUser.id.toString(), utcTime)
         mChat.last_message_time = lastTime
 
         val block = HashMap<String, String>()
-        block.put(mLandingInstance!!.userData!!.response.id.toString(), "0")
+        block.put(mLandingInstance.userData!!.response.id.toString(), "0")
         block.put(othetUser.id.toString(), "0")
         mChat.block_status = block
 
         val rating = HashMap<String, String>()
-        rating.put(mLandingInstance!!.userData!!.response.id.toString(), "0")
+        rating.put(mLandingInstance.userData!!.response.id.toString(), "0")
         rating.put(othetUser.id.toString(), "0")
         mChat.rating = rating
 
         val message_rating_count = HashMap<String, Int>()
-        message_rating_count.put(mLandingInstance!!.userData!!.response.id.toString(), 0)
+        message_rating_count.put(mLandingInstance.userData!!.response.id.toString(), 0)
         message_rating_count.put(othetUser.id.toString(), 0)
         mChat.message_rating_count = message_rating_count
 
         val userType = HashMap<String, String>()
-        userType.put(mLandingInstance!!.userData!!.response.id.toString(), mLandingInstance!!.userData!!.response.user_type.toString())
+        userType.put(mLandingInstance.userData!!.response.id.toString(), mLandingInstance.userData!!.response.user_type.toString())
         userType.put(othetUser.id.toString(), othetUser.user_type.toString())
         mChat.user_type = userType
 
         val mFirebaseConfig = FirebaseDatabase.getInstance().getReference().child(Constants.CHATS)
         mFirebaseConfig.child(participants).setValue(mChat).addOnSuccessListener {
             mChat.opponent_user_id = othetUser.id.toString()
-            mDb!!.addNewChat(mChat, mLandingInstance!!.userData!!.response.id.toString(), othetUser.id.toString())
+            mDb!!.addNewChat(mChat, mLandingInstance.userData!!.response.id.toString(), othetUser.id.toString())
             val mFirebaseConfigChat: DatabaseReference
             mFirebaseConfigChat = FirebaseDatabase.getInstance().getReference().child(Constants.CHATS)
-            mFirebaseConfigChat.child(participants).child("delete_dialog_time").child(mLandingInstance!!.userData!!.response.id.toString())
+            mFirebaseConfigChat.child(participants).child("delete_dialog_time").child(mLandingInstance.userData!!.response.id.toString())
                     .setValue(ServerValue.TIMESTAMP)
             mFirebaseConfigChat.child(participants).child("delete_dialog_time").child(othetUser.id.toString())
                     .setValue(ServerValue.TIMESTAMP)
@@ -530,7 +724,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener {
             mFirebaseConfigUser = FirebaseDatabase.getInstance().getReference().child(Constants.USERS)
             mFirebaseConfigUser.child("id_" + othetUser.id).child("chat_dialog_ids").child(participants)
                     .setValue(participants)
-            mFirebaseConfigUser.child("id_" + mLandingInstance!!.userData!!.response.id.toString())
+            mFirebaseConfigUser.child("id_" + mLandingInstance.userData!!.response.id.toString())
                     .child("chat_dialog_ids").child(participants).setValue(participants)
 
             try {

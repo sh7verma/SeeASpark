@@ -1,11 +1,7 @@
 package com.seeaspark
 
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
@@ -21,8 +17,6 @@ import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import services.DayBroadcastReceiver
-import services.NightBroadCastReceiver
 import utils.Constants
 import java.util.*
 

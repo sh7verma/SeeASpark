@@ -1,15 +1,12 @@
 package com.seeaspark
 
 
-import android.app.AlarmManager
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.job.JobScheduler
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -18,19 +15,15 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.gson.Gson
 import database.Database
 import helper.FirebaseListeners
-import services.DayBroadcastReceiver
 import services.ListenerService
-import services.NightBroadCastReceiver
 import services.ReceiverFunctions
 import utils.Connection_Detector
 import utils.Constants
