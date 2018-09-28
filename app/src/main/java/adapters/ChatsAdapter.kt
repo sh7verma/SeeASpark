@@ -181,7 +181,6 @@ class ChatsAdapter(mContext: Context, mChatFragment: ChatFragment, width: Int, c
         val txtLastMessage = itemView.txtLastMessage!!
         val llLastMessage = itemView.llLastMessage!!
 
-
         init {
             if (mUtils!!.getInt("nightMode", 0) == 1)
                 displayNightMode()

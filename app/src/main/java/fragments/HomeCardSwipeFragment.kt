@@ -47,6 +47,7 @@ import java.util.*
 class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         BillingManager.BillingUpdatesListener {
 
+
     private val PREFERENCES: Int = 2
     private val VIEWPROFILE: Int = 4
 
@@ -70,9 +71,10 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     private lateinit var mBillingManager: BillingManager
     private lateinit var mAdapterBoost: BoostPlansAdapter
     private var mPlansArray = ArrayList<PlansModel.Response>()
-    private var isBuyEnable = true
+    var isBuyEnable = true
     private var skuDetailsList = ArrayList<SkuDetails>()
     private var isPlanBought = false
+    private var purchasePlanPosition = -1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_home_card_swipe, container, false)
@@ -427,6 +429,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                 PREFERENCES -> {
                     mCurrentPosition = 0
                     mOffset = 1
+                    isBuyEnable = true
+                    hitPlansApi()
                     hitAPI(false)
                 }
                 VIEWPROFILE -> {
@@ -448,9 +452,13 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     }
 
     private fun hitPlansApi() {
+        if (llHomePlans.visibility == View.VISIBLE)
+            pbPlansLoader.visibility = View.VISIBLE
         RetrofitClient.getInstance().getPlans(mLandingInstance.mUtils!!.getString("access_token", ""),
                 "Unlimited").enqueue(object : Callback<PlansModel> {
             override fun onResponse(call: Call<PlansModel>?, response: Response<PlansModel>) {
+                if (llHomePlans.visibility == View.VISIBLE)
+                    pbPlansLoader.visibility = View.GONE
                 if (response.body().error != null) {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
                         Toast.makeText(activity, response.body().error!!.message, Toast.LENGTH_SHORT).show()
@@ -472,6 +480,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
             }
 
             override fun onFailure(call: Call<PlansModel>?, t: Throwable?) {
+                if (llHomePlans.visibility == View.VISIBLE)
+                    pbPlansLoader.visibility = View.GONE
             }
         })
     }
@@ -480,6 +490,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         if (mLandingInstance.connectedToInternet()) {
             if (isBuyEnable) {
                 isPlanBought = true
+                purchasePlanPosition = position
                 mBillingManager.initiatePurchaseFlow(skuDetailsList[position].sku)
             } else {
                 mLandingInstance.showToast(activity, getString(R.string.plan_already_bought))
@@ -549,9 +560,25 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
 
     override fun onPurchasesUpdated(purchases: MutableList<Purchase>) {
         if (mLandingInstance.connectedToInternet()) {
-            if (isPlanBought && purchases.isNotEmpty()) {
-                mBillingManager.consumeProduct(purchases[purchases.size - 1].purchaseToken)
-                hitAddPlanSuccessApi(purchases[purchases.size - 1].sku)
+            if (purchases.isNotEmpty()) {
+                hitAddPlanSuccessApi(purchases[purchases.size - 1].sku,
+                        Constants.SUCCESS,
+                        purchases[purchases.size - 1].purchaseToken,
+                        purchases[purchases.size - 1].originalJson,
+                        mLandingInstance.paymentPlatform)
+            }
+        } else
+            mLandingInstance.showInternetAlert(llHomePlans)
+    }
+
+    override fun onPurchaseFailure() {
+        if (mLandingInstance.connectedToInternet()) {
+            if (isPlanBought) {
+                hitAddPlanSuccessApi(mPlansArray[purchasePlanPosition].plan_id,
+                        Constants.FAILURE,
+                        Constants.EMPTY,
+                        Constants.EMPTY,
+                        mLandingInstance.paymentPlatform)
             }
         } else
             mLandingInstance.showInternetAlert(llHomePlans)
@@ -567,18 +594,21 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         }
     }
 
-    private fun hitAddPlanSuccessApi(planId: String) {
+    private fun hitAddPlanSuccessApi(planId: String, status: String, purchaseToken: String, originalJson: String, paymentPlatform: String) {
         if (isPlanBought) {
+            mLandingInstance.showLoader()
             RetrofitClient.getInstance().addPlanSubscription(mUtils!!.getString("access_token", ""),
-                    "Success", planId)
+                    status, planId, originalJson, paymentPlatform)
                     .enqueue(object : Callback<PaymentAdditionModel> {
                         override fun onFailure(call: Call<PaymentAdditionModel>?, t: Throwable?) {
+                            mLandingInstance.dismissLoader()
                             mLandingInstance.showAlert(llHomePlans, t!!.localizedMessage)
                             isPlanBought = false
                         }
 
                         override fun onResponse(call: Call<PaymentAdditionModel>?,
                                                 response: Response<PaymentAdditionModel>) {
+                            mLandingInstance.dismissLoader()
                             if (response.body().error != null) {
                                 isPlanBought = false
                                 if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
@@ -587,15 +617,18 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                                 } else
                                     mLandingInstance.showAlert(llHomePlans, response.body().error!!.message!!)
                             } else {
-                                isPlanBought = false
-                                isBuyEnable = false
-                                llHomePlans.visibility = View.GONE
-                                if (mLandingInstance.connectedToInternet()) {
-                                    mOffset = 1
-                                    mCurrentPosition = 0
-                                    hitAPI(true)
-                                } else {
-                                    mLandingInstance.showInternetAlert(llMainHomeFrag)
+                                if (status == Constants.SUCCESS) {
+                                    mBillingManager.consumeProduct(purchaseToken)
+                                    isPlanBought = false
+                                    isBuyEnable = false
+                                    llHomePlans.visibility = View.GONE
+                                    if (mLandingInstance.connectedToInternet()) {
+                                        mOffset = 1
+                                        mCurrentPosition = 0
+                                        hitAPI(true)
+                                    } else {
+                                        mLandingInstance.showInternetAlert(llMainHomeFrag)
+                                    }
                                 }
                             }
                         }

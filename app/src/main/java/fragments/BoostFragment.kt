@@ -44,7 +44,7 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
     private var skuDetailsList = java.util.ArrayList<SkuDetails>()
     private var isPlanBought = false
     private var purchasePlanPosition = -1
-    private var isBuyEnable = true
+    var isBuyEnable = true
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -203,26 +203,46 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
 
     override fun onPurchasesUpdated(purchases: MutableList<Purchase>) {
         if (mLandingInstance.connectedToInternet()) {
-            if (isPlanBought && purchases.isNotEmpty()) {
-                mBillingManager.consumeProduct(purchases[purchases.size - 1].purchaseToken)
-                hitAddPlanSuccessApi(purchases[purchases.size - 1].sku)
+            if (purchases.isNotEmpty()) {
+                hitAddPlanSuccessApi(purchases[purchases.size - 1].sku,
+                        Constants.SUCCESS,
+                        purchases[purchases.size - 1].purchaseToken,
+                        purchases[purchases.size - 1].originalJson,
+                        mLandingInstance.paymentPlatform)
             }
         } else
             mLandingInstance.showInternetAlert(llPlans)
     }
 
-    private fun hitAddPlanSuccessApi(planId: String) {
+    override fun onPurchaseFailure() {
+        if (mLandingInstance.connectedToInternet()) {
+            if (isPlanBought) {
+                hitAddPlanSuccessApi(mPlansArray[purchasePlanPosition].plan_id,
+                        Constants.FAILURE,
+                        Constants.EMPTY,
+                        Constants.EMPTY,
+                        mLandingInstance.paymentPlatform)
+            }
+        } else
+            mLandingInstance.showInternetAlert(llPlans)
+    }
+
+    private fun hitAddPlanSuccessApi(planId: String, status: String, purchaseToken: String,
+                                     originalJson: String, paymentPlatform: String) {
         if (isPlanBought) {
+            mLandingInstance.showLoader()
             RetrofitClient.getInstance().addPlanSubscription(mUtils.getString("access_token", ""),
-                    "Success", planId)
+                    status, planId,originalJson,paymentPlatform)
                     .enqueue(object : Callback<PaymentAdditionModel> {
                         override fun onFailure(call: Call<PaymentAdditionModel>?, t: Throwable?) {
+                            mLandingInstance.dismissLoader()
                             mLandingInstance.showAlert(llPlans, t!!.localizedMessage)
                             isPlanBought = false
                         }
 
                         override fun onResponse(call: Call<PaymentAdditionModel>?,
                                                 response: Response<PaymentAdditionModel>) {
+                            mLandingInstance.dismissLoader()
                             if (response.body().error != null) {
                                 isPlanBought = false
                                 if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
@@ -231,10 +251,13 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
                                 } else
                                     mLandingInstance.showAlert(llPlans, response.body().error!!.message!!)
                             } else {
-                                isPlanBought = false
-                                isBuyEnable = false
-                                mPlansArray.set(purchasePlanPosition, response.body().response)
-                                mAdapterBoost.notifyDataSetChanged()
+                                if (status == Constants.SUCCESS) {
+                                    mBillingManager.consumeProduct(purchaseToken)
+                                    isPlanBought = false
+                                    isBuyEnable = false
+                                    mPlansArray.set(purchasePlanPosition, response.body().response)
+                                    mAdapterBoost.notifyDataSetChanged()
+                                }
                             }
                         }
                     })

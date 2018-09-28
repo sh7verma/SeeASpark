@@ -361,7 +361,7 @@
     <string name="event">Event</string>
     <string name="audio">Audio</string>
     <string name="video">Video</string>
-    <string name="image">Image</string>
+    <string name="image">Photo</string>
     ////
 
 </resources>

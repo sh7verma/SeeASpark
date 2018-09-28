@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha=".9"
-        android:background="@drawable/background_gradient" />
+        android:background="@color/colorPrimary" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,8 +29,8 @@
         <customviews.BoldTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/_16sdp"
             android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_16sdp"
             android:text="@string/community"
             android:textAllCaps="true"
             android:textColor="@color/white_color"

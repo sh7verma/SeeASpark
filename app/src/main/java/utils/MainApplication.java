@@ -18,6 +18,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.seeaspark.R;
+import com.wonderkiln.blurkit.BlurKit;
 
 
 public class MainApplication extends MultiDexApplication {
@@ -37,6 +38,7 @@ public class MainApplication extends MultiDexApplication {
         Firebase.getDefaultConfig().setPersistenceEnabled(true);
         FirebaseApp.initializeApp(this);
         Foreground.init(this);
+        BlurKit.init(this);
         sAnalytics = GoogleAnalytics.getInstance(this);
         instance = this;
 

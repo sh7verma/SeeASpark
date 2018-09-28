@@ -379,7 +379,10 @@ public interface ApiInterface {
     @POST("/api/v1/subscription/plan_subscription")
     Call<PaymentAdditionModel> addPlanSubscription(@Field("access_token") String access_token,
                                                    @Field("payment_status") String payment_status,
-                                                   @Field("plan_id") String plan_id);
+                                                   @Field("plan_id") String plan_id,
+                                                   @Field("payment_response") String payment_response,
+                                                   @Field("payment_type") String payment_type);
+
 
     @FormUrlEncoded
     @POST("/api/v1/subscription/subscription_histroy")

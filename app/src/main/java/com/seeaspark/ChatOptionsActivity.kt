@@ -2,8 +2,10 @@ package com.seeaspark
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.view.View
+import jp.wasabeef.blurry.Blurry
 import kotlinx.android.synthetic.main.activity_chat_filter.*
 import kotlinx.android.synthetic.main.activity_chat_options.*
 
@@ -13,11 +15,16 @@ import kotlinx.android.synthetic.main.activity_chat_options.*
 class ChatOptionsActivity : BaseActivity() {
 
     override fun getContentView(): Int {
-        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
+//        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
         return R.layout.activity_chat_options
     }
 
     override fun initUI() {
+
+        Blurry.with(mContext).sampling(8)
+                .color(ContextCompat.getColor(this, R.color.light_white_transparent))
+                .async().animate(500).onto(llOuterChatOptions);
+
         var blockStatus = intent.getStringExtra("block_status")
         if (blockStatus.equals("0")) {
             txtBlock.text = getString(R.string.block)
@@ -40,6 +47,7 @@ class ChatOptionsActivity : BaseActivity() {
         txtUnmatch.setTextColor(blackColor)
         txtBlock.setTextColor(blackColor)
         txtReport.setTextColor(blackColor)
+        txtSearchMessage.setTextColor(blackColor)
     }
 
     override fun displayNightMode() {
@@ -51,6 +59,7 @@ class ChatOptionsActivity : BaseActivity() {
         txtUnmatch.setTextColor(whiteColor)
         txtBlock.setTextColor(whiteColor)
         txtReport.setTextColor(whiteColor)
+        txtSearchMessage.setTextColor(whiteColor)
     }
 
     override fun onCreateStuff() {

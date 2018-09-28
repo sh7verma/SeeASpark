@@ -7,9 +7,6 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_chat_filter.*
 import utils.Constants
 
-/**
- * Created by dev on 26/7/18.
- */
 class ChatFilterActivity : BaseActivity() {
 
     var status = 0;

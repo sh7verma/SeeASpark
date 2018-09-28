@@ -29,7 +29,7 @@
     <application
         android:name="utils.MainApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/logo"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -359,8 +359,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="34.247.115.251"
-                    android:pathPattern=":3000"
+                    android:host="seeaspark.com"
                     android:pathPrefix="/notes"
                     android:scheme="http" />
             </intent-filter>
@@ -372,8 +371,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="34.247.115.251"
-                    android:pathPattern=":3000"
+                    android:host="seeaspark.com"
                     android:pathPrefix="/posts"
                     android:scheme="http" />
             </intent-filter>
@@ -385,13 +383,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="34.247.115.251"
-                    android:pathPattern=":3000"
+                    android:host="seeaspark.com"
                     android:pathPrefix="/share_user"
                     android:scheme="http" />
             </intent-filter>
-
-
         </activity>
 
         <activity

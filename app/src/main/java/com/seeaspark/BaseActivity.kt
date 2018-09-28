@@ -40,6 +40,7 @@ abstract class BaseActivity : AppCompatActivity(), View.OnClickListener {
     var mWidth: Int = 0
     var mHeight: Int = 0
     var mPlatformStatus: Int = 2
+    var paymentPlatform: String = "1"
     var mUtils: Utils? = null;
     var db: Database? = null
     var mGson = Gson()

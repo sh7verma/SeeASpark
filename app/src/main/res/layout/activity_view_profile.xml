@@ -190,7 +190,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_42sdp"
                     android:layout_alignParentBottom="true"
-                    android:background="@drawable/primary_ripple"
+                    android:background="@drawable/primary_ripple_rectangle"
                     android:gravity="center"
                     android:textAllCaps="true"
                     android:textColor="@color/black_color"

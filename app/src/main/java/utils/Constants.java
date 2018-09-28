@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.seeaspark.AfterWalkThroughActivity;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
@@ -86,9 +87,9 @@ public class Constants {
     public static final String AUTODAYMODE = "autoDay";
     public static final String MYNOTES = "1";
     public static final String RECEIVEDNOTES = "2";
-    public static final int MALE=1;
-    public static final int FEMALE=2;
-    public static final int OTHER=3;
+    public static final int MALE = 1;
+    public static final int FEMALE = 2;
+    public static final int OTHER = 3;
 
     /// Hunny Constants
     public final static String KEY_SELECTED_MEDIA = "SELECTED_PHOTOS";
@@ -102,6 +103,8 @@ public class Constants {
     public final static int DOC_PICKER = 0x12;
     public final static String PERMISSIONS_FILE_PICKER =
             Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    public static final String SUCCESS = "Success";
+    public static final String FAILURE = "Failure";
 
     public enum FILE_TYPE {
         PDF, WORD, EXCEL, PPT, TXT, UNKNOWN
