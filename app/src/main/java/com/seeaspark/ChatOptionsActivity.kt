@@ -5,13 +5,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.view.View
+import com.faradaj.blurbehind.BlurBehind
 import jp.wasabeef.blurry.Blurry
 import kotlinx.android.synthetic.main.activity_chat_filter.*
 import kotlinx.android.synthetic.main.activity_chat_options.*
 
-/**
- * Created by dev on 26/7/18.
- */
 class ChatOptionsActivity : BaseActivity() {
 
     override fun getContentView(): Int {
@@ -21,11 +19,12 @@ class ChatOptionsActivity : BaseActivity() {
 
     override fun initUI() {
 
-        Blurry.with(mContext).sampling(8)
-                .color(ContextCompat.getColor(this, R.color.light_white_transparent))
-                .async().animate(500).onto(llOuterChatOptions);
+        BlurBehind.getInstance()
+                .withAlpha(80)
+                .withFilterColor(ContextCompat.getColor(this, R.color.light_white_transparent))
+                .setBackground(this)
 
-        var blockStatus = intent.getStringExtra("block_status")
+        val blockStatus = intent.getStringExtra("block_status")
         if (blockStatus.equals("0")) {
             txtBlock.text = getString(R.string.block)
         } else {

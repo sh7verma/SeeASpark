@@ -40,6 +40,7 @@ import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
+import com.faradaj.blurbehind.BlurBehind
 import com.google.firebase.database.*
 import com.ipaulpro.afilechooser.utils.FileUtils
 import com.squareup.picasso.Picasso
@@ -881,16 +882,18 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 }
             }
             imgOptions -> {
-                val intent = Intent(this, ChatOptionsActivity::class.java)
+                BlurBehind.getInstance().execute(mConversationActivity) {
+                    val intent = Intent(this, ChatOptionsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                    val messageCount = mPrivateChat!!.message_rating_count[mCurrentUser!!.user_id]!! +
+                            mPrivateChat!!.message_rating_count[mOpponentUser!!.user_id]!!
 
-                val messageCount = mPrivateChat!!.message_rating_count[mCurrentUser!!.user_id]!! +
-                        mPrivateChat!!.message_rating_count[mOpponentUser!!.user_id]!!
-
-                if (messageCount < 30)
-                    intent.putExtra("visibleRating", 0)
-                intent.putExtra("block_status", mPrivateChat!!.block_status.get(mCurrentUser!!.user_id))
-                startActivityForResult(intent, OPTIONS)
-                overridePendingTransition(0, 0)
+                    if (messageCount < 30)
+                        intent.putExtra("visibleRating", 0)
+                    intent.putExtra("block_status", mPrivateChat!!.block_status.get(mCurrentUser!!.user_id))
+                    startActivityForResult(intent, OPTIONS)
+                    overridePendingTransition(0, 0)
+                }
             }
             imgBackOption -> {
                 selectedPosition = 0

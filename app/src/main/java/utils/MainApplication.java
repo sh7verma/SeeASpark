@@ -10,7 +10,6 @@ import com.firebase.client.Firebase;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.FirebaseDatabase;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -18,7 +17,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.seeaspark.R;
-import com.wonderkiln.blurkit.BlurKit;
 
 
 public class MainApplication extends MultiDexApplication {
@@ -38,7 +36,6 @@ public class MainApplication extends MultiDexApplication {
         Firebase.getDefaultConfig().setPersistenceEnabled(true);
         FirebaseApp.initializeApp(this);
         Foreground.init(this);
-        BlurKit.init(this);
         sAnalytics = GoogleAnalytics.getInstance(this);
         instance = this;
 
