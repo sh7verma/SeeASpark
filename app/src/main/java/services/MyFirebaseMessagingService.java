@@ -167,9 +167,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     void ringNotification(Intent intent, String mess, int notificationId, String title) {
         int mIcon;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            mIcon = R.mipmap.ic_launcher;
+            mIcon = R.drawable.ic_app_icon;
         else
-            mIcon = R.mipmap.ic_launcher;
+            mIcon = R.mipmap.ic_launcher_studio;
 
         int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, uniqueInt, intent,
@@ -217,10 +217,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         long pattern_vibrate[] = {0, 100, 200, 300, 400};
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            mIcon = R.mipmap.ic_launcher;
-
+            mIcon = R.drawable.ic_app_icon;
         else
-            mIcon = R.mipmap.ic_launcher;
+            mIcon = R.mipmap.ic_launcher_studio;
 
         long pattern_noti[] = null;
         if (utils.getInt("vibration", 0) == 1)

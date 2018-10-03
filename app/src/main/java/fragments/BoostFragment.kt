@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_boost.*
 import utils.Constants
 import utils.Utils
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.widget.Toast
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
@@ -30,6 +31,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.BillingManager
+import java.lang.Long
+import java.util.*
 
 
 class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUpdatesListener {
@@ -39,7 +42,7 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
     lateinit var mUtils: Utils
     private lateinit var mAdapterBoost: BoostPlansAdapter
     var mPlansArray = ArrayList<PlansModel.Response>()
-    private lateinit var boostFragment: BoostFragment
+    private var boostFragment: BoostFragment? = null
     private lateinit var mBillingManager: BillingManager
     private var skuDetailsList = java.util.ArrayList<SkuDetails>()
     private var isPlanBought = false
@@ -203,12 +206,15 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
 
     override fun onPurchasesUpdated(purchases: MutableList<Purchase>) {
         if (mLandingInstance.connectedToInternet()) {
-            if (purchases.isNotEmpty()) {
+            if (boostFragment != null && purchases.isNotEmpty()) {
+                val date = Date(purchases[purchases.size - 1].purchaseTime)
+                Log.e("Date = ", date.toString())
                 hitAddPlanSuccessApi(purchases[purchases.size - 1].sku,
                         Constants.SUCCESS,
                         purchases[purchases.size - 1].purchaseToken,
                         purchases[purchases.size - 1].originalJson,
-                        mLandingInstance.paymentPlatform)
+                        mLandingInstance.paymentPlatform,
+                        purchases[purchases.size - 1].purchaseTime.toString())
             }
         } else
             mLandingInstance.showInternetAlert(llPlans)
@@ -216,23 +222,25 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
 
     override fun onPurchaseFailure() {
         if (mLandingInstance.connectedToInternet()) {
-            if (isPlanBought) {
+            if (boostFragment != null && isPlanBought) {
                 hitAddPlanSuccessApi(mPlansArray[purchasePlanPosition].plan_id,
                         Constants.FAILURE,
                         Constants.EMPTY,
                         Constants.EMPTY,
-                        mLandingInstance.paymentPlatform)
+                        mLandingInstance.paymentPlatform,
+                        Constants.EMPTY)
             }
         } else
             mLandingInstance.showInternetAlert(llPlans)
     }
 
     private fun hitAddPlanSuccessApi(planId: String, status: String, purchaseToken: String,
-                                     originalJson: String, paymentPlatform: String) {
+                                     originalJson: String, paymentPlatform: String,
+                                     purchaseTime: String) {
         if (isPlanBought) {
             mLandingInstance.showLoader()
             RetrofitClient.getInstance().addPlanSubscription(mUtils.getString("access_token", ""),
-                    status, planId,originalJson,paymentPlatform)
+                    status, planId, originalJson, paymentPlatform, purchaseTime, purchaseToken)
                     .enqueue(object : Callback<PaymentAdditionModel> {
                         override fun onFailure(call: Call<PaymentAdditionModel>?, t: Throwable?) {
                             mLandingInstance.dismissLoader()
@@ -265,13 +273,15 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
     }
 
     override fun productsList(skuDetailsListLocal: java.util.ArrayList<SkuDetails>) {
-        pbPlans.visibility = View.GONE
-        skuDetailsList.clear()
-        skuDetailsList.addAll(skuDetailsListLocal)
-        if (skuDetailsListLocal.size == mPlansArray.size) {
-            mAdapterBoost.notifyDataSetChanged()
-        } else {
-            mLandingInstance.showAlert(llPlans, getString(R.string.plans_error))
+        if (boostFragment != null) {
+            pbPlans.visibility = View.GONE
+            skuDetailsList.clear()
+            skuDetailsList.addAll(skuDetailsListLocal)
+            if (skuDetailsListLocal.size == mPlansArray.size) {
+                mAdapterBoost.notifyDataSetChanged()
+            } else {
+                mLandingInstance.showAlert(llPlans, getString(R.string.plans_error))
+            }
         }
     }
 }

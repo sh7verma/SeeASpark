@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <customviews.MediumTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/txtAnswerQuestion"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/_18sdp"
+    android:layout_height="@dimen/_46sdp"
+    android:layout_marginBottom="@dimen/_12sdp"
     android:background="@drawable/answer_background"
     android:gravity="center"
     android:paddingBottom="@dimen/_12sdp"
     android:paddingTop="@dimen/_12sdp"
+    android:paddingLeft="@dimen/_5sdp"
+    android:paddingRight="@dimen/_5sdp"
     android:text="Evaluation"
     android:textAllCaps="true"
-    android:textColor="@color/hint_color_light" />
+    android:textColor="@color/hint_color_light"
+    app:autoSizeMaxTextSize="@dimen/_14ssp"
+    app:autoSizeMinTextSize="@dimen/_8ssp"
+    app:autoSizeStepGranularity="@dimen/_2ssp"
+    app:autoSizeTextType="uniform" />

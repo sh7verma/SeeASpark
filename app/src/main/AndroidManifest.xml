@@ -29,10 +29,10 @@
     <application
         android:name="utils.MainApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_studio"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_studio_round"
         android:supportsRtl="true"
         android:theme="@style/MainActionBarTheme">
 

@@ -3,7 +3,6 @@ package network;
 import models.CardModel;
 import models.CommentModel;
 import models.LanguageListingModel;
-import models.LanguageModel;
 import models.MessageHistoryModel;
 import models.NotesListingModel;
 import models.NotesModel;
@@ -17,8 +16,6 @@ import models.ForgotPasswordModel;
 import models.BaseSuccessModel;
 import models.NotificationModel;
 import models.ProfessionListingModel;
-import models.ProfessionModel;
-import models.ProfileModel;
 import models.QuestionListingModel;
 import models.RatingModel;
 import models.SearchSkillModel;
@@ -381,7 +378,9 @@ public interface ApiInterface {
                                                    @Field("payment_status") String payment_status,
                                                    @Field("plan_id") String plan_id,
                                                    @Field("payment_response") String payment_response,
-                                                   @Field("payment_type") String payment_type);
+                                                   @Field("payment_type") String payment_type,
+                                                   @Field("purchase_date") String purchase_time,
+                                                   @Field("transaction_id") String transaction_id);
 
 
     @FormUrlEncoded
