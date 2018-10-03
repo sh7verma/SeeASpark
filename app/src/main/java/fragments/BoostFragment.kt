@@ -245,10 +245,6 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
         pbPlans.visibility = View.GONE
         skuDetailsList.clear()
         skuDetailsList.addAll(skuDetailsListLocal)
-        if (skuDetailsListLocal.size == mPlansArray.size) {
-            mAdapterBoost.notifyDataSetChanged()
-        } else {
-            mLandingInstance.showAlert(llPlans, getString(R.string.plans_error))
-        }
+        mAdapterBoost.notifyDataSetChanged()
     }
 }
