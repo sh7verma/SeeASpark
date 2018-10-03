@@ -86,8 +86,6 @@ public class QuestionAnswerModel implements Parcelable {
         this.options = in.readString();
         this.question = in.readString();
         this.question_type = in.readInt();
-        this.userAnswers = new ArrayList<>();
-        in.readList(this.userAnswers, String.class.getClassLoader());
     }
 
     public static final Creator<QuestionAnswerModel> CREATOR = new Creator<QuestionAnswerModel>() {
