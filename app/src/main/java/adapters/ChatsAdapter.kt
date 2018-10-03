@@ -87,12 +87,42 @@ class ChatsAdapter(mContext: Context, mChatFragment: ChatFragment, width: Int, c
 
         if (mPrivateChat.unread_count.get(mUserID) != 0) {
             holder.txtUnreadCount.visibility = View.VISIBLE
-            holder.txtUnreadCount.text = "" + mPrivateChat.unread_count.get(mUserID)
+            holder.txtUnreadCount.text = mPrivateChat.unread_count.get(mUserID).toString()
         } else {
             holder.txtUnreadCount.visibility = View.INVISIBLE
         }
 
-        if (!mPrivateChat.last_message.equals(Constants.DEFAULT_MESSAGE_REGEX)) {
+        if (!mPrivateChat.last_message_data.get(mUserID).equals(Constants.DEFAULT_MESSAGE_REGEX)) {// today
+            // today
+            //                    val values = mUtils!!.getString("offset", "0.0").split(".\\").toTypedArray()
+            /*+ values[0].toLong()*/
+            holder.llLastMessage.visibility = View.VISIBLE
+            when {
+                mPrivateChat.last_message_type.get(mUserID).equals(Constants.TYPE_TEXT) -> {
+                    holder.imgLastMessageIcon.setImageResource(0)
+                    holder.txtLastMessage.text = mPrivateChat.last_message_data.get(mUserID)
+                }
+                mPrivateChat.last_message_type.get(mUserID).equals(Constants.TYPE_AUDIO) -> {
+                    holder.imgLastMessageIcon.setImageResource(R.mipmap.ic_aud)
+                    holder.txtLastMessage.text = mContext!!.getString(R.string.audio)
+                }
+                mPrivateChat.last_message_type.get(mUserID).equals(Constants.TYPE_VIDEO) -> {
+                    holder.imgLastMessageIcon.setImageResource(R.mipmap.ic_vid)
+                    holder.txtLastMessage.text = mContext!!.getString(R.string.video)
+                }
+                mPrivateChat.last_message_type.get(mUserID).equals(Constants.TYPE_IMAGE) -> {
+                    holder.imgLastMessageIcon.setImageResource(R.mipmap.ic_cam)
+                    holder.txtLastMessage.text = mContext!!.getString(R.string.image)
+                }
+                mPrivateChat.last_message_type.get(mUserID).equals(Constants.TYPE_DOCUMENT) -> {
+                    holder.imgLastMessageIcon.setImageResource(R.mipmap.ic_doc)
+                    holder.txtLastMessage.text = mContext!!.getString(R.string.document)
+                }
+                mPrivateChat.last_message_type.get(mUserID).equals(Constants.TYPE_NOTES) -> {
+                    holder.imgLastMessageIcon.setImageResource(R.mipmap.ic_note)
+                    holder.txtLastMessage.text = mContext!!.getString(R.string.note)
+                }
+            }
             try {
                 val cal = Calendar.getInstance()
                 cal.timeInMillis = Constants.getLocalTime(mPrivateChat.last_message_time.get(mUserID)!!)
@@ -122,6 +152,7 @@ class ChatsAdapter(mContext: Context, mChatFragment: ChatFragment, width: Int, c
                 holder.txtTime.text = ""
             }
         } else {
+            holder.llLastMessage.visibility = View.GONE
             holder.txtTime.text = ""
         }
 
@@ -146,6 +177,9 @@ class ChatsAdapter(mContext: Context, mChatFragment: ChatFragment, width: Int, c
         val txtName = itemView.txtName!!
         val txtTime = itemView.txtTime!!
         val txtUnreadCount = itemView.txtUnreadCount!!
+        val imgLastMessageIcon = itemView.imgLastMessageIcon!!
+        val txtLastMessage = itemView.txtLastMessage!!
+        val llLastMessage = itemView.llLastMessage!!
 
         init {
             if (mUtils!!.getInt("nightMode", 0) == 1)

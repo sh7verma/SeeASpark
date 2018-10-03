@@ -216,16 +216,8 @@ class PreferencesActivity : BaseActivity() {
             rsbExperience.selectedMaxValue = Constants.EXPERIENCE
             txtExperienceCount.text = "${Constants.EXPERIENCE} Year(s)"
 
-            if (userData!!.response.gender == "1") {
-                mGenderValue = 2
-                txtGenderPrefer.text = getString(R.string.female)
-            } else if (userData!!.response.gender == "2") {
-                mGenderValue = 1
-                txtGenderPrefer.text = getString(R.string.male)
-            } else {
-                mGenderValue = 3
-                txtGenderPrefer.text = getString(R.string.other)
-            }
+            mGenderValue = 4
+            txtGenderPrefer.text = getString(R.string.don_t_mind)
         }
 
         extractSkills()

@@ -20,6 +20,8 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.faradaj.blurbehind.BlurBehind
+import com.faradaj.blurbehind.OnBlurCompleteListener
 import com.seeaspark.*
 import database.Database
 import helper.FirebaseListeners
@@ -34,7 +36,7 @@ import java.util.*
  * Created by dev on 23/7/18.
  */
 class ChatFragment : Fragment(), View.OnClickListener,
-        FirebaseListeners.ChatDialogsListenerInterface{
+        FirebaseListeners.ChatDialogsListenerInterface {
 
     var itemView: View? = null
     var mWidth: Int = 0
@@ -113,9 +115,9 @@ class ChatFragment : Fragment(), View.OnClickListener,
         }
 
         if (mChats != null && mChats!!.size > 0) {
-            llNoHandshake.setVisibility(View.GONE)
+            llNoHandshake.visibility = View.GONE
         } else {
-            llNoHandshake.setVisibility(View.VISIBLE)
+            llNoHandshake.visibility = View.VISIBLE
             if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
                 txtNoChat.text = getString(R.string.chat_available)
             } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
@@ -139,10 +141,10 @@ class ChatFragment : Fragment(), View.OnClickListener,
                 if (mCurrentUser != null) {
                     if (mChats!!.size > 0) {
                         if (searString.trim().length == 0) {
-                            mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth!!, mChats!!, mKeys!!,
+                            mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth, mChats!!, mKeys,
                                     mCurrentUser!!.user_id, false)
                             rvChats.adapter = mChatsAdapter
-                            llNoHandshake.setVisibility(View.GONE)
+                            llNoHandshake.visibility = View.GONE
                         } else {
                             val localChat = LinkedHashMap<String, ChatsModel>()
                             val localKeys = ArrayList<String>()
@@ -160,13 +162,13 @@ class ChatFragment : Fragment(), View.OnClickListener,
                                     localKeys.add(mKeys[i])
                                 }
                             }
-                            mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth!!, localChat!!, localKeys!!,
+                            mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth, localChat, localKeys,
                                     mCurrentUser!!.user_id, true)
                             rvChats.adapter = mChatsAdapter
-                            if (localChat != null && localChat!!.size > 0) {
-                                llNoHandshake.setVisibility(View.GONE)
+                            if (localChat != null && localChat.size > 0) {
+                                llNoHandshake.visibility = View.GONE
                             } else {
-                                llNoHandshake.setVisibility(View.VISIBLE)
+                                llNoHandshake.visibility = View.VISIBLE
                                 txtNoChat.text = getString(R.string.no_result_found)
                             }
                         }
@@ -181,19 +183,22 @@ class ChatFragment : Fragment(), View.OnClickListener,
             imgFilter -> {
                 var mentee = "0"
                 var mentor = "0"
-                var localChat = mDb!!.getAllChats(mCurrentUser!!.user_id, mUtils!!.getString("filter_type", Constants.FILTER_BOTH))
+                val localChat = mDb!!.getAllChats(mCurrentUser!!.user_id, mUtils!!.getString("filter_type", Constants.FILTER_BOTH))
                 for (key in localChat!!.keys) {
-                    if (localChat!![key]!!.unread_count.get(mCurrentUser!!.user_id) != 0 && localChat!![key]!!.user_type.get(mCurrentUser!!.user_id)!!.equals(Constants.MENTEE)) {
+                    if (localChat[key]!!.unread_count.get(mCurrentUser!!.user_id) != 0 && localChat[key]!!.user_type.get(mCurrentUser!!.user_id)!!.equals(Constants.MENTEE)) {
                         mentee = "1"
                     }
-                    if (localChat!![key]!!.unread_count.get(mCurrentUser!!.user_id) != 0 && localChat!![key]!!.user_type.get(mCurrentUser!!.user_id)!!.equals(Constants.MENTOR)) {
+                    if (localChat[key]!!.unread_count.get(mCurrentUser!!.user_id) != 0 && localChat[key]!!.user_type.get(mCurrentUser!!.user_id)!!.equals(Constants.MENTOR)) {
                         mentor = "1"
                     }
                 }
-                var intent = Intent(activity, ChatFilterActivity::class.java)
-                intent.putExtra("mentee", mentee)
-                intent.putExtra("mentor", mentor)
-                startActivityForResult(intent, FILTER)
+                BlurBehind.getInstance().execute(activity) {
+                    val intent = Intent(activity, ChatFilterActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                    intent.putExtra("mentee", mentee)
+                    intent.putExtra("mentor", mentor)
+                    startActivityForResult(intent, FILTER)
+                }
             }
             imgSearch -> {
                 llToolbarChats.visibility = View.GONE
@@ -303,13 +308,13 @@ class ChatFragment : Fragment(), View.OnClickListener,
                     for (key in mChats!!.keys) {
                         mKeys.add(key)
                     }
-                    mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth!!, mChats!!, mKeys!!,
+                    mChatsAdapter = ChatsAdapter(activity!!, mChatFragment!!, mWidth, mChats!!, mKeys,
                             mCurrentUser!!.user_id, false)
                     rvChats.adapter = mChatsAdapter
                     if (mChats != null && mChats!!.size > 0) {
-                        llNoHandshake.setVisibility(View.GONE)
+                        llNoHandshake.visibility = View.GONE
                     } else {
-                        llNoHandshake.setVisibility(View.VISIBLE)
+                        llNoHandshake.visibility = View.VISIBLE
                         if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
                             txtNoChat.text = getString(R.string.chat_available)
                         } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
@@ -356,7 +361,7 @@ class ChatFragment : Fragment(), View.OnClickListener,
                 if (mChats != null && mChats!!.size > 0) {
                     llNoHandshake.visibility = View.GONE
                 } else {
-                    llNoHandshake.setVisibility(View.VISIBLE)
+                    llNoHandshake.visibility = View.VISIBLE
                     if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
                         txtNoChat.text = getString(R.string.chat_available)
                     } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
@@ -400,7 +405,7 @@ class ChatFragment : Fragment(), View.OnClickListener,
                         mChats!!.put(mChat.chat_dialog_id, mChat)
                         mChats!!.putAll(newmap)
                     } else {
-                        val msgTime = mChats!![mChat!!.chat_dialog_id]!!.last_message_time.get(mUtils!!.getString("user_id", ""))
+                        val msgTime = mChats!![mChat.chat_dialog_id]!!.last_message_time.get(mUtils!!.getString("user_id", ""))
                         if (mChat.last_message_time.get(mUtils!!.getString("user_id", ""))!! > msgTime!!) {
                             mChats!!.remove(mChat.chat_dialog_id)
                             val newmap = mChats!!.clone() as LinkedHashMap<String, ChatsModel>
@@ -415,18 +420,18 @@ class ChatFragment : Fragment(), View.OnClickListener,
                     }
                 } else {
                     mChats!!.remove(mChat.chat_dialog_id)
-                    mKeys!!.remove(mChat.chat_dialog_id)
+                    mKeys.remove(mChat.chat_dialog_id)
                 }
             } else {
                 mChats!!.remove(mChat!!.chat_dialog_id)
-                mKeys!!.remove(mChat!!.chat_dialog_id)
+                mKeys.remove(mChat.chat_dialog_id)
             }
 
             mChatsAdapter!!.notifyDataSetChanged()
             if (mChats != null && mChats!!.size > 0) {
-                llNoHandshake.setVisibility(View.GONE)
+                llNoHandshake.visibility = View.GONE
             } else {
-                llNoHandshake.setVisibility(View.VISIBLE)
+                llNoHandshake.visibility = View.VISIBLE
                 if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
                     txtNoChat.text = getString(R.string.chat_available)
                 } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {
@@ -461,12 +466,12 @@ class ChatFragment : Fragment(), View.OnClickListener,
         }
         if (status == 1) {
             mChats!!.remove(dialogId)
-            mKeys!!.remove(dialogId)
+            mKeys.remove(dialogId)
             mChatsAdapter!!.notifyDataSetChanged()
             if (mChats != null && mChats!!.size > 0) {
-                llNoHandshake.setVisibility(View.GONE)
+                llNoHandshake.visibility = View.GONE
             } else {
-                llNoHandshake.setVisibility(View.VISIBLE)
+                llNoHandshake.visibility = View.VISIBLE
                 if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_BOTH)) {
                     txtNoChat.text = getString(R.string.chat_available)
                 } else if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTEE)) {

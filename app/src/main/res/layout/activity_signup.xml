@@ -30,7 +30,7 @@
                 <LinearLayout
                     android:id="@+id/llMain"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_300sdp"
+                    android:layout_height="@dimen/_320sdp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -206,7 +206,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_300sdp">
+                    android:layout_marginTop="@dimen/_320sdp">
 
                     <ImageView
                         android:id="@+id/imgFacebook"

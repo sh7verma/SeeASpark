@@ -2,8 +2,10 @@ package com.seeaspark
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.view.View
+import com.faradaj.blurbehind.BlurBehind
 import kotlinx.android.synthetic.main.activity_chat_filter.*
 import utils.Constants
 
@@ -15,13 +17,19 @@ class ChatFilterActivity : BaseActivity() {
     var status = 0;
 
     override fun getContentView(): Int {
-        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
+//        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
         return R.layout.activity_chat_filter
     }
 
     override fun initUI() {
-        var mentee = intent.getStringExtra("mentee")
-        var mentor = intent.getStringExtra("mentor")
+
+        BlurBehind.getInstance()
+                .withAlpha(80)
+                .withFilterColor(ContextCompat.getColor(this, R.color.light_white_transparent))
+                .setBackground(this)
+
+        val mentee = intent.getStringExtra("mentee")
+        val mentor = intent.getStringExtra("mentor")
 
         if (mentee.equals("0")) {
             imgMentee.visibility = View.INVISIBLE
@@ -55,7 +63,7 @@ class ChatFilterActivity : BaseActivity() {
 
     override fun displayNightMode() {
         status = 1
-        llOuterFilter.setBackgroundResource(R.drawable.dark_short_profile_background)
+        llOuterFilter.setBackgroundResource(R.drawable.share_night_background)
         if (mUtils!!.getString("filter_type", Constants.FILTER_BOTH).equals(Constants.FILTER_MENTOR)) {
             txtBoth.setTextColor(viewLineColor)
             txtMentor.setTextColor(whiteColor)

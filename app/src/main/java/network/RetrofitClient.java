@@ -18,9 +18,9 @@ import utils.MainApplication;
 public class RetrofitClient {
 
 
-//        public static final String BASE_URL = "http://34.247.115.251:3000/";/// Applify Development
-//    private static final String BASE_URL = "http://seeaspark.com/";/// Applify Development
-    public static final String BASE_URL = "http://192.168.1.101:3000/";/// Local Development
+//    public static final String BASE_URL = "http://34.247.115.251:3000/";/// Applify Development
+//    public static final String BASE_URL = "http://seeaspark.com/";/// Applify Development
+    public static final String BASE_URL = " http://192.168.1.111:3000/";/// Local Development
 
     private static Retrofit retrofit = null;
     private static final String CACHE_CONTROL = "Cache-Control";

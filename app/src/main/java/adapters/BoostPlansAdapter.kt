@@ -96,6 +96,10 @@ class BoostPlansAdapter(private var mPlansArray: ArrayList<PlansModel.Response>,
                 }
 
                 override fun onFinish() {
+                    if (homeFragment != null)
+                        homeFragment!!.isBuyEnable=true
+                    else
+                        boostFragment!!.isBuyEnable=true
                     mPlansArray[boughtPosition].is_expired = 1
                     notifyDataSetChanged()
                 }

@@ -58,6 +58,8 @@ public class BillingManager implements PurchasesUpdatedListener {
         void onPurchasesUpdated(List<Purchase> purchases);
 
         void productsList(ArrayList<SkuDetails> skuDetailsList);
+
+        void onPurchaseFailure();
     }
 
     public BillingManager(Activity activity, final BillingUpdatesListener updatesListener, ArrayList<String> plansIdArray) {
@@ -163,6 +165,7 @@ public class BillingManager implements PurchasesUpdatedListener {
             Log.i(TAG, "onPurchasesUpdated() - user cancelled the purchase flow - skipping");
         } else {
             Log.w(TAG, "onPurchasesUpdated() got unknown resultCode: " + resultCode);
+            mBillingUpdatesListener.onPurchaseFailure();
         }
     }
 
@@ -211,7 +214,7 @@ public class BillingManager implements PurchasesUpdatedListener {
         mBillingClient.consumeAsync(purchaseToken, new ConsumeResponseListener() {
             @Override
             public void onConsumeResponse(int responseCode, String purchaseToken) {
-                Log.e("Consume Code = ",responseCode+" Token = "+purchaseToken);
+                Log.e("Consume Code = ", responseCode + " Token = " + purchaseToken);
             }
         });
 

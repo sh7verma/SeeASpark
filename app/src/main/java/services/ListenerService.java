@@ -34,7 +34,7 @@ public class ListenerService extends Service {
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(), PendingIntent.FLAG_CANCEL_CURRENT);
             Notification notification =
                     new Notification.Builder(this)
-                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setSmallIcon(R.mipmap.ic_launcher_studio)
                             .setContentIntent(pendingIntent)
                             .setColor(ContextCompat.getColor(getApplicationContext(), R.color.black_color))
                             .build();

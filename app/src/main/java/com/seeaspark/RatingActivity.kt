@@ -55,6 +55,7 @@ class RatingActivity : BaseActivity() {
         if (status.equals("1")) {
             txtSkip.visibility = View.INVISIBLE
             edComment.isEnabled = false
+            edComment.hint = Constants.EMPTY
             ratingBar.setIsIndicator(true)
             getRatingAPI()
             txtDone.visibility = View.GONE

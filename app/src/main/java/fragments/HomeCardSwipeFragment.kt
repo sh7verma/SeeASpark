@@ -33,10 +33,8 @@ import com.squareup.picasso.Picasso
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.SwipeDirection
 import database.Database
-import kotlinx.android.synthetic.main.fragment_boost.*
 import kotlinx.android.synthetic.main.fragment_event.*
 import kotlinx.android.synthetic.main.fragment_home_card_swipe.*
-import kotlinx.android.synthetic.main.fragment_home_card_swipe.view.*
 import kotlinx.android.synthetic.main.item_swipe_card.view.*
 import models.*
 import network.RetrofitClient
@@ -72,9 +70,10 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     private lateinit var mBillingManager: BillingManager
     private lateinit var mAdapterBoost: BoostPlansAdapter
     private var mPlansArray = ArrayList<PlansModel.Response>()
-    private var isBuyEnable = true
+    var isBuyEnable = true
     private var skuDetailsList = ArrayList<SkuDetails>()
     private var isPlanBought = false
+    private var purchasePlanPosition = -1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_home_card_swipe, container, false)
@@ -188,15 +187,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                     }
 
                     if (mCurrentPosition < mLandingInstance.mArrayCards.size) {
-                        if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.EVENT ||
-                                mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.COMMUNITY) {
-                            csvUsers.setLeftOverlay(0)
-                            csvUsers.setRightOverlay(0)
-
-                        } else {
-                            csvUsers.setLeftOverlay(R.layout.layout_left_overlay)
-                            csvUsers.setRightOverlay(R.layout.layout_right_overlay)
-                        }
+                        checkOverlayVisibility()
                     }
                 } else {
                     csvUsers.reverse()
@@ -305,6 +296,10 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                 mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0,
                         mLandingInstance.mArrayCards)
                 csvUsers.setAdapter(mAdapterCards)
+
+                if (mLandingInstance.mArrayCards.isNotEmpty()) {
+                    checkOverlayVisibility()
+                }
             } else {
                 if (response.response.isNotEmpty()) {
                     mLandingInstance.mArrayCards.addAll(response.response)
@@ -314,6 +309,16 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                 }
             }
             checkVisibility()
+        }
+    }
+
+    private fun checkOverlayVisibility() {
+        if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.CARD) {
+            csvUsers.setRightOverlay(R.layout.layout_right_overlay)
+            csvUsers.setLeftOverlay(R.layout.layout_left_overlay)
+        } else {
+            csvUsers.setRightOverlay(0)
+            csvUsers.setLeftOverlay(0)
         }
     }
 
@@ -423,6 +428,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                 PREFERENCES -> {
                     mCurrentPosition = 0
                     mOffset = 1
+                    isBuyEnable = true
+                    hitPlansApi()
                     hitAPI(false)
                 }
                 VIEWPROFILE -> {
@@ -444,30 +451,40 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     }
 
     private fun hitPlansApi() {
+        if (llHomePlans.visibility == View.VISIBLE)
+            pbPlansLoader.visibility = View.VISIBLE
         RetrofitClient.getInstance().getPlans(mLandingInstance.mUtils!!.getString("access_token", ""),
                 "Unlimited").enqueue(object : Callback<PlansModel> {
             override fun onResponse(call: Call<PlansModel>?, response: Response<PlansModel>) {
-                if (response.body().error != null) {
-                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        Toast.makeText(activity, response.body().error!!.message, Toast.LENGTH_SHORT).show()
-                        mLandingInstance.moveToSplash()
-                    } else
-                        mLandingInstance.showAlert(llHomePlans, response.body().error!!.message!!)
-                } else {
-                    mPlansArray.clear()
-                    val planIdsArray = ArrayList<String>()
-                    for (planData in response.body().response) {
-                        planIdsArray.add(planData.plan_id)
-                        mPlansArray.add(planData)
-                        if (planData.is_expired == 0)
-                            isBuyEnable = false
+                if (mHomeFragment != null) {
+                    if (llHomePlans.visibility == View.VISIBLE)
+                        pbPlansLoader.visibility = View.GONE
+                    if (response.body().error != null) {
+                        if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                            Toast.makeText(activity, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+                            mLandingInstance.moveToSplash()
+                        } else
+                            mLandingInstance.showAlert(llHomePlans, response.body().error!!.message!!)
+                    } else {
+                        mPlansArray.clear()
+                        val planIdsArray = ArrayList<String>()
+                        for (planData in response.body().response) {
+                            planIdsArray.add(planData.plan_id)
+                            mPlansArray.add(planData)
+                            if (planData.is_expired == 0)
+                                isBuyEnable = false
+                        }
+                        mBillingManager = BillingManager(activity, this@HomeCardSwipeFragment,
+                                planIdsArray)
                     }
-                    mBillingManager = BillingManager(activity, this@HomeCardSwipeFragment,
-                            planIdsArray)
                 }
             }
 
             override fun onFailure(call: Call<PlansModel>?, t: Throwable?) {
+                if (mHomeFragment != null) {
+                    if (llHomePlans.visibility == View.VISIBLE)
+                        pbPlansLoader.visibility = View.GONE
+                }
             }
         })
     }
@@ -476,6 +493,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         if (mLandingInstance.connectedToInternet()) {
             if (isBuyEnable) {
                 isPlanBought = true
+                purchasePlanPosition = position
                 mBillingManager.initiatePurchaseFlow(skuDetailsList[position].sku)
             } else {
                 mLandingInstance.showToast(activity, getString(R.string.plan_already_bought))
@@ -494,6 +512,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onDestroy() {
+        Log.e("Destroy = ","destroy")
+        mHomeFragment=null
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(nightModeReceiver)
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(switchUserTypeReceiver)
         super.onDestroy()
@@ -545,9 +565,28 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
 
     override fun onPurchasesUpdated(purchases: MutableList<Purchase>) {
         if (mLandingInstance.connectedToInternet()) {
-            if (isPlanBought && purchases.isNotEmpty()) {
-                mBillingManager.consumeProduct(purchases[purchases.size - 1].purchaseToken)
-                hitAddPlanSuccessApi(purchases[purchases.size - 1].sku)
+            if (mHomeFragment != null && purchases.isNotEmpty()) {
+                isPlanBought = true
+                hitAddPlanSuccessApi(purchases[purchases.size - 1].sku,
+                        Constants.SUCCESS,
+                        purchases[purchases.size - 1].purchaseToken,
+                        purchases[purchases.size - 1].originalJson,
+                        mLandingInstance.paymentPlatform,
+                        purchases[purchases.size - 1].purchaseTime.toString())
+            }
+        } else
+            mLandingInstance.showInternetAlert(llHomePlans)
+    }
+
+    override fun onPurchaseFailure() {
+        if (mLandingInstance.connectedToInternet()) {
+            if (mHomeFragment != null && isPlanBought) {
+                hitAddPlanSuccessApi(mPlansArray[purchasePlanPosition].plan_id,
+                        Constants.FAILURE,
+                        Constants.EMPTY,
+                        Constants.EMPTY,
+                        mLandingInstance.paymentPlatform,
+                        Constants.EMPTY)
             }
         } else
             mLandingInstance.showInternetAlert(llHomePlans)
@@ -563,18 +602,23 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         }
     }
 
-    private fun hitAddPlanSuccessApi(planId: String) {
+    private fun hitAddPlanSuccessApi(planId: String, status: String, purchaseToken: String,
+                                     originalJson: String, paymentPlatform: String,
+                                     purchaseTime: String) {
         if (isPlanBought) {
+            mLandingInstance.showLoader()
             RetrofitClient.getInstance().addPlanSubscription(mUtils!!.getString("access_token", ""),
-                    "Success", planId)
+                    status, planId, originalJson, paymentPlatform, purchaseTime, purchaseToken)
                     .enqueue(object : Callback<PaymentAdditionModel> {
                         override fun onFailure(call: Call<PaymentAdditionModel>?, t: Throwable?) {
+                            mLandingInstance.dismissLoader()
                             mLandingInstance.showAlert(llHomePlans, t!!.localizedMessage)
                             isPlanBought = false
                         }
 
                         override fun onResponse(call: Call<PaymentAdditionModel>?,
                                                 response: Response<PaymentAdditionModel>) {
+                            mLandingInstance.dismissLoader()
                             if (response.body().error != null) {
                                 isPlanBought = false
                                 if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
@@ -583,15 +627,18 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                                 } else
                                     mLandingInstance.showAlert(llHomePlans, response.body().error!!.message!!)
                             } else {
-                                isPlanBought = false
-                                isBuyEnable = false
-                                llHomePlans.visibility = View.GONE
-                                if (mLandingInstance.connectedToInternet()) {
-                                    mOffset = 1
-                                    mCurrentPosition = 0
-                                    hitAPI(true)
-                                } else {
-                                    mLandingInstance.showInternetAlert(llMainHomeFrag)
+                                if (status == Constants.SUCCESS) {
+                                    mBillingManager.consumeProduct(purchaseToken)
+                                    isPlanBought = false
+                                    isBuyEnable = false
+                                    llHomePlans.visibility = View.GONE
+                                    if (mLandingInstance.connectedToInternet()) {
+                                        mOffset = 1
+                                        mCurrentPosition = 0
+                                        hitAPI(true)
+                                    } else {
+                                        mLandingInstance.showInternetAlert(llMainHomeFrag)
+                                    }
                                 }
                             }
                         }
@@ -661,7 +708,6 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
 
         mChat.last_message_sender_id = mLandingInstance.userData!!.response.id.toString()
         mChat.last_message_id = "0"
-        mChat.last_message_type = "0"
         mChat.participant_ids = participants
         val unread = HashMap<String, Int>()
         unread.put(mLandingInstance.userData!!.response.id.toString(), 0)
@@ -672,6 +718,16 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         name.put(mLandingInstance.userData!!.response.id.toString(), mLandingInstance.userData!!.response.full_name)
         name.put(othetUser.id.toString(), othetUser.full_name)
         mChat.name = name
+
+        val lastMessageType = HashMap<String, String>()
+        lastMessageType.put(mLandingInstance.userData!!.response.id.toString(), "")
+        lastMessageType.put(othetUser.id.toString(), "")
+        mChat.last_message_type = lastMessageType
+
+        val lastMessageData = HashMap<String, String>()
+        lastMessageData.put(mLandingInstance.userData!!.response.id.toString(), Constants.DEFAULT_MESSAGE_REGEX)
+        lastMessageData.put(othetUser.id.toString(), Constants.DEFAULT_MESSAGE_REGEX)
+        mChat.last_message_data = lastMessageData
 
         val pic = HashMap<String, String>()
         pic.put(mLandingInstance.userData!!.response.id.toString(), mLandingInstance.userData!!.response.avatar.avtar_url)
@@ -740,5 +796,5 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
 
         }
     }
-    ///
+///
 }
