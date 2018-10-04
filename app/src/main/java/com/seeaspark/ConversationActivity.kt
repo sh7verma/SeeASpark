@@ -40,6 +40,7 @@ import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
+import com.faradaj.blurbehind.BlurBehind
 import com.google.firebase.database.*
 import com.ipaulpro.afilechooser.utils.FileUtils
 import com.squareup.picasso.Picasso
@@ -67,15 +68,15 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         FirebaseListeners.MessageListenerInterface, UploadFileService.FileUploadInterface,
         DownloadFileService.FileDownloadInterface, FavouriteMessageActivity.ChangeFavouriteInterface {
 
-    internal val ATTACHMENT = 12
-    internal val OPTIONS = 13
-    internal val CAMERAVIDEO = 14
-    internal val CAMERAIMAGE = 15
-    internal val GALLERY = 16
-    internal val GETIMAGE = 17
-    internal val GETVIDEO = 18
-    internal val GETDOC = 19
-    internal val NOTES = 20
+    private val ATTACHMENT = 12
+    private val OPTIONS = 13
+    private val CAMERAVIDEO = 14
+    private val CAMERAIMAGE = 15
+    private val GALLERY = 16
+    private val GETIMAGE = 17
+    private val GETVIDEO = 18
+    private val GETDOC = 19
+    private val NOTES = 20
 
     //// Audio message  /////////
     private var gestureRecordBtn: GestureDetector? = null
@@ -409,7 +410,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     override fun onNewIntent(intent: Intent?) {
-        var parIds: String
+        val parIds: String
         if (intent!!.hasExtra("participantIDs")) {
             parIds = intent.getStringExtra("participantIDs")
         } else {
@@ -567,7 +568,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
     }
 
     internal fun listenUser() {
-        usersQuery = mFirebaseConfigProfile.orderByKey().equalTo("id_" + mOpponentUserId)
+        usersQuery = mFirebaseConfigProfile.orderByKey().equalTo("id_$mOpponentUserId")
         usersQuery!!.addChildEventListener(mOpponentUserListener)
     }
 
@@ -881,16 +882,18 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 }
             }
             imgOptions -> {
-                val intent = Intent(this, ChatOptionsActivity::class.java)
+                BlurBehind.getInstance().execute(mConversationActivity) {
+                    val intent = Intent(this, ChatOptionsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                    val messageCount = mPrivateChat!!.message_rating_count[mCurrentUser!!.user_id]!! +
+                            mPrivateChat!!.message_rating_count[mOpponentUser!!.user_id]!!
 
-                val messageCount = mPrivateChat!!.message_rating_count.get(mCurrentUser!!.user_id)!! +
-                        mPrivateChat!!.message_rating_count.get(mOpponentUser!!.user_id)!!
-
-                if (messageCount < 30)
-                    intent.putExtra("visibleRating", 0)
-                intent.putExtra("block_status", mPrivateChat!!.block_status.get(mCurrentUser!!.user_id))
-                startActivityForResult(intent, OPTIONS)
-                overridePendingTransition(0, 0)
+                    if (messageCount < 30)
+                        intent.putExtra("visibleRating", 0)
+                    intent.putExtra("block_status", mPrivateChat!!.block_status.get(mCurrentUser!!.user_id))
+                    startActivityForResult(intent, OPTIONS)
+                    overridePendingTransition(0, 0)
+                }
             }
             imgBackOption -> {
                 selectedPosition = 0
@@ -900,12 +903,12 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
             }
             imgFavourite -> {
                 if (connectedToInternet()) {
-                    if (mMessagesMap!![msgId]!!.favourite_message.get(mCurrentUser!!.user_id).equals("0")) {
+                    if (mMessagesMap!![msgId]!!.favourite_message[mCurrentUser!!.user_id].equals("0")) {
                         db!!.changFavouriteStatus(msgId, "1")
-                        mMessagesMap!![msgId]!!.favourite_message.set(mCurrentUser!!.user_id, "1")
+                        mMessagesMap!![msgId]!!.favourite_message[mCurrentUser!!.user_id] = "1"
                     } else {
                         db!!.changFavouriteStatus(msgId, "0")
-                        mMessagesMap!![msgId]!!.favourite_message.set(mCurrentUser!!.user_id, "0")
+                        mMessagesMap!![msgId]!!.favourite_message[mCurrentUser!!.user_id] = "0"
                     }
                     FavouriteMessageApi(this, msgId)
                 } else {
@@ -925,7 +928,17 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                         if (mMessageIds.size > 2) {
                             for (i in mMessageIds.size - 2 downTo 0) {
                                 if (!mMessagesMap!![mMessageIds.get(i)]!!.is_header) {
-                                    mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("last_message_time").child(mCurrentUser!!.user_id).setValue(mMessagesMap!![mMessageIds.get(i)]!!.firebase_message_time)
+                                    mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id)
+                                            .child("last_message_data").child(mCurrentUser!!.user_id)
+                                            .setValue(mMessagesMap!![mMessageIds.get(i)]!!.message)
+
+                                    mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id)
+                                            .child("last_message_type").child(mCurrentUser!!.user_id)
+                                            .setValue(mMessagesMap!![mMessageIds.get(i)]!!.message_type)
+
+                                    mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id)
+                                            .child("last_message_time").child(mCurrentUser!!.user_id)
+                                            .setValue(mMessagesMap!![mMessageIds.get(i)]!!.firebase_message_time)
                                     status = 1
                                     break
                                 }
@@ -1289,6 +1302,7 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
 
     private fun clearConversation() {
         db!!.clearConversation(mPrivateChat!!.chat_dialog_id)
+        mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("last_message_data").child(mUtils!!.getString("user_id", "")).setValue(Constants.DEFAULT_MESSAGE_REGEX)
         mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("unread_count").child(mUtils!!.getString("user_id", "")).setValue(0)
         mFirebaseConfigChats.child(mPrivateChat!!.chat_dialog_id).child("delete_dialog_time").child(mUtils!!.getString("user_id", "")).setValue(ServerValue.TIMESTAMP).addOnSuccessListener {
             dismissLoader()
@@ -2471,7 +2485,16 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 mChatUpdate.put("last_message_time", lastTime)
                 mChatUpdate.put("last_message_sender_id", message.sender_id)
                 mChatUpdate.put("last_message_id", message.message_id)
-                mChatUpdate.put("last_message_type", message.message_type)
+
+                val lastMessage = HashMap<String, String>()
+                lastMessage.put(mCurrentUser!!.user_id, message.message)
+                lastMessage.put(mOpponentUserId, message.message)
+                mChatUpdate.put("last_message_data", lastMessage)
+
+                val lastMessageType = HashMap<String, String>()
+                lastMessageType.put(mCurrentUser!!.user_id, message.message_type)
+                lastMessageType.put(mOpponentUserId, message.message_type)
+                mChatUpdate.put("last_message_type", lastMessageType)
 
                 val totalMessageCount = mPrivateChat!!.message_rating_count.get(mCurrentUser!!.user_id)!! +
                         mPrivateChat!!.message_rating_count.get(mOpponentUser!!.user_id)!!

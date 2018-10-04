@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvCommunityListing"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_color"
+    app:cardCornerRadius="@dimen/_12sdp"
+    app:cardElevation="@dimen/_5sdp"
+    app:cardUseCompatPadding="true">
+
+    <ImageView
+        android:id="@+id/imgCommunityListing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha=".9"
+        android:background="@color/colorPrimary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/_12sdp">
+
+        <customviews.BoldTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_16sdp"
+            android:text="@string/community"
+            android:textAllCaps="true"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/_16ssp" />
+
+        <customviews.MediumTextView
+            android:id="@+id/txtCenterOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/answer_selected"
+            android:padding="@dimen/_5sdp"
+            android:text="Lorem Ipsum"
+            android:textSize="@dimen/_12ssp" />
+
+        <customviews.BoldTextView
+            android:id="@+id/txtCommunityTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:text="@string/community"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/_14ssp" />
+
+        <customviews.LightTextView
+            android:id="@+id/txtCommunityDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:paddingBottom="@dimen/_8sdp"
+            android:text="@string/lorem_ipsum"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/_14ssp" />
+
+        <customviews.LightTextView
+            android:id="@+id/txtDateCommunity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Monday"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/_14ssp" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

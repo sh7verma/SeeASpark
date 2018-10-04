@@ -71,10 +71,11 @@ class EditProfileActivity : BaseActivity() {
         txtOptionCustom.visibility = View.VISIBLE
 
         val typeface = Typeface.createFromAsset(assets, "fonts/medium.otf")
+        val typefaceBold = Typeface.createFromAsset(assets, "fonts/bold.otf")
 
-        edDescriptionEditProfile.typeface = typeface
-        edBioEditProfile.typeface = typeface
-        edNameProfile.typeface = typeface
+        edDescriptionEditProfile.typeface = typefaceBold
+        edBioEditProfile.typeface = typefaceBold
+        edNameProfile.typeface = typefaceBold
 
         val cd = ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary))
         llCustomToolbar.background = cd

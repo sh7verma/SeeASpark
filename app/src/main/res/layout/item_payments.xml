@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_76sdp"
+    android:layout_marginLeft="@dimen/_16sdp"
+    android:layout_marginRight="@dimen/_16sdp"
+    android:background="@android:color/transparent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <customviews.BoldTextView
+        android:id="@+id/txtPaymentPlan"
+        android:layout_width="@dimen/_48sdp"
+        android:layout_height="@dimen/_48sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginRight="@dimen/_16sdp"
+        android:background="@drawable/boost_gradient_circle"
+        android:gravity="center"
+        android:text="B"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/_24ssp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <customviews.MediumTextView
+                android:id="@+id/txtPaymentMode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/boost"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_14ssp" />
+
+            <customviews.BoldTextView
+                android:id="@+id/txtPaymentCost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_14ssp" />
+
+        </LinearLayout>
+
+        <customviews.LightTextView
+            android:id="@+id/txtPackCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(5 Pack)"
+            android:textColor="@color/textGrey"
+            android:textSize="@dimen/_12ssp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <customviews.LightTextView
+                android:id="@+id/txtPaymentStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/success"
+                android:textColor="@color/black_color"
+                android:textSize="@dimen/_12ssp" />
+
+            <customviews.LightTextView
+                android:id="@+id/txtPaymentDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8"
+                android:textColor="@color/textGrey"
+                android:textSize="@dimen/_12ssp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:background="@color/greyLine" />
+
+    </LinearLayout>
+
+</LinearLayout>

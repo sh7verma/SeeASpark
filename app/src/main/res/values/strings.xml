@@ -352,6 +352,16 @@
     <string name="availability">Availability</string>
     <string name="not_available">Not Available</string>
     <string name="available">Available</string>
+    <string name="my_payments">My Payments</string>
+    <string name="no_payments_yet">No Payments Yet.!!</string>
+    <string name="payment_history">Payment History</string>
+    <string name="boots_plans"><![CDATA[Boost & Plans]]></string>
+    <string name="plans_error">Sorry, but we are experiencing some error while fetching plan details.</string>
+    <string name="plan_already_bought">You have already bought a plan.</string>
+    <string name="event">Event</string>
+    <string name="audio">Audio</string>
+    <string name="video">Video</string>
+    <string name="image">Photo</string>
     ////
 
 </resources>

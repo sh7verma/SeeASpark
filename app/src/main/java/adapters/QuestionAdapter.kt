@@ -13,7 +13,8 @@ import kotlinx.android.synthetic.main.item_questions.view.*
 import models.QuestionAnswerModel
 
 
-class QuestionAdapter(mQuestionsArray: ArrayList<QuestionAnswerModel>, mContext: Context, mQuestionarieInstance: QuestionnariesActivity?) : PagerAdapter() {
+class QuestionAdapter(mQuestionsArray: ArrayList<QuestionAnswerModel>, mContext: Context,
+                      mQuestionarieInstance: QuestionnariesActivity?) : PagerAdapter() {
     var mQuestionsArray = ArrayList<QuestionAnswerModel>()
     var mContext: Context? = null
     var mQuestionarieInstance: QuestionnariesActivity? = null

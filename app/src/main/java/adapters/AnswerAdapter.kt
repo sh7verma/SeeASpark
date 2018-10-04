@@ -19,7 +19,7 @@ import utils.Constants
 class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQuestionarieInstance: QuestionnariesActivity?)
     : RecyclerView.Adapter<AnswerAdapter.ViewHolder>() {
 
-    var mAnswersArray = ArrayList<String>()
+    var mAnswersArray = arrayOf<String>()
     var mAnswersModel: QuestionAnswerModel? = null
     var mContext: Context? = null
     var mQuestionarieInstance: QuestionnariesActivity? = null
@@ -27,7 +27,7 @@ class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQues
     private var broadcaster: LocalBroadcastManager? = null
 
     init {
-        this.mAnswersArray = mAnswersArray.options.split(",") as ArrayList<String>
+        this.mAnswersArray = mAnswersArray.options.split("54#45").toTypedArray()
         this.mContext = mContext
         mAnswersModel = mAnswersArray
         this.mQuestionarieInstance = mQuestionarieInstance
@@ -46,15 +46,24 @@ class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQues
         holder.txtAnswerQuestion.setOnClickListener {
             holder.txtAnswerQuestion.setBackgroundResource(R.drawable.answer_selected)
             holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
-            mAnswersModel!!.answers = mAnswersArray[position]
+
+            if (mAnswersModel!!.question_type == 1) {
+                mAnswersModel!!.getuserAnswers().clear()
+                mAnswersModel!!.getuserAnswers().add(mAnswersArray[position])
+            } else {
+                if (!mAnswersModel!!.getuserAnswers().contains(mAnswersArray[position]))
+                    mAnswersModel!!.getuserAnswers().add(mAnswersArray[position])
+                else
+                    mAnswersModel!!.getuserAnswers().remove(mAnswersArray[position])
+            }
             val questionIntent = Intent(Constants.QUESTIONS)
             questionIntent.putExtra("questionId", mAnswersModel!!.id)
-            questionIntent.putExtra("answer", mAnswersModel!!.answers)
+            questionIntent.putStringArrayListExtra("answer", mAnswersModel!!.getuserAnswers())
             broadcaster!!.sendBroadcast(questionIntent)
             notifyDataSetChanged()
         }
 
-        if (mAnswersModel!!.answers.equals(mAnswersArray[position])) {
+        if (mAnswersModel!!.getuserAnswers().contains(mAnswersArray[position])) {
             holder.txtAnswerQuestion.setBackgroundResource(R.drawable.answer_selected)
             holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
         } else {

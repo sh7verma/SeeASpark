@@ -274,23 +274,30 @@ class QuestionnariesActivity : BaseActivity() {
 
             for ((index, questionData) in mArrayQuestions.withIndex()) {
                 if (questionData.id == intent.getIntExtra("questionId", 0)) {
-                    questionData.answers = intent.getStringExtra("answer")
-                    mArrayQuestions.set(index, questionData)
+                    questionData.setuserAnswers(intent.getStringArrayListExtra("answer"))
+                    mArrayQuestions[index] = questionData
                     mIndicatorAdapter!!.notifyDataSetChanged()
                     break
                 }
             }
 
             mAnswerCount = 0
-            for ((index, questionData) in mArrayQuestions.withIndex()) {
-                if (!TextUtils.isEmpty(questionData.answers)) {
+            mServerQuestion = JSONArray()
+            for (questionData in mArrayQuestions) {
+                if (questionData.getuserAnswers().isNotEmpty()) {
                     val obj = JSONObject()
-                    obj.put("answers", questionData.answers)
+                    val stringBuilder = StringBuilder()
+                    for (answers in questionData.getuserAnswers()) {
+                        stringBuilder.append(answers).append("54#45")
+                    }
+                    val answers = stringBuilder.toString()
+                    obj.put("answers", answers.substring(0, answers.length - 5))
                     obj.put("question_id", questionData.id)
                     mServerQuestion.put(obj)
+                    Log.e("Question =", "${questionData.id}")
+                    Log.e("Answers = ", "${questionData.getuserAnswers()}")
                     mAnswerCount++
                 }
-                Log.e("Question = Answer = ", "${questionData.id},${questionData.answers}")
             }
 
             if (mAnswerCount.equals(mArrayQuestions.size)) {
@@ -310,5 +317,4 @@ class QuestionnariesActivity : BaseActivity() {
         super.onStop()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }
-
 }

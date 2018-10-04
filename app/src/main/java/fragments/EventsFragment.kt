@@ -170,23 +170,27 @@ class EventsFragment : Fragment(), View.OnClickListener {
         call.enqueue(object : Callback<PostModel> {
 
             override fun onResponse(call: Call<PostModel>?, response: Response<PostModel>) {
-                if (response.body().response != null) {
-                    addToLocalDatabase(response.body().response)
-                } else {
-                    if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
-                        Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
-                        mLandingInstance!!.moveToSplash()
-                    } else
-                        mLandingInstance!!.showAlert(rvEventsListing, response.body().error!!.message!!)
+                if (mEventFragment != null) {
+                    if (response.body().response != null) {
+                        addToLocalDatabase(response.body().response)
+                    } else {
+                        if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
+                            Toast.makeText(mContext!!, response.body().error!!.message, Toast.LENGTH_SHORT).show()
+                            mLandingInstance!!.moveToSplash()
+                        } else
+                            mLandingInstance!!.showAlert(rvEventsListing, response.body().error!!.message!!)
+                    }
+                    if (isLoaderVisible)
+                        mLandingInstance!!.dismissLoader()
                 }
-                if (isLoaderVisible)
-                    mLandingInstance!!.dismissLoader()
             }
 
             override fun onFailure(call: Call<PostModel>?, t: Throwable?) {
-                if (isLoaderVisible)
-                    mLandingInstance!!.dismissLoader()
-                mLandingInstance!!.showAlert(rvEventsListing, t!!.localizedMessage)
+                if (mEventFragment != null) {
+                    if (isLoaderVisible)
+                        mLandingInstance!!.dismissLoader()
+                    mLandingInstance!!.showAlert(rvEventsListing, t!!.localizedMessage)
+                }
             }
         })
     }

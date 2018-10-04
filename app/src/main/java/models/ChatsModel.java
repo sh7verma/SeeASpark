@@ -17,7 +17,6 @@ public class ChatsModel implements Serializable {
     public HashMap<String, Long> last_message_time;
     public String last_message_sender_id;
     public String last_message_id;
-    public String last_message_type;
     public String participant_ids;
     public HashMap<String, Integer> unread_count;
     public HashMap<String, String> name;
@@ -28,6 +27,8 @@ public class ChatsModel implements Serializable {
     public HashMap<String, String> rating;
     public String opponent_user_id;
     public HashMap<String, Integer> message_rating_count;
+    public HashMap<String, String> last_message_type;
+    public HashMap<String, String> last_message_data;
 
     public static ChatsModel parseChat(DataSnapshot dataSnapshot, String userId) {
 //        ChatsModel chat = dataSnapshot.getValue(ChatsModel.class);
@@ -43,7 +44,6 @@ public class ChatsModel implements Serializable {
 
             chat.last_message_sender_id = dataSnapshot.child("last_message_sender_id").getValue(String.class);
             chat.last_message_id = dataSnapshot.child("last_message_id").getValue(String.class);
-            chat.last_message_type = dataSnapshot.child("last_message_type").getValue(String.class);
             chat.participant_ids = dataSnapshot.child("participant_ids").getValue(String.class);
 
             GenericTypeIndicator<HashMap<String, Integer>> gtUnread = new GenericTypeIndicator<HashMap<String, Integer>>() {
@@ -73,6 +73,14 @@ public class ChatsModel implements Serializable {
             GenericTypeIndicator<HashMap<String, String>> gtRating = new GenericTypeIndicator<HashMap<String, String>>() {
             };
             chat.rating = dataSnapshot.child("rating").getValue(gtRating);
+
+            GenericTypeIndicator<HashMap<String, String>> gtLastMessageType = new GenericTypeIndicator<HashMap<String, String>>() {
+            };
+            chat.last_message_type = dataSnapshot.child("last_message_type").getValue(gtLastMessageType);
+
+            GenericTypeIndicator<HashMap<String, String>> gLastMessageData = new GenericTypeIndicator<HashMap<String, String>>() {
+            };
+            chat.last_message_data = dataSnapshot.child("last_message_data").getValue(gLastMessageData);
 
             GenericTypeIndicator<HashMap<String, Integer>> gtRatingCount = new GenericTypeIndicator<HashMap<String, Integer>>() {
             };

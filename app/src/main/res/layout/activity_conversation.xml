@@ -203,6 +203,7 @@
                             android:id="@+id/imgAttachment"
                             android:layout_width="@dimen/_48sdp"
                             android:layout_height="@dimen/_48sdp"
+                            android:layout_marginTop="-1dp"
                             android:layout_marginRight="@dimen/_5"
                             android:background="@drawable/transparent_ripple"
                             android:src="@mipmap/ic_add"

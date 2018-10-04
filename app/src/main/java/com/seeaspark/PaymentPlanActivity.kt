@@ -11,6 +11,7 @@ import java.util.ArrayList
 class PaymentPlanActivity : BaseActivity(), BillingManager.BillingUpdatesListener {
 
 
+
     private var mBillingManager: BillingManager? = null
     var skuDetailsList = ArrayList<SkuDetails>()
 
@@ -29,7 +30,7 @@ class PaymentPlanActivity : BaseActivity(), BillingManager.BillingUpdatesListene
     }
 
     override fun onCreateStuff() {
-        mBillingManager = BillingManager(this, this)
+        mBillingManager = BillingManager(this, this, ArrayList<String>())
 
         mGooglePayButton.setOnClickListener {
             mBillingManager!!.initiatePurchaseFlow(skuDetailsList[0].sku)
@@ -60,8 +61,11 @@ class PaymentPlanActivity : BaseActivity(), BillingManager.BillingUpdatesListene
         skuDetailsList.addAll(skuDetailsListLocal)
     }
 
+
+    override fun onPurchaseFailure() {
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.e("TEst","onActivityResult")
+        Log.e("TEst", "onActivityResult")
         super.onActivityResult(requestCode, resultCode, data)
     }
 }
