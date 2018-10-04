@@ -73,7 +73,6 @@ public class QuestionAnswerModel implements Parcelable {
         dest.writeString(this.answers);
         dest.writeString(this.options);
         dest.writeString(this.question);
-        dest.writeList(this.userAnswers);
         dest.writeInt(this.question_type);
     }
 

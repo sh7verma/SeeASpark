@@ -26,7 +26,7 @@ class IndicatorAdapter(mQuestionsArray: ArrayList<QuestionAnswerModel>, mContext
         if (position == selectedPos) {
             holder.imgIndicator.setImageResource(R.mipmap.ic_dot_b)
         } else {
-            if (mQuestionsArray[position].answers.isNotEmpty()) {
+            if (mQuestionsArray[position].getuserAnswers().isNotEmpty()) {
                 holder.imgIndicator.setImageResource(R.mipmap.ic_dot_g)
             } else {
                 holder.imgIndicator.setImageResource(R.mipmap.ic_dot_grey)
