@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/black_color"
     android:layout_height="match_parent">
 
     <ImageView
@@ -19,7 +20,7 @@
         android:paddingTop="@dimen/_12sdp"
         android:text="@string/review"
         android:textAllCaps="true"
-        android:textColor="@color/black_color"
+        android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_16ssp" />
 
     <ImageView
@@ -50,7 +51,7 @@
         android:paddingRight="@dimen/_16sdp"
         android:paddingTop="@dimen/_16sdp"
         android:text="@string/your_profile_is_under_review_for_the_admin_approval_thnaks_for_your_patience"
-        android:textColor="@color/black_color"
+        android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_14ssp" />
 
 
@@ -64,7 +65,7 @@
         android:paddingEnd="@dimen/_16sdp"
         android:paddingStart="@dimen/_16sdp"
         android:paddingTop="@dimen/_16sdp"
-        android:textColor="@color/greyTextColor"
+        android:textColor="@color/greyLine"
         android:textSize="@dimen/_14ssp" />
 
     <customviews.SecretTextView
@@ -78,7 +79,7 @@
         android:paddingEnd="@dimen/_16sdp"
         android:paddingStart="@dimen/_16sdp"
         android:paddingTop="@dimen/_8sdp"
-        android:textColor="@color/black_color"
+        android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_14ssp" />
 
     <customviews.MediumTextView

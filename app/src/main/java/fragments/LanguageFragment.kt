@@ -46,12 +46,15 @@ class LanguageFragment : Fragment(), View.OnClickListener {
 
         tempArray.clear()
         tempArray.addAll(mCreateProfileInstance!!.mLanguageArray)
+        tempArray[0].isSelected = true
 
         edLanguageFrag.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
+
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val searString = s.toString().toLowerCase()
 

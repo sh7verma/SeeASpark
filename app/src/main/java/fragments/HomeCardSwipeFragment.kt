@@ -63,8 +63,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     private var mOffset = 1
     private var mCurrentPosition = 0
     private val CARDAPICOUNT = 3
-    private var mHandler: Handler? = null
-    private var mRunnable: Runnable? = null
+    private lateinit var mHandler: Handler
     private var mDb: Database? = null
 
     private lateinit var mBillingManager: BillingManager
@@ -162,26 +161,33 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
             override fun onCardSwiped(direction: SwipeDirection?) {
                 if (mLandingInstance.connectedToInternet()) {
 
-                    if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.CARD) {
-                        if (direction == SwipeDirection.Left)
-                            swipeRightLeft(0, mLandingInstance.mArrayCards[mCurrentPosition])
-                        else
-                            swipeRightLeft(1, mLandingInstance.mArrayCards[mCurrentPosition])
-                    } else if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.COMMUNITY) {
-                        if (direction == SwipeDirection.Right)
-                            moveToCommunityDetail(mLandingInstance.mArrayCards[mCurrentPosition].id)
-                    } else if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.EVENT) {
-                        if (direction == SwipeDirection.Right)
-                            moveToEventDetail(mLandingInstance.mArrayCards[mCurrentPosition].id)
+                    ///Paging
+                    when {
+                        mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.CARD -> {
+                            if (direction == SwipeDirection.Left)
+                                swipeRightLeft(0, mLandingInstance.mArrayCards[mCurrentPosition])
+                            else
+                                swipeRightLeft(1, mLandingInstance.mArrayCards[mCurrentPosition])
+                            // decrementing card count which provides the functionality to display buy Plans.
+                            mLandingInstance.cardLeftCount--
+                        }
+                        mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.COMMUNITY ->
+                            if (direction == SwipeDirection.Right)
+                                moveToCommunityDetail(mLandingInstance.mArrayCards[mCurrentPosition].id)
+                        mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.EVENT ->
+                            if (direction == SwipeDirection.Right)
+                                moveToEventDetail(mLandingInstance.mArrayCards[mCurrentPosition].id)
                     }
 
                     mCurrentPosition++
                     mLandingInstance.mArrayTempCards.removeAt(0)
 
+                    // Evalauating which layout to display either buy plan or out of cards.
                     if (mLandingInstance.mArrayTempCards.size == 0)
                         checkVisibility()
 
-                    if (mLandingInstance.mArrayTempCards.size - CARDAPICOUNT == 5) { ///Paging
+                    if (mLandingInstance.mArrayTempCards.size - CARDAPICOUNT == 5) {
+                        ///Paging (Fetching more cards )
                         mOffset++
                         hitAPI(false)
                     }
@@ -219,7 +225,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         if (mHomeFragment != null) {
             if (mLandingInstance.mArrayTempCards.isEmpty()) {
                 if (mLandingInstance.userData!!.response.user_type == Constants.MENTEE) {
-                    if (isBuyEnable) {
+                    if (isBuyEnable && mLandingInstance.cardLeftCount == 0) {
                         llOutOfCards.visibility = View.GONE
                         llHomePlans.visibility = View.VISIBLE
                     } else {
@@ -246,6 +252,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
 
             override fun onResponse(call: Call<CardModel>?, response: Response<CardModel>) {
                 if (response.body().response != null) {
+                    mLandingInstance.cardLeftCount = response.body().card_left
                     populateData(response.body())
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
@@ -512,8 +519,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onDestroy() {
-        Log.e("Destroy = ","destroy")
-        mHomeFragment=null
+        Log.e("Destroy = ", "destroy")
+        mHomeFragment = null
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(nightModeReceiver)
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(switchUserTypeReceiver)
         super.onDestroy()

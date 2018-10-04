@@ -12,6 +12,7 @@ public class CardModel extends BaseModel {
 
     private int code;
     private String time_left;
+    private int card_left;
     private List<CardsDisplayModel> response;
     private List<CardsDisplayModel> posts;
 
@@ -45,6 +46,14 @@ public class CardModel extends BaseModel {
 
     public void setTime_left(String time_left) {
         this.time_left = time_left;
+    }
+
+    public int getCard_left() {
+        return card_left;
+    }
+
+    public void setCard_left(int card_left) {
+        this.card_left = card_left;
     }
 
     public static class ResponseBean {

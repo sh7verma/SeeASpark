@@ -67,6 +67,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     private var mTracker: Tracker? = null
     var mArrayCards = ArrayList<CardsDisplayModel>()
     var mArrayTempCards = ArrayList<CardsDisplayModel>()
+    var cardLeftCount: Int = 0
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
