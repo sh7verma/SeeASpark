@@ -30,7 +30,6 @@ import utils.Constants
 
 class QuestionnariesActivity : BaseActivity() {
 
-
     private var mAdapterQuestions: QuestionAdapter? = null
     private var mIndicatorAdapter: IndicatorAdapter? = null
 
@@ -60,7 +59,8 @@ class QuestionnariesActivity : BaseActivity() {
 
         mQuestionarieInstance = this
 
-        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        userData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""),
+                SignupModel::class.java)
         mArrayQuestions.clear()
         mUtils!!.setString("profileReview", "no")
 
@@ -143,7 +143,8 @@ class QuestionnariesActivity : BaseActivity() {
 
     private fun hitSwitchAccountAPI() {
         showLoader()
-        val call = RetrofitClient.getInstance().postSwitchAnswers(userData!!.response.access_token, mNewUserType, mServerQuestion.toString())
+        val call = RetrofitClient.getInstance().postSwitchAnswers(userData!!.response.access_token,
+                mNewUserType, mServerQuestion.toString())
         call.enqueue(object : Callback<SignupModel> {
 
             override fun onResponse(call: Call<SignupModel>?, response: Response<SignupModel>) {

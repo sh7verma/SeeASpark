@@ -27,7 +27,8 @@ class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQues
     private var broadcaster: LocalBroadcastManager? = null
 
     init {
-        this.mAnswersArray = mAnswersArray.options.split("54#45").toTypedArray()
+        this.mAnswersArray = mAnswersArray.options.split("54#45")
+                .toTypedArray()
         this.mContext = mContext
         mAnswersModel = mAnswersArray
         this.mQuestionarieInstance = mQuestionarieInstance
