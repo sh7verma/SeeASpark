@@ -5,10 +5,18 @@
     android:background="@color/transperent"
     android:orientation="vertical">
 
-    <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/gifHandshake"
+    <LinearLayout
+        android:id="@+id/llHandshake"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_180sdp" />
+        android:layout_height="match_parent"
+        android:background="@color/white_color">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gifHandshake"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llDataHandshake"
@@ -16,11 +24,11 @@
         android:layout_height="@dimen/_300sdp"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/_16sdp"
-        android:visibility="invisible"
         android:layout_marginRight="@dimen/_16sdp"
         android:background="@drawable/handshake_dialog_background"
         android:gravity="bottom|center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="invisible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,7 +111,6 @@
 
     </LinearLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/_300sdp"
@@ -130,8 +137,8 @@
                 android:layout_width="@dimen/_104sdp"
                 android:layout_height="@dimen/_64sdp"
                 android:scaleType="centerInside"
-                android:visibility="invisible"
-                android:src="@drawable/hand" />
+                android:src="@drawable/hand"
+                android:visibility="invisible" />
 
             <ImageView
                 android:layout_width="@dimen/_60sdp"

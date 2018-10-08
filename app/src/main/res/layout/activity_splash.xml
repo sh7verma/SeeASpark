@@ -5,10 +5,15 @@
     android:background="@color/white_color"
     android:gravity="center">
 
-    <ImageView
+    <!--<ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/app_name"
-        android:src="@mipmap/ic_splash_logo" />
+        android:src="@mipmap/ic_splash_logo" />-->
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gifSplash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

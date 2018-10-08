@@ -461,7 +461,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         if (llHomePlans.visibility == View.VISIBLE)
             pbPlansLoader.visibility = View.VISIBLE
         RetrofitClient.getInstance().getPlans(mLandingInstance.mUtils!!.getString("access_token", ""),
-                "Unlimited").enqueue(object : Callback<PlansModel> {
+                "Unlimitdd").enqueue(object : Callback<PlansModel> {
             override fun onResponse(call: Call<PlansModel>?, response: Response<PlansModel>) {
                 if (mHomeFragment != null) {
                     if (llHomePlans.visibility == View.VISIBLE)
@@ -600,12 +600,14 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     }
 
     override fun productsList(skuDetailsListLocal: ArrayList<SkuDetails>) {
-        skuDetailsList.clear()
-        skuDetailsList.addAll(skuDetailsListLocal)
-        if (skuDetailsListLocal.size == mPlansArray.size) {
-            mAdapterBoost.notifyDataSetChanged()
-        } else {
-            mLandingInstance.showAlert(llHomePlans, getString(R.string.plans_error))
+        if (mHomeFragment != null) {
+            skuDetailsList.clear()
+            skuDetailsList.addAll(skuDetailsListLocal)
+            if (skuDetailsListLocal.size == mPlansArray.size) {
+                mAdapterBoost.notifyDataSetChanged()
+            } else {
+                mLandingInstance.showAlert(llHomePlans, getString(R.string.plans_error))
+            }
         }
     }
 
