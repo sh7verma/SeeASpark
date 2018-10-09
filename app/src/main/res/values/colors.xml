@@ -74,6 +74,11 @@
     <color name="color_secondary_gradient">#FE7973</color>
     <color name="greyTextColor">#727272</color>
     <color name="blue_color">#798ded</color>
+    <color name="brown_color">#663b2d</color>
+    <color name="lilac_color">#B666D2</color>
+    <color name="purple_color">#7F007F</color>
+    <color name="grey_color">#B4B4B4</color>
+
 
     <color name="boost_primary_gradient">#E473F3</color>
     <color name="boost_secondary_gradient">#2A3Ef6</color>

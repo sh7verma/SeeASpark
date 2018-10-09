@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/llMainReview"
     android:background="@color/black_color"
     android:layout_height="match_parent">
 
@@ -53,7 +54,6 @@
         android:text="@string/your_profile_is_under_review_for_the_admin_approval_thnaks_for_your_patience"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_14ssp" />
-
 
     <customviews.SecretTextView
         android:id="@+id/txtQuote"

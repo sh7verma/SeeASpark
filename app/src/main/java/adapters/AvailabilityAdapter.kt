@@ -35,9 +35,9 @@ class AvailabilityAdapter(mAvailabilityArray: ArrayList<AvailabilityModel>, mCon
         holder.txtDayAvailability.text = mAvailabilityArray[position].dayValue
 
         if (mAvailabilityArray[position].isSelected)
-            holder.rlAvailability.setBackgroundResource(R.drawable.green_circle)
+            holder.rlAvailability.setBackgroundResource(R.drawable.availability_green_circle)
         else
-            holder.rlAvailability.setBackgroundResource(R.drawable.red_circle)
+            holder.rlAvailability.setBackgroundResource(R.drawable.availability_grey_circle)
 
         holder.rlAvailability.setOnClickListener {
             if (isEditable) {

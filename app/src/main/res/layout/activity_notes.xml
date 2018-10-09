@@ -36,19 +36,18 @@
         android:layout_height="1dp"
         android:background="@color/greyLine" />
 
-    <LinearLayout
-        android:id="@+id/llOptions"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white_color"
-        android:baselineAligned="false"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/llOptions"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/_42sdp"
-            android:gravity="center_vertical">
+            android:background="@color/white_color"
+            android:baselineAligned="false"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/llBold"
@@ -110,15 +109,6 @@
                     android:contentDescription="@null"
                     android:src="@mipmap/ic_strike" />
             </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="right|center_vertical"
-            android:orientation="horizontal">
 
             <RelativeLayout
                 android:id="@+id/rlBlack"
@@ -211,8 +201,101 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/rlBrown"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imgSelectedBrown"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/selected_color"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/brown_circle" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlGrey"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imgSelectedGrey"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/selected_color"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/availability_grey_circle" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlLilac"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imgSelectedLilac"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/selected_color"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/lilac_circle" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rlPurple"
+                android:layout_width="@dimen/_36sdp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imgSelectedPurple"
+                    android:layout_width="@dimen/_24sdp"
+                    android:layout_height="@dimen/_24sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/selected_color"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="@dimen/_16sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/purple_circle" />
+
+            </RelativeLayout>
+
+
         </LinearLayout>
 
-    </LinearLayout>
-
+    </HorizontalScrollView>
 </LinearLayout>

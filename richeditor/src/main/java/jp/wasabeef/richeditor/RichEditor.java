@@ -44,6 +44,10 @@ public class RichEditor extends WebView {
         RED,
         GREEN,
         BLUE,
+        BROWN,
+        GREY,
+        LILAC,
+        PURPLE,
         BOLD,
         ITALIC,
         SUBSCRIPT,
@@ -145,6 +149,14 @@ public class RichEditor extends WebView {
             text = text.replace("rgb(3, 214, 139)", "GREEN");
         else if (text.contains("rgb(238, 40, 48)"))
             text = text.replace("rgb(238, 40, 48)", "RED");
+        else if (text.contains("rgb(102, 59, 45)"))
+            text = text.replace("rgb(102, 59, 45)", "BROWN");
+        else if (text.contains("rgb(180, 180, 180)"))
+            text = text.replace("rgb(180, 180, 180)", "GREY");
+        else if (text.contains("rgb(182, 102, 210)"))
+            text = text.replace("rgb(182, 102, 210)", "LILAC");
+        else if (text.contains("rgb(127, 0, 127)"))
+            text = text.replace("rgb(127, 0, 127)", "PURPLE");
 
         String state = text.replaceFirst(STATE_SCHEME, "").toUpperCase(Locale.ENGLISH);
         List<Type> types = new ArrayList<>();

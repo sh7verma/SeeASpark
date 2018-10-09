@@ -24,6 +24,11 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
+import com.github.jinatonic.confetti.ConfettiManager
+import com.github.jinatonic.confetti.ConfettiSource
+import com.github.jinatonic.confetti.ConfettoGenerator
+import com.github.jinatonic.confetti.confetto.CircleConfetto
+import com.github.jinatonic.confetti.confetto.Confetto
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
@@ -33,6 +38,7 @@ import com.squareup.picasso.Picasso
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.SwipeDirection
 import database.Database
+import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.fragment_event.*
 import kotlinx.android.synthetic.main.fragment_home_card_swipe.*
 import kotlinx.android.synthetic.main.item_swipe_card.view.*
@@ -45,7 +51,7 @@ import utils.*
 import java.util.*
 
 class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
-        BillingManager.BillingUpdatesListener {
+        BillingManager.BillingUpdatesListener, ConfettoGenerator {
 
     private val PREFERENCES: Int = 2
     private val VIEWPROFILE: Int = 4
@@ -73,6 +79,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     private var skuDetailsList = ArrayList<SkuDetails>()
     private var isPlanBought = false
     private var purchasePlanPosition = -1
+    private var confettiManager: ConfettiManager? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_home_card_swipe, container, false)
@@ -234,11 +241,23 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                     }
                 } else
                     llOutOfCards.visibility = View.VISIBLE
+                if (confettiManager != null)
+                    confettiManager!!.terminate()
             } else {
+                Handler().postDelayed({
+                    generateConfetti()
+                },100)
+
                 llOutOfCards.visibility = View.GONE
                 llHomePlans.visibility = View.GONE
             }
         }
+    }
+
+    private fun generateConfetti() {
+        confettiManager = getConfettiManager().setNumInitialCount(0)
+                .setEmissionDuration(ConfettiManager.INFINITE_DURATION)
+                .setEmissionRate(25f).animate()
     }
 
     fun hitAPI(visibleLoader: Boolean) {
@@ -304,9 +323,9 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                         mLandingInstance.mArrayCards)
                 csvUsers.setAdapter(mAdapterCards)
 
-                if (mLandingInstance.mArrayCards.isNotEmpty()) {
+                if (mLandingInstance.mArrayCards.isNotEmpty())
                     checkOverlayVisibility()
-                }
+
             } else {
                 if (response.response.isNotEmpty()) {
                     mLandingInstance.mArrayCards.addAll(response.response)
@@ -332,6 +351,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     private fun displayCards() {
         mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0, mLandingInstance.mArrayCards)
         csvUsers.setAdapter(mAdapterCards)
+        if (mLandingInstance.mArrayCards.isNotEmpty())
+            checkOverlayVisibility()
         checkVisibility()
     }
 
@@ -520,6 +541,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
 
     override fun onDestroy() {
         Log.e("Destroy = ", "destroy")
+        if (confettiManager != null)
+            confettiManager!!.terminate()
         mHomeFragment = null
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(nightModeReceiver)
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(switchUserTypeReceiver)
@@ -805,5 +828,16 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
 
         }
     }
-///
+
+    private fun getConfettiManager(): ConfettiManager {
+        val confettiSource = ConfettiSource(llEmitter.width / 2, llEmitter.height / 2)
+        return ConfettiManager(mContext!!, this, confettiSource, llEmitter)
+                .setVelocityX(0f, 70.toFloat())
+                .setVelocityY(0f, 70.toFloat())
+    }
+
+    override fun generateConfetto(random: Random?): Confetto {
+        return CircleConfetto(ContextCompat.getColor(activity, R.color.colorPrimary),
+                8f)
+    }
 }

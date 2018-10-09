@@ -1,19 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_color"
-    android:gravity="center">
-
-    <!--<ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/app_name"
-        android:src="@mipmap/ic_splash_logo" />-->
+    android:fitsSystemWindows="true"
+    android:background="@color/white_color">
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifSplash"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/imgUpperPart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_120sdp"
+        android:contentDescription="@string/app_name"
+        android:layout_marginBottom="@dimen/_16sdp"
+        android:src="@mipmap/ic_upper_part" />
+
+    <ImageView
+        android:id="@+id/imgLowerPart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgUpperPart"
+        android:layout_marginRight="@dimen/_8sdp"
+        android:contentDescription="@string/app_name"
+        android:src="@mipmap/ic_bottom_part" />
+
+</RelativeLayout>

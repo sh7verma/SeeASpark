@@ -3,6 +3,7 @@ package com.seeaspark
 import adapters.TipsAdapter
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ActivityManager
 import android.app.Fragment
 import android.app.job.JobInfo
@@ -17,6 +18,9 @@ import android.os.Bundle
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.view.View
+import android.view.ViewAnimationUtils
+import android.view.ViewTreeObserver
+import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
 import com.google.android.gms.analytics.HitBuilders
 import com.google.android.gms.analytics.Tracker
@@ -45,7 +49,8 @@ import utils.MainApplication
 
 @Suppress("DEPRECATION")
 class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
-        LocationListener, GpsStatusDetector.GpsStatusDetectorCallBack, GoogleApiClient.OnConnectionFailedListener, FirebaseListeners.ProfileListenerInterface {
+        LocationListener, GpsStatusDetector.GpsStatusDetectorCallBack,
+        GoogleApiClient.OnConnectionFailedListener, FirebaseListeners.ProfileListenerInterface{
 
     private val LOCATION_CHECK: Int = 1
 
@@ -69,16 +74,13 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     var mArrayTempCards = ArrayList<CardsDisplayModel>()
     var cardLeftCount: Int = 0
 
+
+
+    override fun getContentView() = R.layout.activity_landing
+
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
-        if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_CHECK)
-        } else {
-            buildGoogleApiClient()
-            mGpsStatusDetector = GpsStatusDetector(this)
-            mGpsStatusDetector!!.checkGpsStatus()
-        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -102,6 +104,16 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     }
 
     override fun onCreateStuff() {
+
+        if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_CHECK)
+        } else {
+            buildGoogleApiClient()
+            mGpsStatusDetector = GpsStatusDetector(this)
+            mGpsStatusDetector!!.checkGpsStatus()
+        }
+
         callService()
         FirebaseListeners.setProfileDataListener(this)
         FirebaseListeners.getListenerClass(this).setProfileListener(mUtils!!.getString("user_id", ""))
@@ -149,10 +161,10 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
 
         checkUserType()
 
-
         homeFragment = HomeCardSwipeFragment()
         /// adding home fragment
         addHomeFragment(homeFragment!!)
+
 
         if (mUtils!!.getString("tipsVisible", "") == "0")
             displayTipsData()
@@ -194,8 +206,6 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         rlMainTips.setOnClickListener(this)
         cpIndicatorTips.setOnClickListener(this)
     }
-
-    override fun getContentView() = R.layout.activity_landing
 
     override fun getContext() = this
 
@@ -424,7 +434,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     @Suppress("DEPRECATION")
     override fun onLocationChanged(location: Location?) {
         //stop location updates
-        if (location != null) {
+       if (location != null) {
             mLatitude = location.latitude
             mLongitude = location.longitude
             mUtils!!.setString("latitude", mLatitude.toString())
@@ -531,4 +541,5 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         if (mUtils!!.getString("user_id", "") == value)
             moveToSplash()
     }
+
 }

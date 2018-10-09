@@ -1,5 +1,6 @@
 package com.seeaspark
 
+import android.app.Activity
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -12,6 +13,9 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
+import android.view.ViewAnimationUtils
+import android.view.ViewTreeObserver
+import android.view.animation.AccelerateInterpolator
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_review.*
@@ -22,8 +26,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import utils.Constants
 
-class ReviewActivity : BaseActivity() {
-
+class ReviewActivity : BaseActivity(), ViewTreeObserver.OnGlobalLayoutListener {
     private var userData: SignupModel? = null
     private var isSwitched = false
     private var mQuotesArrayList = ArrayList<String>()
@@ -32,13 +35,31 @@ class ReviewActivity : BaseActivity() {
     private var countAuthor = 1
     private var reviewActivity: ReviewActivity? = null
 
+    private var revealX: Int = 0
+    private var revealY: Int = 0
+    private var isAnimationCompleted = false
+
     override fun getContentView() = R.layout.activity_review
 
     override fun initUI() {
-        if (intent.hasExtra("isSwitched")) {
-            isSwitched = true
-            imgBackReview.visibility = View.VISIBLE
-            imgLogoutReview.visibility = View.INVISIBLE
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+                intent.hasExtra("EXTRA_CIRCULAR_REVEAL_X") &&
+                intent.hasExtra("EXTRA_CIRCULAR_REVEAL_Y")) {
+            llMainReview.visibility = View.INVISIBLE
+
+            revealX = intent.getIntExtra("EXTRA_CIRCULAR_REVEAL_X", 0)
+            revealY = intent.getIntExtra("EXTRA_CIRCULAR_REVEAL_Y", 0)
+
+            val viewTreeObserver = llMainReview.viewTreeObserver
+            if (viewTreeObserver.isAlive) {
+                viewTreeObserver.addOnGlobalLayoutListener {
+                    if (!isAnimationCompleted) {
+                        revealActivity(revealX, revealY)
+                        llMainReview.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                }
+            }
         }
     }
 
@@ -51,6 +72,12 @@ class ReviewActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
+
+        if (intent.hasExtra("isSwitched")) {
+            isSwitched = true
+            imgBackReview.visibility = View.VISIBLE
+            imgLogoutReview.visibility = View.INVISIBLE
+        }
 
         loadQuotesData()
 
@@ -122,6 +149,19 @@ class ReviewActivity : BaseActivity() {
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
                 }
             }
+        }
+    }
+
+    private fun revealActivity(x: Int, y: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val finalRadius = (Math.max(llMainReview.getWidth(), llMainReview.getHeight()) * 1.1).toFloat()
+            val circularReveal = ViewAnimationUtils.createCircularReveal(llMainReview, x, y, 0f, finalRadius)
+            circularReveal.duration = 400
+            circularReveal.interpolator = AccelerateInterpolator()
+
+            llMainReview.visibility = View.VISIBLE
+            circularReveal.start()
+            isAnimationCompleted = true
         }
     }
 
@@ -244,6 +284,12 @@ class ReviewActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAnimationCompleted) {
+            val intent = Intent()
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+            overridePendingTransition(0, 0)
+        }
         if (isSwitched) {
             finish()
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
@@ -322,5 +368,8 @@ class ReviewActivity : BaseActivity() {
                 moveToSplash()
         }
         alertDialog.show()
+    }
+    override fun onGlobalLayout() {
+
     }
 }

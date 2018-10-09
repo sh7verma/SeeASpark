@@ -43,7 +43,7 @@
         <ImageView
             android:layout_width="@dimen/_8sdp"
             android:layout_height="@dimen/_8sdp"
-            android:background="@drawable/red_circle" />
+            android:background="@drawable/availability_grey_circle" />
 
         <customviews.MediumTextView
             android:layout_width="wrap_content"
