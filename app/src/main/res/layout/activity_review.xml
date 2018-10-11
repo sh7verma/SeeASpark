@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:id="@+id/llMainReview"
-    android:background="@color/black_color"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_color">
 
     <ImageView
         android:id="@+id/imgBackReview"
@@ -29,8 +29,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:padding="@dimen/_12ssp"
         android:background="@drawable/transparent_ripple"
+        android:padding="@dimen/_12ssp"
         android:src="@mipmap/ic_logout_new" />
 
     <ImageView
@@ -100,5 +100,12 @@
         android:textColor="@color/black_color"
         android:textSize="@dimen/_14ssp"
         android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/imgAnimationOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/app_name" />
+
 
 </RelativeLayout>

@@ -255,18 +255,19 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     }
 
     private fun generateConfetti() {
-        confettiManager = getConfettiManager().setNumInitialCount(0)
+      /*  confettiManager = getConfettiManager().setNumInitialCount(0)
                 .setEmissionDuration(ConfettiManager.INFINITE_DURATION)
-                .setEmissionRate(25f).animate()
+                .setEmissionRate(25f).animate()*/
     }
 
     fun hitAPI(visibleLoader: Boolean) {
         if (visibleLoader)
             mLandingInstance.showLoader()
+
         val call = RetrofitClient.getInstance().getCards(mUtils!!.getString("access_token", ""),
-                mLandingInstance.mLatitude.toString(),
-                mLandingInstance.mLongitude.toString(),
+                mLandingInstance.mLatitude.toString(), mLandingInstance.mLongitude.toString(),
                 mOffset.toString())
+
         call.enqueue(object : Callback<CardModel> {
 
             override fun onResponse(call: Call<CardModel>?, response: Response<CardModel>) {

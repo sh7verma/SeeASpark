@@ -4,7 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
+import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AppCompatActivity
@@ -17,8 +21,10 @@ import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
 import com.crashlytics.android.Crashlytics
+import com.faradaj.blurbehind.BlurBehind
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_splash.*
+import java.io.ByteArrayOutputStream
 import java.lang.Exception
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -53,7 +59,7 @@ class SplashActivity : BaseActivity() {
                 md.update(signature.toByteArray())
                 Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT))
             }
-        }  catch (e: Exception) {
+        } catch (e: Exception) {
 
         }
     }
@@ -66,6 +72,7 @@ class SplashActivity : BaseActivity() {
     override fun onClick(p0: View?) {
     }
 
+    @Suppress("DEPRECATION")
     private fun animateSplash() {
         lowerTranslateAnimation = TranslateAnimation(0f, 0f, mHeight.toFloat(), 0f)
         lowerTranslateAnimation.duration = 800
@@ -84,30 +91,23 @@ class SplashActivity : BaseActivity() {
             }
 
             override fun onAnimationEnd(p0: Animation?) {
+                rlSplash.isDrawingCacheEnabled = true
+                val bitmap = Bitmap.createBitmap(rlSplash.drawingCache)
+                rlSplash.isDrawingCacheEnabled = false
+
+                val drawable = BitmapDrawable(bitmap) as Drawable
+                window.setBackgroundDrawable(drawable)
+
                 if (mUtils!!.getString("profileReview", "").equals("yes")) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                        presentActivity(ReviewActivity(), false)
-                    else {
-                        startActivity(Intent(this@SplashActivity, ReviewActivity::class.java))
-                        finish()
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-                    }
+                    presentActivity(ReviewActivity(), bitmap)
                 } else {
-                    if (!TextUtils.isEmpty(mUtils!!.getString("access_token", "")) &&
-                            mUtils!!.getInt("profile_status", 0) == 2) {
+                    if (!TextUtils.isEmpty(mUtils!!.getString("access_token", ""))
+                            && mUtils!!.getInt("profile_status", 0) == 2) {
                         /// email verified.
-                        startActivity(Intent(this@SplashActivity, LandingActivity::class.java))
-                        finish()
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+                        presentActivity(LandingActivity(), bitmap)
                     } else {
                         /// not verified or new user
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                            presentActivity(WalkthroughActivity(), false)
-                        else {
-                            startActivity(Intent(this@SplashActivity, WalkthroughActivity::class.java))
-                            finish()
-                            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-                        }
+                        presentActivity(WalkthroughActivity(), bitmap)
                     }
                 }
             }
@@ -117,22 +117,18 @@ class SplashActivity : BaseActivity() {
         })
     }
 
-    fun presentActivity(activity: AppCompatActivity, finish: Boolean) {
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imgUpperPart,
-                "transition")
-        val revealX = (imgUpperPart.x + imgUpperPart.width / 2).toInt()
-        val revealY = (imgUpperPart.y + imgUpperPart.height / 2).toInt()
+    fun presentActivity(activity: AppCompatActivity, bitmap: Bitmap) {
+        Handler().postDelayed({
+            val bStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bStream)
+            val byteArray = bStream.toByteArray()
 
-        val intent = Intent(mContext, activity::class.java)
-        intent.putExtra("EXTRA_CIRCULAR_REVEAL_X", revealX)
-        intent.putExtra("EXTRA_CIRCULAR_REVEAL_Y", revealY)
-        if (!finish)
-            ActivityCompat.startActivityForResult(this, intent, MOVEBACK, options.toBundle())
-        else {
-            ActivityCompat.startActivity(this, intent, options.toBundle())
+            val intentSecond = Intent(this@SplashActivity, activity::class.java)
+            intentSecond.putExtra("image", byteArray);
+            startActivity(intentSecond)
             finish()
             overridePendingTransition(0, 0)
-        }
+        }, 200)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

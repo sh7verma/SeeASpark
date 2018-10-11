@@ -11,16 +11,19 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewTreeObserver
-import android.view.animation.AccelerateInterpolator
+import android.view.animation.*
 import android.widget.Toast
 import com.google.android.gms.analytics.HitBuilders
 import com.google.android.gms.analytics.Tracker
@@ -50,7 +53,7 @@ import utils.MainApplication
 @Suppress("DEPRECATION")
 class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
         LocationListener, GpsStatusDetector.GpsStatusDetectorCallBack,
-        GoogleApiClient.OnConnectionFailedListener, FirebaseListeners.ProfileListenerInterface{
+        GoogleApiClient.OnConnectionFailedListener, FirebaseListeners.ProfileListenerInterface {
 
     private val LOCATION_CHECK: Int = 1
 
@@ -74,13 +77,43 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     var mArrayTempCards = ArrayList<CardsDisplayModel>()
     var cardLeftCount: Int = 0
 
-
-
     override fun getContentView() = R.layout.activity_landing
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun initUI() {
+        if (intent.hasExtra("image"))
+            displaySplashAnimation()
 
+    }
+
+    private fun displaySplashAnimation() {
+        val byteArray = intent.getByteArrayExtra("image")
+        val bmp: Bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        imgAnimationOverlay.setImageBitmap(bmp)
+
+        val scaleAnimation = ScaleAnimation(1f, 3f, 1f, 3f, Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f)
+        scaleAnimation.duration = 300
+
+        val alphaAnimation = AlphaAnimation(1f, 0f)
+        alphaAnimation.duration = 300
+
+        val animatorSet = AnimationSet(true)
+        animatorSet.addAnimation(scaleAnimation)
+        animatorSet.addAnimation(alphaAnimation)
+        imgAnimationOverlay.startAnimation(animatorSet)
+
+        animatorSet.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(p0: Animation?) {
+            }
+
+            override fun onAnimationEnd(p0: Animation?) {
+                imgAnimationOverlay.alpha = 0f
+            }
+
+            override fun onAnimationStart(p0: Animation?) {
+            }
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -104,7 +137,6 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     }
 
     override fun onCreateStuff() {
-
         if (ContextCompat.checkSelfPermission(mContext!!, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_CHECK)
@@ -113,7 +145,6 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             mGpsStatusDetector = GpsStatusDetector(this)
             mGpsStatusDetector!!.checkGpsStatus()
         }
-
         callService()
         FirebaseListeners.setProfileDataListener(this)
         FirebaseListeners.getListenerClass(this).setProfileListener(mUtils!!.getString("user_id", ""))
@@ -434,7 +465,7 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
     @Suppress("DEPRECATION")
     override fun onLocationChanged(location: Location?) {
         //stop location updates
-       if (location != null) {
+        if (location != null) {
             mLatitude = location.latitude
             mLongitude = location.longitude
             mUtils!!.setString("latitude", mLatitude.toString())
@@ -442,8 +473,11 @@ class LandingActivity : BaseActivity(), GoogleApiClient.ConnectionCallbacks,
             if (connectedToInternet()) {
                 if (intent.hasExtra("matchData"))
                     homeFragment!!.hitAPI(false)
-                else
-                    homeFragment!!.hitAPI(true)
+                else {
+                    Handler().postDelayed({
+                        homeFragment!!.hitAPI(true)
+                    },200)
+                }
             } else {
                 showInternetAlert(llCommunity)
             }

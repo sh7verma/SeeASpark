@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/_12sdp"
         android:textColor="@color/white_color"
-        android:textSize="@dimen/_12ssp" />
+        android:textSize="@dimen/_14ssp" />
 
     <View
         android:layout_width="match_parent"

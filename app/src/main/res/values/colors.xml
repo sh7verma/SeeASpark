@@ -49,7 +49,7 @@
 
     <color name="light_color">#878DB5</color>
     <color name="white_color">#FFFFFF</color>
-    <color name="white_color_light">#e6e6e6</color>
+    <color name="white_color_light">#eaeaea</color>
     <color name="transperent">#90ffffff</color>
     <color name="disabled">#90f9f9f9</color>
 

@@ -74,9 +74,10 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>,
             Constants.COMMUNITY -> {
                 (holder as CommunityAdapter.PostViewHolder)
 
-                Picasso.with(mContext).load(mCommunityArray[position].images[0].thumbnail_url)
-                        .resize(mWidth, mContext!!.resources.getDimension(R.dimen._160sdp).toInt())
-                        .centerCrop().into(holder.imgCommunityListing)
+                if (mCommunityArray[position].images.isNotEmpty())
+                    Picasso.with(mContext).load(mCommunityArray[position].images[0].thumbnail_url)
+                            .resize(mWidth, mContext!!.resources.getDimension(R.dimen._160sdp).toInt())
+                            .centerCrop().into(holder.imgCommunityListing)
 
                 holder.txtCommunityTitle.text = mCommunityArray[position].title
                 holder.txtCommunityDesc.text = mCommunityArray[position].description

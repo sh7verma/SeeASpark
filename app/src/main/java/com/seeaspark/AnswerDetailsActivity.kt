@@ -16,8 +16,8 @@ class AnswerDetailsActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_answer_detail
 
     override fun initUI() {
-        BlurBehind.getInstance().withAlpha(80)
-                .withFilterColor(ContextCompat.getColor(this, R.color.light_grey))
+        BlurBehind.getInstance().withAlpha(100)
+                .withFilterColor(ContextCompat.getColor(this, R.color.transperent))
                 .setBackground(this)
         rvAnswersDetail.layoutManager = LinearLayoutManager(mContext)
     }

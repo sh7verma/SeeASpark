@@ -21,6 +21,7 @@ import models.QuestionAnswerModel
 
 class QuestionAdapter(mQuestionsArray: ArrayList<QuestionAnswerModel>, mContext: Context,
                       mQuestionarieInstance: QuestionnariesActivity?) : PagerAdapter() {
+
     var mQuestionsArray = ArrayList<QuestionAnswerModel>()
     var mContext: Context? = null
     var mQuestionarieInstance: QuestionnariesActivity? = null
@@ -32,14 +33,13 @@ class QuestionAdapter(mQuestionsArray: ArrayList<QuestionAnswerModel>, mContext:
     }
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
-
         return view === `object` as View
     }
 
     override fun getCount() = mQuestionsArray.size
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view = LayoutInflater.from(container?.context).inflate(R.layout.item_questions, container, false)
+        val view = LayoutInflater.from(container.context).inflate(R.layout.item_questions, container, false)
 
         view.txtQuestionName.text = mQuestionsArray[position].question
         view.rvAnswers.layoutManager = LinearLayoutManager(mContext)
@@ -50,7 +50,7 @@ class QuestionAdapter(mQuestionsArray: ArrayList<QuestionAnswerModel>, mContext:
                 mQuestionarieInstance!!.mAnswerCount++
         }
 
-        if (mQuestionsArray[position].question_type == 2) {
+        if (mQuestionsArray[position].description.isNotEmpty()) {
             view.imgQuestionInfo.visibility = View.VISIBLE
         } else {
             view.imgQuestionInfo.visibility = View.GONE
@@ -60,7 +60,7 @@ class QuestionAdapter(mQuestionsArray: ArrayList<QuestionAnswerModel>, mContext:
             BlurBehind.getInstance().execute(mContext as Activity) {
                 val intent = Intent(mContext, AnswerDetailsActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
-                intent.putExtra("answerData", mQuestionsArray[position].options)
+                intent.putExtra("answerData", mQuestionsArray[position].description)
                 (mContext as Activity).startActivity(intent)
             }
         }

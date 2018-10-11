@@ -1,29 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/_340sdp"
     android:layout_gravity="center"
     android:layout_marginLeft="@dimen/_16sdp"
-    android:layout_marginRight="@dimen/_16sdp"
-    android:background="@drawable/black_default"
-    android:gravity="center_horizontal"
-    android:maxHeight="@dimen/_260sdp"
-    android:orientation="vertical">
+    android:layout_marginRight="@dimen/_16sdp">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvAnswersDetail"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="@dimen/_320sdp"
+        android:background="@drawable/black_default">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvAnswersDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/imgCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_12sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:background="@drawable/black_ripple"
-        android:padding="@dimen/_8sdp"
-        android:src="@mipmap/ic_cancel" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-12dp"
+        android:layout_marginTop="@dimen/_300sdp"
+        android:background="@drawable/white_circle"
+        android:padding="@dimen/_5sdp"
+        android:src="@drawable/ic_cancel" />
 
-</LinearLayout>
+</RelativeLayout>

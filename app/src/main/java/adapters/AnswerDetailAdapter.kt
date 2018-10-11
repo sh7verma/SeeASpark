@@ -22,7 +22,8 @@ class AnswerDetailAdapter(mAnswersArray: Array<String>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val vhItem: ViewHolder
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_answer_detail, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_answer_detail,
+                parent, false)
         vhItem = ViewHolder(v)
         return vhItem
     }

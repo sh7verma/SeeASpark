@@ -25,17 +25,22 @@
         android:id="@+id/txtGotIt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginRight="@dimen/_8sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:background="@drawable/white_ripple"
         android:gravity="center"
         android:padding="@dimen/_5sdp"
         android:text="@string/ok_ngot_it"
-        android:textSize="@dimen/_12ssp"
         android:textAllCaps="true"
         android:textColor="@color/black_color"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imgAnimationOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/app_name" />
 
 </android.support.constraint.ConstraintLayout>
