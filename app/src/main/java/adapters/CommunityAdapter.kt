@@ -50,7 +50,8 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>,
         this.mSearchInstance = mSearchInstance
     }
 
-    constructor(mCommunityArray: ArrayList<PostModel.ResponseBean>, mContext: Context, mBookmarkInstance: CommunityBookmarkActivity, mCommunityFragment: CommunityFragment?)
+    constructor(mCommunityArray: ArrayList<PostModel.ResponseBean>, mContext: Context,
+                mBookmarkInstance: CommunityBookmarkActivity, mCommunityFragment: CommunityFragment?)
             : this(mCommunityArray, mContext, mCommunityFragment) {
         this.mBookmarkInstance = mBookmarkInstance
     }
@@ -59,11 +60,13 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>,
         val view: View
         return when (viewType) {
             Constants.COMMUNITY -> {
-                view = LayoutInflater.from(parent.context).inflate(R.layout.item_community, parent, false)
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_community,
+                        parent, false)
                 PostViewHolder(view)
             }
             else -> {
-                view = LayoutInflater.from(parent.context).inflate(R.layout.item_progress, parent, false)
+                view = LayoutInflater.from(parent.context).inflate(R.layout.item_progress,
+                        parent, false)
                 LoadMoreViewHolder(view)
             }
         }
@@ -75,7 +78,7 @@ class CommunityAdapter(mCommunityArray: ArrayList<PostModel.ResponseBean>,
                 (holder as CommunityAdapter.PostViewHolder)
 
                 if (mCommunityArray[position].images.isNotEmpty())
-                    Picasso.with(mContext).load(mCommunityArray[position].images[0].thumbnail_url)
+                    Picasso.with(mContext).load(mCommunityArray[position].images[0].image_url)
                             .resize(mWidth, mContext!!.resources.getDimension(R.dimen._160sdp).toInt())
                             .centerCrop().into(holder.imgCommunityListing)
 

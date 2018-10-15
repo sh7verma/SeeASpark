@@ -16,16 +16,18 @@
         android:layout_height="@dimen/_36sdp"
         android:orientation="horizontal">
 
-        <customviews.LightTextView
+        <customviews.MediumTextView
             android:id="@+id/txtTimeNotes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="bottom"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:paddingBottom="@dimen/_8sdp"
             android:text="Today"
             android:textColor="@color/white_color"
-            android:textSize="@dimen/_12ssp" />
+            android:textSize="@dimen/_14ssp" />
 
         <ImageView
             android:id="@+id/imgShare"
@@ -46,7 +48,7 @@
         android:paddingBottom="@dimen/_8sdp"
         android:text="@string/lorem_ipsum"
         android:textColor="@color/white_color"
-        android:textSize="@dimen/_14ssp" />
+        android:textSize="@dimen/_12ssp" />
 
 
     <LinearLayout

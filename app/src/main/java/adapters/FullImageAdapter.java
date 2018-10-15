@@ -109,8 +109,7 @@ public class FullImageAdapter extends PagerAdapter {
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();
-            Bitmap myBitmap1 = BitmapFactory.decodeStream(input);
-            return myBitmap1;
+            return BitmapFactory.decodeStream(input);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

@@ -7,10 +7,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Handler
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Base64
@@ -18,18 +15,16 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
 import com.crashlytics.android.Crashlytics
-import com.faradaj.blurbehind.BlurBehind
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.activity_splash.*
+import pl.droidsonroids.gif.GifDrawable
 import java.io.ByteArrayOutputStream
-import java.lang.Exception
 import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
 
+@Suppress("DEPRECATION")
 class SplashActivity : BaseActivity() {
 
     private lateinit var lowerTranslateAnimation: TranslateAnimation
@@ -39,7 +34,33 @@ class SplashActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_splash
 
     override fun initUI() {
-        animateSplash()
+        gifSplash.setImageResource(R.drawable.logo_animation_white)
+        val existingOriginalDrawable = gifSplash.drawable as GifDrawable?
+        existingOriginalDrawable!!.addAnimationListener {
+            if (existingOriginalDrawable.canPause()) {
+                existingOriginalDrawable.pause()
+                existingOriginalDrawable.setVisible(false, false)
+                rlSplash.isDrawingCacheEnabled = true
+                val bitmap = Bitmap.createBitmap(rlSplash.drawingCache)
+                rlSplash.isDrawingCacheEnabled = false
+
+                val drawable = BitmapDrawable(bitmap) as Drawable
+                window.setBackgroundDrawable(drawable)
+
+                if (mUtils!!.getString("profileReview", "").equals("yes")) {
+                    presentActivity(ReviewActivity(), bitmap)
+                } else {
+                    if (!TextUtils.isEmpty(mUtils!!.getString("access_token", ""))
+                            && mUtils!!.getInt("profile_status", 0) == 2) {
+                        /// email verified.
+                        presentActivity(LandingActivity(), bitmap)
+                    } else {
+                        /// not verified or new user
+                        presentActivity(WalkthroughActivity(), bitmap)
+                    }
+                }
+            }
+        }
     }
 
     override fun displayDayMode() {

@@ -55,7 +55,8 @@ class ReceivedNotesAdapter(mNotesArray: ArrayList<NotesListingModel.ResponseBean
             Constants.RECEIVEDNOTES -> {
                 (holder as ReceivedNotesAdapter.NotesViewHolder)
                 holder.txtTileNotes.text = mNotesArray[position].title
-                holder.txtTimeNotes.text = Constants.displayDateTimeNotes(mNotesArray[position].updated_at)
+                holder.txtTimeNotes.text = mNotesArray[position].note_title
+
                 holder.txtSentBY.text = mNotesArray[position].full_name
 
                 holder.llClickNotes.setOnClickListener {

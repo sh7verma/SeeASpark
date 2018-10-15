@@ -9,14 +9,31 @@
     android:paddingBottom="@dimen/_8sdp"
     android:paddingLeft="@dimen/_8sdp">
 
-    <ImageView
-        android:id="@+id/imgSkillAdd"
+    <LinearLayout
+        android:id="@+id/llSkillAdd"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@drawable/skill_outer"
-        android:paddingLeft="@dimen/_12sdp"
-        android:paddingRight="@dimen/_12sdp"
-        android:src="@mipmap/ic_add_skill" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/_5sdp"
+        android:paddingRight="@dimen/_12sdp">
+
+        <ImageView
+            android:id="@+id/imgAddSkill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_skill" />
+
+        <customviews.MediumTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/_5sdp"
+            android:text="@string/add_skills"
+            android:textColor="@color/black_color"
+            android:textSize="@dimen/_12ssp" />
+
+    </LinearLayout>
 
     <customviews.MediumTextView
         android:id="@+id/txtSkillChip"
@@ -27,6 +44,7 @@
         android:paddingLeft="@dimen/_12sdp"
         android:paddingRight="@dimen/_12sdp"
         android:text="test"
-        android:textColor="@color/black_color" />
+        android:textColor="@color/black_color"
+        android:textSize="@dimen/_12ssp" />
 
 </LinearLayout>

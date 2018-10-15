@@ -111,7 +111,7 @@ class SkillSelectionActivity : BaseActivity() {
         val innerParms = FlowLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Constants.dpToPx(52))
         interestChip.llMainSkills.layoutParams = innerParms
 
-        interestChip.imgSkillAdd.visibility = View.GONE
+        interestChip.llSkillAdd.visibility = View.GONE
 
         if (mSkillsSelectedArray.contains(skillValue.id.toString())) {
             interestChip.txtSkillChip.setBackgroundResource(R.drawable.selected_skills)
