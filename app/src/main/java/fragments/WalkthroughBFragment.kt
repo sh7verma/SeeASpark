@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_walkthrough.view.*
 class WalkthroughBFragment : Fragment() {
 
     var itemView: View? = null
-    private val walkArray = intArrayOf(R.mipmap.walk1, R.mipmap.walk2, R.mipmap.walk3, R.mipmap.walk4, R.mipmap.walk5)
+    private val walkArray = intArrayOf(R.mipmap.walk1,R.mipmap.walk2, R.mipmap.walk3, R.mipmap.walk4, R.mipmap.walk5)
     var positionLocal: Int = 0
     private val textArray = arrayListOf<String>("Explore hundreds of events related to your field.",
             "Explore hundreds of events related to your field.",
@@ -36,7 +36,7 @@ class WalkthroughBFragment : Fragment() {
         if (getArguments() != null) {
             positionLocal = getArguments()!!.getInt("position");
         }
-        Picasso.with(activity).load(walkArray!![positionLocal]).into(itemView!!.imgWalk)
+        Picasso.with(activity).load(walkArray[positionLocal]).into(itemView!!.imgWalk)
         itemView!!.txtWalk.text = textArray[positionLocal]
         return itemView
     }

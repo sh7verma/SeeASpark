@@ -21,7 +21,7 @@
         android:padding="@dimen/_16sdp"
         android:text="@string/you_can_write_your_million_n_dollar_ideas_here"
         android:textColor="@color/greyLine"
-        android:textSize="@dimen/_14sdp" />
+        android:textSize="@dimen/_14ssp" />
 
     <customviews.MediumTextView
         android:id="@+id/txtNoAllNotes"

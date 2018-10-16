@@ -132,10 +132,10 @@ class SelectSkillActivity : BaseActivity() {
         interestChip.llMainSkills.layoutParams = innerParms
 
         if (!skillValue.isFirstElement) {
-            interestChip.imgSkillAdd.visibility = View.GONE
+            interestChip.llSkillAdd.visibility = View.GONE
             interestChip.txtSkillChip.visibility = View.VISIBLE
         } else {
-            interestChip.imgSkillAdd.visibility = View.VISIBLE
+            interestChip.llSkillAdd.visibility = View.VISIBLE
             interestChip.txtSkillChip.visibility = View.GONE
         }
 
@@ -149,7 +149,7 @@ class SelectSkillActivity : BaseActivity() {
 
         interestChip.txtSkillChip.text = skillValue.name
 
-        interestChip.imgSkillAdd.setOnClickListener {
+        interestChip.llSkillAdd.setOnClickListener {
             val intent = Intent(this, AddSkillsActivity::class.java)
             intent.putParcelableArrayListExtra("skillsArray", mOwnSkillsArray)
             intent.putParcelableArrayListExtra("allSkillsArray", mSkillsArray)
