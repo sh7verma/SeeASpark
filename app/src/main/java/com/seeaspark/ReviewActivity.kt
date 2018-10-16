@@ -36,7 +36,7 @@ class ReviewActivity : BaseActivity() {
     private var countAuthor = 1
     private var reviewActivity: ReviewActivity? = null
 
-    private var displayTime: Long = 3000
+    private var displayTime: Long = 8500
 
     override fun getContentView() = R.layout.activity_review
 

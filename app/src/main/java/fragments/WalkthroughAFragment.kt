@@ -60,11 +60,11 @@ class WalkthroughAFragment : Fragment() {
                             Picasso.with(activity).load(walkArray[count]).placeholder(walkArray[1]).into(itemView!!.imgWalk)
                         else if (count == 3)
                             Picasso.with(activity).load(walkArray[count]).placeholder(walkArray[2]).into(itemView!!.imgWalk)
-                        mHandler.postDelayed(this, 4000)
+                        mHandler.postDelayed(this, 6000)
                     }
                 }
             }
-            mHandler.postDelayed(runnable, 4000)
+            mHandler.postDelayed(runnable, 6000)
         } else {
             if (runnable != null)
                 mHandler.removeCallbacks(runnable)
