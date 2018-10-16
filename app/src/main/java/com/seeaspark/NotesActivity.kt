@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.text.Html
 import android.util.Log
 import android.view.View
+import android.widget.HorizontalScrollView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_notes.*
 import kotlinx.android.synthetic.main.custom_toolbar.*
@@ -46,15 +47,15 @@ class NotesActivity : BaseActivity() {
 
         mEditor.setEditorFontSize(16)
         mEditor.setPlaceholder("Write here...")
-        mEditor.setPadding(10, 10, 10, 10)
+        mEditor.setPadding(12, 12, 12, 12)
         mEditor.setEditorWidth(mWidth)
-        mEditor.focusEditor()
         mEditor.setTextColor(Color.BLACK)
 
         if (intent.hasExtra("notesData")) {
             /// getting data from previous activity
             mNotesData = intent.getParcelableExtra("notesData")
             if (mNotesData!!.user_id.toString() == mUtils!!.getString("user_id", "")) {/// own Note
+                Constants.showKeyboard(mContext!!, llMainNotes)
                 setEditorData()
                 isEdit = true
                 isDoneEnabled = true
@@ -70,7 +71,7 @@ class NotesActivity : BaseActivity() {
             else
                 showInternetAlert(llUnderline)
         } else {
-            Constants.showKeyboard(mContext!!,llMainNotes)
+            Constants.showKeyboard(mContext!!, llMainNotes)
         }
 
         mEditor.setOnDecorationChangeListener { text, types ->
@@ -106,12 +107,27 @@ class NotesActivity : BaseActivity() {
                     type.name == "BLUE" -> {
                         selectBlue()
                     }
+                    type.name == "BROWN" -> {
+                        selectBrown()
+                    }
+                    type.name == "GREY" -> {
+                        selectGrey()
+                    }
+                    type.name == "LILAC" -> {
+                        selectLilac()
+                    }
+                    type.name == "PURPLE" -> {
+                        selectPurple()
+                    }
+                    type.name == "TEAL" -> {
+                        selectTeal()
+                    }
                 }
 
             }
         }
 
-        mEditor.setOnTextChangeListener({
+        mEditor.setOnTextChangeListener {
             if (it.isEmpty()) {
                 isDoneEnabled = false
                 mEditor.removeFormat()
@@ -119,8 +135,26 @@ class NotesActivity : BaseActivity() {
             } else {
                 isDoneEnabled = true
             }
-        })
+        }
 
+        Log.e("scrollX Inital", svEditOptions.scrollX.toString())
+
+        svEditOptions.viewTreeObserver.addOnScrollChangedListener {
+            Log.e("scrollX", svEditOptions.scrollX.toString())
+
+            if (svEditOptions.scrollX > svEditOptions.maxScrollAmount) {
+                imgScroll.visibility = View.GONE
+            } else
+                imgScroll.visibility = View.VISIBLE
+        }
+
+        edTitleNote.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                rlNotesEditOption.visibility = View.GONE
+            } else {
+                rlNotesEditOption.visibility = View.VISIBLE
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -147,14 +181,25 @@ class NotesActivity : BaseActivity() {
         rlRed.setOnClickListener(this)
         rlGreen.setOnClickListener(this)
         rlBlue.setOnClickListener(this)
+        rlBrown.setOnClickListener(this)
+        rlGrey.setOnClickListener(this)
+        rlPurple.setOnClickListener(this)
+        rlLilac.setOnClickListener(this)
+        rlTeal.setOnClickListener(this)
         imgBackCustom.setOnClickListener(this)
         txtOptionCustom.setOnClickListener(this)
+        imgScroll.setOnClickListener(this)
     }
 
     override fun getContext() = this
 
     override fun onClick(view: View) {
         when (view) {
+            imgScroll -> {
+                svEditOptions.postDelayed({
+                    svEditOptions.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
+                }, 100L)
+            }
             imgBackCustom -> {
                 Constants.closeKeyboard(mContext!!, imgBackCustom)
                 moveBack()
@@ -162,10 +207,15 @@ class NotesActivity : BaseActivity() {
             txtOptionCustom -> {
                 if (connectedToInternet()) {
                     if (isDoneEnabled) {
-                        if (isEdit)
-                            hitEditAPI()
-                        else
-                            hitAPI()
+                        if (edTitleNote.text.toString().trim().isEmpty())
+                            showAlert(txtOptionCustom, getString(R.string.error_note))
+                        else {
+                            Constants.closeKeyboard(mContext!!, imgBackCustom)
+                            if (isEdit)
+                                hitEditAPI()
+                            else
+                                hitAPI()
+                        }
                     } else
                         showAlert(txtOptionCustom, getString(R.string.error_note))
                 } else
@@ -219,6 +269,26 @@ class NotesActivity : BaseActivity() {
                 selectBlue()
                 persistState()
             }
+            rlBrown -> {
+                selectBrown()
+                persistState()
+            }
+            rlGrey -> {
+                selectGrey()
+                persistState()
+            }
+            rlLilac -> {
+                selectLilac()
+                persistState()
+            }
+            rlPurple -> {
+                selectPurple()
+                persistState()
+            }
+            rlTeal -> {
+                selectTeal()
+                persistState()
+            }
         }
     }
 
@@ -258,8 +328,11 @@ class NotesActivity : BaseActivity() {
         if (serverText.length > 100)
             serverText = serverText.substring(0, 100)
 
-        val call = RetrofitClient.getInstance().addNotes(mUtils!!.getString("access_token", ""),
-                serverText, mEditor.html)
+        val call = RetrofitClient.getInstance().addNotes(
+                mUtils!!.getString("access_token", ""),
+                serverText,
+                edTitleNote.text.toString().trim(),
+                mEditor.html)
         call.enqueue(object : Callback<NotesModel> {
 
             override fun onResponse(call: Call<NotesModel>?, response: Response<NotesModel>) {
@@ -322,6 +395,7 @@ class NotesActivity : BaseActivity() {
     }
 
     private fun setEditorData() {
+        edTitleNote.setText(mNotesData!!.note_title)
         mEditor.html = mNotesData!!.description
         mEditor.focusEditor()
     }
@@ -366,6 +440,7 @@ class NotesActivity : BaseActivity() {
     }
 
     private fun setNonEditableMode() {
+        edTitleNote.isEnabled = false
         txtTitleCustom.text = getString(R.string.note)
         mNotesData!!.note_type = Constants.RECEIVEDNOTES
         mEditor.html = mNotesData!!.description
@@ -434,10 +509,72 @@ class NotesActivity : BaseActivity() {
         isStriked = true
     }
 
+    private fun selectBrown() {
+        imgSelectedBlack.visibility = View.GONE
+        imgSelectedRed.visibility = View.GONE
+        imgSelectedGreen.visibility = View.GONE
+        imgSelectedBlue.visibility = View.GONE
+        imgSelectedGrey.visibility = View.GONE
+        imgSelectedLilac.visibility = View.GONE
+        imgSelectedPurple.visibility = View.GONE
+        imgSelectedTeal.visibility = View.GONE
+
+        imgSelectedBrown.visibility = View.VISIBLE
+        mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.brown_color))
+    }
+
+    private fun selectGrey() {
+        imgSelectedBlack.visibility = View.GONE
+        imgSelectedRed.visibility = View.GONE
+        imgSelectedGreen.visibility = View.GONE
+        imgSelectedBlue.visibility = View.GONE
+        imgSelectedLilac.visibility = View.GONE
+        imgSelectedBrown.visibility = View.GONE
+        imgSelectedPurple.visibility = View.GONE
+        imgSelectedTeal.visibility = View.GONE
+
+        imgSelectedGrey.visibility = View.VISIBLE
+        mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.grey_color))
+    }
+
+    private fun selectLilac() {
+        imgSelectedBlack.visibility = View.GONE
+        imgSelectedRed.visibility = View.GONE
+        imgSelectedGreen.visibility = View.GONE
+        imgSelectedBlue.visibility = View.GONE
+        imgSelectedGrey.visibility = View.GONE
+        imgSelectedBrown.visibility = View.GONE
+        imgSelectedPurple.visibility = View.GONE
+        imgSelectedTeal.visibility = View.GONE
+
+        imgSelectedLilac.visibility = View.VISIBLE
+        mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.lilac_color))
+    }
+
+    private fun selectPurple() {
+        imgSelectedBlack.visibility = View.GONE
+        imgSelectedRed.visibility = View.GONE
+        imgSelectedGreen.visibility = View.GONE
+        imgSelectedBlue.visibility = View.GONE
+        imgSelectedGrey.visibility = View.GONE
+        imgSelectedLilac.visibility = View.GONE
+        imgSelectedBrown.visibility = View.GONE
+        imgSelectedTeal.visibility = View.GONE
+
+        imgSelectedPurple.visibility = View.VISIBLE
+        mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.purple_color))
+    }
+
     private fun selectBlue() {
         imgSelectedBlack.visibility = View.GONE
         imgSelectedRed.visibility = View.GONE
         imgSelectedGreen.visibility = View.GONE
+        imgSelectedGrey.visibility = View.GONE
+        imgSelectedLilac.visibility = View.GONE
+        imgSelectedBrown.visibility = View.GONE
+        imgSelectedPurple.visibility = View.GONE
+        imgSelectedTeal.visibility = View.GONE
+
         imgSelectedBlue.visibility = View.VISIBLE
         mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.blue_color))
     }
@@ -445,25 +582,57 @@ class NotesActivity : BaseActivity() {
     private fun selectGreen() {
         imgSelectedBlack.visibility = View.GONE
         imgSelectedRed.visibility = View.GONE
-        imgSelectedGreen.visibility = View.VISIBLE
         imgSelectedBlue.visibility = View.GONE
+        imgSelectedLilac.visibility = View.GONE
+        imgSelectedGrey.visibility = View.GONE
+        imgSelectedBrown.visibility = View.GONE
+        imgSelectedPurple.visibility = View.GONE
+        imgSelectedTeal.visibility = View.GONE
+
+        imgSelectedGreen.visibility = View.VISIBLE
         mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.green_color))
     }
 
     private fun selectRed() {
         imgSelectedBlack.visibility = View.GONE
-        imgSelectedRed.visibility = View.VISIBLE
         imgSelectedGreen.visibility = View.GONE
         imgSelectedBlue.visibility = View.GONE
+        imgSelectedPurple.visibility = View.GONE
+        imgSelectedGrey.visibility = View.GONE
+        imgSelectedLilac.visibility = View.GONE
+        imgSelectedBrown.visibility = View.GONE
+        imgSelectedTeal.visibility = View.GONE
+
+        imgSelectedRed.visibility = View.VISIBLE
         mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.red_color))
     }
 
     private fun selectBlack() {
-        imgSelectedBlack.visibility = View.VISIBLE
         imgSelectedRed.visibility = View.GONE
         imgSelectedGreen.visibility = View.GONE
         imgSelectedBlue.visibility = View.GONE
+        imgSelectedPurple.visibility = View.GONE
+        imgSelectedGrey.visibility = View.GONE
+        imgSelectedLilac.visibility = View.GONE
+        imgSelectedBrown.visibility = View.GONE
+        imgSelectedTeal.visibility = View.GONE
+
+        imgSelectedBlack.visibility = View.VISIBLE
         mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+    }
+
+    private fun selectTeal() {
+        imgSelectedRed.visibility = View.GONE
+        imgSelectedGreen.visibility = View.GONE
+        imgSelectedBlue.visibility = View.GONE
+        imgSelectedPurple.visibility = View.GONE
+        imgSelectedGrey.visibility = View.GONE
+        imgSelectedLilac.visibility = View.GONE
+        imgSelectedBrown.visibility = View.GONE
+        imgSelectedBlack.visibility = View.GONE
+
+        imgSelectedTeal.visibility = View.VISIBLE
+        mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.teal_color))
     }
 
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_340sdp"
+    android:layout_gravity="center"
+    android:layout_marginLeft="@dimen/_16sdp"
+    android:layout_marginRight="@dimen/_16sdp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_320sdp"
+        android:background="@drawable/black_default">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvAnswersDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imgCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-12dp"
+        android:layout_marginTop="@dimen/_300sdp"
+        android:background="@drawable/white_circle"
+        android:padding="@dimen/_5sdp"
+        android:src="@drawable/ic_cancel" />
+
+</RelativeLayout>

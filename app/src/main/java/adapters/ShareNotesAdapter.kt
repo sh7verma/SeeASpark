@@ -17,7 +17,7 @@ import utils.Utils
 /**
  * Created by dev on 9/8/18.
  */
-class ShareNotesAdapter (mNotesArray: ArrayList<NotesListingModel.ResponseBean>, mContext: Context, mNotesActivity: MyNotesActivity?)
+class ShareNotesAdapter(mNotesArray: ArrayList<NotesListingModel.ResponseBean>, mContext: Context, mNotesActivity: MyNotesActivity?)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var mNotesArray = ArrayList<NotesListingModel.ResponseBean>()
@@ -57,7 +57,7 @@ class ShareNotesAdapter (mNotesArray: ArrayList<NotesListingModel.ResponseBean>,
             Constants.MYNOTES -> {
                 (holder as ShareNotesAdapter.NotesViewHolder)
                 holder.txtTileNotes.text = mNotesArray[position].title
-                holder.txtTimeNotes.text = Constants.displayDateTimeNotes(mNotesArray[position].updated_at)
+                holder.txtTimeNotes.text = mNotesArray[position].note_title
 
                 holder.llClickNotes.setOnClickListener {
                     if (mNotesActivity != null)

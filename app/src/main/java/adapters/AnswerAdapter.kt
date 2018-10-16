@@ -27,7 +27,8 @@ class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQues
     private var broadcaster: LocalBroadcastManager? = null
 
     init {
-        this.mAnswersArray = mAnswersArray.options.split("54#45").toTypedArray()
+        this.mAnswersArray = mAnswersArray.options.split("54#45")
+                .toTypedArray()
         this.mContext = mContext
         mAnswersModel = mAnswersArray
         this.mQuestionarieInstance = mQuestionarieInstance
@@ -56,6 +57,9 @@ class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQues
                 else
                     mAnswersModel!!.getuserAnswers().remove(mAnswersArray[position])
             }
+
+
+
             val questionIntent = Intent(Constants.QUESTIONS)
             questionIntent.putExtra("questionId", mAnswersModel!!.id)
             questionIntent.putStringArrayListExtra("answer", mAnswersModel!!.getuserAnswers())
@@ -66,10 +70,15 @@ class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQues
         if (mAnswersModel!!.getuserAnswers().contains(mAnswersArray[position])) {
             holder.txtAnswerQuestion.setBackgroundResource(R.drawable.answer_selected)
             holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.black_color))
+            if (mAnswersModel!!.question_type == 2)
+                holder.txtAnswerOrder.visibility = View.VISIBLE
         } else {
             holder.txtAnswerQuestion.setBackgroundResource(R.drawable.new_answer_background)
             holder.txtAnswerQuestion.setTextColor(ContextCompat.getColor(mContext!!, R.color.white_color))
+            holder.txtAnswerOrder.visibility = View.INVISIBLE
         }
+
+        holder.txtAnswerOrder.text= (mAnswersModel!!.getuserAnswers().indexOf(mAnswersArray[position])+1).toString()
 
         holder.txtAnswerQuestion.text = mAnswersArray[position]
     }
@@ -80,5 +89,6 @@ class AnswerAdapter(mAnswersArray: QuestionAnswerModel, mContext: Context, mQues
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtAnswerQuestion = itemView.txtAnswerQuestion
+        val txtAnswerOrder = itemView.txtAnswerOrder
     }
 }

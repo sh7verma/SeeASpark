@@ -71,7 +71,8 @@ class EventsAdapter(mContext: Context?, mEventsArray: ArrayList<PostModel.Respon
         when (mEventsArray[position].post_type) {
             Constants.EVENT -> {
                 (holder as PostViewHolder)
-                if (!TextUtils.isEmpty(mEventsArray[position].images[0].thumbnail_url))
+
+                if (mEventsArray[position].images.isNotEmpty())
                     Picasso.with(mContext).load(mEventsArray[position].images[0].thumbnail_url)
                             .resize(mWidth, mContext!!.resources.getDimension(R.dimen._161sdp).toInt())
                             .centerCrop().into(holder.imgEventsListing)

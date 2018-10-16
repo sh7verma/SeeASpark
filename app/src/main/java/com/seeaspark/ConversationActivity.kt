@@ -355,6 +355,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         imgDelete.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         imgCopy.background = ContextCompat.getDrawable(this, R.drawable.white_ripple)
         txtName.setTextColor(ContextCompat.getColor(this, R.color.black_color))
+        llChatEditable.setBackgroundColor(whiteColor)
+        viewEdit.visibility = View.VISIBLE
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -367,6 +369,8 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
         imgDelete.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         imgCopy.background = ContextCompat.getDrawable(this, R.drawable.black_ripple)
         txtName.setTextColor(ContextCompat.getColor(this, R.color.white_color))
+        llChatEditable.setBackgroundColor(ContextCompat.getColor(this, R.color.cardview_dark_background))
+        viewEdit.visibility = View.GONE
     }
 
     override fun onCreateStuff() {
@@ -975,16 +979,19 @@ class ConversationActivity : BaseActivity(), FirebaseListeners.ChatDialogsListen
                 Toast.makeText(this, getString(R.string.text_copied), Toast.LENGTH_SHORT).show()
             }
             imgAttachment -> {
-                if (mPrivateChat != null) {
-                    if (mPrivateChat!!.block_status.get(mCurrentUser!!.user_id).equals("1")) {
-                        status = 2
-                        ShowUnblockPrompt()
-                    } else {
-                        if (connectedToInternet()) {
-                            val intent = Intent(this, AttachmentSelectionActivity::class.java)
-                            startActivityForResult(intent, ATTACHMENT)
-                        } else
-                            showInternetAlert(txtName)
+                BlurBehind.getInstance().execute(mConversationActivity) {
+                    if (mPrivateChat != null) {
+                        if (mPrivateChat!!.block_status.get(mCurrentUser!!.user_id).equals("1")) {
+                            status = 2
+                            ShowUnblockPrompt()
+                        } else {
+                            if (connectedToInternet()) {
+                                val intent = Intent(this, AttachmentSelectionActivity::class.java)
+                                startActivityForResult(intent, ATTACHMENT)
+                                overridePendingTransition(0, 0)
+                            } else
+                                showInternetAlert(txtName)
+                        }
                     }
                 }
             }

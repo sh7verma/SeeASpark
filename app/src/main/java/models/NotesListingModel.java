@@ -49,11 +49,20 @@ public class NotesListingModel extends BaseModel {
         private String name;
         private String title;
         private String description;
+        private String note_title;
         private String url;
         private String note_type;
         private String created_at;
         private String updated_at;
         private String full_name;
+
+        public String getNote_title() {
+            return note_title;
+        }
+
+        public void setNote_title(String note_title) {
+            this.note_title = note_title;
+        }
 
         public int getId() {
             return id;
@@ -155,6 +164,7 @@ public class NotesListingModel extends BaseModel {
             dest.writeString(this.created_at);
             dest.writeString(this.updated_at);
             dest.writeString(this.full_name);
+            dest.writeString(this.note_title);
         }
 
         protected ResponseBean(Parcel in) {
@@ -168,6 +178,7 @@ public class NotesListingModel extends BaseModel {
             this.created_at = in.readString();
             this.updated_at = in.readString();
             this.full_name = in.readString();
+            this.note_title = in.readString();
         }
 
         public static final Creator<ResponseBean> CREATOR = new Creator<ResponseBean>() {

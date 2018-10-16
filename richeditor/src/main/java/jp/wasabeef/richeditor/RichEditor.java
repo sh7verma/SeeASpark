@@ -44,6 +44,11 @@ public class RichEditor extends WebView {
         RED,
         GREEN,
         BLUE,
+        BROWN,
+        GREY,
+        LILAC,
+        PURPLE,
+        TEAL,
         BOLD,
         ITALIC,
         SUBSCRIPT,
@@ -138,13 +143,23 @@ public class RichEditor extends WebView {
     private void stateCheck(String text) {
 
         if (text.contains("rgb(0, 0, 0)"))
-            text = text.replace("rgb(0, 0, 0)", "BLACK");
+            text = text.replace("rgb(0, 0, 0)", Type.BLACK.toString());
         else if (text.contains("rgb(121, 141, 237)"))
-            text = text.replace("rgb(121, 141, 237)", "BLUE");
+            text = text.replace("rgb(121, 141, 237)", Type.BLUE.toString());
         else if (text.contains("rgb(3, 214, 139)"))
-            text = text.replace("rgb(3, 214, 139)", "GREEN");
+            text = text.replace("rgb(3, 214, 139)", Type.GREEN.toString());
         else if (text.contains("rgb(238, 40, 48)"))
-            text = text.replace("rgb(238, 40, 48)", "RED");
+            text = text.replace("rgb(238, 40, 48)", Type.RED.toString());
+        else if (text.contains("rgb(102, 59, 45)"))
+            text = text.replace("rgb(102, 59, 45)", Type.BROWN.toString());
+        else if (text.contains("rgb(180, 180, 180)"))
+            text = text.replace("rgb(180, 180, 180)", Type.GREY.toString());
+        else if (text.contains("rgb(182, 102, 210)"))
+            text = text.replace("rgb(182, 102, 210)", Type.LILAC.toString());
+        else if (text.contains("rgb(127, 0, 127)"))
+            text = text.replace("rgb(127, 0, 127)", Type.PURPLE.toString());
+        else if (text.contains("rgb(0, 128, 128)"))
+            text = text.replace("rgb(0, 128, 128)",Type.TEAL.toString());
 
         String state = text.replaceFirst(STATE_SCHEME, "").toUpperCase(Locale.ENGLISH);
         List<Type> types = new ArrayList<>();

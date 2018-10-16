@@ -54,7 +54,7 @@ class MyNotesAdapter(mNotesArray: ArrayList<NotesListingModel.ResponseBean>, mCo
             Constants.MYNOTES -> {
                 (holder as MyNotesAdapter.NotesViewHolder)
                 holder.txtTileNotes.text = mNotesArray[position].title
-                holder.txtTimeNotes.text = Constants.displayDateTimeNotes(mNotesArray[position].updated_at)
+                holder.txtTimeNotes.text = mNotesArray[position].note_title
 
                 holder.llClickNotes.setOnClickListener {
                     if (mNotesFragment != null)
