@@ -175,11 +175,13 @@
             </LinearLayout>
 
             <View
+                android:id="@+id/viewEdit"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/greyLine" />
 
             <LinearLayout
+                android:id="@+id/llChatEditable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"

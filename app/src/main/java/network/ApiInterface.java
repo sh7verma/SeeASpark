@@ -257,6 +257,7 @@ public interface ApiInterface {
     @POST("/api/v1/notes")
     Call<NotesModel> addNotes(@Field("access_token") String access_token,
                               @Field("title") String title,
+                              @Field("note_title") String note_title,
                               @Field("description") String description);
 
     @FormUrlEncoded

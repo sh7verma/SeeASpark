@@ -132,7 +132,7 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
     private fun hitPlansApi() {
         pbPlans.visibility = View.VISIBLE
         RetrofitClient.getInstance().getPlans(mLandingInstance.mUtils!!.getString("access_token", ""),
-                "Boosts").enqueue(object : Callback<PlansModel> {
+                "Boost").enqueue(object : Callback<PlansModel> {
             override fun onResponse(call: Call<PlansModel>?, response: Response<PlansModel>) {
                 if (response.body().error != null) {
                     pbPlans.visibility = View.GONE

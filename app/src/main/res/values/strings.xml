@@ -217,7 +217,7 @@
     <string name="no_community_bookmarked">No Community Bookmarked</string>
     <string name="no_event_bookmarked">No Event Bookmarked</string>
     <string name="add_occupation">Add Occupation</string>
-    <string name="you_can_write_your_million_n_dollar_ideas_here">You can write your million\ndollar idea here</string>
+    <string name="you_can_write_your_million_n_dollar_ideas_here">You can write your million dollar idea here</string>
     <string name="my_notes">My Notes</string>
     <string name="write_note">Write Note</string>
     <string name="no_notes">No Notes Available</string>
@@ -242,6 +242,7 @@
     <string name="avatar">avatar</string>
     <string name="get_cards">Get Cards</string>
     <string name="error_note">Please add text in your note</string>
+    <string name="error_note_title">Please add note title</string>
     <string name="quote_1">“Rivers know this: there is no hurry. We shall get there some day.”</string>
     <string name="quote_owner1">― A.A. Milne, Winnie-the-Pooh</string>
     <string name="quote_2">“Why is patience so important?\n"Because it makes us pay attention.”</string>

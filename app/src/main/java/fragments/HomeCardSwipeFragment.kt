@@ -24,6 +24,11 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.SkuDetails
+import com.github.jinatonic.confetti.ConfettiManager
+import com.github.jinatonic.confetti.ConfettiSource
+import com.github.jinatonic.confetti.ConfettoGenerator
+import com.github.jinatonic.confetti.confetto.CircleConfetto
+import com.github.jinatonic.confetti.confetto.Confetto
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
@@ -33,6 +38,7 @@ import com.squareup.picasso.Picasso
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.SwipeDirection
 import database.Database
+import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.fragment_event.*
 import kotlinx.android.synthetic.main.fragment_home_card_swipe.*
 import kotlinx.android.synthetic.main.item_swipe_card.view.*
@@ -45,7 +51,7 @@ import utils.*
 import java.util.*
 
 class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
-        BillingManager.BillingUpdatesListener {
+        BillingManager.BillingUpdatesListener, ConfettoGenerator {
 
     private val PREFERENCES: Int = 2
     private val VIEWPROFILE: Int = 4
@@ -63,8 +69,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     private var mOffset = 1
     private var mCurrentPosition = 0
     private val CARDAPICOUNT = 3
-    private var mHandler: Handler? = null
-    private var mRunnable: Runnable? = null
+    private lateinit var mHandler: Handler
     private var mDb: Database? = null
 
     private lateinit var mBillingManager: BillingManager
@@ -74,6 +79,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     private var skuDetailsList = ArrayList<SkuDetails>()
     private var isPlanBought = false
     private var purchasePlanPosition = -1
+    private var confettiManager: ConfettiManager? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         itemView = inflater.inflate(R.layout.fragment_home_card_swipe, container, false)
@@ -162,26 +168,33 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
             override fun onCardSwiped(direction: SwipeDirection?) {
                 if (mLandingInstance.connectedToInternet()) {
 
-                    if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.CARD) {
-                        if (direction == SwipeDirection.Left)
-                            swipeRightLeft(0, mLandingInstance.mArrayCards[mCurrentPosition])
-                        else
-                            swipeRightLeft(1, mLandingInstance.mArrayCards[mCurrentPosition])
-                    } else if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.COMMUNITY) {
-                        if (direction == SwipeDirection.Right)
-                            moveToCommunityDetail(mLandingInstance.mArrayCards[mCurrentPosition].id)
-                    } else if (mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.EVENT) {
-                        if (direction == SwipeDirection.Right)
-                            moveToEventDetail(mLandingInstance.mArrayCards[mCurrentPosition].id)
+                    ///Paging
+                    when {
+                        mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.CARD -> {
+                            if (direction == SwipeDirection.Left)
+                                swipeRightLeft(0, mLandingInstance.mArrayCards[mCurrentPosition])
+                            else
+                                swipeRightLeft(1, mLandingInstance.mArrayCards[mCurrentPosition])
+                            // decrementing card count which provides the functionality to display buy Plans.
+                            mLandingInstance.cardLeftCount--
+                        }
+                        mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.COMMUNITY ->
+                            if (direction == SwipeDirection.Right)
+                                moveToCommunityDetail(mLandingInstance.mArrayCards[mCurrentPosition].id)
+                        mLandingInstance.mArrayCards[mCurrentPosition].post_type == Constants.EVENT ->
+                            if (direction == SwipeDirection.Right)
+                                moveToEventDetail(mLandingInstance.mArrayCards[mCurrentPosition].id)
                     }
 
                     mCurrentPosition++
                     mLandingInstance.mArrayTempCards.removeAt(0)
 
+                    // Evalauating which layout to display either buy plan or out of cards.
                     if (mLandingInstance.mArrayTempCards.size == 0)
                         checkVisibility()
 
-                    if (mLandingInstance.mArrayTempCards.size - CARDAPICOUNT == 5) { ///Paging
+                    if (mLandingInstance.mArrayTempCards.size - CARDAPICOUNT == 5) {
+                        ///Paging (Fetching more cards )
                         mOffset++
                         hitAPI(false)
                     }
@@ -219,7 +232,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         if (mHomeFragment != null) {
             if (mLandingInstance.mArrayTempCards.isEmpty()) {
                 if (mLandingInstance.userData!!.response.user_type == Constants.MENTEE) {
-                    if (isBuyEnable) {
+                    if (isBuyEnable && mLandingInstance.cardLeftCount == 0) {
                         llOutOfCards.visibility = View.GONE
                         llHomePlans.visibility = View.VISIBLE
                     } else {
@@ -228,24 +241,38 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                     }
                 } else
                     llOutOfCards.visibility = View.VISIBLE
+                if (confettiManager != null)
+                    confettiManager!!.terminate()
             } else {
+                Handler().postDelayed({
+                    generateConfetti()
+                },100)
+
                 llOutOfCards.visibility = View.GONE
                 llHomePlans.visibility = View.GONE
             }
         }
     }
 
+    private fun generateConfetti() {
+      /*  confettiManager = getConfettiManager().setNumInitialCount(0)
+                .setEmissionDuration(ConfettiManager.INFINITE_DURATION)
+                .setEmissionRate(25f).animate()*/
+    }
+
     fun hitAPI(visibleLoader: Boolean) {
         if (visibleLoader)
             mLandingInstance.showLoader()
+
         val call = RetrofitClient.getInstance().getCards(mUtils!!.getString("access_token", ""),
-                mLandingInstance.mLatitude.toString(),
-                mLandingInstance.mLongitude.toString(),
+                mLandingInstance.mLatitude.toString(), mLandingInstance.mLongitude.toString(),
                 mOffset.toString())
+
         call.enqueue(object : Callback<CardModel> {
 
             override fun onResponse(call: Call<CardModel>?, response: Response<CardModel>) {
                 if (response.body().response != null) {
+                    mLandingInstance.cardLeftCount = response.body().card_left
                     populateData(response.body())
                 } else {
                     if (response.body().error!!.code == Constants.INVALID_ACCESS_TOKEN) {
@@ -297,9 +324,9 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
                         mLandingInstance.mArrayCards)
                 csvUsers.setAdapter(mAdapterCards)
 
-                if (mLandingInstance.mArrayCards.isNotEmpty()) {
+                if (mLandingInstance.mArrayCards.isNotEmpty())
                     checkOverlayVisibility()
-                }
+
             } else {
                 if (response.response.isNotEmpty()) {
                     mLandingInstance.mArrayCards.addAll(response.response)
@@ -325,6 +352,8 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     private fun displayCards() {
         mAdapterCards = HomeCardSwipeAdapter(mContext!!, 0, mLandingInstance.mArrayCards)
         csvUsers.setAdapter(mAdapterCards)
+        if (mLandingInstance.mArrayCards.isNotEmpty())
+            checkOverlayVisibility()
         checkVisibility()
     }
 
@@ -454,7 +483,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         if (llHomePlans.visibility == View.VISIBLE)
             pbPlansLoader.visibility = View.VISIBLE
         RetrofitClient.getInstance().getPlans(mLandingInstance.mUtils!!.getString("access_token", ""),
-                "Unlimited").enqueue(object : Callback<PlansModel> {
+                "Unlimitdd").enqueue(object : Callback<PlansModel> {
             override fun onResponse(call: Call<PlansModel>?, response: Response<PlansModel>) {
                 if (mHomeFragment != null) {
                     if (llHomePlans.visibility == View.VISIBLE)
@@ -512,8 +541,10 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     }
 
     override fun onDestroy() {
-        Log.e("Destroy = ","destroy")
-        mHomeFragment=null
+        Log.e("Destroy = ", "destroy")
+        if (confettiManager != null)
+            confettiManager!!.terminate()
+        mHomeFragment = null
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(nightModeReceiver)
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(switchUserTypeReceiver)
         super.onDestroy()
@@ -593,12 +624,14 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     }
 
     override fun productsList(skuDetailsListLocal: ArrayList<SkuDetails>) {
-        skuDetailsList.clear()
-        skuDetailsList.addAll(skuDetailsListLocal)
-        if (skuDetailsListLocal.size == mPlansArray.size) {
-            mAdapterBoost.notifyDataSetChanged()
-        } else {
-            mLandingInstance.showAlert(llHomePlans, getString(R.string.plans_error))
+        if (mHomeFragment != null) {
+            skuDetailsList.clear()
+            skuDetailsList.addAll(skuDetailsListLocal)
+            if (skuDetailsListLocal.size == mPlansArray.size) {
+                mAdapterBoost.notifyDataSetChanged()
+            } else {
+                mLandingInstance.showAlert(llHomePlans, getString(R.string.plans_error))
+            }
         }
     }
 
@@ -796,5 +829,16 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
 
         }
     }
-///
+
+    private fun getConfettiManager(): ConfettiManager {
+        val confettiSource = ConfettiSource(llEmitter.width / 2, llEmitter.height / 2)
+        return ConfettiManager(mContext!!, this, confettiSource, llEmitter)
+                .setVelocityX(0f, 70.toFloat())
+                .setVelocityY(0f, 70.toFloat())
+    }
+
+    override fun generateConfetto(random: Random?): Confetto {
+        return CircleConfetto(ContextCompat.getColor(activity, R.color.colorPrimary),
+                8f)
+    }
 }

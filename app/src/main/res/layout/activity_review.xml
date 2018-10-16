@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llMainReview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black_color">
 
     <ImageView
         android:id="@+id/imgBackReview"
@@ -19,7 +21,7 @@
         android:paddingTop="@dimen/_12sdp"
         android:text="@string/review"
         android:textAllCaps="true"
-        android:textColor="@color/black_color"
+        android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_16ssp" />
 
     <ImageView
@@ -27,8 +29,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:padding="@dimen/_12ssp"
         android:background="@drawable/transparent_ripple"
+        android:padding="@dimen/_12ssp"
         android:src="@mipmap/ic_logout_new" />
 
     <ImageView
@@ -50,9 +52,8 @@
         android:paddingRight="@dimen/_16sdp"
         android:paddingTop="@dimen/_16sdp"
         android:text="@string/your_profile_is_under_review_for_the_admin_approval_thnaks_for_your_patience"
-        android:textColor="@color/black_color"
+        android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_14ssp" />
-
 
     <customviews.SecretTextView
         android:id="@+id/txtQuote"
@@ -64,7 +65,7 @@
         android:paddingEnd="@dimen/_16sdp"
         android:paddingStart="@dimen/_16sdp"
         android:paddingTop="@dimen/_16sdp"
-        android:textColor="@color/greyTextColor"
+        android:textColor="@color/greyLine"
         android:textSize="@dimen/_14ssp" />
 
     <customviews.SecretTextView
@@ -78,7 +79,7 @@
         android:paddingEnd="@dimen/_16sdp"
         android:paddingStart="@dimen/_16sdp"
         android:paddingTop="@dimen/_8sdp"
-        android:textColor="@color/black_color"
+        android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_14ssp" />
 
     <customviews.MediumTextView
@@ -99,5 +100,12 @@
         android:textColor="@color/black_color"
         android:textSize="@dimen/_14ssp"
         android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/imgAnimationOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/app_name" />
+
 
 </RelativeLayout>

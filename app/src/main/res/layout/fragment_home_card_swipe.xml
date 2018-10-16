@@ -156,6 +156,12 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/llEmitter"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent" />
+
         <com.yuyakaido.android.cardstackview.CardStackView
             android:id="@+id/csvUsers"
             android:layout_width="match_parent"

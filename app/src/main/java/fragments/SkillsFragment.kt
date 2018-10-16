@@ -3,6 +3,8 @@ package fragments
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
@@ -16,6 +18,7 @@ import com.seeaspark.CreateProfileActivity
 import com.seeaspark.R
 import customviews.FlowLayout
 import kotlinx.android.synthetic.main.fragment_skills.*
+import kotlinx.android.synthetic.main.layout_skills.*
 import kotlinx.android.synthetic.main.layout_skills.view.*
 import models.SkillsModel
 import utils.Constants
@@ -84,10 +87,10 @@ class SkillsFragment : Fragment(), View.OnClickListener {
         interestChip.llMainSkills.layoutParams = innerParms
 
         if (!skillValue.isFirstElement) {
-            interestChip.imgSkillAdd.visibility = View.GONE
+            interestChip.llSkillAdd.visibility = View.GONE
             interestChip.txtSkillChip.visibility = View.VISIBLE
         } else {
-            interestChip.imgSkillAdd.visibility = View.VISIBLE
+            interestChip.llSkillAdd.visibility = View.VISIBLE
             interestChip.txtSkillChip.visibility = View.GONE
         }
 
@@ -101,7 +104,7 @@ class SkillsFragment : Fragment(), View.OnClickListener {
 
         interestChip.txtSkillChip.text = skillValue.name
 
-        interestChip.imgSkillAdd.setOnClickListener {
+        interestChip.llSkillAdd.setOnClickListener {
             val intent = Intent(activity, AddSkillsActivity::class.java)
             intent.putParcelableArrayListExtra("skillsArray", mOwnSkillsArray)
             intent.putParcelableArrayListExtra("allSkillsArray", mCreateProfileInstance!!.mSkillsArray)

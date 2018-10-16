@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
+import com.faradaj.blurbehind.BlurBehind
 import kotlinx.android.synthetic.main.activity_attachment_selection.*
 import utils.Constants
 import java.util.ArrayList
@@ -21,11 +22,14 @@ import java.util.ArrayList
 class AttachmentSelectionActivity : BaseActivity() {
 
     override fun getContentView(): Int {
-        this.window.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.light_white_transparent))
         return R.layout.activity_attachment_selection
     }
 
     override fun initUI() {
+        BlurBehind.getInstance()
+                .withAlpha(100)
+                .withFilterColor(ContextCompat.getColor(this, R.color.light_white_transparent))
+                .setBackground(this)
     }
 
     override fun displayDayMode() {

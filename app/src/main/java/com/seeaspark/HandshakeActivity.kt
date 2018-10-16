@@ -36,19 +36,23 @@ class HandshakeActivity : BaseActivity() {
         mOtherProfileData = if (intent.hasExtra("otherProfileData"))
             intent.getParcelableExtra("otherProfileData")
         else
-            Gson().fromJson(intent.getStringExtra("matchData"), SignupModel.ResponseBean::class.java);
+            Gson().fromJson(intent.getStringExtra("matchData"),
+                    SignupModel.ResponseBean::class.java);
 
-        userProfileData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""), SignupModel::class.java)
+        userProfileData = mGson.fromJson(mUtils!!.getString("userDataLocal", ""),
+                SignupModel::class.java)
         populateData()
 
         val animation1 = AlphaAnimation(0f, 1f)
-        animation1.duration = 1000
+        animation1.duration = 500
         animation1.fillAfter = true
 
         val existingOriginalDrawable = gifHandshake.drawable as GifDrawable?
         existingOriginalDrawable!!.addAnimationListener {
             if (existingOriginalDrawable.canPause()) {
                 existingOriginalDrawable.pause()
+                existingOriginalDrawable.setVisible(false, false)
+                llHandshake.visibility = View.GONE
                 llDataHandshake.visibility = View.VISIBLE
                 llDataHandshake.startAnimation(animation1)
             }
@@ -56,26 +60,23 @@ class HandshakeActivity : BaseActivity() {
     }
 
     private fun populateData() {
+        gifHandshake.setImageResource(R.drawable.v2)
         if ((userProfileData!!.response.gender.toInt() == Constants.MALE ||
                         userProfileData!!.response.gender.toInt() == Constants.OTHER) &&
                 (mOtherProfileData!!.gender.toInt() == Constants.MALE ||
                         mOtherProfileData!!.gender.toInt() == Constants.OTHER)) {
             /// Male + Male
-            gifHandshake.setImageResource(R.drawable.guy_guy)
         } else if ((userProfileData!!.response.gender.toInt() == Constants.MALE ||
                         userProfileData!!.response.gender.toInt() == Constants.OTHER) &&
                 mOtherProfileData!!.gender.toInt() == Constants.FEMALE) {
             /// Male + Female
-            gifHandshake.setImageResource(R.drawable.guy_girl)
         } else if (userProfileData!!.response.gender.toInt() == Constants.FEMALE &&
                 (mOtherProfileData!!.gender.toInt() == Constants.MALE ||
                         mOtherProfileData!!.gender.toInt() == Constants.OTHER)) {
             /// Female + Male
-            gifHandshake.setImageResource(R.drawable.girl_guy)
         } else if (userProfileData!!.response.gender.toInt() == Constants.FEMALE &&
                 mOtherProfileData!!.gender.toInt() == Constants.FEMALE) {
             /// Female + Female
-            gifHandshake.setImageResource(R.drawable.girl_girl)
         }
         Picasso.with(this).load(userProfileData!!.response.avatar.avtar_url).into(imgUserMatch1)
         Picasso.with(this).load(mOtherProfileData!!.avatar.avtar_url).into(imgUserMatch2)

@@ -5,13 +5,18 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Handler
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.ScaleAnimation
 import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_review.*
@@ -23,7 +28,6 @@ import retrofit2.Response
 import utils.Constants
 
 class ReviewActivity : BaseActivity() {
-
     private var userData: SignupModel? = null
     private var isSwitched = false
     private var mQuotesArrayList = ArrayList<String>()
@@ -32,15 +36,45 @@ class ReviewActivity : BaseActivity() {
     private var countAuthor = 1
     private var reviewActivity: ReviewActivity? = null
 
+    private var displayTime: Long = 8500
+
     override fun getContentView() = R.layout.activity_review
 
     override fun initUI() {
-        if (intent.hasExtra("isSwitched")) {
-            isSwitched = true
-            imgBackReview.visibility = View.VISIBLE
-            imgLogoutReview.visibility = View.INVISIBLE
-        }
+        if (intent.hasExtra("image"))
+            displaySplashAnimation()
     }
+
+    private fun displaySplashAnimation() {
+        val byteArray = intent.getByteArrayExtra("image")
+        val bmp: Bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        imgAnimationOverlay.setImageBitmap(bmp)
+
+        val scaleAnimation = ScaleAnimation(1f, 3f, 1f, 3f, Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f)
+        scaleAnimation.duration = 300
+
+        val alphaAnimation = AlphaAnimation(1f, 0f)
+        alphaAnimation.duration = 300
+
+        val animatorSet = AnimationSet(true)
+        animatorSet.addAnimation(scaleAnimation)
+        animatorSet.addAnimation(alphaAnimation)
+        imgAnimationOverlay.startAnimation(animatorSet)
+
+        animatorSet.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(p0: Animation?) {
+            }
+
+            override fun onAnimationEnd(p0: Animation?) {
+                imgAnimationOverlay.alpha = 0f
+            }
+
+            override fun onAnimationStart(p0: Animation?) {
+            }
+        })
+    }
+
 
     override fun displayDayMode() {
 
@@ -51,6 +85,12 @@ class ReviewActivity : BaseActivity() {
     }
 
     override fun onCreateStuff() {
+
+        if (intent.hasExtra("isSwitched")) {
+            isSwitched = true
+            imgBackReview.visibility = View.VISIBLE
+            imgLogoutReview.visibility = View.INVISIBLE
+        }
 
         loadQuotesData()
 
@@ -82,10 +122,10 @@ class ReviewActivity : BaseActivity() {
         txtQuote.show()
         txtQuote.setValueUpdateListener {
             if (reviewActivity != null) {
-                if (reviewActivity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                    displayQuotesWithAnimationNougat(it)
-                else
-                    displayQuotesWithAnimation(it)
+//                if (reviewActivity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                displayQuotes(it)
+//                else
+//                    displayQuotesWithAnimation(it)
             }
         }
 
@@ -93,10 +133,10 @@ class ReviewActivity : BaseActivity() {
         txtQuoteAuthor.show()
         txtQuoteAuthor.setValueUpdateListener {
             if (reviewActivity != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                    displayQuotesWithAnimationNougatAuthor(it)
-                else
-                    displayQuotesWithAnimation(it)
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                displayAuthor(it)
+//                else
+//                    displayQuotesWithAnimation(it)
             }
         }
     }
@@ -174,65 +214,41 @@ class ReviewActivity : BaseActivity() {
         mQuotesAuthorArrayList.add(getString(R.string.quote_owner10))
     }
 
-    private fun displayQuotesWithAnimationNougat(isVisible: Boolean) {
-        Log.e("Count  = ", count.toString())
+    private fun displayQuotes(isVisible: Boolean) {
+
         if (isVisible) {
             /// turn to hide
             Handler().postDelayed({
-                if (count < 9) {
-                    txtQuote.hide()
-                }
-            }, 3000)
+                txtQuote.hide()
+            }, displayTime)
         } else {
             /// turn to visible
             Handler().postDelayed({
-                if (count < 10) {
-                    txtQuote.setText(mQuotesArrayList[count])
-                    txtQuote.show()
-                }
+                if (count > 9)
+                    count = 0
+                txtQuote.setText(mQuotesArrayList[count])
+                txtQuote.show()
             }, 100)
             count++
         }
+
     }
 
-    private fun displayQuotesWithAnimationNougatAuthor(isVisible: Boolean) {
-        Log.e("Count  = ", countAuthor.toString())
+    private fun displayAuthor(isVisible: Boolean) {
         if (isVisible) {
             /// turn to hide
             Handler().postDelayed({
-                if (countAuthor < 9) {
-                    txtQuoteAuthor.hide()
-                }
-            }, 3000)
+                txtQuoteAuthor.hide()
+            }, displayTime)
         } else {
             /// turn to visible
             Handler().postDelayed({
-                if (countAuthor < 10) {
-                    txtQuoteAuthor.setText(mQuotesAuthorArrayList[countAuthor])
-                    txtQuoteAuthor.show()
-                }
+                if (countAuthor > 9)
+                    countAuthor = 0
+                txtQuoteAuthor.setText(mQuotesAuthorArrayList[countAuthor])
+                txtQuoteAuthor.show()
             }, 100)
             countAuthor++
-        }
-    }
-
-    private fun displayQuotesWithAnimation(isVisible: Boolean) {
-        Log.e("Count  = ", count.toString())
-        if (count < 10) {
-            if (isVisible) {
-                /// turn to hide
-                Handler().postDelayed({
-                    txtQuote.hide()
-                    txtQuoteAuthor.hide()
-                }, 3000)
-            } else {
-                /// turn to visible
-                txtQuote.setText(mQuotesArrayList[count])
-                txtQuote.show()
-                txtQuoteAuthor.setText(mQuotesAuthorArrayList[count])
-                txtQuoteAuthor.show()
-                count++
-            }
         }
     }
 
@@ -323,4 +339,6 @@ class ReviewActivity : BaseActivity() {
         }
         alertDialog.show()
     }
+
+
 }

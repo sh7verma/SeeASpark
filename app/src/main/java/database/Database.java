@@ -84,6 +84,7 @@ public class Database extends SQLiteOpenHelper {
     static final String NOTES_UPDATED = "notes_updated";
     static final String NOTES_USER_ID = "note_user_id";
     static final String NOTES_USER_NAME = "note_user_name";
+    static final String NOTES_NEW_TITLE = "notes_new_title";
 
     /// Profile Table
     static final String ID = "id";
@@ -199,7 +200,8 @@ public class Database extends SQLiteOpenHelper {
                 + NOTES_CREATED + " TEXT ,"
                 + NOTES_UPDATED + " TEXT ,"
                 + NOTES_USER_ID + " TEXT ,"
-                + NOTES_USER_NAME + " TEXT )";
+                + NOTES_USER_NAME + " TEXT ,"
+                + NOTES_NEW_TITLE + " TEXT )";
         db.execSQL(notesQuery);
 
         String profileQuery = "create table if not exists " + PROFILE_TABLE
@@ -294,6 +296,7 @@ public class Database extends SQLiteOpenHelper {
             values.put(NOTES_UPDATED, notesData.getUpdated_at());
             values.put(NOTES_USER_ID, notesData.getUser_id());
             values.put(NOTES_USER_NAME, notesData.getFull_name());
+            values.put(NOTES_NEW_TITLE, notesData.getNote_title());
 
             data = getReadableDatabase().rawQuery("Select * from " + NOTES_TABLE + " where "
                     + NOTES_ID + " = '" + notesData.getId() + "'", null);
@@ -334,6 +337,7 @@ public class Database extends SQLiteOpenHelper {
                 notesModel.setUpdated_at(cur.getString(7));
                 notesModel.setUser_id(Integer.parseInt(cur.getString(8)));
                 notesModel.setFull_name(cur.getString(9));
+                notesModel.setNote_title(cur.getString(10));
 
                 mArrayListNotes.add(notesModel);
                 cur.moveToNext();
@@ -1070,13 +1074,13 @@ public class Database extends SQLiteOpenHelper {
 //                        }
 //                    }
 
-                mChats.last_message_type=new HashMap<>();
-                mChats.last_message_type.put(userId,cur.getString(6));
-                mChats.last_message_type.put(otherUserId,cur.getString(6));
+                mChats.last_message_type = new HashMap<>();
+                mChats.last_message_type.put(userId, cur.getString(6));
+                mChats.last_message_type.put(otherUserId, cur.getString(6));
 
-                mChats.last_message_data=new HashMap<>();
-                mChats.last_message_data.put(userId,cur.getString(17));
-                mChats.last_message_data.put(otherUserId,cur.getString(17));
+                mChats.last_message_data = new HashMap<>();
+                mChats.last_message_data.put(userId, cur.getString(17));
+                mChats.last_message_data.put(otherUserId, cur.getString(17));
 
                 mChats.last_message_time = new HashMap<>();
                 mChats.last_message_time.put(otherUserId, Long.parseLong(cur.getString(3)));
@@ -1173,13 +1177,13 @@ public class Database extends SQLiteOpenHelper {
                     mChats.name.put(otherUserId, cur.getString(8));
                     mChats.name.put(userId, "");
 
-                    mChats.last_message_type=new HashMap<>();
-                    mChats.last_message_type.put(userId,cur.getString(6));
-                    mChats.last_message_type.put(otherUserId,cur.getString(6));
+                    mChats.last_message_type = new HashMap<>();
+                    mChats.last_message_type.put(userId, cur.getString(6));
+                    mChats.last_message_type.put(otherUserId, cur.getString(6));
 
-                    mChats.last_message_data=new HashMap<>();
-                    mChats.last_message_data.put(userId,cur.getString(17));
-                    mChats.last_message_data.put(otherUserId,cur.getString(17));
+                    mChats.last_message_data = new HashMap<>();
+                    mChats.last_message_data.put(userId, cur.getString(17));
+                    mChats.last_message_data.put(otherUserId, cur.getString(17));
 
                     mChats.profile_pic = new HashMap<>();
                     mChats.profile_pic.put(otherUserId, cur.getString(9));

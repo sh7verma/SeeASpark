@@ -59,9 +59,11 @@ class PreferencesActivity : BaseActivity() {
         cbNoExperience.setOnCheckedChangeListener { p0, isChecked ->
             if (isChecked) {
                 llDisableExperience.visibility = View.VISIBLE
-                mMaxExperienceValue = -1
+                mMaxExperienceValue = -mMaxExperienceValue
             } else {
                 llDisableExperience.visibility = View.GONE
+                if (mMaxExperienceValue < 0)
+                    mMaxExperienceValue = Math.abs(mMaxExperienceValue)
             }
         }
 
@@ -177,18 +179,20 @@ class PreferencesActivity : BaseActivity() {
                 rsbDistance.selectedMaxValue = userData!!.response.preferences.distance
             }
 
-            if (userData!!.response.preferences.experience_year == -1) {
-                mMaxExperienceValue = -1
+            if (userData!!.response.preferences.experience_year < 0) {
+                mMaxExperienceValue = Math.abs(userData!!.response.preferences.experience_year)
+                rsbExperience.selectedMaxValue = mMaxExperienceValue
+                txtExperienceCount.text = "$mMaxExperienceValue Year(s)"
+
                 cbNoExperience.isChecked = true
                 llDisableExperience.visibility = View.VISIBLE
-                rsbExperience.selectedMaxValue = 3
-                txtExperienceCount.text = "3 Year(s)"
             } else {
+                mMaxExperienceValue = userData!!.response.preferences.experience_year
+                rsbExperience.selectedMaxValue = mMaxExperienceValue
+                txtExperienceCount.text = "$mMaxExperienceValue Year(s)"
+
                 cbNoExperience.isChecked = false
                 llDisableExperience.visibility = View.GONE
-                mMaxExperienceValue = userData!!.response.preferences.experience_year
-                rsbExperience.selectedMaxValue = userData!!.response.preferences.experience_year
-                txtExperienceCount.text = "${userData!!.response.preferences.experience_year} Year(s)"
             }
 
             when {
