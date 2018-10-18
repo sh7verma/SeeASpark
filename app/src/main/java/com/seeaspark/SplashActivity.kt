@@ -34,7 +34,7 @@ class SplashActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_splash
 
     override fun initUI() {
-        gifSplash.setImageResource(R.drawable.logo_animation_white)
+       gifSplash.setImageResource(R.drawable.logo_animation_white)
         val existingOriginalDrawable = gifSplash.drawable as GifDrawable?
         existingOriginalDrawable!!.addAnimationListener {
             if (existingOriginalDrawable.canPause()) {

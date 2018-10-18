@@ -4,14 +4,37 @@
     android:id="@+id/llPlans"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/boost_gradient_rectangle"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <include layout="@layout/custom_toolbar" />
+    <ImageView
+        android:layout_width="@dimen/_54sdp"
+        android:layout_height="@dimen/_54sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:contentDescription="@string/app_name"
+        android:src="@mipmap/ic_boost_plan" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/greyLine" />
+    <customviews.MediumTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_12sdp"
+        android:text="@string/skip_the_queue"
+        android:textAllCaps="true"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/_14ssp" />
+
+    <customviews.LightTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha=".8"
+        android:gravity="center"
+        android:maxLength="80"
+        android:paddingBottom="@dimen/_16sdp"
+        android:paddingLeft="@dimen/_12sdp"
+        android:paddingRight="@dimen/_12sdp"
+        android:text="@string/lorem_ipsum"
+        android:textColor="@color/white_color" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
+            android:layout_centerHorizontal="true"
             android:paddingBottom="@dimen/_16sdp" />
 
         <com.wang.avi.AVLoadingIndicatorView
@@ -51,6 +75,7 @@
         android:text="@string/my_payments"
         android:textAllCaps="true"
         android:textColor="@color/white_color"
-        android:textSize="@dimen/_14ssp" />
+        android:textSize="@dimen/_14ssp"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.text.Html
 import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.HorizontalScrollView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_notes.*
@@ -23,7 +24,7 @@ import utils.Constants
 import utils.MainApplication
 
 
-class NotesActivity : BaseActivity() {
+class NotesActivity : BaseActivity(), ViewTreeObserver.OnGlobalLayoutListener {
 
     var isBold = false
     var isItalic = false
@@ -34,6 +35,7 @@ class NotesActivity : BaseActivity() {
     var isEdit = false
     var noteId = Constants.EMPTY!!
     var noteFileName = Constants.EMPTY!!
+    var maxScroll: Int = 0
 
     override fun getContentView() = R.layout.activity_notes
 
@@ -137,12 +139,16 @@ class NotesActivity : BaseActivity() {
             }
         }
 
-        Log.e("scrollX Inital", svEditOptions.scrollX.toString())
 
+        val vto = svEditOptions.viewTreeObserver
+        vto.addOnGlobalLayoutListener {
+            svEditOptions.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            maxScroll = svEditOptions.getChildAt(0)
+                    .measuredWidth - windowManager.defaultDisplay.width
+        }
         svEditOptions.viewTreeObserver.addOnScrollChangedListener {
             Log.e("scrollX", svEditOptions.scrollX.toString())
-
-            if (svEditOptions.scrollX > svEditOptions.maxScrollAmount) {
+            if (svEditOptions.scrollX > (maxScroll - (maxScroll / 10))) {
                 imgScroll.visibility = View.GONE
             } else
                 imgScroll.visibility = View.VISIBLE
@@ -208,7 +214,7 @@ class NotesActivity : BaseActivity() {
                 if (connectedToInternet()) {
                     if (isDoneEnabled) {
                         if (edTitleNote.text.toString().trim().isEmpty())
-                            showAlert(txtOptionCustom, getString(R.string.error_note))
+                            showAlert(txtOptionCustom, getString(R.string.error_note_title))
                         else {
                             Constants.closeKeyboard(mContext!!, imgBackCustom)
                             if (isEdit)
@@ -416,7 +422,7 @@ class NotesActivity : BaseActivity() {
                             mNotesData!!.note_type = Constants.MYNOTES
                             isEdit = true
                             isDoneEnabled = true
-                            Constants.showKeyboard(mContext!!, llMainNotes);
+                            Constants.showKeyboard(mContext!!, llMainNotes)
                         }
                     } else {
                         setNonEditableMode()
@@ -635,5 +641,8 @@ class NotesActivity : BaseActivity() {
         mEditor.setTextColor(ContextCompat.getColor(mContext!!, R.color.teal_color))
     }
 
+    override fun onGlobalLayout() {
+        // no-op
+    }
 
 }

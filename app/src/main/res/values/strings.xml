@@ -363,6 +363,7 @@
     <string name="audio">Audio</string>
     <string name="video">Video</string>
     <string name="image">Photo</string>
+    <string name="skip_the_queue">Skip the Queue</string>
     ////
 
 </resources>

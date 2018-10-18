@@ -6,6 +6,4 @@
         android:endColor="@color/boost_primary_gradient"
         android:startColor="@color/boost_secondary_gradient" />
 
-    <corners android:radius="@dimen/_8sdp" />
-
 </shape>

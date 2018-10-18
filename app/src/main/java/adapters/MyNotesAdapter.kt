@@ -121,7 +121,7 @@ class MyNotesAdapter(mNotesArray: ArrayList<NotesListingModel.ResponseBean>, mCo
 
         private fun displayNightMode() {
             llClickNotes.setBackgroundResource(R.drawable.black_notes_background)
-            imgShare.setImageResource(R.mipmap.ic_share_black)
+            imgShare.setImageResource(R.mipmap.ic_share_white)
         }
     }
 }

@@ -231,7 +231,6 @@ class ReviewActivity : BaseActivity() {
             }, 100)
             count++
         }
-
     }
 
     private fun displayAuthor(isVisible: Boolean) {

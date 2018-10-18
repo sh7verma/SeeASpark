@@ -53,14 +53,14 @@ class BoostPlansAdapter(private var mPlansArray: ArrayList<PlansModel.Response>,
                 .append(mPlansArray[position].amount)
         if (mPlansArray[position].is_expired == 0) {
             boughtPosition = position
-            holder.txtBuyNow.visibility = View.GONE
+            holder.llTimer.visibility = View.VISIBLE
             holder.txtTimerBoost.visibility = View.VISIBLE
             timer(mPlansArray[position].remaining_time, holder.txtTimerBoost)
         } else {
-            holder.txtBuyNow.visibility = View.VISIBLE
+            holder.llTimer.visibility = View.GONE
             holder.txtTimerBoost.visibility = View.GONE
         }
-        holder.txtBuyNow.setOnClickListener {
+        holder.rlBoostPlan.setOnClickListener {
             if (homeFragment != null)
                 homeFragment!!.buyPlan(position)
             else
@@ -76,8 +76,9 @@ class BoostPlansAdapter(private var mPlansArray: ArrayList<PlansModel.Response>,
         val txtBoostPlanCard = itemView.txtBoostPlanCard!!
         val txtPlanType = itemView.txtPlanType!!
         val txtBoostPlanCost = itemView.txtBoostPlanCost!!
-        val txtBuyNow = itemView.txtBuyNow!!
+        val rlBoostPlan = itemView.rlBoostPlan!!
         val txtTimerBoost = itemView.txtTimerBoost!!
+        val llTimer = itemView.llTimer!!
     }
 
     fun timer(time: String, txtTimerHome: TextView) {
@@ -97,9 +98,9 @@ class BoostPlansAdapter(private var mPlansArray: ArrayList<PlansModel.Response>,
 
                 override fun onFinish() {
                     if (homeFragment != null)
-                        homeFragment!!.isBuyEnable=true
+                        homeFragment!!.isBuyEnable = true
                     else
-                        boostFragment!!.isBuyEnable=true
+                        boostFragment!!.isBuyEnable = true
                     mPlansArray[boughtPosition].is_expired = 1
                     notifyDataSetChanged()
                 }

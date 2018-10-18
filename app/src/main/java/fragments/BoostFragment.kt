@@ -31,6 +31,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import utils.BillingManager
+import utils.GridSpacingItemDecoration
 import java.lang.Long
 import java.util.*
 
@@ -73,10 +74,6 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
         else
             displayDayMode()
 
-        txtTitleCustom.text = getString(R.string.boots_plans)
-
-        imgBackCustom.visibility = View.INVISIBLE
-
         rvBoostPlans.layoutManager = GridLayoutManager(activity, 2)
 
         val drawable = txtMyPayments.background as GradientDrawable
@@ -85,22 +82,10 @@ class BoostFragment : Fragment(), View.OnClickListener, BillingManager.BillingUp
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun displayDayMode() {
-        llCustomToolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.white_color))
-        imgBackCustom.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
-        txtTitleCustom.setTextColor(ContextCompat.getColor(activity, R.color.black_color))
-        imgOption1Custom.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
-        imgOption2Custom.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
-        llPlans.setBackgroundColor(mLandingInstance.whiteColor)
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun displayNightMode() {
-        llCustomToolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.black_color))
-        imgBackCustom.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
-        txtTitleCustom.setTextColor(ContextCompat.getColor(activity, R.color.white_color))
-        imgOption1Custom.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
-        imgOption2Custom.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
-        llPlans.setBackgroundColor(mLandingInstance.blackColor)
     }
 
     private fun onCreateStuff() {
