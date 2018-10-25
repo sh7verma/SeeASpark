@@ -1,6 +1,6 @@
 package fragments
 
-import adapters.BoostPlansAdapter
+import adapters.HomeBoostPlansAdapter
 import adapters.HomeCardSwipeAdapter
 import android.app.Activity
 import android.app.Fragment
@@ -38,7 +38,6 @@ import com.squareup.picasso.Picasso
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.SwipeDirection
 import database.Database
-import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.android.synthetic.main.fragment_event.*
 import kotlinx.android.synthetic.main.fragment_home_card_swipe.*
 import kotlinx.android.synthetic.main.item_swipe_card.view.*
@@ -47,7 +46,9 @@ import network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import utils.*
+import utils.BillingManager
+import utils.Constants
+import utils.Utils
 import java.util.*
 
 class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
@@ -73,7 +74,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     private var mDb: Database? = null
 
     private lateinit var mBillingManager: BillingManager
-    private lateinit var mAdapterBoost: BoostPlansAdapter
+    private lateinit var mAdapterBoost: HomeBoostPlansAdapter
     private var mPlansArray = ArrayList<PlansModel.Response>()
     var isBuyEnable = true
     private var skuDetailsList = ArrayList<SkuDetails>()
@@ -224,7 +225,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
         })
 
         rvUnlimitedPlans.layoutManager = GridLayoutManager(activity, 2)
-        mAdapterBoost = BoostPlansAdapter(mPlansArray, mHomeFragment!!, null)
+        mAdapterBoost = HomeBoostPlansAdapter(mPlansArray, mHomeFragment!!, null)
         rvUnlimitedPlans.adapter = mAdapterBoost
     }
 
@@ -246,7 +247,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
             } else {
                 Handler().postDelayed({
                     generateConfetti()
-                },100)
+                }, 100)
 
                 llOutOfCards.visibility = View.GONE
                 llHomePlans.visibility = View.GONE
