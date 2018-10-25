@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="F:\Projects\SeeASpark\cardstackview\src\main\assets"/><source path="F:\Projects\SeeASpark\cardstackview\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="F:\Projects\SeeASpark\cardstackview\src\debug\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/home/dev/Documents/Live/SeeASpark-android/blur-behind/src/main/assets"/><source path="/home/dev/Documents/Live/SeeASpark-android/blur-behind/build/generated/assets/shaders/debug"/></dataSet><dataSet config="debug"><source path="/home/dev/Documents/Live/SeeASpark-android/blur-behind/src/debug/assets"/></dataSet></merger>
