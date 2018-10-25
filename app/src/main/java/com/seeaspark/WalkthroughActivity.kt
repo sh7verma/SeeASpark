@@ -69,6 +69,7 @@ class WalkthroughActivity : BaseActivity() {
 
         mAdapterWalk = NewFragmentPagerAdapter(supportFragmentManager, mContext!!)
         vpWalk.adapter = mAdapterWalk
+
         cpIndicatorWalk.setViewPager(vpWalk)
         cpIndicatorWalk.fillColor = Color.BLACK
         delay = 24000
@@ -132,7 +133,6 @@ class WalkthroughActivity : BaseActivity() {
     private val mHandler = Handler()
     internal var runnable: Runnable = object : Runnable {
         override fun run() {
-
             if (vpWalk.currentItem < 5) {
                 vpWalk.currentItem = vpWalk.currentItem + 1
             }

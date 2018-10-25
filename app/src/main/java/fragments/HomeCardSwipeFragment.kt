@@ -114,7 +114,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun displayDayMode() {
         llHomeToolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.white_color))
-        llInnerOutCards.setBackgroundResource(R.drawable.background_out_of_card)
+        rlInnerOutCards.setBackgroundResource(R.drawable.background_out_of_card)
         imgPreferHome.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
         txtTitleHome.setTextColor(ContextCompat.getColor(activity, R.color.black_color))
         imgProfileHome.background = ContextCompat.getDrawable(activity, R.drawable.white_ripple)
@@ -129,7 +129,7 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     private fun displayNightMode() {
         llHomeToolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.black_color))
-        llInnerOutCards.setBackgroundResource(R.drawable.dark_background_out_of_cards)
+        rlInnerOutCards.setBackgroundResource(R.drawable.dark_background_out_of_cards)
         imgPreferHome.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
         txtTitleHome.setTextColor(ContextCompat.getColor(activity, R.color.white_color))
         imgProfileHome.background = ContextCompat.getDrawable(activity, R.drawable.black_ripple)
@@ -255,9 +255,9 @@ class HomeCardSwipeFragment : Fragment(), View.OnClickListener,
     }
 
     private fun generateConfetti() {
-      /*  confettiManager = getConfettiManager().setNumInitialCount(0)
-                .setEmissionDuration(ConfettiManager.INFINITE_DURATION)
-                .setEmissionRate(25f).animate()*/
+        /*  confettiManager = getConfettiManager().setNumInitialCount(0)
+                  .setEmissionDuration(ConfettiManager.INFINITE_DURATION)
+                  .setEmissionRate(25f).animate()*/
     }
 
     fun hitAPI(visibleLoader: Boolean) {

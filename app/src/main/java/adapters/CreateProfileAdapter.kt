@@ -4,7 +4,8 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 
-class CreateProfileAdapter(fragmentManager: FragmentManager, mFragmentArray: ArrayList<Fragment>) : FragmentPagerAdapter(fragmentManager) {
+class CreateProfileAdapter(fragmentManager: FragmentManager, mFragmentArray: ArrayList<Fragment>)
+    : FragmentPagerAdapter(fragmentManager) {
 
     var mFragmentArray = ArrayList<Fragment>()
 

@@ -61,24 +61,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/llInnerOutCards"
+            <RelativeLayout
+                android:id="@+id/rlInnerOutCards"
                 android:layout_width="@dimen/_240sdp"
                 android:layout_height="@dimen/_240sdp"
                 android:layout_marginBottom="@dimen/_24sdp"
                 android:background="@drawable/background_out_of_card"
                 android:gravity="center">
 
+                <fr.castorflex.android.circularprogressbar.CircularProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:indeterminate="true"
+                    app:cpb_color="@color/colorPrimary"
+                    app:cpb_max_sweep_angle="300"
+                    app:cpb_min_sweep_angle="10"
+                    app:cpb_rotation_speed="1.0"
+                    app:cpb_stroke_width="4dp"
+                    app:cpb_sweep_speed="1.0" />
+
                 <ImageView
                     android:id="@+id/imgCenterAvatar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_avatar_1" />
+                    android:layout_width="@dimen/_90sdp"
+                    android:layout_height="@dimen/_90sdp"
+                    android:layout_centerInParent="true" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <customviews.BoldTextView
                 android:id="@+id/txtOutOfCards"
@@ -159,8 +169,8 @@
         <LinearLayout
             android:id="@+id/llEmitter"
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
 
         <com.yuyakaido.android.cardstackview.CardStackView
             android:id="@+id/csvUsers"
@@ -180,7 +190,9 @@
             app:swipeEnabled="true"
             app:swipeThreshold="0.75"
             app:translationDiff="26"
-            app:visibleCount="5" />
+            app:visibleCount="5">
+
+        </com.yuyakaido.android.cardstackview.CardStackView>
 
     </RelativeLayout>
 

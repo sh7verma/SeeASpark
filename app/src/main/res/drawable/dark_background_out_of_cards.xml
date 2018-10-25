@@ -4,8 +4,8 @@
     android:visible="true">
 
     <solid android:color="@color/cardview_dark_background" />
-    <stroke
+ <!--   <stroke
         android:width="1dp"
-        android:color="@color/colorPrimary" />
+        android:color="@color/colorPrimary" />-->
 
 </shape>

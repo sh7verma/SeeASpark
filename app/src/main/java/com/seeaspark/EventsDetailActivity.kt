@@ -466,7 +466,7 @@ class EventsDetailActivity : BaseActivity() {
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.dialog_interested)
 
-        var dialogParms = CoordinatorLayout.LayoutParams(mWidth - (mWidth / 16), mHeight / 6)
+        val dialogParms = CoordinatorLayout.LayoutParams(mWidth - (mWidth / 16), mHeight / 6)
         dialogParms.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
         val bottomSheet = dialog.window.findViewById(android.support.design.R.id.design_bottom_sheet) as FrameLayout
         bottomSheet.setBackgroundResource(R.drawable.white_short_profile_background)

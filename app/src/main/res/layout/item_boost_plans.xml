@@ -64,16 +64,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha=".8"
-            android:visibility="gone"
             android:background="@drawable/plan_timer_background"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:gravity="center_horizontal|bottom"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_clock" />
 
             <customviews.MediumTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Expiring in"
+                android:paddingTop="@dimen/_5sdp"
                 android:textAllCaps="true"
                 android:textColor="@color/white_color"
                 android:textSize="@dimen/_12ssp" />
@@ -83,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="05"
+                android:paddingBottom="@dimen/_5sdp"
                 android:textAllCaps="true"
                 android:textColor="@color/white_color"
                 android:textSize="@dimen/_12ssp" />
